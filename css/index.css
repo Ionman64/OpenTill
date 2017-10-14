@@ -1,0 +1,213 @@
+.no-select {
+  -webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none; /* Safari */
+	 -khtml-user-select: none; /* Konqueror HTML */
+	   -moz-user-select: none; /* Firefox */
+		-ms-user-select: none; /* Internet Explorer/Edge */
+			user-select: none; /* Non-prefixed version, currently
+			                      supported by Chrome and Opera */
+}
+body {
+	overflow:hidden;
+}
+#navigation-list a {
+	color:#fff;
+	font-family:ubuntu;
+	font-weight:bold;
+}
+#navigation-list a:hover {
+	text-decoration:none;
+}
+.btn:focus { 
+	outline:none;
+	-moz-outline-style: none; 
+}
+.btn:click {
+	outline:none;
+	-moz-outline-style: none;
+}
+.btn{
+	white-space:normal !important;
+}
+td {
+  padding-top:5px;
+  padding-bottom:5px;
+  padding-right:5px;   
+}
+
+td:first-child {
+  padding-left:5px;
+  padding-right:5;
+  border-radius:5px 0px 0px 5px;
+}
+td:last-child {
+	border-radius:0px 5px 5px 0px;
+}
+.table {
+	margin-top:10px;
+}
+.highlighted {
+	background:yellow;
+}
+.overlay {
+	position: absolute;
+	width: 100%; 
+	height:100%;
+	top:0; 
+	left:0;
+	background:rgba(0,0,0,0.9);
+	opacity: 1;
+	transition: all 1s;
+	-webkit-transition: all 1s;
+	max-height:100%;
+	max-width:100%;
+	z-index:999;
+}
+.overlay-ontop {
+	z-index:1001;
+}
+ul.navigation-list {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+ul.navigation-list>li {
+	height:140px;
+	width:140px;
+	float:left;
+	margin-right:10px;
+	margin-top:10px;
+	cursor:pointer;
+}
+ul.navigation-list>li span {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-flex-align: center;
+	-ms-flex-align: center;
+	-webkit-align-items: center;
+	align-items: center;
+	text-align:center;
+	width:100%;
+	color:#000;
+}
+#barcode {
+	z-index:1000;
+}
+.btn-group {
+	margin-right:10px;
+}
+#menu-button {
+	cursor:pointer;
+}
+#menu-items {
+	color:#fff;
+}	
+.money-given-button {
+	height:25mm;
+	width:25mm;
+	float:left;
+}
+.notify-fixed-bottom {
+	position:fixed; 
+	bottom:0px;
+	left: 0px; 
+	width: 100%;
+	z-index:9999; 
+	border-radius:0px;
+	background:#bbb;
+	margin-bottom:60px;
+}
+.notify-fixed-bottom .notify-message {
+	font-size:30px;
+}
+.notify-fixed-bottom .notify-value {
+	font-size:20px;
+}
+.notify-fixed-bottom .inner {
+	padding:15px;
+}
+.notify-fixed-bottom .dismiss {
+	padding:14px;
+}
+.notify-fixed-bottom span {
+	padding-left:1em;
+	font-size:
+}
+.notify-fixed-bottom p, button {
+	display:inline;
+}
+.italic {
+	font-style:italic;
+}
+.keypad button {
+	width:100%;
+	height:50px;
+}
+#department button {
+	width:100%;
+	margin-top:10px;
+	height:50px;
+}
+#change img {
+	width:100%;
+	height:100%;
+}
+#change button[moneyvalue="1"] img {
+	padding:5px;
+}
+#goods-holder {
+	height:450px;
+}
+#goods-table .row {
+	border-bottom:1px solid #ddd;
+}
+#goods-table .btn {
+	/*Same style as Bootstap btn-lg*/
+	border-radius:6px;
+	font-size:18px;
+	line-height:1.33333;
+	padding:10px 16px;
+}
+#goods-table .bootstrap-touchspin-down {
+	border-radius:6px 0px 0px 6px;
+}
+#goods-table .bootstrap-touchspin-up {
+	border-radius:0px 6px 6px 0px;
+}
+#goods-table .form-control {
+	font-size:18px;
+	height:46px;
+	line-height:1.33333;
+	padding:10px 16px;
+}
+label.clear-text {
+	font-size:32px;
+}
+label {
+	margin-bottom:0px;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+input[type="number"] {
+	-moz-appearance: textfield;
+}
+#item-footer:after {
+	-moz-box-shadow: 0px 5px #000000;
+}
+#supplierList {
+	list-style:none;	
+}
+#supplierList .btn {
+	float:left;
+	margin-right:5px;
+	margin-bottom:5px;
+	width:100px;
+	height:100px;
+}
