@@ -1,4 +1,4 @@
-﻿<section class="modal" id="productSee" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+﻿<section class="modal" id="product-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
   <section class="modal-dialog modal-lg">
 	<section class="modal-content">
 	  <section class="modal-header">
@@ -127,6 +127,7 @@
 	  	</section>
 	  </section>
 	  <section class="modal-footer">
+		<button type="button" class="btn btn-danger btn-lg pull-left" id="delete-product">Delete Product</button>
 		<button type="button" class="btn btn-success btn-lg" id="PrintLabel">Print Label</button>
 		<button type="button" class="btn btn-primary btn-lg" id="update-product">Update Product</button>
 	  </section>

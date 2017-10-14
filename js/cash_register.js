@@ -1,9 +1,9 @@
-var CONTEXT = "https://www.goldstandardresearch.co.uk/kvs/api/";
+const CONTEXT = "api/";
+const CASHBACK_DEPARTMENT = "5b830176-7b71-11e7-b34e-426562cc935f";
+const NO_CATAGORY_DEPARTMENT = "5b82f89a-7b71-11e7-b34e-426562cc935f";
 window.cashiersTransactions = {};
 window.Department = null;
 window.DepartmentName = "";
-CASHBACK_DEPARTMENT = "5b830176-7b71-11e7-b34e-426562cc935f";
-NO_CATAGORY_DEPARTMENT = "5b82f89a-7b71-11e7-b34e-426562cc935f";
 window.cache = {};
 window.supplierArray = {};
 function getTransaction() {
@@ -29,8 +29,8 @@ function printReciept() {
 		bootbox.alert("No products added");
 		return;
 	}
-	var json = {}
-	var products = []
+	var json = {};
+	var products = [];
 	$.each(getTransaction().products, function(key, product) {
 		products.push({"name":product.name, "price":formatMoney(product.productCost()).toString(), "totalCost":formatMoney(product.totalCost()).toString(), "quantity":product.quantity});
 	});
@@ -76,8 +76,7 @@ function payout(amount) {
 	createTransaction();
 	$("#supplierList").empty();
 	$.each(window.supplierArray, function(key, value) {
-		var li = el('li', {class:'btn btn-default', "data-id":value.id, "data-search":value.name});
-		li.innerHTML = value.name;
+		var li = el('li', {class:'btn btn-default', "data-id":value.id, "data-search":value.name, html:value.name});
 		$("#supplierList").append(li);
 	});
 	$("#supplierModal").modal("show");
@@ -85,23 +84,18 @@ function payout(amount) {
 	$("#supplierSearch").focus();
 	$("#supplierModal li").on("click", function(e) {
 		var amount = $("#supplierModal").attr("data-amount");
-		var supplierId = $(this).attr("data-id");
-		var supplierName = $(this).attr("data-search");
 		getTransaction().total = amount;
 		getTransaction().type = "PAYOUT";
-		getTransaction().payee = supplierId;
+		getTransaction().payee = $(this).attr("data-id");
 		getTransaction().sync(true);
 		e.stopPropagation();
 		$("#supplierModal").modal("hide");
-		notify(supplierName + " Paid £" + formatMoney(amount));
+		notify($(this).attr("data-search") + " Paid £" + formatMoney(amount));
 		openDrawer();
 	});
 }
 function openDrawer() {
-	var data = {"open_drawer":true};
-	url = "http://localhost:8888/drawer" + '?' + $.param(data);
-	//alert(url);
-	document.createElement("img").src = url;
+	document.createElement("img").src = ("http://localhost:8888/drawer" + '?' + $.param({"open_drawer":true}));
 }
 function el(tagName, options) {
 	if (tagName.length == 0) {
@@ -117,13 +111,17 @@ function el(tagName, options) {
 		el.className = options.class;
 		delete options.class;
 	}
+	if (options.html) {
+		el.innerHTML = options.html;
+		delete options.html;
+	}
 	$.each(options, function(key, value) {
 		el.setAttribute(key, value);
 	});
 	return el;
 }
 function refreshTable() {
-	$("#goods-table").empty();
+	$("#table").empty();
 	var count = 0;
 	$.each(getTransaction().products, function(key, product) {
 		count++;
@@ -141,8 +139,7 @@ function refreshTable() {
 		}
 		if (product.comment.length > 0) {
 			var section = el("section", {class:"col-md-11 col-md-offset-1"});
-			var label = el("label", {class:"text-info"});
-			label.innerHTML =  product.comment;tyle="width:100%"
+			var label = el("label", {class:"text-info", html:product.comment});
 			section.appendChild(label);
 			row.appendChild(section);
 			/*if (product.inDatabase) {
@@ -165,18 +162,16 @@ function refreshTable() {
 		row.appendChild(section);
 		//name
 		var section = el("section", {class:"col-md-4"});
-		var button = el("button", {class:"btn btn-default"});
+		var button = el("button", {class:"btn btn-default", html:product.name});
 		if (product.inDatabase)
 			button.onclick = function() {showMenu(product.id)};
 		else
 			button.disabled = "disabled";
-		button.innerHTML = product.name;
 		section.appendChild(button);
 		row.appendChild(section);
 		//cost
 		var section = el("section", {class:"col-md-1"});
-		var h5 = el("label", {class:"clear-text"});
-		h5.innerHTML = formatMoney(product.productCost());
+		var h5 = el("label", {class:"clear-text", html:formatMoney(product.productCost())});
 		section.appendChild(h5);
 		row.appendChild(section);
 		//quantity 
@@ -186,11 +181,10 @@ function refreshTable() {
 		row.appendChild(section);
 		//totalCost
 		var section = el("section", {class:"col-md-2"});
-		var h5 = el("label", {class:"clear-text product-total", "product-id":product.id});
-		h5.innerHTML = formatMoney(product.totalCost());
+		var h5 = el("label", {class:"clear-text product-total", "product-id":product.id, html:formatMoney(product.totalCost())});
 		section.appendChild(h5);
 		row.appendChild(section);
-		$("#goods-table").append(row);
+		$("#table").append(row);
 		$("input[productID='" + product.id + "']").TouchSpin({
 			min: 0,
 			max: 100,
@@ -199,7 +193,7 @@ function refreshTable() {
 			postfix: 'items',
 		});
 		$("input[productID='" + product.id + "']").change(function(data) {
-			var id = $(this).attr("productID");
+			const id = $(this).attr("productID");
 			getTransaction().changeQuantity(id, parseInt(data.currentTarget.value));
 			$("label.product-total[product-id='" + id + "']").html(formatMoney(getTransaction().products[id].totalCost()));
 			refreshTotals();
@@ -208,20 +202,20 @@ function refreshTable() {
 	if (count == 0) {
 		$("#clearTrans").attr("disabled", true);
 		$("#no-goods").removeClass("hidden");
-		$("#goods-holder").addClass("hidden");
+		$("#table-holder").addClass("hidden");
 		return;
 	}
 	$('#keypad button[data-function=pay-out]').attr("disabled", true); //cannot do payouts and transactions at the same time
 	$("#refund").attr("disabled", false);
 	$("#clearTrans").attr("disabled", false);
 	$("#no-goods").addClass("hidden");
-	$("#goods-holder").removeClass("hidden");
+	$("#table-holder").removeClass("hidden");
 	refreshTotals();
-	$('#goods-holder').jScrollPane({
+	$('#table-holder').jScrollPane({
 		verticalGutter:-16,
 		animateScroll: true
 	});
-	$("#goods-holder").data("jsp").scrollToY(99999); 
+	$("#table-holder").data("jsp").scrollToY(99999); 
 }
 function refreshTotals() {
 	$("#total-items").html("(" + getTransaction().numItems() + ")");
@@ -256,7 +250,7 @@ function showProduct(brcode) {
 		data : {number : brcode},
 		dataType: "JSON",
 		success: function(product) {
-			$("#productSee").attr("product-id", product.id);
+			$("#product-modal").attr("product-id", product.id);
 			$("#ProductBarcode").val(product.barcode);
 			$("#ProductName").val(product.name);
 			$("#ProductDepartment").val(product.department)
@@ -270,7 +264,7 @@ function showProduct(brcode) {
 				$("#PrintLabel").attr("disabled", false);
 			}
 			$("#productMenu").modal('hide');
-			$("#productSee").modal("show");
+			$("#product-modal").modal("show");
 		}
 	});
 }
@@ -314,6 +308,7 @@ function isOperatorLoggingIn(code) {
 		success: function(data) {
 			if (!data.success) {
 				bootbox.alert("Error logging on, please contact support");
+				return;
 			}
 			setOperator(data.id); 
 			if (getTransaction()) {
@@ -323,6 +318,7 @@ function isOperatorLoggingIn(code) {
 				clearTransactionTable();
 				createTransaction();
 			}
+			$(".wide-dialog").remove();
 			notify("Logged in as: " + data.name, 5000);
 			$("#operator-name").html(data.name);
 		}
@@ -370,16 +366,117 @@ function clearChange() {
 	getTransaction().moneyGiven=0.00;
 	getTransaction().cardGiven=0.00;
 }
+function loadContacts() {
+	$.ajax({
+		url:CONTEXT + "kvs.php?function=GETALLOPERATORS",
+		success:function(data) {
+			if (!data.success) {
+				bootbox.alert("Error loading contacts");
+				return;
+			}
+			var option = el("option", {html:"All"});
+			$("#chat-contact").append(option).attr("selected", "all");
+			$.each(data.operators, function(key, value) {
+				if (value.id == getOperator()) {
+					return;
+				}
+				var option = el("option", {"value":value.id, html:value.name});
+				$("#chat-contact").append(option);
+			});
+		}
+	});
+}
+function sendMessage(message, to) {
+	var message = message || null;
+	var to = to || null;
+	$.ajax({
+		url:CONTEXT + "kvs.php?function=SENDMESSAGE",
+		data: {"from":getOperator(), "to":to, "message":message},
+		success:function(data) {
+			if (!data.success) {
+				bootbox.alert("Could not send message");
+				return;
+			}
+		}
+	});
+}
+function getMessage() {
+	$.ajax({
+		url:CONTEXT + "kvs.php?function=GETMESSAGES",
+		data: {"operator":getOperator()},
+		success:function(data) {
+			if (!data.success) {
+				bootbox.alert("Error loading contacts");
+				return;
+			}
+			if (!data.messages) {
+				return;
+			}
+			$("#notification-counter").html(data.messages.length);
+			if (data.messages.length == 0) {
+				return;
+			}
+			$("#chat-window-inner").empty();
+			$.each(data.messages, function(key, value) {
+				var section;
+				if (value.senderId == getOperator()) {
+					section = el("section", {class:"message-block pull-right"});
+				}
+				else {
+					section = el("section", {class:"message-block pull-left"});
+				}
+				var messageHeader =  el("section", {class:"message-header"});
+				var p = el("p", {class:"message-text", html:(value.senderName + " to " + value.recipientName)});
+				messageHeader.appendChild(p);
+				section.appendChild(messageHeader);
+				var messageBody = el("section", {class:"message-body"});
+				var p = el("p", {class:"message-text", html:value.message});
+				messageBody.appendChild(p);
+				section.appendChild(messageBody);
+				var dateSection = el("section", {class:"message-footer"});
+				var p = el("p", {class:"message-text", html:moment(value.created*1000).calendar()});
+				dateSection.appendChild(p);
+				section.appendChild(dateSection);
+				$("#chat-window-inner").append(section);
+			});
+		},
+		complete:function() {
+			$('#chat-window').jScrollPane({
+				verticalGutter:-16,
+				animateScroll: true
+			});
+			$("#chat-window").data("jsp").scrollToY(99999);
+			setTimeout(function() {
+				if ($("#chat-modal").is(':visible')) {
+					getMessage();
+				}
+	        }, 3000);
+		}
+	});
+}
 $(document).ready( function() {
 	$.ajaxSetup({
 		method:"POST",
 		dataType:"JSON"
 	});
+	dialogAlert("Please scan your operator id to continue");
+	window.offlineStorage = new OfflineStorage();
+	window.addEventListener("online", function() {$("#offline-banner").addClass("hidden");});
+	window.addEventListener("offline", function() {$("#offline-banner").removeClass("hidden");});
 	$("#change .money-given-button").on("click", function() {
 		getTransaction().moneyGiven += parseFloat($(this).attr("moneyvalue"));
 		$("#moneyText").val(formatMoney(getTransaction().moneyGiven));
 		var change = ((getTransaction().totalCostValue() - getTransaction().moneyGiven)*-1);
 		$("#changeText").val(formatMoney(change));
+	});
+	$("#delete-product").click(function() {
+		var id = $("#product-modal").attr("product-id");
+		bootbox.confirm("Are you sure you want to delete this product from the system?", function(result) {
+			if (!result) {
+				return;
+			}
+			//NOT IMPLEMENTED
+		});
 	});
 	$("#completeCard").click(function() {
 		getTransaction().cardGiven = getTransaction().totalCostValue();
@@ -394,6 +491,19 @@ $(document).ready( function() {
 		$("#CashOut").modal("hide");
 		getTransaction().sync(true);
 		clearTransactionTable();
+	});
+	$("#chat-button").click(function() {
+		if (getOperator() == null) {
+			return;
+		}
+		getMessage();
+		$("#chat-modal").modal("show");
+	});
+	loadContacts();
+	$("#chat-form").on("submit", function(e) {
+		sendMessage($("#chat-message").val(), $("#chat-contact").val());
+		$("#chat-message").val("");
+		e.preventDefault();
 	});
 	$("#completeCash").click(function() {
 		if (getTransaction().moneyGiven == 0.00) {
@@ -419,7 +529,7 @@ $(document).ready( function() {
 	$("#productModalNav").on("click", "a", function() {
 		$("#productModalNav li").removeClass("active");
 		$(this).parent().addClass("active");
-		$("#productSee .page").addClass("hidden");
+		$("#product-modal .page").addClass("hidden");
 		$("section[data-id=" + $(this).attr("data-page") + "]").removeClass("hidden");
 		chartTest();
 	});
@@ -525,7 +635,7 @@ $(document).ready( function() {
 	});
 	$("#item-search-list").on("click", "li", function() {
 		if (!getOperator()) {
-			bootbox.alert("Please scan your operator id to continue");
+			dialogAlert("Please scan your operator id to continue");
 			return;
 		}
 		if (!getTransaction()) {
@@ -554,12 +664,10 @@ $(document).ready( function() {
 						$("#item-search").addClass("hidden");
 						return;
 					}
-					var li = document.createElement("li");
-					li.className = "btn btn-default";
+					var li = el("li", {class: "btn btn-default"});
 					$(li).attr("product-data", item.barcode);
 					window.cache[item.barcode.toString()] = item;
-					var span1 = document.createElement("span");
-					span1.innerHTML = item.name + "<br>@" + formatMoney(item.price, "£");
+					var span1 = el("span", {html:(item.name + "<br>@" + formatMoney(item.price, "£"))});
 					li.appendChild(span1);
 					holder.appendChild(li);	
 				});
@@ -574,7 +682,7 @@ $(document).ready( function() {
 			return;
 		}
 		if (!getOperator()) {
-			bootbox.alert("Please scan your operator id to continue");
+			dialogAlert("Please scan your operator id to continue");
 			return;
 		}
 		if (brcode.length == 0) {
@@ -650,19 +758,19 @@ $(document).ready( function() {
 		delete window.cache[barcode];
 		$.ajax({
 			url: CONTEXT + "kvs.php?function=UPDATEPRODUCT",
-			data : {"id":$("#productSee").attr("product-id"), "cashier":getOperator(), "barcode":barcode, "department":$("#ProductDepartment").val(), "name" : $("#ProductName").val(), "cost" : 0.00, "price" : $("#ProductPrice").val()},
+			data : {"id":$("#product-modal").attr("product-id"), "cashier":getOperator(), "barcode":barcode, "department":$("#ProductDepartment").val(), "name" : $("#ProductName").val(), "cost" : 0.00, "price" : $("#ProductPrice").val()},
 			success: function(data) {
 				if (!data.success) {
 					bootbox.alert("Product Not Updated");
 					return;
 				}
-				var id = $("#productSee").attr("product-id");
+				var id = $("#product-modal").attr("product-id");
 				getTransaction().products[id].cost = $("#ProductPrice").val();
 				getTransaction().products[id].price = $("#ProductPrice").val();
 				getTransaction().products[id].department = parseFloat($("#ProductDepartment").val());
 				getTransaction().products[id].name = $("#ProductName").val();
 				getTransaction().sync();
-				$("#productSee").modal("hide");
+				$("#product-modal").modal("hide");
 				refreshTable();
 			}
 		});
@@ -698,7 +806,7 @@ $(document).ready( function() {
 	$("#PrintLabel").click(function() {
 		$.ajax({
 			url: CONTEXT + "kvs.php?function=PRINTLABEL",
-			data : {"id":$("#productSee").attr("product-id")},
+			data : {"id":$("#product-modal").attr("product-id")},
 			success: function(data) {
 				if (data.success) {
 					$("#PrintLabel").attr("disabled", true);
@@ -718,17 +826,13 @@ $(document).ready( function() {
 			var code = "";
 			code += "<section class='row'>";
 			data.forEach(function(item) {
-				code += "<section class='col-md-4'>";
+				code += "<section class='col-md-6 col-sm-6 col-xs-6 col-lg-4'>";
 				var style = "border-right:5px solid " + item.colour + ";border-left:5px solid " + item.colour;
 				code += "<button class='btn btn-default' productDepartment='" + item.id + "' style='" + style + "'>" + item.shorthand + "</button>";
 				code += "</section>";
-				var option = document.createElement("option");
-				option.innerHTML = item.name;
-				option.value = item.id;
+				var option = el("option", {html:item.name, value:item.id});
 				$("#ProductDepartment").append(option);
-				var option = document.createElement("option");
-				option.innerHTML = item.name;
-				option.value = item.id;
+				var option = el("option", {html:item.name, value:item.id});
 				$("#newProductDepartment").append(option);
 			});
 			code += "</section>";
@@ -761,7 +865,7 @@ function chartTest() {
 		purple: 'rgb(153, 102, 255)',
 		grey: 'rgb(201, 203, 207)'
 	};
-	var product = getTransaction().products[$("#productSee").attr("product-id")];
+	var product = getTransaction().products[$("#product-modal").attr("product-id")];
 	var intervals = [];
 	var dataPoints = [];
 	var maxVolume = [];
@@ -848,6 +952,78 @@ function chartTest() {
 	var ctx = document.getElementById("canvas").getContext("2d");
 	window.myLine = new Chart(ctx, config);
 	var colorNames = Object.keys(chartColors);
+}
+function OfflineStorage() {
+	var transactionsKey = "transStorageKey";
+	this.put = function(key, value) {
+		if (key !== transactionsKey) {
+			console.error("Incorrect key");
+			return;
+		}
+		window.localStorage.setItem(key, JSON.stringify(value));
+	}
+	this.get = function(key) {
+		return JSON.parse(window.localStorage.getItem(key));
+	}
+	this.remove = function(key) {
+		window.localStorage.removeItem(key);
+	}
+	this.putTransaction = function(transaction) {
+		var transactions = this.get(transactionsKey);
+		transactions[transaction.id] = transaction;
+		this.put(transactionsKey, transactions);
+	}
+	this.getTransaction = function(id) {
+		var transactions = this.get(transactionsKey);
+		return transactions[id];
+	}
+	this.removeTransaction = function(id) {
+		var transactions = this.get(transactionsKey);
+		delete transactions[transaction.id];
+		this.put(transactionsKey, transactions);
+	}
+	this.getAllTransactions = function() {
+		return this.get(transactionsKey);
+	}
+	this.put(transactionsKey, {});
+}
+function dialogAlert(title, callback, dialogId) {
+	$(".wide-dialog").remove();
+	var callback = callback || false;
+	/*
+	<section class="wide-dialog">
+		<section class="wide-dialog-body">
+			<h3>Are you sure?</h3>
+			<p class="italic">This will make a change</p>
+			<section class="wide-dialog-buttons">
+				<button class="btn btn-success btn-lg">Yes</button>
+				<button class="btn btn-default btn-lg">No</button>
+			</section>
+		</section>
+	</section>
+	*/
+	var dialogId = dialogId || GUID();
+	var dialog = el("section", {class:"wide-dialog", id:dialogId});
+	var body = el("section", {class:"wide-dialog-body"});
+	var h3 = el("h3", {html:title, class:"text-center"});
+	body.appendChild(h3);
+	/*var p = el("p", {class:"italic", html:message});
+	body.appendChild(p);*/
+	var buttons = el("section", {class:"wide-dialog-buttons"});
+	var ok = el("button", {class:"btn btn-success btn-lg", html:"Ok", "data-id":dialogId});
+	//var no = el("button", {class:"btn btn-default btn-lg", html:"No"});
+	ok.onclick = function() {
+		var elem = document.getElementById(this.getAttribute("data-id"));
+		elem.parentNode.removeChild(elem);
+	}
+	//no.onclick = function() {
+	//	alert("no");
+	//}
+	buttons.appendChild(ok);
+	//buttons.appendChild(no);
+	body.appendChild(buttons);
+	dialog.appendChild(body);
+	document.body.appendChild(dialog);
 }
 
 			

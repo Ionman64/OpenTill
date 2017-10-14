@@ -10,6 +10,81 @@
 body {
 	overflow:hidden;
 }
+.offline-banner {
+	background:#aa1111;
+	width:100%;
+	height:1.4em;
+	text-align:center;
+}
+.offline-banner p {
+	font-size:14px;
+	color:#fff;
+	font-family:'Ubuntu';
+}
+.input-group > .input-group-btn:last-child > select {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.input-group > .input-group-btn:first-child > select {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+.notification-container {
+	/*https://stackoverflow.com/questions/5747863/easiest-css-for-facebook-style-red-notifications*/
+    position: relative;
+	cursor:pointer;
+}
+#chat-window {
+	max-height:300px;
+	height:300px;
+	overflow-y:scroll;
+}
+#chat-window-inner {
+	padding-right:5px;
+}
+.message-block {
+	width:60%;
+	background:#ddd;
+	border-radius:5px;
+	margin-top:5px;
+}
+.message-header {
+	width:100%;
+	padding:1mm;
+	background:#aaa;
+	text-align:left;
+	padding-left:1em;
+}
+.message-body {
+	width:100%;
+	padding-left:1em;
+	text-align:left;
+}
+.message-block p {
+	padding:0;
+	margin:0;
+}
+.message-footer {
+	width:100%;
+	background:#aaa;
+	text-align:right;
+	font-style:italic;
+	padding-right:1em;
+}
+.notification-counter {   
+	position: absolute;
+    top: -2px;
+    left: 25px;
+    background-color: rgba(212, 19, 13, 1);
+    color: #fff;
+    border-radius: 3px;
+    padding: 1px 3px;
+    font: 8px Verdana;
+}
+#chat-contact {
+	min-width:150px;
+}
 #navigation-list a {
 	color:#fff;
 	font-family:ubuntu;
@@ -159,26 +234,26 @@ ul.navigation-list>li span {
 #change button[moneyvalue="1"] img {
 	padding:5px;
 }
-#goods-holder {
+#table-holder {
 	height:450px;
 }
-#goods-table .row {
+#table .row {
 	border-bottom:1px solid #ddd;
 }
-#goods-table .btn {
+#table .btn {
 	/*Same style as Bootstap btn-lg*/
 	border-radius:6px;
 	font-size:18px;
 	line-height:1.33333;
 	padding:10px 16px;
 }
-#goods-table .bootstrap-touchspin-down {
+#table .bootstrap-touchspin-down {
 	border-radius:6px 0px 0px 6px;
 }
-#goods-table .bootstrap-touchspin-up {
+#table .bootstrap-touchspin-up {
 	border-radius:0px 6px 6px 0px;
 }
-#goods-table .form-control {
+#table .form-control {
 	font-size:18px;
 	height:46px;
 	line-height:1.33333;
@@ -198,7 +273,51 @@ input[type="number"]::-webkit-inner-spin-button {
 input[type="number"] {
 	-moz-appearance: textfield;
 }
-#item-footer:after {
+#tableColumns {
+	padding-top:10px;
+	border-bottom:2px solid #aaa;
+}
+.wide-dialog {
+	width:100%;
+	height:200px;
+	background:#080808;
+	position:fixed;
+	top:30%;
+	left:0;
+}
+.wide-dialog-body {
+	height:100%;
+	width:800px;
+	margin-left:auto;
+	margin-right:auto;
+	top:0;
+	padding:20px;
+	position:relative;
+}
+.wide-dialog-body h3 {
+	color:#9d9d9d;
+	font-size:36px;
+}
+.wide-dialog-body p {
+	color:#9d9d9d;
+	font-size:16px;
+}
+.wide-dialog-buttons {
+	position:absolute;
+	bottom:0;
+	left:0;
+	width:100%;
+	height:70px;
+	padding-bottom:10px;
+}
+.wide-dialog-buttons button {
+	position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+	height:60px;
+	min-width:100px;
+}
+.shadow-bottom:after {
 	-moz-box-shadow: 0px 5px #000000;
 }
 #supplierList {

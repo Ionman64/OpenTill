@@ -106,12 +106,27 @@
 		case 'TOTALS':
 			totals();
 			break;
+		case 'SENDMESSAGE':
+			send_message();
+			break;
+		case 'GETMESSAGES':
+			get_messages();
+			break;
+		case 'SAVELABELSTYLE':
+			save_label();
+			break;
+		case 'GETLABELSTYLE':
+			get_label_style();
+			break;
+		case 'GETLABELSTYLES':
+			get_label_styles();
+			break;
 		default:
 			error_out('No such function');
 	}
 	function get_pdo_connection() {
 		try {
-			return new PDO('mysql:host=localhost', 'root', '');
+			return new PDO('mysql:host=localhost:3306;dbname=goldstandardresearch_co_uk_kvs', 'root', '');
 		}
 		catch(PDOException $e)
 		{
@@ -130,11 +145,95 @@
 	function success_out() {
 		die (json_encode(array('success'=>true)));
 	}
+	function save_label() {
+		$id = get_param('id', null);
+		$name = get_param('name', null);
+		$json = get_param('json', null);
+		$newStyle = false;
+		if ($id == null) {
+			$newStyle = true;
+			$id = GUID();
+		}
+		if (($json == null) || ($name == null)) {
+			error_out('missing parameters');
+		}
+		$db = get_pdo_connection();
+		$stmt = null;
+		if ($newStyle) {
+			$stmt = $db->prepare('INSERT kvs_labels (id, name, json, updated, created) VALUES (?, ?, ?, ?, ?)');
+			if ($stmt->execute(array($id, $name, $json, time(), time()))) {
+				die (json_encode(array("success"=>true, "guid"=>$id)));
+			}
+		}
+		else {
+			$stmt = $db->prepare('UPDATE kvs_labels SET name=?, json=?, updated=? WHERE id=?');
+			$stmt->execute(array($name, $json, time(), $id));
+			if ($stmt->rowCount() > 0) {
+				die (json_encode(array("success"=>true)));
+			}
+		}
+		error_out();
+	}
+	function get_label_style() {
+		$id = get_param('id', null);
+		if ($id == null) {
+			error_out('missing parameters');
+		}
+		$db = get_pdo_connection();
+		$stmt = $db->prepare('SELECT json FROM kvs_labels WHERE id = ? LIMIT 1');
+		$stmt->bindValue(1, $id);
+		$stmt->execute();
+		if ($rs = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			die (json_encode(array("success"=>true, "style"=>$rs["json"])));
+		}
+		error_out();
+	}
+	function get_label_styles() {
+		$db = get_pdo_connection();
+		$stmt = $db->prepare('SELECT id, name FROM kvs_labels');
+		$stmt->execute();
+		$arr = array();
+		while ($rs = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			$arr[$rs["id"]] = $rs["name"];
+		}
+		die (json_encode(array("success"=>true, "styles"=>$arr)));
+	}
+	function send_message() {
+		$sender = get_param('from', null);
+		$message = get_param('message', null);
+		$recipient = get_param('to', null);
+		if (($sender == null) || ($message == null)) {
+			error_out('missing fields');
+		}
+		$db = get_pdo_connection();
+		$guid = GUID();
+		$stmt = $db->prepare('INSERT kvs_tblchat (id, sender, recipient, message, updated, created) VALUES (?, ?, ?, ?, ?, ?)');
+		if ($stmt->execute(array($guid, $sender, $recipient, $message, time(), time()))) {
+			die (json_encode(array("success"=>true, "guid"=>$guid)));
+		}
+		error_out();
+	}
+	function get_messages() {
+		$operator = get_param('operator', null);
+		if ($operator == null) {
+			error_out('missing fields');
+		}
+		$db = get_pdo_connection();
+		$stmt = $db->prepare('(SELECT kvs_tblchat.id,  kvs_tblchat.sender AS "senderId", kvs_tblchat.recipient as "recipientId", a.name AS "senderName", IFNULL(b.name, "All") AS recipientName, kvs_tblchat.message, kvs_tblchat.created FROM kvs_tblchat LEFT JOIN kvs_operators a ON a.id = kvs_tblchat.sender LEFT JOIN kvs_operators b ON b.id = kvs_tblchat.recipient WHERE kvs_tblchat.recipient = ? OR kvs_tblchat.sender = ? OR kvs_tblchat.recipient = "All" ORDER BY kvs_tblchat.created DESC LIMIT 20) ORDER BY created ASC');
+		$stmt->bindValue(1, $operator, PDO::PARAM_STR);
+		$stmt->bindValue(2, $operator, PDO::PARAM_STR);
+		$stmt->execute();
+		$arr = array();
+		while ($rs = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			array_push($arr, $rs);
+		}
+		die (json_encode(array("success"=>true, "messages"=>$arr)));
+	}
 	function insert_product(&$barcode, $name='Unknown Item') {
 		$db = get_pdo_connection();
 		$guid = GUID();
-		$stmt = $db->prepare('INSERT IGNORE INTO kvs_tblproducts (id, barcode, name) VALUES (?, ?, ?)');
-		if ($stmt->execute(array($guid, $barcode, $name))) {
+		$stmt = $db->prepare('INSERT IGNORE INTO kvs_tblproducts (id, barcode, name, created) VALUES (?, ?, ?, ?)');
+		if ($stmt->execute(array($guid, $barcode, $name, time()))) {
 			return $guid;
 		}
 	}
@@ -296,7 +395,7 @@
 			error_out("missing fields");
 		}
 		$db = get_pdo_connection();
-		$stmt = $db->prepare('SELECT kvs_transactions.id, kvs_operators.name AS cashier, COUNT(kvs_transactiontoproducts.transaction_id) AS "#Products", kvs_transactions.card, kvs_transactions.ended, kvs_transactions.cashback, kvs_transactions.money_given, kvs_transactions.payee, kvs_transactions.type, kvs_transactions.total FROM kvs_transactions LEFT JOIN kvs_operators ON kvs_operators.id = kvs_transactions.cashier INNER JOIN kvs_transactiontoproducts ON kvs_transactiontoproducts.transaction_id = kvs_transactions.id WHERE (kvs_transactions.started > ? AND kvs_transactions.ended < ?) AND kvs_transactions.cashier NOT IN (?) AND (kvs_transactions.ended > 0) GROUP BY kvs_transactiontoproducts.transaction_id ORDER BY kvs_transactions.ended');
+		$stmt = $db->prepare('SELECT kvs_transactiontoproducts.transaction_id AS "id", ANY_VALUE(kvs_operators.name) AS cashier, COUNT(kvs_transactiontoproducts.transaction_id) AS "#Products", ANY_VALUE(kvs_transactions.card) AS "card", ANY_VALUE(kvs_transactions.ended) AS "ended", ANY_VALUE(kvs_transactions.cashback) AS "cashback", ANY_VALUE(kvs_transactions.money_given) AS "money_given", ANY_VALUE(kvs_transactions.payee) AS "payee", ANY_VALUE(kvs_transactions.type) AS "type", ANY_VALUE(kvs_transactions.total) AS "total" FROM kvs_transactions LEFT JOIN kvs_operators ON kvs_operators.id = kvs_transactions.cashier INNER JOIN kvs_transactiontoproducts ON kvs_transactiontoproducts.transaction_id = kvs_transactions.id WHERE (ANY_VALUE(kvs_transactions.ended) BETWEEN ? AND ?) AND ANY_VALUE(kvs_transactions.cashier) NOT IN (?) GROUP BY kvs_transactiontoproducts.transaction_id ORDER BY ANY_VALUE(kvs_transactions.ended)');
 		$stmt->bindValue(1, $start, PDO::PARAM_INT);
 		$stmt->bindValue(2, $end, PDO::PARAM_INT);
 		$stmt->bindValue(3, $admin, PDO::PARAM_STR);
@@ -305,7 +404,7 @@
 		while ($rs = $stmt->fetch(PDO::FETCH_ASSOC)) {
 			array_push($arr, $rs);
 		}
-		die (json_encode(array("success"=>true, "start"=>$start_epoch, "end"=>$end_epoch, "transactions"=>array_merge($arr, get_payouts()))));	
+		die (json_encode(array("success"=>true, "start"=>$start, "end"=>$end, "transactions"=>array_merge($arr, get_payouts()))));	
 	}
 	function get_payouts() {
 		$admin = 'a10f653a-6c20-11e7-b34e-426562cc935f';
@@ -373,7 +472,7 @@
 		return true;
 	}
 	function complete_transaction() {
-		$id = get_param('transaction_id', null);
+		$id = get_param('id', null);
 		$money_given = get_param('money_given', 0.00);
 		$total = get_param('total', 0.00);
 		$card = get_param('card_given', 0.00);
@@ -519,20 +618,14 @@
 			error_out('missing fields');
 		}
 		$db = get_pdo_connection();
-		$sql = "SELECT kvs_transactiontoproducts.department, SUM(kvs_transactiontoproducts.price) AS 'amount' FROM kvs_transactiontoproducts LEFT JOIN kvs_transactions ON kvs_transactions.id = kvs_transactiontoproducts.transaction_id WHERE (kvs_transactions.started > $start AND kvs_transactions.ended < $end) AND kvs_transactions.cashier NOT IN ($admin) AND kvs_transactions.type in ($type) AND (kvs_transactions.ended > 0) GROUP BY kvs_transactiontoproducts.department";
-		//die ($sql);
-		$db->query('SET SQL_BIG_SELECTS=1');
-		$stmt = $db->prepare('SELECT kvs_transactiontoproducts.department, SUM(kvs_transactiontoproducts.price) AS "amount" FROM kvs_transactiontoproducts LEFT JOIN kvs_transactions ON kvs_transactiontoproducts.transaction_id = kvs_transactions.id WHERE (kvs_transactions.started > ? AND kvs_transactions.ended < ?) AND kvs_transactions.cashier NOT IN (?) AND kvs_transactions.type in (?) AND (kvs_transactions.ended > 0) GROUP BY kvs_transactiontoproducts.department');
-		//die ('SELECT kvs_transactiontoproducts.department, SUM(kvs_transactiontoproducts.price) AS "amount" FROM kvs_transactiontoproducts LEFT JOIN kvs_transactions ON kvs_transactions.id = kvs_transactiontoproducts.transaction_id WHERE (kvs_transactions.started > ' . $start . ' AND kvs_transactions.ended < ' . $end . ') AND kvs_transactions.cashier NOT IN ("'. $admin .'") AND kvs_transactions.type in ("' . $type . '") AND (kvs_transactions.ended > 0) GROUP BY kvs_transactiontoproducts.department');
-		//$stmt->bindValue(1, $none_catagory,PDO::PARAM_STR);
+		$stmt = $db->prepare('SELECT kvs_transactiontoproducts.department, SUM(kvs_transactiontoproducts.price) AS "amount", DAY(FROM_UNIXTIME(created)) AS order_day FROM kvs_transactiontoproducts 
+							  LEFT JOIN kvs_transactions ON kvs_transactions.id = kvs_transactiontoproducts.transaction_id WHERE (kvs_transactions.ended BETWEEN ? AND ?) 
+			                  AND kvs_transactions.cashier NOT IN (?) AND kvs_transactions.type in (?) GROUP BY order_day, kvs_transactiontoproducts.department');
 		$stmt->bindValue(1, $start,PDO::PARAM_INT);
 		$stmt->bindValue(2, $end,PDO::PARAM_INT);
 		$stmt->bindValue(3, $admin,PDO::PARAM_STR);
 		$stmt->bindValue(4, $type,PDO::PARAM_STR);
-		if (!$stmt->execute()) {
-			print_r($stmt->errorInfo());
-			die();
-		}
+		$stmt->execute();
 		$arr = array();
 		while ($rs = $stmt->fetch(PDO::FETCH_ASSOC)) {
 			if ($type == 'PAYOUT') {
@@ -541,7 +634,7 @@
 			}
 			$arr[$rs['department']] = floatval($rs['amount']);
 		}
-		if ($type == 'PAYOUT') {
+		if ($type == 'PAYOUTS') {
 			die (json_encode(array('success'=>true, 'start'=>$start, 'end'=>$end, 'payouts'=>$arr)));
 		}
 		if ($type == 'REFUND') {

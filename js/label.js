@@ -19,10 +19,13 @@ function clear_labels_ajax() {
 		}
 	});
 }
-function generatePropertiesTable(style) {
+function generatePropertiesTable() {
 	var holder = $("#properties tbody")[0];
 	$(holder).empty();
-	$.each(style, function(selector, attributes) {
+	$.each(getCurrentStyle(), function(selector, attributes) {
+		if (selector == "page" || selector == ".sheet") {
+			return;
+		}
 		var tr = el("tr", {class:"tr-bold", "data-id":selector});
 		var td = el("td", {colspan:"2"});
 		var label = el("label");
@@ -31,31 +34,42 @@ function generatePropertiesTable(style) {
 		td.appendChild(el("i", {class:"fa fa-chevron-down pull-right"}));
 		tr.appendChild(td);
 		holder.appendChild(tr);
-		$.each(attributes, function(attribute, value) {
+		$.each(css_template, function(attribute, options) {
 			var tr = el("tr", {"data-id":selector, class:"hidden"});
 			var td = el("td");
 			td.innerHTML = attribute;
 			tr.appendChild(td);
 			var td = el("td");
 			var input_group = el("section", {class:"input-group"});
-			var input = el("input", {type:"text", class:"form-control attribute-value", id:attribute, value:value});
-			if (css_template[attribute]) {
-				if (Array.isArray(css_template[attribute])) {
-					var select = el("select", {class:"form-control attribute-value", id:attribute, value:value});
-					$.each(css_template[attribute], function(key, value) {
-						var option = el("option");
-						option.innerHTML = value;
-						option.value = key;
-						select.appendChild(option);
-					});
-					input = select;
-				}
-				else {
-					if (css_template[attribute]["type"]) {
-						input = el("input", {type:css_template[attribute]["type"], step:"any", class:"form-control attribute-value", id:attribute, value:value});
-					}
+			var input;
+			if (Array.isArray(options)) {
+				var select = el("select", {class:"form-control attribute-value", id:attribute, value:options});
+				$.each(options, function(key, value) {
+					var option = el("option");
+					option.innerHTML = value;
+					option.value = value;
+					select.appendChild(option);
+				});
+				input = select;
+			}
+			else {
+				if (options["type"]) {
+					input = el("input", {type:options["type"], step:"any", class:"form-control attribute-value", id:attribute, value:options["default"]});
 				}
 			}
+			if (style[selector][attribute]) {
+				input.value = style[selector][attribute];
+			}
+			input.setAttribute("data-selector", selector);
+			input.setAttribute("data-attribute", attribute);
+			$(input).change(function() {
+				var selector = this.getAttribute("data-selector");
+				var attribute = this.getAttribute("data-attribute");
+				var value = $(this).val();
+				render_style(style);
+				getCurrentStyle()[selector][attribute] = value;
+				render_style(getCurrentStyle());
+			});
 			input_group.appendChild(input);
 			if ((css_template[attribute]) && (css_template[attribute]["unit"])) {
 				var span = el("span", {class:"input-group-addon"});
@@ -117,12 +131,28 @@ function el(tagName, options) {
 	return el;
 }
 function populate_style() {
-	var holder = $("#label-style-select")[0];
-	$(holder).empty();
-	$.each(data, function(key, value) {
-		var option = el("option");
-		option.innerHTML = key;
-		holder.appendChild(option);
+	$.ajax({
+		url:"api/kvs.php?function=GETLABELSTYLES",
+		success:function(data) {
+			console.log(data);
+			if (!data.success) {
+				alert("error");
+				return;
+			}
+			if (data.styles.length < 1) {
+				alert("No Styles");
+				return;
+			}
+			var holder = $("#label-style-select")[0];
+			$(holder).empty();
+			$.each(data.styles, function(key, value) {
+				var option = el("option");
+				option.innerHTML = value;
+				option.value = key;
+				holder.appendChild(option);
+			});
+			$("#label-style-select").val($("#label-style-select option:first").val()).change();
+		}
 	});
 }
 function formatMoney(amount, prefix) {
@@ -132,39 +162,83 @@ function formatMoney(amount, prefix) {
 function truncate(m, length) {
 	return m.substring(0, length);
 }
+function save_new_label() {
+	$.ajax({
+		url:"api/kvs.php?function=SAVELABELSTYLE",
+		data:{"json":JSON.stringify(getCurrentStyle()), "name":getCurrentStyleName()},
+		success:function(data) {
+			if (!data.success) {
+				alert("error");
+			}
+			
+		}
+	});
+}
+function save_label() {
+	$.ajax({
+		url:"api/kvs.php?function=SAVELABELSTYLE",
+		data:{"id":getStyleId(), "json":JSON.stringify(getCurrentStyle()), "name":getCurrentStyleName()},
+		success:function(data) {
+			if (!data.success) {
+				alert("error");
+			}
+			
+		}
+	});
+}
+function load_style(id) {
+	$.ajax({
+		url:"api/kvs.php?function=GETLABELSTYLE",
+		data:{"id":id},
+		success:function(data) {
+			if (!data.success) {
+				alert("error");
+			}
+			var style;
+			try {
+				style = JSON.parse(data.style);
+			}
+			catch (ex) {
+				alert("error");
+			}
+			generatePropertiesTable();
+			setCurrentStyle(style);
+			get_labels(style);
+		}
+	});
+}
 var css_template = {
-	"padding":{"type":"number", "unit":"mm", "default":"0"},
-	"padding-right":{"type":"number", "unit":"mm", "default":"0"},
-	"padding-left":{"type":"number", "unit":"mm", "default":"0"},
-	"padding-top":{"type":"number", "unit":"mm", "default":"0"},
-	"padding-bottom":{"type":"number", "unit":"mm", "default":"0"},
-	"float":["center", "left", "right"],
-	"top":{"type":"number", "unit":"mm", "default":"0"},
+	"border-width":{"type":"number", "unit":"px", "default":"0"},
+	"border-color":{"type":"text", "default":"#000"},
+	"border-style":["none", "solid", "dashed"],
 	"bottom":{"type":"number", "unit":"mm", "default":"0"},
-	"left":{"type":"number", "unit":"mm","default":"0"},
-	"right":{"type":"number", "unit":"mm", "default":"0"},
-	"display":["block"],
+	"color":{"type":"text", "default":"#000"},
+	"display":["block", "inline-block", "inline"],
+	"float":["left", "right"],
+	"font-style":["bold", "italic", "normal"],
 	"font-size":{"type":"number", "unit":"px", "default":"0"},
-	"bottom":{"type":"number", "unit":"mm", "default":"0"},
+	"height":{"type":"number", "unit":"mm", "default":"0"},
+	"left":{"type":"number", "unit":"mm","default":"0"},
 	"margin":{"type":"number", "unit":"mm", "default":"0"},
 	"margin-right":{"type":"number", "unit":"mm", "default":"0"},
 	"margin-left":{"type":"number", "unit":"mm", "default":"0"},
 	"margin-top":{"type":"number", "unit":"mm", "default":"0"},
 	"margin-bottom":{"type":"number", "unit":"mm", "default":"0"},
-	"height":{"type":"number", "unit":"mm", "default":"0"},
-	"width":{"type":"number", "unit":"mm", "default":"0"},
-	"text-align":["center", "left", "right"],
-	"font-style":["bold", "italic", "normal"],
-	"white-space":["no-wrap"],
+	"max-height":{"type":"number", "unit":"mm", "default":"0"},
+	"padding":{"type":"number", "unit":"mm", "default":"0"},
+	"padding-right":{"type":"number", "unit":"mm", "default":"0"},
+	"padding-left":{"type":"number", "unit":"mm", "default":"0"},
+	"padding-top":{"type":"number", "unit":"mm", "default":"0"},
+	"padding-bottom":{"type":"number", "unit":"mm", "default":"0"},
 	"position":["relative", "absolute", "fixed"],
-	"overflow":["scroll", "hidden", "fixed", "none"],
-	"color":{"type":"text", "default":"#000"},
-	"border-width":{"type":"number", "unit":"px", "default":"0"},
-	"border-color":{"type":"text"},
-	"border-style":["solid", "dashed"],
-	"max-height":{"type":"number", "unit":"mm", "default":"0"}
+	"right":{"type":"number", "unit":"mm", "default":"0"},
+	"text-align":["center", "left", "right"],
+	"top":{"type":"number", "unit":"mm", "default":"0"},
+	"width":{"type":"number", "unit":"mm", "default":"0"},
+	"white-space":["no-wrap"]
 };
-var data = {
+var data = {};
+/*var data = {
 	"Custom":{
 		"page":{"labels":21, "barcode":true, "expiry":false, "departments":[]}, 
 		".sheet":{"padding":"5", "padding-left":"10"}, 
@@ -183,28 +257,66 @@ var data = {
 		".barcode":{"width":"62.5", "margin-left":"auto", "margin-right":"auto", "height":"12.5", "text-align":"center"}, 
 		".product-expiry":{"width":"100", "text-align":"center", "font-size":"14", "margin-left":"0", "margin-right":"auto", "margin-bottom":"0"}
 	}
-};
+};*/
+function getStyleId() {
+	return window.styleId;
+}
+function setStyleId(id) {
+	window.styleId = id;
+}
+function getCurrentStyle() {
+	return window.style;
+}
+function setCurrentStyle(json) {
+	window.style = json;
+}
+function getCurrentStyleName() {
+	return window.styleName;
+}
+function setCurrentStyleName(name) {
+	window.styleName = name;
+}
 $(document).ready(function() {
-	populate_style();
 	$.ajaxSetup({
 		dataType:"JSON", 
 		method:"POST"
 	});
+	populate_style();
 	$("#label-style-select").on("change", function() {
-		var style = data[$(this).val()];
-		get_labels(style);
+		setStyleId($(this).val());
+		setCurrentStyleName(this.options[this.selectedIndex].text);
+		load_style($(this).val());
 	});
 	$("input.attribute-value").on("change", function() {
 		alert($(this).val());
 	});
-	get_labels(data["Custom"]);
+	$(window).resize(function() {
+		$(".sidebar").css("max-height", $(window).height()-$("#navigation").height());
+		$("#viewport").css("max-height", $(window).height()-$("#navigation").height());
+	});
+	$("#viewport").css("max-height", $(window).height()-$("#navigation").height());
+	$(".sidebar").css("max-height", $(window).height()-$("#navigation").height());
 });
+function render_style(style) {
+	$.each(style, function(css_selector, value) {
+		$.each(value, function(attribute, value) {
+			if (css_selector.indexOf(".") > -1) {
+				if ((css_template[attribute]) && (css_template[attribute]["unit"])) {
+					$(css_selector).css(attribute, value + css_template[attribute]["unit"]);
+				}
+				else {
+					$(css_selector).css(attribute, value);
+				}	
+			}
+		});
+	});
+	if (style.page.barcode) {
+		JsBarcode(".barcode").init();
+	}
+}
 function get_labels(style) {
-	generatePropertiesTable(style);
 	$.ajax({
 		url:"api/temp/labels.php",
-		dataType:"JSON", 
-		method:"POST",
 		data:{"json":JSON.stringify({"departments":style.page.departments})},
 		success:function(data) {
 			$("#viewport").empty();
@@ -261,21 +373,7 @@ function get_labels(style) {
 			});
 		},
 		complete:function() {
-			$.each(style, function(css_selector, value) {
-				$.each(value, function(attribute, value) {
-					if (css_selector.indexOf(".") > -1) {
-						if ((css_template[attribute]) && (css_template[attribute]["unit"])) {
-							$(css_selector).css(attribute, value + css_template[attribute]["unit"]);
-						}
-						else {
-							$(css_selector).css(attribute, value);
-						}	
-					}
-				});
-			});
-			if (style.page.barcode) {
-				JsBarcode(".barcode").init();
-			}
+			render_style(style);
 		}
 	});
 }

@@ -1,8 +1,22 @@
-﻿<!DOCTYPE html>
+<!--
+ _____                    _____ _ _ _ 
+|  _  |                  |_   _(_) | |
+| | | |_ __   ___ _ __     | |  _| | |
+| | | | '_ \ / _ \ '_ \    | | | | | |
+\ \_/ / |_) |  __/ | | |   | | | | | |
+ \___/| .__/ \___|_| |_|   \_/ |_|_|_| v0.2
+      | |                             
+      |_|                             
+-->
+<!DOCTYPE html>
 <html>
 <head>
 	<title>OpenTill</title>
-	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; img-src 'self' http://localhost:8888/drawer http://127.0.0.1:8888/drawer http://localhost:8888/receipt http://127.0.0.1:8888/receipt; style-src 'self' 'unsafe-inline'">
+	<link rel="shortcut icon" href="img/site/icon.ico">
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; img-src 'self' http://localhost:8888/drawer http://127.0.0.1:8888/drawer http://localhost:8888/receipt http://127.0.0.1:8888/receipt; style-src 'self' 'unsafe-inline'"/>
+	<meta name="robots" content="noindex, nofollow"/>
+	<meta name="viewport" content="width=device-width, user-scalable=no">
 	<!--jQuery-->
 	<script type="text/javascript" src="thirdParty/jQuery/js/jquery.min.js"></script>
 	<!--bootstrap-->
@@ -31,6 +45,9 @@
 	<link rel="stylesheet" href="css/index.css"/>
 </head>
 <body class="no-select">
+	<section class="offline-banner hidden">
+		<p>Offline mode-Transactions are being saved locally and will be uploaded when connection is restored</p>
+	</section>
 	<section class="container-fluid">
 	<section class="overlay hidden" id="item-search">
 		<section class="container-fluid">
@@ -78,13 +95,13 @@
 			<section id="keypad" class="keypad" data-focus="#barcode">
 			<section class="row" style="padding-top:10px">
 				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">
-					<button class="btn btn-danger no-digit" data-function="clear-button">Clear</button>
+					<button class="btn btn-danger no-digit" data-function="clear-button"><span class="hidden-xs hidden-sm hidden-md">Clear</span><span class="hidden-lg">AC</span></button>
 				</section>
 				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">
-					<button class="btn btn-default no-digit" data-function="no-sale">N/S</button>
+					<button class="btn btn-default no-digit" data-function="no-sale"><span class="hidden-xs hidden-sm hidden-md">No Sale</span><span class="hidden-lg">N/S</span></button>
 				</section>
 				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">
-					<button class="btn btn-info no-digit" data-function="pay-out">P/O</button>
+					<button class="btn btn-info no-digit" data-function="pay-out"><span class="hidden-xs hidden-sm hidden-md">Pay Out</span><span class="hidden-lg">P/O</span></button>
 				</section>
 			</section>
 			<section class="row" style="padding-top:10px">
@@ -128,17 +145,14 @@
 					<button class="btn btn-default">00</button>
 				</section>
 				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">
-					<button class="btn btn-default no-digit" id="refund" disabled="disabled" data-function="refund">REFUND</button>
+					<button class="btn btn-default no-digit" id="refund" disabled="disabled" data-function="refund"><span class="hidden-xs hidden-sm hidden-md">Refund</span><span class="hidden-lg">RF</span></button>
 				</section>
 			</section>
 		</section>
-		<section id="department">
-			
-			
-		</section>
+		<section id="department"></section>
 		</section>
 	<section class="col-md-9 col-xs-9 col-sm-9 col-lg-9">
-		<section class="row" id="item-footer" style="padding-top:10px;border-bottom:1px solid #aaa;">
+		<section id="tableColumns" class="row shadow-bottom">
 			<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4 col-md-offset-1 col-xs-offset-1 col-sm-offset-1 col-lg-offset-1">
 				<label>Items <span id="total-items"></span></label>
 			</section>
@@ -154,11 +168,11 @@
 		</section>
 		<section class="row" id="no-goods">
 			<section class="col-md-12 col-xs-12 col-sm-12 col-lg-12">
-				<h2>No Items, scan an item to begin</h2>
+				<h1>No items, scan an item to begin</h1>
 			</section>
 		</section>
-		<section class="row hidden" id="goods-holder">
-			<section id="goods-table" class="col-md-12 col-xs-12 col-sm-12 col-lg-12">
+		<section class="row hidden" id="table-holder">
+			<section id="table" class="col-md-12 col-xs-12 col-sm-12 col-lg-12">
 				
 			</section>
 		</section>
@@ -174,14 +188,11 @@
 	<section class="navbar navbar-inverse navbar-fixed-bottom">
 		<div class="container-fluid">
 			<section class="row">
-				<!--<section class="col-md-6">
-					<button class="navbar-btn btn btn-lg btn-default pull-left"><i class="fa fa-sign-out"></i></button>
-					<h4 class="navbar-text">Signed in as Danielle</h4>
-				</section>-->
-				<section class="col-md-1">
+				<section class="col-md-2">
 					<p class="navbar-text" id="menu-button"><i class="fa fa-bars fa-2x"></i></p>
+					<p class="navbar-text notification-container" id="chat-button"><i class="fa fa-comments fa-2x"></i><span class="notification-counter" id="notification-counter">0</span></p>
 				</section>
-				<section class="col-md-3">
+				<section class="col-md-2">
 					<h2 class="navbar-text navbar-left" id="operator-name"></h2>
 				</section>
 				<section class="col-md-4">
@@ -203,5 +214,6 @@
 	<?php require_once("modals/priceOverrideModal.php"); ?>
 	<?php require_once("modals/newProduct.php"); ?>
 	<?php require_once("modals/supplierModal.php"); ?>
+	<?php require_once("modals/chat.php"); ?>
 </body>
 </html>

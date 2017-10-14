@@ -11,11 +11,14 @@ $(document).ready(function() {
 			get_takings();
 		}
 	});
+	$("#viewport").on("click", "tr", function() {
+		if (!$(this).attr("data-start") || !$(this).attr("data-end")) {
+			return;
+		}
+		get_transactions($(this).attr("data-start"), $(this).attr("data-end"));
+	});
 });
-function get_transactions() {
-	var date = moment();
-	var start = moment(date.format("YYYY-MM-DD")).format("x")/1000;
-	var end = moment(date.add(1, "days").format("YYYY-MM-DD")).format("x")/1000;
+function get_transactions(start, end) {
 	$.ajax({
 		url:"api/kvs.php?function=GETTRANSACTIONS",
 		data:{"start":start, "end":end},
@@ -61,6 +64,8 @@ function get_transactions() {
 			cashid -= (cardGiven-cashback);
 			cashid -= (cashback*2); //this is taken away twice because it is added as a product
 			$("#cash-id").html(formatMoney(cashid));
+			$("#takings-modal .modal-title").html(moment(start*1000).format("LLLL"));
+			$("#takings-modal").modal("show");
 		}
 	});
 }
@@ -131,6 +136,8 @@ function populate_table(data) {
 		var td = el("td");
 		td.innerHTML = moment(item.start*1000).format("YYYY-MM-DD");
 		tr.appendChild(td);
+		tr.setAttribute("data-start", item.start);
+		tr.setAttribute("data-end", item.end);
 		$.each(window.departments, function(id, department) {
 			var td = el("td");
 			var amount = parseFloat(item.totals[department.id] ? item.totals[department.id] : "0.00");
@@ -160,7 +167,6 @@ function populate_table(data) {
 		],
 		"order": [[ 0, "desc" ]]
 	});
-	get_transactions();
 }
 function add_takings() {
 	$.ajax({
@@ -196,3 +202,4 @@ function save_takings(date, json) {
 function formatMoney(amount) {
 	return accounting.formatMoney(amount, "");
 }
+

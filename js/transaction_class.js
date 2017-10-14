@@ -22,27 +22,6 @@ function Transaction() {
 		this.type = "REFUND";
 		this.sync(true);
 	}
-	this.sync = function(finish) {
-		var finish = finish || false;
-		json = {}
-		tempArr = []
-		$.each(this.products, function(key, product) {
-			tempArr.push({"id":product.id, "inDatabase":product.inDatabase, "price":product.productCost(), "department":product.department, "quantity":product.quantity});
-		});
-		json["products"] = tempArr;
-		$.ajax({
-			url: CONTEXT + "kvs.php?function=SYNC",
-			data : {"transaction_id":this.id, "json":JSON.stringify(json)},
-			success : function(data) {
-				if (!data.success) {
-					bootbox.alert("Failed to reach server");
-				}
-				if (finish) {
-					getTransaction().completeTransaction();
-				}
-			}
-		});
-	}
 	this.getProductsJSON = function() {
 		json = {}
 		tempArr = []
@@ -99,9 +78,6 @@ function Transaction() {
 			return;
 		}
 		this.products[id].quantity = quantity;	
-		this.sync();
-		
-		//this.refreshTable();
 	}
 	this.addProduct = function(product) {
 		if (!this.in_progress) {
@@ -112,7 +88,6 @@ function Transaction() {
 			this.products[product.id] = product;
 		else
 			this.products[product.id].quantity++;
-		this.sync();
 		this.lastAddedProduct = product.id;
 		this.refreshTable();
 	}
@@ -131,13 +106,14 @@ function Transaction() {
 			this.clearTransaction();
 			return;
 		}
-		this.sync();
 		this.refreshTable();
 	}
 	this.completeTransaction = function() {
+		var transactionJSON = {"id":this.id, "cashier":this.cashier, "json":this.getProductsJSON(), "money_given":this.moneyGiven, "cashback":this.getCashback(), "card_given":this.cardGiven, "total":this.totalCostValue(), "type":this.type, "payee":this.payee};
+		window.offlineStorage.putTransaction(transactionJSON);
 		$.ajax({
 			url: CONTEXT + "kvs.php?function=COMPLETETRANSACTION",
-			data : {"transaction_id":this.id, "cashier":this.cashier, "json":this.getProductsJSON(), "money_given":this.moneyGiven, "cashback":this.getCashback(), "card_given":this.cardGiven, "total":this.totalCostValue(), "type":this.type, "payee":this.payee},
+			data : transactionJSON,
 			success : function(data) {
 				if (!data.success) {
 					bootbox.alert("Failed to complete transaction: " + getTransaction().id + "-please try again");

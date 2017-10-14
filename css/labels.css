@@ -7,8 +7,19 @@
 }
 body {
 	overflow-x:hidden;	
-	overflow-y:scroll;		
+	overflow-y:hidden;	
+	height:100%;
+	width:100%;	
 }
+#document-inner {
+	width:100%;
+	top:0;
+	left:0;
+	position:relative;
+}
+.viewport {
+	overflow-y:auto;
+}	
 .viewport * {
 	box-sizing:unset;
 }
@@ -26,6 +37,7 @@ body {
 	color:#fff;
 	font-size:4mm;
 }
-.navbar {
-	overflow-y:scroll;
+.sidebar {
+	overflow-y:auto;
+	height:100%;
 }

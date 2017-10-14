@@ -37,17 +37,23 @@
 					<option></option>
 				</select>
 			</li>
+			<li style="text-align:right;float:right" onclick="save_label()"><button class="btn btn-default btn-lg">Save</button></li>
 		</ul>
 	</section>
 	<section class="container-fluid" style="padding-top:70px;">
 		<section class="row">
-			<section class="col-md-9" >
+			<section class="col-md-3">
+				<section class="sidebar">
+					
+				</section>
+			</section>
+			<section class="col-md-6">
 				<section id="viewport" class="viewport">
-				
+					
 				</section>
 			</section>
 			<section class="col-md-3">
-				<section class="navbar">
+				<section class="sidebar">
 					<table class="table" id="properties">
 						<tbody>
 							<tr>

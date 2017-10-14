@@ -10,7 +10,7 @@
 	}
 	function get_pdo_connection() {
 		try {
-			return new PDO('mysql:host=goldstandardresearch.co.uk.mysql;dbname=goldstandardresearch_co_uk_kvs', 'goldstandardresearch_co_uk_kvs', '&Psr&aWg7k');
+			return new PDO('mysql:host=localhost:3306;dbname=goldstandardresearch_co_uk_kvs', 'root', '');
 		}
 		catch(PDOException $e)
 		{
