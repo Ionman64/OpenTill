@@ -106,9 +106,9 @@
 			min-height:50px;
 			padding:15px;
 			text-align:left;
-			border:1px solid #000;
-			border-radius:5px;
+			border:1px solid #eee;
 			color:#aaa;
+			box-shadow: 0px 5px 5px #888888;
 		}
 		.card .title {
 			font-size:18px;
@@ -138,7 +138,7 @@
 			cursor:pointer;
 		}
 		.card-success {
-			background:#2b654c;
+			background:#4F8970;
 			color:#fff;
 			border:0;
 		}
@@ -212,7 +212,7 @@
 					</section>
 				</section>
 			</section>
-			<section class="container-fluid" style="padding-top:10px;">
+			<section class="container-fluid" style="padding-top:15px;">
 			<section class="row hidden" style="padding-top:5px;">
 				<section class="col-md-3">
 					<label>Date Start</label><br>
