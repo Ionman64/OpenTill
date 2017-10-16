@@ -162,11 +162,12 @@
 			error_out("missing parameters");
 		}
 		$db = get_pdo_connection();
-		$stmt = $db->prepare('SELECT id FROM kvs_operators WHERE LCASE(email) = LCASE(?) AND passwordHash = ? LIMIT 1');
+		$stmt = $db->prepare('SELECT id, name FROM kvs_operators WHERE LCASE(email) = LCASE(?) AND passwordHash = ? LIMIT 1');
 		$stmt->bindValue(1, $email);
 		$stmt->bindValue(2, hash("sha512", $password));
 		$stmt->execute();
 		if ($rs = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			L("User (" . $rs["id"] . ") " . $rs["name"] . " logged in successfully");
 			$_SESSION["user"] = $rs["id"];
 			success_out();
 		}
@@ -282,7 +283,7 @@
 		$stmt->bindValue(1, $code, PDO::PARAM_STR);
 		$stmt->execute();
 		if ($rs = $stmt->fetch(PDO::FETCH_ASSOC)) {
-			L($rs['name'] . '(' . $rs['id'] . ') logged in successfully');
+			L("Operator " . $rs['name'] . '(' . $rs['id'] . ') logged in successfully');
 			die (json_encode(array("success"=>true, "name"=>$rs["name"], "id"=>$rs["id"])));
 		}
 		error_out();
