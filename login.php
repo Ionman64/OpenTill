@@ -95,7 +95,7 @@
 	<section class="container-fluid">
 		<section class="row">
 			<section class="col-md-12">
-				<label class="forgotten-password pull-right">Forgot Password?: <a href="forgotPassword">Click Here</a></label>
+				<label class="forgotten-password pull-right hidden">Forgot Password?: <a href="forgotPassword">Click Here</a></label>
 			</section>
 			<section class="col-md-4 col-md-offset-4">
 			  <form class="form-signin" onsubmit="login();return false;">
