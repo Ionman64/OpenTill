@@ -135,8 +135,8 @@
 	}
 	function get_pdo_connection() {
 		try {
-			
-			return new PDO('mysql:host=localhost:3306;dbname=goldstandardresearch_co_uk_kvs', 'root', '');
+			$config = parse_ini_file("opentill.ini");
+			return new PDO('mysql:host=' . $config['database_host'] . ':' . $config['database_port'] . ';dbname=' . $config['database_name'], $config['database_username'], $config['database_password']);
 		}
 		catch(PDOException $e)
 		{
