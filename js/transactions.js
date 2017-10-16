@@ -6,7 +6,21 @@ $(document).ready(function() {
 		}
 		showTransaction($(this).attr("data-id"));
 	});
+	$("#logout").click(function() {
+		logout();
+	});
 });
+function logout() {
+	$.ajax({
+		url:"api/kvs.php?function=LOGOUT",
+		dataType: "JSON",
+		success: function(data) {
+			if (data.success) {
+				window.location = "login.php";
+			}
+		}
+	});
+}
 function el(tagName, options) {
 	var options = options || {};
 	var el = document.createElement(tagName);

@@ -121,16 +121,26 @@
 		case 'GETLABELSTYLES':
 			get_label_styles();
 			break;
+		case 'LOGIN':
+			login();
+			break;
+		case 'LOGOUT':
+			logout();
+			break;
+		case 'ISLOGGEDIN':
+			is_logged_in();
+			break;
 		default:
 			error_out('No such function');
 	}
 	function get_pdo_connection() {
 		try {
+			
 			return new PDO('mysql:host=localhost:3306;dbname=goldstandardresearch_co_uk_kvs', 'root', '');
 		}
 		catch(PDOException $e)
 		{
-			echo $e->getMessage(); //Will pump out the PDO exception error
+			L($e->getMessage());
 		}
 	}
 	function get_param($p, $d=false) {
@@ -144,6 +154,30 @@
 	}
 	function success_out() {
 		die (json_encode(array('success'=>true)));
+	}
+	function login() {
+		$email = get_param('email', null);
+		$password = get_param('password', null);
+		if (($email == null) || ($password == null)) {
+			error_out("missing parameters");
+		}
+		$db = get_pdo_connection();
+		$stmt = $db->prepare('SELECT id FROM kvs_operators WHERE LCASE(email) = LCASE(?) AND passwordHash = ? LIMIT 1');
+		$stmt->bindValue(1, $email);
+		$stmt->bindValue(2, hash("sha512", $password));
+		$stmt->execute();
+		if ($rs = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			$_SESSION["user"] = $rs["id"];
+			success_out();
+		}
+		error_out("Email or password incorrect");
+	}
+	function logout() {
+		unset($_SESSION["user"]);
+		success_out();
+	}
+	function is_logged_in() {
+		isset($_SESSION["user"]) ? success_out() : error_out();
 	}
 	function save_label() {
 		$id = get_param('id', null);
@@ -784,20 +818,22 @@
 	function update_operator() {
 		$id = get_param('id', null);
 		$name = get_param('name', null);
+		$password = get_param('password', null);
 		$telephone = get_param('telephone', null);
 		$email = get_param('email', null);
 		$website = get_param('website', null);
 		$comments = get_param('comments', null);
-		if (($id == null) || ($name == null)) {
+		if (($id == null) || ($name == null) || ($password == null)) {
 			error_out('missing fields');
 		}
 		$db = get_pdo_connection();
-		$stmt = $db->prepare('UPDATE kvs_operators SET name = ?, telephone = ?, email = ?, updated = ? WHERE id = ? LIMIT 1');
+		$stmt = $db->prepare('UPDATE kvs_operators SET name = ?, passwordHash = ?, telephone = ?, email = ?, updated = ? WHERE id = ? LIMIT 1');
 		$stmt->bindValue(1, $name, PDO::PARAM_STR);
-		$stmt->bindValue(2, $telephone, PDO::PARAM_STR);
-		$stmt->bindValue(3, $email, PDO::PARAM_STR);
-		$stmt->bindValue(4, time(), PDO::PARAM_INT);
-		$stmt->bindValue(5, $id, PDO::PARAM_STR);
+		$stmt->bindValue(2, hash("sha512", $password), PDO::PARAM_STR);
+		$stmt->bindValue(3, $telephone, PDO::PARAM_STR);
+		$stmt->bindValue(4, $email, PDO::PARAM_STR);
+		$stmt->bindValue(5, time(), PDO::PARAM_INT);
+		$stmt->bindValue(6, $id, PDO::PARAM_STR);
 		if ($stmt->execute()) {
 			success_out();
 		}

@@ -101,6 +101,7 @@ $(document).ready(function() {
 });
 function saveOperator(id) {
 	var name = $("#operator-name").val();
+	var pass = $("#operator-password").val();
 	var telephone = $("#operator-telephone").val();
 	var email = $("#operator-email").val();
 	var website = $("#operator-website").val();
@@ -108,7 +109,7 @@ function saveOperator(id) {
 	if (id == null) {
 		$.ajax({
 			url:"api/kvs.php?function=ADDOPERATOR",
-			data:{"name":name, "telephone":telephone, "email":email, "website":website, "comments":comments},
+			data:{"name":name, "password":pass, "telephone":telephone, "email":email, "website":website, "comments":comments},
 			success:function(data) {
 				if (!data.success) {
 					bootbox.alert("There has been an error");
@@ -121,7 +122,7 @@ function saveOperator(id) {
 	}	
 	$.ajax({
 		url:"api/kvs.php?function=UPDATEOPERATOR",
-		data:{"id":id, "name":name, "telephone":telephone, "email":email, "website":website, "comments":comments},
+		data:{"id":id, "name":name, "password":pass, "telephone":telephone, "email":email, "website":website, "comments":comments},
 		success:function(data) {
 			if (!data.success) {
 				bootbox.alert("There has been an error");

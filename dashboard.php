@@ -14,8 +14,9 @@
 	<link rel="stylesheet" href="https://www.goldstandardresearch.co.uk/thirdParty/bootstrap/css/bootstrap.min.css"/>
 	<script src="https://www.goldstandardresearch.co.uk/thirdParty/bootstrap/js/bootstrap.min.js"></script>-->
 <!--Datatables-->					
-	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs-3.3.7/jszip-3.1.3/pdfmake-0.1.27/dt-1.10.15/b-1.3.1/b-html5-1.3.1/b-print-1.3.1/fc-3.2.2/r-2.1.1/datatables.min.css"/>
-	<script type="text/javascript" src="https://cdn.datatables.net/v/bs-3.3.7/jszip-3.1.3/pdfmake-0.1.27/dt-1.10.15/b-1.3.1/b-html5-1.3.1/b-print-1.3.1/fc-3.2.2/r-2.1.1/datatables.min.js"></script>
+	<!--Datatables-->					
+	<link rel="stylesheet" type="text/css" href="thirdParty/DataTables/custom-build/custom.css"/>
+	<script type="text/javascript" src="thirdParty/DataTables/custom-build/custom.js"></script>
 	<style>
 		body {
 			overflow:none;
@@ -106,6 +107,9 @@
 				<section class="row">
 					<section class="col-md-2">
 						<a href="#menu-toggle" class="navbar-text" id="menu-toggle"><i class="fa fa-bars fa-2x"></i></a>
+					</section>
+					<section class="col-md-2 col-md-offset-8">
+						<button class="btn btn-danger btn-lg pull-right" id="logout" style="margin:10px">Logout</button>
 					</section>
 				</section>
 			</section>

@@ -10,12 +10,16 @@
 	  		<section class="row">
 	  			<section class="col-md-12">
 	  				  <section class="form-group">
-						<label for="operator-name" class="control-label">Operator Code</label>
+						<label for="operator-name" class="control-label">Code</label>
 						<input type="text" id="operator-code" class="form-control input-lg" readonly>
 					  </section>
 					  <section class="form-group">
-						<label for="operator-name" class="control-label">Operator Name</label>
+						<label for="operator-name" class="control-label">Name</label>
 						<input type="text" id="operator-name" class="form-control input-lg">
+					  </section>
+					  <section class="form-group">
+						<label for="operator-name" class="control-label">Password</label>
+						<input type="password" id="operator-password" class="form-control input-lg">
 					  </section>
 					  <section class="form-group">
 						<label for="operator-telephone" class="control-label">Telephone Number</label>
