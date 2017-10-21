@@ -469,8 +469,8 @@ $(document).ready( function() {
 		var change = ((getTransaction().totalCostValue() - getTransaction().moneyGiven)*-1);
 		$("#changeText").val(formatMoney(change));
 	});
-	$("#cash-out-keypad").on("click", "button", function() {
-		getTransaction().moneyGiven = parseInt($("#moneyText").val());
+	$("#moneyText").on("change", function() {
+		getTransaction().moneyGiven = parseFloat($("#moneyText").val());
 		var change = ((getTransaction().totalCostValue() - getTransaction().moneyGiven)*-1);
 		console.log(change);
 		$("#changeText").val(formatMoney(change));
@@ -758,8 +758,7 @@ $(document).ready( function() {
 		currentValue = currentValue*10;
 		var addedValue = parseFloat($(this).html())/100;
 		var newValue = currentValue + addedValue; 
-		$(focus).val(formatMoney(newValue));
-		$(focus).focus();
+		$(focus).val(formatMoney(newValue)).trigger("change").focus();
 	});
 	$("#update-product").click(function() {
 		var barcode = $("#ProductBarcode").val();
