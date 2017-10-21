@@ -469,6 +469,12 @@ $(document).ready( function() {
 		var change = ((getTransaction().totalCostValue() - getTransaction().moneyGiven)*-1);
 		$("#changeText").val(formatMoney(change));
 	});
+	$("#cash-out-keypad").on("click", "button", function() {
+		getTransaction().moneyGiven = parseInt($("#moneyText").val());
+		var change = ((getTransaction().totalCostValue() - getTransaction().moneyGiven)*-1);
+		console.log(change);
+		$("#changeText").val(formatMoney(change));
+	});
 	$("#delete-product").click(function() {
 		var id = $("#product-modal").attr("product-id");
 		bootbox.confirm("Are you sure you want to delete this product from the system?", function(result) {
@@ -531,7 +537,9 @@ $(document).ready( function() {
 		$(this).parent().addClass("active");
 		$("#product-modal .page").addClass("hidden");
 		$("section[data-id=" + $(this).attr("data-page") + "]").removeClass("hidden");
-		chartTest();
+		if ($(this).attr("data-page") == "stock") {
+			chartTest($("#product-modal").attr("product-id"));
+		}
 	});
 	$("#currentLevel").TouchSpin({
 		min: 0,
@@ -849,12 +857,34 @@ $(document).ready( function() {
 		}
 	},200);
 });
-function getRandomInt(min, max) {
-	min = Math.ceil(min);
-	max = Math.floor(max);
-	return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
-}
-function chartTest() {
+function chartTest(id, data) {
+	if (!data) {
+		$.ajax({
+			url:"api/kvs.php?function=GETPRODUCTSALES",
+			data: {"id":id, "end":moment(moment().format("YYYY-MM-DD")).unix(), "start":moment(moment().subtract(1, "months").format("YYYY-MM-DD")).unix()},
+			success:function(data) {
+				if (!data.success) {
+					return;
+				}
+				console.log(data);
+			}
+		});
+		$.ajax({
+			url:"api/kvs.php?function=GETPRODUCTLEVELS",
+			data: {"id":id},
+			success: function(data) {
+				if (!data.success) {
+					return;
+				}
+				$("#currentLevel").val((parseInt(data.product.current_stock)+parseInt(data.product.current_display)));
+				$("#graphReorderLevel").val(data.product.lowest_reorder);
+				$("#graphMaxLevel").val(data.product.max_stock);
+				$("#graphDisplayLevel").val(data.product.current_display);
+				chartTest(id, data.product);
+			}
+		});	
+		return;
+	}
 	var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 	var chartColors = {
 		red: 'rgb(255, 99, 132)',
@@ -868,8 +898,8 @@ function chartTest() {
 	var product = getTransaction().products[$("#product-modal").attr("product-id")];
 	var intervals = [];
 	var dataPoints = [];
-	var maxVolume = [];
-	var fixedRate = []; //re-order level
+	var maxStock = [];
+	var reorderLevel = []; //re-order level
 	var onDisplay = [];
 	var date = moment();
 	var currentMonth = date.month();
@@ -878,11 +908,12 @@ function chartTest() {
 		intervals.push(date.format("DD"));
 		date.add(1, "days");
 	}
+	console.log(data);
 	for (var i=0;i<intervals.length;i++) {
-		dataPoints.push(getRandomInt(0, 20));
-		onDisplay.push(10);
-		fixedRate.push(5);
-		maxVolume.push(20);
+		dataPoints.push(0);
+		onDisplay.push(data.max_display);
+		reorderLevel.push(data.lowest_reorder);
+		maxStock.push(data.max_stock);
 	}
 	var config = {
 		type: 'line',
@@ -892,7 +923,7 @@ function chartTest() {
 		        label: "Re-order level",
 		        backgroundColor: chartColors.red,
 		        borderColor: chartColors.red,
-		        data: fixedRate,
+		        data: reorderLevel,
 		        fill: false,
 		    },
 		    {
@@ -907,7 +938,7 @@ function chartTest() {
 		        fill: false,
 		        backgroundColor: chartColors.blue,
 		        borderColor: chartColors.blue,
-		        data: maxVolume,
+		        data: maxStock,
 		    },
 		    {
 		        label: "Estimated Stock",

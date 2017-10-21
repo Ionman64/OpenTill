@@ -130,6 +130,12 @@
 		case 'ISLOGGEDIN':
 			is_logged_in();
 			break;
+		case 'GETPRODUCTLEVELS':
+			get_product_levels();
+			break;
+		case 'GETPRODUCTSLEVELS':
+			get_products_levels();
+			break;
 		default:
 			error_out('No such function');
 	}
@@ -220,6 +226,58 @@
 		$stmt->execute();
 		if ($rs = $stmt->fetch(PDO::FETCH_ASSOC)) {
 			die (json_encode(array("success"=>true, "style"=>$rs["json"])));
+		}
+		error_out();
+	}
+	function decrement_product_level($product, $decrement_amount=1) {
+		$db = get_pdo_connection();
+		$stmt = $db->prepare('UPDATE kvs_inventory_levels SET current_display=current_display-? WHERE product = ? AND max_stock > -1');
+		$stmt->bindValue(1, $decrement_amount);
+		$stmt->bindValue(2, $product);
+		$stmt->execute();
+	}
+	function move_stock_to_display($product, $decrement_amount=1) {
+		$db = get_pdo_connection();
+		$stmt = $db->prepare('UPDATE kvs_inventory_levels SET current_display=current_display+?, current_stock=current_stock-? WHERE product = ? AND max_stock > -1');
+		$stmt->bindValue(1, $decrement_amount);
+		$stmt->bindValue(1, $decrement_amount);
+		$stmt->bindValue(3, $product);
+		$stmt->execute();
+	}
+	function set_display_level($product) {
+		$db = get_pdo_connection();
+		$stmt = $db->prepare('UPDATE kvs_inventory_levels SET current_display=max_display WHERE product = ?');
+		$stmt->bindValue(1, $product);
+		$stmt->execute();
+	}
+	function set_stock_level($product) {
+		$db = get_pdo_connection();
+		$stmt = $db->prepare('UPDATE kvs_inventory_levels SET current_stock=max_stock WHERE product = ?');
+		$stmt->bindValue(1, $product);
+		$stmt->execute();
+	}
+	function get_products_levels() {
+		$db = get_pdo_connection();
+		$stmt = $db->prepare('SELECT kvs_tblproducts.id, kvs_tblproducts.name, kvs_inventory_levels.max_stock, kvs_inventory_levels.max_display, kvs_inventory_levels.lowest_reorder, kvs_inventory_levels.current_display, kvs_inventory_levels.current_stock FROM kvs_inventory_levels LEFT JOIN kvs_tblproducts ON kvs_tblproducts.id = kvs_inventory_levels.product WHERE current_display < max_display OR current_stock < max_stock');
+		$stmt->execute();
+		$arr = array();
+		while ($rs = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			$arr[$rs["id"]] = $rs;
+		}
+		die (json_encode(array("success"=>true, "products"=>$arr)));
+	}
+	function get_product_levels() {
+		$id = get_param("id", null);
+		if ($id == null) {
+			error_out("missing fields");
+		}
+		$db = get_pdo_connection();
+		$stmt = $db->prepare('SELECT kvs_tblproducts.id, kvs_tblproducts.name, kvs_inventory_levels.max_stock, kvs_inventory_levels.max_display, kvs_inventory_levels.lowest_reorder, kvs_inventory_levels.current_display, kvs_inventory_levels.current_stock FROM kvs_inventory_levels LEFT JOIN kvs_tblproducts ON kvs_tblproducts.id = kvs_inventory_levels.product WHERE kvs_tblproducts.id=? LIMIT 1');
+		$stmt->bindValue(1, $id);
+		$stmt->execute();
+		$arr = array();
+		if ($rs = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			die (json_encode(array("success"=>true, "product"=>$rs)));
 		}
 		error_out();
 	}
@@ -373,40 +431,6 @@
 		$stmt->execute();
 		return ($stmt->rowCount() > 0);
 	}
-	function sync_transaction() {
-		$id = get_param('transaction_id', null);
-		$json = get_param('json', null);
-		if ($id == null || $json == null) {
-			error_out('missing fields');
-		}
-		if (!transaction_exists($id)) {
-			error_out('transaction does not exist');
-		}
-		set_json($id, $json);
-		success_out();
-	}
-	function set_json(&$id, &$json)  {
-		$db = get_pdo_connection();
-		$stmt = $db->prepare('UPDATE kvs_transactions SET json = ?, updated = ? WHERE id = ? LIMIT 1');
-		$stmt->bindValue(1, $json, PDO::PARAM_STR);
-		$stmt->bindValue(2, time(), PDO::PARAM_INT);
-		$stmt->bindValue(3, $id, PDO::PARAM_STR);
-		$stmt->execute();
-		if ($stmt->rowCount() > 0) {
-			success_out();
-		}
-		error_out();
-	}
-	function get_json(&$id) {
-		$db = get_pdo_connection();
-		$stmt = $db->prepare('SELECT kvs_transactions.json FROM kvs_transactions WHERE id=? LIMIT 1');
-		$stmt->bindValue(1, $id, PDO::PARAM_STR);
-		$stmt->execute();
-		if ($rs = $stmt->fetch(PDO::FETCH_ASSOC)) {
-			return $rs['json'];
-		}
-		return false;
-	}
 	function get_transaction_products() {
 		$id = get_param('id', null);
 		if ($id == null) {
@@ -492,6 +516,7 @@
 		$db->beginTransaction();
 		try {
 			foreach ($json->products as $product) {
+				decrement_product_level($product->id, $product->quantity);
 				while ($product->quantity-- > 0) {
 					if (!insert_transaction_product($db, $id, ($product->inDatabase ? $product->id : null), $product->price, $product->department)) {
 						throw new Exception();

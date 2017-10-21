@@ -353,10 +353,10 @@
 				<section class="col-md-12">
 					<section class="mui-panel" style="padding-top:0;">
 						<section class="row" style="background:#000;padding-left:5px">
-							<section class="col-md-1 col-md-12 col-xs-12 ">
+							<section class="col-md-1 col-sm-6 col-xs-6">
 								<div class="mui--text-display1 text-center" style="padding:5px;color:#f4f4f4;">Takings</div>
 							</section>
-							<section class="col-md-11 col-md-12 col-xs-12">
+							<section class="col-md-11 col-sm-6 col-xs-6">
 								<ul class="mui-tabs__bar pull-right">
 								  <li class="mui--is-active"><a data-mui-toggle="tab" data-mui-controls="pane-default-1">Today</a></li>
 								  <li><a data-mui-toggle="tab" data-mui-controls="pane-default-2">Week</a></li>
