@@ -11,6 +11,7 @@ body {
 	padding:5px;
 	margin-top:5px;
 }
+/*
 .sidebar {
 	background: #5A7A6A none repeat scroll 0 0;
 	height:1000px;
@@ -45,7 +46,7 @@ body {
 	text-decoration: none;
 	color:#fff;
 	font-size:24px;
-}
+} */
 tbody tr:hover {
 	cursor:pointer;
 	background:#bbb;

@@ -1,18 +1,18 @@
-window.departments = [];
+window.departmentNames = [];
 function Takings(){
 	this.init = function() {
 		$.ajax({
 			url:"api/kvs.php?function=DEPARTMENTS",
 			dataType: "JSON",
 			success: function(data) {
-				//window.departments.push({id:0, shorthand:"None", name:"--No Catagory--"});
+				//window.departmentNames.push({id:0, shorthand:"None", name:"--No Catagory--"});
 				$.each(data, function(key, item) {
-					window.departments.push(item);
+					window.departmentNames.push(item);
 				});
 				window.takings.get_takings();
 			}
 		});
-		$("#takings-viewport").on("click", "tr", function() {
+		$("#takings-table tbody").on("click", "tr", function() {
 			if (!$(this).attr("data-start") || !$(this).attr("data-end")) {
 				return;
 			}
@@ -111,7 +111,7 @@ function Takings(){
 		var tr = el("tr");
 		var th = el("th", {html:"Date"});
 		tr.appendChild(th);
-		var departments = window.departments;
+		var departments = window.departmentNames;
 		for (var i=0;i<departments.length;i++) {
 			var th = el("th");
 			th.className = "head";
@@ -128,7 +128,7 @@ function Takings(){
 			var tr = el("tr");
 			var td = el("td", {html:moment(item.start*1000).format("YYYY-MM-DD")});
 			tr.appendChild(td, {"data-start":item.start, "data-end":item.end});
-			$.each(window.departments, function(id, department) {
+			$.each(window.departmentNames, function(id, department) {
 				var td = el("td");
 				var amount = parseFloat(item.totals[department.id] ? item.totals[department.id] : "0.00");
 				total = total + amount;

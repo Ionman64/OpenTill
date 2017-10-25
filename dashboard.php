@@ -19,6 +19,27 @@
 	<script type="text/javascript" src="thirdParty/accounting/js/accounting.min.js"></script>
 	<!--ChartJS-->
 	<script type="text/javascript" src="thirdParty/chartJS/js/chart.bundle.js"></script>
+	<style>
+		.dataTables_filter {
+			float:right;
+		}
+		tbody tr:hover {
+			cursor:pointer;
+			background:#bbb;
+		}
+		.panel h2 {
+			margin-top:0;
+		}
+		.sub-text {
+			font-size:12px;
+			color:#444;
+			font-style:italic;
+		}
+		.product {
+			margin-top:2px;
+			background:#eee;
+		}
+	</style>
 	<!--bootstrap-->
 	<!--<link rel="stylesheet" href="https://www.goldstandardresearch.co.uk/thirdParty/bootstrap/css/bootstrap.css"/>
 	<link rel="stylesheet" href="https://www.goldstandardresearch.co.uk/thirdParty/bootstrap/css/bootstrap.min.css"/>
@@ -31,6 +52,11 @@
 	<script type="text/javascript" src="thirdParty/DataTables/custom-build/custom.js"></script>
 	<script type="text/javascript" src="js/takings.js"></script>
 	<script type="text/javascript" src="js/transactions.js"></script>
+	<script type="text/javascript" src="js/operators.js"></script>
+	<script type="text/javascript" src="js/suppliers.js"></script>
+	<script type="text/javascript" src="js/inventory.js"></script>
+	<script type="text/javascript" src="js/departments.js"></script>
+	
 	<script type="text/javascript" src="js/dashboard.js"></script>
 	<link href="css/dashboard.css" rel="stylesheet" type="text/css"/>
 	<title>KVS-Dashboard</title>
@@ -57,12 +83,10 @@
 							  <li class="mui--is-active"><a data-mui-toggle="tab" data-mui-controls="pane-primary-overview">Overview</a></li>
 							  <li><a data-mui-toggle="tab" data-mui-controls="pane-primary-takings">Takings</a></li>
 							  <li><a data-mui-toggle="tab" data-mui-controls="pane-primary-transactions">Transactions</a></li>
-							  <li><a data-mui-toggle="tab" data-mui-controls="pane-primary-labels">Labels</a></li>
 							  <li><a data-mui-toggle="tab" data-mui-controls="pane-primary-operators">Operators</a></li>
-							  <li><a data-mui-toggle="tab" data-mui-controls="pane-primary-orders">Orders</a></li>
+							  <li><a data-mui-toggle="tab" data-mui-controls="pane-primary-inventory">Inventory</a></li>
 							  <li><a data-mui-toggle="tab" data-mui-controls="pane-primary-suppliers">Suppliers</a></li>
 							  <li><a data-mui-toggle="tab" data-mui-controls="pane-primary-departments">Departments</a></li>
-							  <li><a data-mui-toggle="tab" data-mui-controls="pane-primary-orders">Orders</a></li>
 							</ul>
 						</section>
 						<section class="col-md-2 col-md-offset-10">
@@ -81,8 +105,18 @@
 			<div class="mui-tabs__pane" id="pane-primary-transactions">
 				<?php require("views/transactions.php"); ?>
 			</div>
-			<div class="mui-tabs__pane" id="pane-primary-labels">Pane-4</div>
-			
+			<div class="mui-tabs__pane" id="pane-primary-operators">
+				<?php require("views/operators.php"); ?>
+			</div>
+			<div class="mui-tabs__pane" id="pane-primary-suppliers">
+				<?php require("views/suppliers.php"); ?>
+			</div>
+			<div class="mui-tabs__pane" id="pane-primary-inventory">
+				<?php require("views/inventory.php"); ?>
+			</div>
+			<div class="mui-tabs__pane" id="pane-primary-departments">
+				<?php require("views/departments.php"); ?>
+			</div>
 		</section>
         </section>
     </section>

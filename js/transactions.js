@@ -146,6 +146,7 @@ function Transactions() {
 					if (item.id) {
 						var a = el("a");
 						a.href = "https://www.goldstandardresearch.co.uk/kvs/product.php?id=" + item.id;
+						a.target = "_blank";
 						a.innerHTML = item.name;
 						label.appendChild(a);
 					}

@@ -44,6 +44,14 @@ $(document).ready(function() {
 	window.takings.init();
 	window.transactions = new Transactions();
 	window.transactions.init();
+	window.operators = new Operators();
+	window.operators.init();
+	window.suppliers = new Suppliers();
+	window.suppliers.init();
+	window.inventory = new Inventory();
+	window.inventory.init();
+	window.departments = new Departments();
+	window.departments.init();
 	$.ajax({
 		url:"api/kvs.php?function=GETPRODUCT",
 		data:{"id":"EBCDB3C0-E71F-4EFC-AB5F-EDBE1119E687"},

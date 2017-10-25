@@ -2,11 +2,11 @@
 	<section class="row">
 		<section class="col-md-12">
 			<section class="mui-panel">
-				<section id="takings-viewport">
+				<section id="departments-viewport">
 		
 				</section>
 			</section>
 		</section>
 	</section>
 </section>
-<?php require("modals/takings.php") ?>
+<?php require("modals/departmentInfo.php") ?>
