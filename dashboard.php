@@ -121,5 +121,6 @@
         </section>
     </section>
 	<?php require_once("modals/transactionProducts.php"); ?>
+	<?php require_once("modals/productModal.php"); ?>
 </body>
 </html>

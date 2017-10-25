@@ -32,6 +32,34 @@ function logout() {
 		}
 	});
 }
+function showProduct(id) {
+	$.ajax({
+		url: "api/kvs.php?function=GETPRODUCT",
+		data : {"id":id},
+		dataType: "JSON",
+		success: function(data) {
+			if (!data.success) {
+				return;
+			}
+			var product = data.product;
+			$("#product-modal").attr("product-id", product.id);
+			$("#ProductBarcode").val(product.barcode);
+			$("#ProductName").val(product.name);
+			$("#ProductDepartment").val(product.department)
+			$("#ProductCost").val(product.cost);
+			$("#ProductPrice").val(product.price);
+			$("#Name").html(product.name);
+			if (product.labelPrinted == "1") {
+				$("#PrintLabel").attr("disabled", true);
+			}
+			else {
+				$("#PrintLabel").attr("disabled", false);
+			}
+			$("#productMenu").modal('hide');
+			$("#product-modal").modal("show");
+		}
+	});
+}
 $(document).ready(function() {
 	$.ajaxSetup({
 		method:"POST",

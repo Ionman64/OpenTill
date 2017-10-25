@@ -30,6 +30,9 @@ function Inventory() {
 			}
 		});
 	}
+	this.showProduct = function(id) {
+		alert(id);
+	}
 	this.init = function() {
 		$.ajaxSetup({
 			method:"POST",
@@ -39,6 +42,9 @@ function Inventory() {
 		window.inventory.setCurrentOrderId("alpha");
 		window.inventory.setCurrentOrder({"products":{}});
 		window.inventory.getOrders();
+		$("#inventory-table").on("click", ".product-btn", function() {
+			showProduct(this.getAttribute("data-id"));
+		});
 	}
 	this.refreshTable = function() {
 		$("#inventory-table").empty();
@@ -56,7 +62,7 @@ function Inventory() {
 			row.appendChild(section);
 			//name
 			var section = el("section", {class:"col-md-5"});
-			var button = el("button", {class:"btn btn-default btn-lg", html:product.name});
+			var button = el("button", {class:"btn btn-default btn-lg product-btn", html:product.name, "data-id":key});
 			section.appendChild(button);
 			row.appendChild(section);
 			//max stock
