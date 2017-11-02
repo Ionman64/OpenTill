@@ -80,7 +80,8 @@
 								<p class="user-text">Example User</p>
 							</section>
 							<ul class="mui-tabs__bar pull-right">
-							  <li class="mui--is-active"><a data-mui-toggle="tab" data-mui-controls="pane-primary-overview">Overview</a></li>
+							  <li class="mui--is-active"><a data-mui-toggle="tab" data-mui-controls="pane-primary-home">Home</a></li>
+							  <li><a data-mui-toggle="tab" data-mui-controls="pane-primary-overview">Overview</a></li>
 							  <li><a data-mui-toggle="tab" data-mui-controls="pane-primary-takings">Takings</a></li>
 							  <li><a data-mui-toggle="tab" data-mui-controls="pane-primary-transactions">Transactions</a></li>
 							  <li><a data-mui-toggle="tab" data-mui-controls="pane-primary-operators">Operators</a></li>
@@ -95,8 +96,10 @@
 					</section>
 				</section>
 			</section>
-			
-			<div class="mui-tabs__pane mui--is-active" id="pane-primary-overview">
+			<div class="mui-tabs__pane mui--is-active" id="pane-primary-home">
+				<?php require("views/home.php"); ?>
+			</div>
+			<div class="mui-tabs__pane" id="pane-primary-overview">
 				<?php require("views/overview.php"); ?>
 			</div>
 			<div class="mui-tabs__pane" id="pane-primary-takings">

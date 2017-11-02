@@ -4,7 +4,7 @@
 | | | |_ __   ___ _ __     | |  _| | |
 | | | | '_ \ / _ \ '_ \    | | | | | |
 \ \_/ / |_) |  __/ | | |   | | | | | |
- \___/| .__/ \___|_| |_|   \_/ |_|_|_| v0.2
+ \___/| .__/ \___|_| |_|   \_/ |_|_|_| v0.3
       | |                             
       |_|                             
 -->
@@ -63,21 +63,32 @@
 		</section>
 		</section>
 	</section>
-	<section class="overlay overlay-ontop hidden" id="menu">
-		<section class="container-fluid">
-			<section class="row">
-				<section class="col-md-2 col-md-offset-10" style="padding-top:10px;">
-					<button class="btn btn-danger" style="float:right" id="cancelMenu">Close Menu</button>
+	<section class="menu overlay overlay-ontop hidden" id="menu">
+		<section class="menu-buttons">
+			<a href="dashboard.php">
+				<section class="menu-button btn-info text-center">
+					<i class="fa fa-dashboard"></i>
+					<section class="footer">
+						<span>Dashboard</span>
+					</section>
 				</section>
-				<section class="col-md-12" style="padding-top:10px">
-					<ul id="menu-items" class="navigation-list text-center">
-						<li><a href="takings.php"><i class="fa fa-line-chart fa-5x"></i><br>Takings</a></li>
-						<li><a href="labels.php"><i class="fa fa-tags fa-5x"></i><br>Labels</a></li>
-						<li><a href="dashboard.php"><i class="fa fa-tasks fa-5x"></i><br>Transactions</a></li>
-						<li><a href="suppliers.php"><i class="fa fa-truck fa-5x"></i><br>Suppliers</a></li>
-						<li><a href="operators.php"><i class="fa fa-users fa-5x"></i><br>Operators</a></li>
-						<li><a href="departments.php"><i class="fa fa-table fa-5x"></i><br>Departments</a></li>
-					</ul>
+			</a>
+			<section class="menu-button btn-success text-center" id="chat-button">
+				<i class="fa fa-comments"></i>
+				<section class="footer">
+					<span>Chat</span>
+				</section>
+			</section>
+			<section class="menu-button btn-warning text-center" id="signout">
+				<i class="fa fa-sign-out"></i>
+				<section class="footer">
+					<span>Sign Out</span>
+				</section>
+			</section>
+			<section class="menu-button btn-danger text-center" id="cancelMenu">
+				<i class="fa fa-times"></i>
+				<section class="footer">
+					<span>Close Menu</span>
 				</section>
 			</section>
 		</section>
@@ -190,7 +201,7 @@
 			<section class="row">
 				<section class="col-md-2">
 					<p class="navbar-text" id="menu-button"><i class="fa fa-bars fa-2x"></i></p>
-					<p class="navbar-text notification-container" id="chat-button"><i class="fa fa-comments fa-2x"></i><span class="notification-counter" id="notification-counter">0</span></p>
+					<p class="navbar-text" id="non-barcode-btn"><i class="fa fa-search fa-2x"></i></p>
 				</section>
 				<section class="col-md-2">
 					<h2 class="navbar-text navbar-left" id="operator-name"></h2>

@@ -27,8 +27,7 @@
 		}
 
 		.form-signin {
-		  max-width: 330px;
-		  padding: 15px;
+		  width:100%;
 		  margin: 0 auto;
 		}
 		.form-signin .form-signin-heading,
@@ -37,12 +36,14 @@
 		}
 		.form-signin .form-control {
 		  position: relative;
-		  height: auto;
 		  -webkit-box-sizing: border-box;
 			 -moz-box-sizing: border-box;
 				  box-sizing: border-box;
 		  padding: 10px;
-		  font-size: 16px;
+		  font-size: 30px;
+		}
+		.input-lg {
+			height:65px;
 		}
 		.form-signin .form-control:focus {
 		  z-index: 2;
@@ -56,6 +57,9 @@
 		  margin-bottom: 10px;
 		  border-top-left-radius: 0;
 		  border-top-right-radius: 0;
+		}
+		h2.form-signin-heading {
+			font-size:65px;
 		}
 	</style>
 	<script>
@@ -102,11 +106,11 @@
 				<h2 class="form-signin-heading text-center">OpenTill</h2>
 				<h5 class="form-signin-heading text-center">Please enter your details below</h5>
 				<label for="inputEmail" class="sr-only">Email address</label>
-				<input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+				<input type="email" id="inputEmail" class="form-control input-lg" placeholder="Email address" required autofocus>
 				<label for="inputPassword" class="sr-only">Password</label>
-				<input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+				<input type="password" id="inputPassword" class="form-control input-lg" placeholder="Password" required>
 				<label id="capsLockIndicator" class="text-warning hidden">Warning: Caps Lock On</label>
-				<label id="serverMessage" class="text-info hidden"></label>
+				<h1 id="serverMessage" class="text-info hidden"></h1>
 				<label class="text-info italic hidden" id="serverMessage"></label>
 				<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
 			  </form>

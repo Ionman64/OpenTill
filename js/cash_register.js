@@ -15,6 +15,11 @@ function getOperator() {
 function setOperator(id) {
 	window.operator = id;
 }
+function logout() {
+	delete window.operator;
+	$("#operator-name").html('');
+	dialogAlert("Please scan your operator id to continue");
+}
 function refund() {
 	bootbox.confirm("All products will be refunded, are you sure?", function(result) {
 		if (!result) {
@@ -463,6 +468,12 @@ $(document).ready( function() {
 	window.offlineStorage = new OfflineStorage();
 	window.addEventListener("online", function() {$("#offline-banner").addClass("hidden");});
 	window.addEventListener("offline", function() {$("#offline-banner").removeClass("hidden");});
+	$(".menu-buttons").on("click", ".menu-button", function() {
+		$("#menu").addClass("hidden");
+	});
+	$("#signout").on("click", function() {
+		logout();
+	});
 	$("#change .money-given-button").on("click", function() {
 		getTransaction().moneyGiven += parseFloat($(this).attr("moneyvalue"));
 		$("#moneyText").val(formatMoney(getTransaction().moneyGiven));
@@ -643,7 +654,6 @@ $(document).ready( function() {
 	});
 	$("#item-search-list").on("click", "li", function() {
 		if (!getOperator()) {
-			dialogAlert("Please scan your operator id to continue");
 			return;
 		}
 		if (!getTransaction()) {
