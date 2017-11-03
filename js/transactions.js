@@ -102,19 +102,6 @@ function Transactions() {
 		table.appendChild(tbody);
 		section.appendChild(table);
 		holder.appendChild(section);
-		$(table).DataTable({
-			responsive: true,
-			dom: 'Bfrtip',
-			buttons: [
-				'copy', 'csv', 'excel', 
-				{
-					extend: 'pdfHtml5',
-					orientation: 'landscape',
-					pageSize: 'LEGAL'
-				},
-				'print'
-			]
-		});
 	}
 	this.showTransaction = function(id) {
 		$.ajax({

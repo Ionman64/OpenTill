@@ -143,19 +143,6 @@ function Operators() {
 		table.appendChild(tbody);
 		section.appendChild(table);
 		holder.appendChild(section);
-		$(table).DataTable({
-			responsive: true,
-			dom: 'Bfrtip',
-			buttons: [
-				'copy', 'csv', 'excel', 
-				{
-					extend: 'pdfHtml5',
-					orientation: 'landscape',
-					pageSize: 'LEGAL'
-				},
-				'print'
-			]
-		});
 		$(".dataTables_filter").addClass("pull-right");
 		$("#operators-viewport tbody").on("click", "td", function() {
 			var id = $(this).parent().attr("data-id");

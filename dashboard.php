@@ -20,34 +20,11 @@
 	<script type="text/javascript" src="thirdParty/accounting/js/accounting.min.js"></script>
 	<!--ChartJS-->
 	<script type="text/javascript" src="thirdParty/chartJS/js/chart.bundle.js"></script>
-	<style>
-		.dataTables_filter {
-			float:right;
-		}
-		tbody tr:hover {
-			cursor:pointer;
-			background:#bbb;
-		}
-		.panel h2 {
-			margin-top:0;
-		}
-		.sub-text {
-			font-size:12px;
-			color:#444;
-			font-style:italic;
-		}
-		.product {
-			margin-top:2px;
-			background:#eee;
-		}
-	</style>
 	<!--bootstrap-->
-	<!--<link rel="stylesheet" href="https://www.goldstandardresearch.co.uk/thirdParty/bootstrap/css/bootstrap.css"/>
-	<link rel="stylesheet" href="https://www.goldstandardresearch.co.uk/thirdParty/bootstrap/css/bootstrap.min.css"/>
-	<script src="https://www.goldstandardresearch.co.uk/thirdParty/bootstrap/js/bootstrap.min.js"></script>-->
-	<!--Datatables-->					
-	<link rel="stylesheet" type="text/css" href="thirdParty/DataTables/custom-build/custom.css"/>
-	<script type="text/javascript" src="thirdParty/DataTables/custom-build/custom.js"></script>
+	<link rel="stylesheet" href="thirdParty/bootstrap/css/bootstrap.css"/>
+	<link rel="stylesheet" href="thirdParty/bootstrap/css/bootstrap.min.css"/>
+	<script src="thirdParty/bootstrap/js/bootstrap.min.js"></script>
+	<!--custom-->
 	<script type="text/javascript" src="js/takings.js"></script>
 	<script type="text/javascript" src="js/transactions.js"></script>
 	<script type="text/javascript" src="js/operators.js"></script>
@@ -57,7 +34,6 @@
 	<script type="text/javascript" src="js/dashboard.js"></script>
 	<link href="css/dashboard.css" rel="stylesheet" type="text/css"/>
 	<title>KVS-Dashboard</title>
-	<!--<script type="text/javascript" src="js/transactions.js"></script>-->
 </head>
 <body>
 	<section class="container-fluid">
@@ -136,12 +112,12 @@
 			<section class="custom-navbar">
 				<section class="container-fluid">
 					<section class="row">
-						<section class="col-md-12" style="padding-top:5px;">
+						<section class="col-md-10" style="padding-top:5px;">
 							<p class="navbar-text" id="menu-button"><i class="fa fa-bars fa-2x"></i></p>
 							<h4 id="page-name" style="padding:9px;">Takings</h4>
 						</section>
-						<section class="col-md-2 col-md-offset-10">
-							<button class="btn btn-default btn-lg pull-right hidden" id="" style="margin:10px">Logout</button>
+						<section class="col-md-2">
+							<a href="index.php"><button class="btn btn-default btn-lg pull-right" style="margin:10px">Back to Register</button></a>
 						</section>
 					</section>
 				</section>

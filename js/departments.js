@@ -137,20 +137,6 @@ function Departments() {
 		table.appendChild(tbody);
 		section.appendChild(table);
 		holder.appendChild(section);
-		$(table).DataTable({
-			responsive: true,
-			dom: 'Bfrtip',
-			buttons: [
-				'copy', 'csv', 'excel', 
-				{
-					extend: 'pdfHtml5',
-					orientation: 'landscape',
-					pageSize: 'LEGAL'
-				},
-				'print'
-			]
-		});
-		$(".dataTables_filter").addClass("pull-right");
 		$("#departments-viewport tbody").on("click", "td", function() {
 			var id = $(this).parent().attr("data-id");
 			if ((id !== null) || (id.length !== 0)) {
