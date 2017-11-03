@@ -68,6 +68,15 @@ $(document).ready(function() {
 	$("#logout").click(function() {
 		logout();
 	});
+	$(".menu-buttons").on("click", ".menu-button", function() {
+		$("#menu").addClass("hidden");
+		$(".tab").addClass("hidden");
+		$("#" + $(this).attr("data-page")).removeClass("hidden");
+		$("#page-name").html($("#" + $(this).attr("data-page")).attr("data-page-name"));
+	});
+	$("#menu-button").click(function() {
+		$("#menu").hasClass("hidden") ? $("#menu").removeClass("hidden") : $("#menu").addClass("hidden");
+	});
 	window.takings = new Takings();
 	window.takings.init();
 	window.transactions = new Transactions();

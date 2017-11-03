@@ -44,9 +44,6 @@
 	<!--<link rel="stylesheet" href="https://www.goldstandardresearch.co.uk/thirdParty/bootstrap/css/bootstrap.css"/>
 	<link rel="stylesheet" href="https://www.goldstandardresearch.co.uk/thirdParty/bootstrap/css/bootstrap.min.css"/>
 	<script src="https://www.goldstandardresearch.co.uk/thirdParty/bootstrap/js/bootstrap.min.js"></script>-->
-	<!--MUICSS-->
-	<link href="thirdParty/mui-0.9.27/css/mui.min.css" rel="stylesheet" type="text/css"/>
-	<script type="text/javascript" src="thirdParty/mui-0.9.27/js/mui.min.js"></script>
 	<!--Datatables-->					
 	<link rel="stylesheet" type="text/css" href="thirdParty/DataTables/custom-build/custom.css"/>
 	<script type="text/javascript" src="thirdParty/DataTables/custom-build/custom.js"></script>
@@ -56,7 +53,6 @@
 	<script type="text/javascript" src="js/suppliers.js"></script>
 	<script type="text/javascript" src="js/inventory.js"></script>
 	<script type="text/javascript" src="js/departments.js"></script>
-	
 	<script type="text/javascript" src="js/dashboard.js"></script>
 	<link href="css/dashboard.css" rel="stylesheet" type="text/css"/>
 	<title>KVS-Dashboard</title>
@@ -64,60 +60,113 @@
 </head>
 <body>
 	<section class="container-fluid">
+		<section class="menu overlay overlay-ontop hidden" id="menu">
+			<section class="menu-buttons">
+				<section class="container-fluid">
+				<section class="row">
+					<section class="menu-button custom-btn-black text-center" data-page="pane-primary-takings">
+						<i class="fa fa-bar-chart"></i>
+						<section class="footer">
+							<span>Takings</span>
+						</section>
+					</section>
+					<section class="menu-button custom-btn-orange text-center" data-page="pane-primary-transactions">
+						<i class="fa fa-tasks"></i>
+						<section class="footer">
+							<span>Transactions</span>
+						</section>
+					</section>
+					<section class="menu-button custom-btn-purple text-center" data-page="pane-primary-inventory">
+						<i class="fa fa-cubes"></i>
+						<section class="footer">
+							<span>Inventory</span>
+						</section>
+					</section>
+					<section class="menu-button custom-btn-chocolate text-center" data-page="pane-primary-departments">
+						<i class="fa fa-table"></i>
+						<section class="footer">
+							<span>Departments</span>
+						</section>
+					</section>
+					<section class="menu-button custom-btn-violet text-center">
+						<i class="fa fa-tags"></i>
+						<section class="footer">
+							<span>Labels</span>
+						</section>
+					</section>
+				</section>
+				<section class="row">
+					<section class="menu-button btn-warning text-center" data-page="pane-primary-operators">
+						<i class="fa fa-user"></i>
+						<section class="footer">
+							<span>Operators</span>
+						</section>
+					</section>
+					<section class="menu-button btn-danger text-center" data-page="pane-primary-suppliers">
+						<i class="fa fa-truck"></i>
+						<section class="footer">
+							<span>Suppliers</span>
+						</section>
+					</section>
+					<section class="menu-button btn-success text-center" id="">
+						<i class="fa fa-comments"></i>
+						<section class="footer">
+							<span>Chat</span>
+						</section>
+					</section>
+					<section class="menu-button custom-btn-graphite text-center" id="logout">
+						<i class="fa fa-sign-out"></i>
+						<section class="footer">
+							<span>Sign Out</span>
+						</section>
+					</section>
+					<section class="menu-button btn-danger text-center" id="cancelMenu">
+						<i class="fa fa-times"></i>
+						<section class="footer">
+							<span>Close Menu</span>
+						</section>
+					</section>
+				</section>
+			</section>
+	</section>
+	</section>
 		<section class="row">
 		<section class="col-md-12 no-padding">
 			<section class="custom-navbar">
 				<section class="container-fluid">
 					<section class="row">
 						<section class="col-md-12" style="padding-top:5px;">
-							<section class="user pull-left">
-								<div class="mui-dropdown">
-									<img class="user-img" src="http://placehold.it/45x45" data-mui-toggle="dropdown"/>
-									<ul class="mui-dropdown__menu" style="left:-30px;">
-										<li><a href="#" id="logout">Logout</a></li>
-									</ul>
-								</div>
-								<p class="user-text">Example User</p>
-							</section>
-							<ul class="mui-tabs__bar pull-right">
-							  <li class="mui--is-active"><a data-mui-toggle="tab" data-mui-controls="pane-primary-home">Home</a></li>
-							  <li><a data-mui-toggle="tab" data-mui-controls="pane-primary-overview">Overview</a></li>
-							  <li><a data-mui-toggle="tab" data-mui-controls="pane-primary-takings">Takings</a></li>
-							  <li><a data-mui-toggle="tab" data-mui-controls="pane-primary-transactions">Transactions</a></li>
-							  <li><a data-mui-toggle="tab" data-mui-controls="pane-primary-operators">Operators</a></li>
-							  <li><a data-mui-toggle="tab" data-mui-controls="pane-primary-inventory">Inventory</a></li>
-							  <li><a data-mui-toggle="tab" data-mui-controls="pane-primary-suppliers">Suppliers</a></li>
-							  <li><a data-mui-toggle="tab" data-mui-controls="pane-primary-departments">Departments</a></li>
-							</ul>
+							<p class="navbar-text" id="menu-button"><i class="fa fa-bars fa-2x"></i></p>
+							<h4 id="page-name" style="padding:9px;">Takings</h4>
 						</section>
 						<section class="col-md-2 col-md-offset-10">
-							<button class="btn btn-default btn-lg pull-right hidden" id="logout" style="margin:10px">Logout</button>
+							<button class="btn btn-default btn-lg pull-right hidden" id="" style="margin:10px">Logout</button>
 						</section>
 					</section>
 				</section>
 			</section>
-			<div class="mui-tabs__pane mui--is-active" id="pane-primary-home">
+			<div class="tab hidden" id="pane-primary-home" data-page-name="Home">
 				<?php require("views/home.php"); ?>
 			</div>
-			<div class="mui-tabs__pane" id="pane-primary-overview">
+			<div class="tab hidden" id="pane-primary-overview" data-page-name="Overview">
 				<?php require("views/overview.php"); ?>
 			</div>
-			<div class="mui-tabs__pane" id="pane-primary-takings">
+			<div class="tab" id="pane-primary-takings" data-page-name="Takings">
 				<?php require("views/takings.php"); ?>
 			</div>
-			<div class="mui-tabs__pane" id="pane-primary-transactions">
+			<div class="tab hidden" id="pane-primary-transactions" data-page-name="Transactions">
 				<?php require("views/transactions.php"); ?>
 			</div>
-			<div class="mui-tabs__pane" id="pane-primary-operators">
+			<div class="tab hidden" id="pane-primary-operators" data-page-name="Operators">
 				<?php require("views/operators.php"); ?>
 			</div>
-			<div class="mui-tabs__pane" id="pane-primary-suppliers">
+			<div class="tab hidden" id="pane-primary-suppliers" data-page-name="Suppliers">
 				<?php require("views/suppliers.php"); ?>
 			</div>
-			<div class="mui-tabs__pane" id="pane-primary-inventory">
+			<div class="tab hidden" id="pane-primary-inventory" data-page-name="Inventory">
 				<?php require("views/inventory.php"); ?>
 			</div>
-			<div class="mui-tabs__pane" id="pane-primary-departments">
+			<div class="tab hidden" id="pane-primary-departments" data-page-name="Departments">
 				<?php require("views/departments.php"); ?>
 			</div>
 		</section>
