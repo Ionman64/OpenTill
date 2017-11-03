@@ -7,11 +7,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline'">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script type="text/javascript" src="thirdParty/jQuery/js/jquery.min.js"></script>
-	<script type="text/javascript" src="thirdParty/moment/js/moment.min.js"></script>
-	<script type="text/javascript" src="thirdParty/accounting/js/accounting.min.js"></script>
-	<script src="thirdParty/popper/popper.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="thirdParty/simple-sidebar/simple-sidebar.css"/>
 	<!--font awesome-->
 	<link rel="stylesheet" href="thirdParty/font-awesome/css/font-awesome.min.css" />
 	<!--bootstrap-->
@@ -19,81 +19,7 @@
 	<script src="thirdParty/bootstrap/js/bootstrap.min.js"></script>				
 	<title>KVS-Login</title>
 	<script type="text/javascript" src="js/login.js"></script>
-	<style>
-		body {
-		  padding-top:10px;
-		  padding-bottom: 40px;
-		  background-color: #eee;
-		}
-
-		.form-signin {
-		  width:100%;
-		  margin: 0 auto;
-		}
-		.form-signin .form-signin-heading,
-		.form-signin .checkbox {
-		  margin-bottom: 10px;
-		}
-		.form-signin .form-control {
-		  position: relative;
-		  -webkit-box-sizing: border-box;
-			 -moz-box-sizing: border-box;
-				  box-sizing: border-box;
-		  padding: 10px;
-		  font-size: 30px;
-		}
-		.input-lg {
-			height:65px;
-		}
-		.form-signin .form-control:focus {
-		  z-index: 2;
-		}
-		.form-signin input[type="email"] {
-		  margin-bottom: -1px;
-		  border-bottom-right-radius: 0;
-		  border-bottom-left-radius: 0;
-		}
-		.form-signin input[type="password"] {
-		  margin-bottom: 10px;
-		  border-top-left-radius: 0;
-		  border-top-right-radius: 0;
-		}
-		h2.form-signin-heading {
-			font-size:65px;
-		}
-	</style>
-	<script>
-		$(document).ready(function() {
-			$.ajaxSetup({
-				dataType:"JSON",
-				method:"POST"
-			});
-			$.ajax({
-				url:"api/kvs.php?function=ISLOGGEDIN",
-				data:{},
-				success:function(data){
-					if (data.success) {
-						window.location = "dashboard.php";
-						return;
-					}
-				}
-			});
-		});
-		function login() {
-			$.ajax({
-				url:"api/kvs.php?function=LOGIN",
-				data:{"email":$("#inputEmail").val(), "password":$("#inputPassword").val()},
-				success:function(data){
-					if (data.success) {
-						window.location = "dashboard.php";
-						return;
-					}
-					$("#serverMessage").html(data.reason).removeClass("hidden");
-				}
-			});
-			return false;
-		}
-	</script>
+	<link rel="stylesheet" href="css/login.css"/>
 </head>
 <body>
 	<section class="container-fluid">
@@ -102,7 +28,7 @@
 				<label class="forgotten-password pull-right hidden">Forgot Password?: <a href="forgotPassword">Click Here</a></label>
 			</section>
 			<section class="col-md-4 col-md-offset-4">
-			  <form class="form-signin" onsubmit="login();return false;">
+			  <form class="form-signin" id="signin">
 				<h2 class="form-signin-heading text-center">OpenTill</h2>
 				<h5 class="form-signin-heading text-center">Please enter your details below</h5>
 				<label for="inputEmail" class="sr-only">Email address</label>
