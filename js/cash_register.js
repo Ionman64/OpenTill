@@ -17,6 +17,7 @@ function setOperator(id) {
 }
 function logout() {
 	delete window.operator;
+	refreshTable();
 	$("#operator-name").html('');
 	dialogAlert("Please scan your operator id to continue");
 }

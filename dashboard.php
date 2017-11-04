@@ -7,10 +7,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline'">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="utf-8"/>
+	<link rel="shortcut icon" href="img/site/icon.ico">
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline'"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<meta name="robots" content="noindex, nofollow"/>
 	<script type="text/javascript" src="thirdParty/jQuery/js/jquery.min.js"></script>
 	<script type="text/javascript" src="thirdParty/moment/js/moment.min.js"></script>
 	<script type="text/javascript" src="thirdParty/accounting/js/accounting.min.js"></script>
