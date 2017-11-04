@@ -10,12 +10,14 @@
 	<section class="row" style="margin:0;" id="takings-columns">
 		
 	</section>
-	<section class="navbar navbar-fixed-bottom">
-		<section class="container-fluid">
-			<section class="row" id="total-columns">
-				<section class="col-md-2 table-box">
-					<b>Total</b>
-				</section>
+</section>
+<section class="navbar navbar-fixed-bottom">
+	<section class="container-fluid">
+		<section class="row">
+			<section class="col-md-2 table-box">
+				<b>Total</b>
+			</section>
+			<section id="total-columns">
 				
 			</section>
 		</section>

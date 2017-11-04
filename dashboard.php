@@ -71,8 +71,7 @@
 							<span>Labels</span>
 						</section>
 					</section>
-				</section>
-				<section class="row">
+					<br class="col-xs-hidden col-sm-hidden"/>
 					<section class="menu-button btn-warning text-center" data-page="pane-primary-operators">
 						<i class="fa fa-user"></i>
 						<section class="footer">
@@ -112,11 +111,11 @@
 			<section class="custom-navbar">
 				<section class="container-fluid">
 					<section class="row">
-						<section class="col-md-10" style="padding-top:5px;">
+						<section class="col-lg-10 col-md-10 col-sm-10 col-xs-10" style="padding-top:5px;">
 							<p class="navbar-text" id="menu-button"><i class="fa fa-bars fa-2x"></i></p>
 							<h4 id="page-name" style="padding:9px;">Takings</h4>
 						</section>
-						<section class="col-md-2">
+						<section class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
 							<a href="index.php"><button class="btn btn-default btn-lg pull-right" style="margin:10px">Back to Register</button></a>
 						</section>
 					</section>
