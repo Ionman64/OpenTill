@@ -506,8 +506,8 @@ $(document).ready( function() {
 		else {
 			notify("£" + formatMoney(getTransaction().totalCostValue()) + " Paid With Card");
 		}
+		getTransaction().completeTransaction();
 		$("#CashOut").modal("hide");
-		getTransaction().sync(true);
 		clearTransactionTable();
 	});
 	$("#chat-button").click(function() {

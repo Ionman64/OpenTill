@@ -1,7 +1,7 @@
 function Transactions() {
 	this.init = function() {
 		this.get_transactions();
-		$("#transactions-viewport").on("click", "tr", function() {
+		$("#transactions-viewport").on("click", ".row", function() {
 			if (!$(this).attr("data-id")) {
 				return;
 			}
@@ -38,70 +38,62 @@ function Transactions() {
 			holder.appendChild(h3);
 			return;
 		}
-		var ignoreColumns = ["ended", "payee", "id"];
-		var rowCount = 0;
-		var countRows = true;
-		var section = el("section");
-		var table = el("table", {id:"takings-table", class:"table", style:"width:100%"});
-		var thead = el("thead");
-		var tr = el("tr");
-		if (countRows) {
-			var th = el("th");
-			th.innerHTML = "#";
-			tr.appendChild(th);
-		}
-		var th = el("th");
-		th.innerHTML = "Date";
-		tr.appendChild(th);
-		var columns = Object.keys(data[0]);
-		var departments = window.departments;
-		for (var i=0;i<columns.length;i++) {
-			if (ignoreColumns.indexOf(columns[i]) > -1) {
-				continue;
-			}	
-			var th = el("th");
-			th.className = "head";
-			th.innerHTML = columns[i];
-			tr.appendChild(th);
-		}
-		thead.appendChild(tr);
-		table.appendChild(thead);
-		var tbody = el("tbody");
 		$.each(data, function(key, item) {
-			var tr = el("tr");
+			var className = "";
 			if (item.type) {
 				if (item.type == "PAYOUT") {
-					tr.className = "payout";
+					className = "row payout";
 				}
 				else {
-					tr.className = "payin";
+					className = "row payin";
 				}
 			}
+			var row = el("section", {class:className});
 			if (item.id) {
-				tr.setAttribute("data-id", item.id);
+				row.setAttribute("data-id", item.id);
 			}
-			if (countRows) {
-				var td = el("th");
-				td.innerHTML = ++rowCount;
-				tr.appendChild(td);
-			}
-			var td = el("td");
-			td.innerHTML = moment(item.ended*1000).format("YYYY-MM-DD hh:mm:ss a");
-			tr.appendChild(td);
-			$.each(columns, function(key, column) {
-				if (ignoreColumns.indexOf(column) > -1) {
-					return;
-				}	
-				var td = el("td");
-				var amount = item[column];
-				td.innerHTML = amount;
-				tr.appendChild(td);
-			});
-			tbody.appendChild(tr);
-		});
-		table.appendChild(tbody);
-		section.appendChild(table);
-		holder.appendChild(section);
+			//Date
+			var col = el("section", {class:"col-lg-2 col-md-2 col-sm-2 col-xs-2"});
+			var label = el("label", {html:moment(item.ended*1000).format("YYYY-MM-DD hh:mm:ss a")});
+			col.appendChild(label);
+			row.appendChild(col);
+			//Cashier
+			var col = el("section", {class:"col-lg-1 col-md-1 col-sm-1 col-xs-1"});
+			var label = el("label", {html:item.cashier});
+			col.appendChild(label);
+			row.appendChild(col);
+			//Products
+			var col = el("section", {class:"col-lg-1 col-md-1 col-sm-1 col-xs-1"});
+			var label = el("label", {html:item["#Products"]});
+			col.appendChild(label);
+			row.appendChild(col);
+			//Card
+			var col = el("section", {class:"col-lg-1 col-md-1 col-sm-1 col-xs-1"});
+			var label = el("label", {html:item.card});
+			col.appendChild(label);
+			row.appendChild(col);
+			//Cashback
+			var col = el("section", {class:"col-lg-1 col-md-1 col-sm-1 col-xs-1"});
+			var label = el("label", {html:item.cashback});
+			col.appendChild(label);
+			row.appendChild(col);
+			//money_given
+			var col = el("section", {class:"col-lg-1 col-md-1 col-sm-1 col-xs-1"});
+			var label = el("label", {html:item.money_given});
+			col.appendChild(label);
+			row.appendChild(col);
+			//type 
+			var col = el("section", {class:"col-lg-1 col-md-1 col-sm-1 col-xs-1"});
+			var label = el("label", {html:item.type});
+			col.appendChild(label);
+			row.appendChild(col);
+			//total
+			var col = el("section", {class:"col-lg-1 col-md-1 col-sm-1 col-xs-1"});
+			var label = el("label", {html:item.total});
+			col.appendChild(label);
+			row.appendChild(col);
+			holder.appendChild(row);
+		});		
 	}
 	this.showTransaction = function(id) {
 		$.ajax({
