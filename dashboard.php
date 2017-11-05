@@ -37,7 +37,7 @@
 	<link href="css/dashboard.css" rel="stylesheet" type="text/css"/>
 	<title>KVS-Dashboard</title>
 </head>
-<body>
+<body class="no-select">
 	<section class="container-fluid">
 		<section class="menu overlay overlay-ontop hidden" id="menu">
 			<section class="menu-buttons">

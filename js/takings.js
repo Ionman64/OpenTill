@@ -5,7 +5,6 @@ function Takings(){
 			url:"api/kvs.php?function=DEPARTMENTS",
 			dataType: "JSON",
 			success: function(data) {
-				//window.departmentNames.push({id:0, shorthand:"None", name:"--No Catagory--"});
 				$.each(data, function(key, item) {
 					window.departmentNames.push(item);
 					var row = el("section", {class:"row table-box"});

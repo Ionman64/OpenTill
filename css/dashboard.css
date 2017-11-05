@@ -1,6 +1,15 @@
 body {
 	 overflow:hidden;
 }
+.no-select {
+	-webkit-touch-callout: none; /* iOS Safari */
+	  -webkit-user-select: none; /* Safari */
+	   -khtml-user-select: none; /* Konqueror HTML */
+		 -moz-user-select: none; /* Firefox */
+		  -ms-user-select: none; /* Internet Explorer/Edge */
+			  user-select: none; /* Non-prefixed version, currently
+									supported by Chrome and Opera */
+  }
 .dataTables_filter {
 	float:right;
 }
@@ -152,7 +161,7 @@ canvas {
 		align-items: center;
 		justify-content: center;
 		overflow-x:hidden;
-		overflow-y: scroll;
+		overflow-y: auto;
 	}
 }
 @media screen and (min-width: 800px) {
@@ -163,7 +172,7 @@ canvas {
 		align-items: center;
 		justify-content: center;
 		overflow-x:hidden;
-		overflow-y: scroll;
+		overflow-y: none;
 	}
 }
 .menu-button {
