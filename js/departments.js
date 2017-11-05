@@ -76,6 +76,9 @@ function Departments() {
 		$("#delete-department").on("click", function() {
 			window.departments.deleteDepartment();
 		});
+		$("#departments-viewport").on("click", ".row", function() {
+			window.departments.showDepartment($(this).attr("data-id"));
+		});
 	}
 	this.saveDepartment = function(id) {
 		var name = $("#department-name").val();
@@ -111,37 +114,25 @@ function Departments() {
 	this.populate_table = function(columns, data) {
 		var holder = document.getElementById("departments-viewport");
 		$(holder).empty();
-		var section = el("section");
-		var table = el("table", {id:"departments-table", class:"table", style:"width:100%"});
-		var thead = el("thead");
-		var tr = el("tr");;
-		$.each(columns, function(key, value) {
-			var th = el("th");
-			th.className = "head";
-			th.innerHTML = value;
-			tr.appendChild(th);
-		});
-		thead.appendChild(tr);
-		table.appendChild(thead);
-		var tbody = el("tbody");
+		if (data.length == 0) {
+			var h3 = el("h3");
+			h3.innerHTML = "No Departments";
+			holder.appendChild(h3);
+			return;
+		}
 		$.each(data, function(key, item) {
-			var tr = el("tr");
-			tr.setAttribute("data-id", item.id);
-			$.each(columns, function(key, value) {
-				var td = el("td");
-				td.innerHTML = item[key] ? item[key] : "null";
-				tr.appendChild(td);
-			});
-			tbody.appendChild(tr);
-		});
-		table.appendChild(tbody);
-		section.appendChild(table);
-		holder.appendChild(section);
-		$("#departments-viewport tbody").on("click", "td", function() {
-			var id = $(this).parent().attr("data-id");
-			if ((id !== null) || (id.length !== 0)) {
-				window.departments.showDepartment(id);
-			}
-		});
+			var row = el("section", {class:"row department", "data-id":item.id});
+			//Name
+			var col = el("section", {class:"col-lg-6 col-md-6 col-sm-6 col-xs-6"});
+			var label = el("label", {html:item.name});
+			col.appendChild(label);
+			row.appendChild(col);
+			//ShortHand
+			var col = el("section", {class:"col-lg-6 col-md-6 col-sm-6 col-xs-6"});
+			var label = el("label", {html:item.shorthand});
+			col.appendChild(label);
+			row.appendChild(col);
+			holder.appendChild(row);
+		});	
 	}
 }

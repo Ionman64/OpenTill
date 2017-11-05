@@ -78,6 +78,12 @@ function Suppliers() {
 		$("#delete-supplier").on("click", function() {
 			window.suppliers.deleteSupplier();
 		});
+		$("#suppliers-viewport").on("click", ".row", function() {
+			var id = $(this).attr("data-id");
+			if ((id !== null) || (id.length !== 0)) {
+				window.suppliers.showSupplier(id);
+			}
+		});
 	}
 	this.saveSupplier = function(id) {
 		var name = $("#supplier-name").val();
@@ -114,38 +120,20 @@ function Suppliers() {
 	this.populate_table = function(columns, data) {
 		var holder = document.getElementById("suppliers-viewport");
 		$(holder).empty();
-		var section = el("section");
-		var table = el("table", {id:"suppliers-table", class:"table", style:"width:100%"});
-		var thead = el("thead");
-		var tr = el("tr");;
-		$.each(columns, function(key, value) {
-			var th = el("th");
-			th.className = "head";
-			th.innerHTML = value;
-			tr.appendChild(th);
-		});
-		thead.appendChild(tr);
-		table.appendChild(thead);
-		var tbody = el("tbody");
+		if (data.length == 0) {
+			var h3 = el("h3");
+			h3.innerHTML = "No Suppliers Yet";
+			holder.appendChild(h3);
+			return;
+		}
 		$.each(data, function(key, item) {
-			var tr = el("tr");
-			tr.setAttribute("data-id", item.id);
-			$.each(columns, function(key, value) {
-				var td = el("td");
-				td.innerHTML = item[key] ? item[key] : "null";
-				tr.appendChild(td);
-			});
-			tbody.appendChild(tr);
-		});
-		table.appendChild(tbody);
-		section.appendChild(table);
-		holder.appendChild(section);
-		$(".dataTables_filter").addClass("pull-right");
-		$("#suppliers-viewport tbody").on("click", "td", function() {
-			var id = $(this).parent().attr("data-id");
-			if ((id !== null) || (id.length !== 0)) {
-				window.suppliers.showSupplier(id);
-			}
-		});
+			var row = el("section", {class:"row selectable", "data-id":item.id});
+			//Date
+			var col = el("section", {class:"col-lg-12 col-md-12 col-sm-12 col-xs-12"});
+			var label = el("label", {html:item.name});
+			col.appendChild(label);
+			row.appendChild(col);
+			holder.appendChild(row);
+		});	
 	}
 }

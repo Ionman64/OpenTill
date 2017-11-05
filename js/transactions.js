@@ -42,10 +42,10 @@ function Transactions() {
 			var className = "";
 			if (item.type) {
 				if (item.type == "PAYOUT") {
-					className = "row payout";
+					className = "row inventory payout";
 				}
 				else {
-					className = "row payin";
+					className = "row inventory payin";
 				}
 			}
 			var row = el("section", {class:className});
@@ -53,47 +53,56 @@ function Transactions() {
 				row.setAttribute("data-id", item.id);
 			}
 			//Date
-			var col = el("section", {class:"col-lg-2 col-md-2 col-sm-2 col-xs-2"});
+			var col = el("section", {class:"col-lg-2 col-md-3 col-sm-3 col-xs-6"});
 			var label = el("label", {html:moment(item.ended*1000).format("YYYY-MM-DD hh:mm:ss a")});
 			col.appendChild(label);
 			row.appendChild(col);
 			//Cashier
-			var col = el("section", {class:"col-lg-1 col-md-1 col-sm-1 col-xs-1"});
+			var col = el("section", {class:"col-lg-2 col-md-3 col-sm-1 col-xs-3"});
 			var label = el("label", {html:item.cashier});
 			col.appendChild(label);
 			row.appendChild(col);
 			//Products
-			var col = el("section", {class:"col-lg-1 col-md-1 col-sm-1 col-xs-1"});
+			var col = el("section", {class:"col-lg-2 col-md-1 col-sm-1 hidden-xs"});
 			var label = el("label", {html:item["#Products"]});
 			col.appendChild(label);
 			row.appendChild(col);
 			//Card
-			var col = el("section", {class:"col-lg-1 col-md-1 col-sm-1 col-xs-1"});
+			var col = el("section", {class:"col-lg-2 col-md-1 col-sm-1 hidden-xs"});
 			var label = el("label", {html:item.card});
 			col.appendChild(label);
 			row.appendChild(col);
 			//Cashback
-			var col = el("section", {class:"col-lg-1 col-md-1 col-sm-1 col-xs-1"});
+			var col = el("section", {class:"col-lg-1 col-md-1 col-sm-1 hidden-xs"});
 			var label = el("label", {html:item.cashback});
 			col.appendChild(label);
 			row.appendChild(col);
 			//money_given
-			var col = el("section", {class:"col-lg-1 col-md-1 col-sm-1 col-xs-1"});
+			var col = el("section", {class:"col-lg-1 col-md-1 col-sm-3 hidden-xs"});
 			var label = el("label", {html:item.money_given});
 			col.appendChild(label);
 			row.appendChild(col);
 			//type 
-			var col = el("section", {class:"col-lg-1 col-md-1 col-sm-1 col-xs-1"});
+			var col = el("section", {class:"col-lg-1 col-md-1 col-sm-1 hidden-xs"});
 			var label = el("label", {html:item.type});
 			col.appendChild(label);
 			row.appendChild(col);
 			//total
-			var col = el("section", {class:"col-lg-1 col-md-1 col-sm-1 col-xs-1"});
+			var col = el("section", {class:"col-lg-1 col-md-1 col-sm-1 col-xs-3"});
 			var label = el("label", {html:item.total});
 			col.appendChild(label);
 			row.appendChild(col);
 			holder.appendChild(row);
 		});		
+		var row=el("section", {class:"row"});
+		var col = el("section", {class:"col-lg-12 col-md-12 col-sm-12 col-xs-12"});
+		var label = el("label", {class:"text-center", style:"width:100%;"});
+		var i = el("i", {class:"fa fa-spinner fa-spin fa-3x"});
+		label.appendChild(i);
+		label.appendChild(document.createTextNode("Loading"));
+		col.appendChild(label);
+		row.appendChild(col);
+		//holder.appendChild(row);
 	}
 	this.showTransaction = function(id) {
 		$.ajax({

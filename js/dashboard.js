@@ -70,6 +70,9 @@ $(document).ready(function() {
 	});
 	$(".menu-buttons").on("click", ".menu-button", function() {
 		$("#menu").addClass("hidden");
+		if (!$(this).attr("data-page")) {
+			return;
+		}
 		$(".tab").addClass("hidden");
 		$("#" + $(this).attr("data-page")).removeClass("hidden");
 		$("#page-name").html($("#" + $(this).attr("data-page")).attr("data-page-name"));

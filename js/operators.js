@@ -80,6 +80,12 @@ function Operators() {
 		$("#delete-operator").on("click", function() {
 			window.operators.deleteOperator();
 		});
+		$("#operators-viewport").on("click", ".row", function() {
+			var id = $(this).attr("data-id");
+			if ((id !== null) || (id.length !== 0)) {
+				window.operators.showOperator(id);
+			}
+		});
 	};
 	this.saveOperator = function(id) {
 		var name = $("#operator-name").val();
@@ -117,38 +123,14 @@ function Operators() {
 	this.populate_table = function(columns, data) {
 		var holder = document.getElementById("operators-viewport");
 		$(holder).empty();
-		var section = el("section");
-		var table = el("table" ,{id:"operators-table", class:"table", style:"width:100%"});
-		var thead = el("thead");
-		var tr = el("tr");;
-		$.each(columns, function(key, value) {
-			var th = el("th");
-			th.className = "head";
-			th.innerHTML = value;
-			tr.appendChild(th);
-		});
-		thead.appendChild(tr);
-		table.appendChild(thead);
-		var tbody = el("tbody");
 		$.each(data, function(key, item) {
-			var tr = el("tr");
-			tr.setAttribute("data-id", item.id);
-			$.each(columns, function(key, value) {
-				var td = el("td");
-				td.innerHTML = item[key] ? item[key] : "null";
-				tr.appendChild(td);
-			});
-			tbody.appendChild(tr);
-		});
-		table.appendChild(tbody);
-		section.appendChild(table);
-		holder.appendChild(section);
-		$(".dataTables_filter").addClass("pull-right");
-		$("#operators-viewport tbody").on("click", "td", function() {
-			var id = $(this).parent().attr("data-id");
-			if ((id !== null) || (id.length !== 0)) {
-				window.operators.showOperator(id);
-			}
-		});
+			var row = el("section", {class:"row selectable", "data-id":item.id});
+			//Name
+			var col = el("section", {class:"col-lg-12 col-md-12 col-sm-12 col-xs-12"});
+			var label = el("label", {html:item.name});
+			col.appendChild(label);
+			row.appendChild(col);
+			holder.appendChild(row);
+		});	
 	}
 }
