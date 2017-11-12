@@ -42,10 +42,10 @@ function Transactions() {
 			var className = "";
 			if (item.type) {
 				if (item.type == "PAYOUT") {
-					className = "row product payout";
+					className = "row selectable payout";
 				}
 				else {
-					className = "row product payin";
+					className = "row selectable payin";
 				}
 			}
 			var row = el("section", {class:className});
@@ -120,7 +120,7 @@ function Transactions() {
 				var transQuantity = 0;
 				$.each(data.products, function(key, item) {
 					var total
-					var row = el("section", {class:"row"});
+					var row = el("section", {class:"row selectable"});
 					//quantity
 					var col = el("section", {class:"col-md-2 col-xs-2 col-sm-2"});
 					var label = el("label");

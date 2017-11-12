@@ -5,13 +5,9 @@
 		<button type="button" class="btn btn-default pull-right" data-dismiss="modal" aria-label="Close">Close</button>
 		<h4 class="modal-title">Chat</h4>
 	  </section>
-	  <section class="modal-body">
-	  	<section class="container-fluid">
-	  		<section class="row" id="chat-window">
-	  			<section id="chat-window-inner" class="col-md-12 col-xs-12 col-sm-12 col-lg-12">
-				
-				</section>
-	  		</section>
+	  <section class="modal-body" id="chat-window">
+	  	<section class="container-fluid" id="chat-window-inner">
+
   		</section>
 	  	</section>
 	  <section class="modal-footer">

@@ -121,15 +121,15 @@ function Departments() {
 			return;
 		}
 		$.each(data, function(key, item) {
-			var row = el("section", {class:"row department", "data-id":item.id});
+			var row = el("section", {class:"row selectable", "data-id":item.id});
 			//Name
 			var col = el("section", {class:"col-lg-6 col-md-6 col-sm-6 col-xs-6"});
-			var label = el("label", {html:item.name});
+			var label = el("h4", {html:item.name});
 			col.appendChild(label);
 			row.appendChild(col);
 			//ShortHand
 			var col = el("section", {class:"col-lg-6 col-md-6 col-sm-6 col-xs-6"});
-			var label = el("label", {html:item.shorthand});
+			var label = el("h4", {html:item.shorthand});
 			col.appendChild(label);
 			row.appendChild(col);
 			holder.appendChild(row);

@@ -424,22 +424,16 @@ function getMessage() {
 			}
 			$("#chat-window-inner").empty();
 			$.each(data.messages, function(key, value) {
-				var section;
-				if (value.senderId == getOperator()) {
-					section = el("section", {class:"message-block pull-right"});
-				}
-				else {
-					section = el("section", {class:"message-block pull-left"});
-				}
-				var messageHeader =  el("section", {class:"message-header"});
+				var section = el("section", {class:"row"})
+				var messageHeader =  el("section", {class:"col-lg-12 col-md-12 col-sm-12 col-xs-12 message-header"});
 				var p = el("p", {class:"message-text", html:(value.senderName + " to " + value.recipientName)});
 				messageHeader.appendChild(p);
 				section.appendChild(messageHeader);
-				var messageBody = el("section", {class:"message-body"});
-				var p = el("p", {class:"message-text", html:value.message});
+				var messageBody = el("section", {class:"col-lg-12 col-md-12 col-sm-12 col-xs-12 message-body"});
+				var p = el("h4", {class:"message-text", html:value.message});
 				messageBody.appendChild(p);
 				section.appendChild(messageBody);
-				var dateSection = el("section", {class:"message-footer"});
+				var dateSection = el("section", {class:"col-lg-12 col-md-12 col-sm-12 col-xs-12 message-footer"});
 				var p = el("p", {class:"message-text", html:moment(value.created*1000).calendar()});
 				dateSection.appendChild(p);
 				section.appendChild(dateSection);
@@ -447,16 +441,12 @@ function getMessage() {
 			});
 		},
 		complete:function() {
-			$('#chat-window').jScrollPane({
-				verticalGutter:-16,
-				animateScroll: true
-			});
-			$("#chat-window").data("jsp").scrollToY(99999);
+			$("#chat-window").animate({ scrollTop: $("#chat-window-inner").height() }, 1000);
 			setTimeout(function() {
 				if ($("#chat-modal").is(':visible')) {
 					getMessage();
 				}
-	        }, 3000);
+	        }, 10000);
 		}
 	});
 }
