@@ -42,10 +42,10 @@ function Transactions() {
 			var className = "";
 			if (item.type) {
 				if (item.type == "PAYOUT") {
-					className = "row inventory payout";
+					className = "row product payout";
 				}
 				else {
-					className = "row inventory payin";
+					className = "row product payin";
 				}
 			}
 			var row = el("section", {class:className});
@@ -54,42 +54,42 @@ function Transactions() {
 			}
 			//Date
 			var col = el("section", {class:"col-lg-2 col-md-3 col-sm-3 col-xs-6"});
-			var label = el("label", {html:moment(item.ended*1000).format("YYYY-MM-DD hh:mm:ss a")});
+			var label = el("h4", {html:moment(item.ended*1000).format("YYYY-MM-DD hh:mm:ss a")});
 			col.appendChild(label);
 			row.appendChild(col);
 			//Cashier
 			var col = el("section", {class:"col-lg-2 col-md-3 col-sm-1 col-xs-3"});
-			var label = el("label", {html:item.cashier});
+			var label = el("h4", {html:item.cashier});
 			col.appendChild(label);
 			row.appendChild(col);
 			//Products
 			var col = el("section", {class:"col-lg-2 col-md-1 col-sm-1 hidden-xs"});
-			var label = el("label", {html:item["#Products"]});
+			var label = el("h4", {html:item["#Products"]});
 			col.appendChild(label);
 			row.appendChild(col);
 			//Card
 			var col = el("section", {class:"col-lg-2 col-md-1 col-sm-1 hidden-xs"});
-			var label = el("label", {html:item.card});
+			var label = el("h4", {html:item.card});
 			col.appendChild(label);
 			row.appendChild(col);
 			//Cashback
 			var col = el("section", {class:"col-lg-1 col-md-1 col-sm-1 hidden-xs"});
-			var label = el("label", {html:item.cashback});
+			var label = el("h4", {html:item.cashback});
 			col.appendChild(label);
 			row.appendChild(col);
 			//money_given
 			var col = el("section", {class:"col-lg-1 col-md-1 col-sm-3 hidden-xs"});
-			var label = el("label", {html:item.money_given});
+			var label = el("h4", {html:item.money_given});
 			col.appendChild(label);
 			row.appendChild(col);
 			//type 
 			var col = el("section", {class:"col-lg-1 col-md-1 col-sm-1 hidden-xs"});
-			var label = el("label", {html:item.type});
+			var label = el("h4", {html:item.type});
 			col.appendChild(label);
 			row.appendChild(col);
 			//total
 			var col = el("section", {class:"col-lg-1 col-md-1 col-sm-1 col-xs-3"});
-			var label = el("label", {html:item.total});
+			var label = el("h4", {html:item.total});
 			col.appendChild(label);
 			row.appendChild(col);
 			holder.appendChild(row);

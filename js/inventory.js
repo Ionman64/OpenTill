@@ -50,7 +50,6 @@ function Inventory() {
 		$("#inventory-table").empty();
 		$.each(this.getCurrentOrder().products, function(key, product) {
 			var row = el("section", {class:"row product"});
-			row.style.padding = "5px";
 			//bin
 			var section =  el("section", {class:"col-lg-1 col-md-1 col-sm-1 col-xs-1"});
 			var button = el("button", {class:"btn btn-danger btn-lg delete", "data-id":key});

@@ -114,7 +114,7 @@
 				<section class="container-fluid">
 					<section class="row">
 						<section class="col-lg-10 col-md-10 col-sm-10 col-xs-10" style="padding-top:5px;">
-							<p class="navbar-text" id="menu-button"><i class="fa fa-bars fa-2x"></i></p>
+							<p id="menu-button"><i class="fa fa-bars fa-3x"></i></p>
 							<h4 id="page-name" style="padding:9px;">Takings</h4>
 						</section>
 						<section class="col-lg-2 col-md-2 col-sm-2 col-xs-2">

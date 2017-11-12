@@ -7,8 +7,12 @@
 			<h4>ShortHand</h4>
 		</section>
 	</section>
-	<section id="departments-viewport" class="viewport">
-		
+	<section class="row viewport">
+		<section class="col-md-12">
+			<section id="departments-viewport">
+	
+			</section>
+		</section>
 	</section>
 </section>
 <?php require("modals/departmentInfo.php") ?>

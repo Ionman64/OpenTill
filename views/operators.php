@@ -4,8 +4,12 @@
 			<h4>Name</h4>
 		</section>
 	</section>
-	<section id="operators-viewport" class="viewport">
-		
+	<section class="row viewport">
+		<section class="col-md-12">
+			<section id="operators-viewport">
+	
+			</section>
+		</section>
 	</section>
 </section>
 <?php require("modals/operatorInfo.php") ?>

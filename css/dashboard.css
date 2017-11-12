@@ -149,10 +149,16 @@ canvas {
 	overflow-y:auto;
 }
 #menu-button {
+	float: left;
 	cursor:pointer;
 	z-index:99999;
 	display:inline-block;
 	max-width:2em;
+	margin-top: 7px;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	margin-left: 5px;
+
 }
 @media screen and (min-width: 0px) {
     .menu-buttons {
@@ -265,6 +271,9 @@ tbody tr:hover {
 .product {
 	margin-top:2px;
 	background:#eee;
+	padding-top:5px;
+	padding-bottom:5px;
+	cursor:pointer;
 }
 .inventory {
 	margin-top:2px;
