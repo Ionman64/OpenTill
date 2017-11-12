@@ -678,32 +678,38 @@
 			error_out('missing fields');
 		}
 		$db = get_pdo_connection();
-		$stmt = $db->prepare('SELECT kvs_transactiontoproducts.department, SUM(kvs_transactiontoproducts.price) AS "amount", DAY(FROM_UNIXTIME(created)) AS order_day FROM kvs_transactiontoproducts 
-							  LEFT JOIN kvs_transactions ON kvs_transactions.id = kvs_transactiontoproducts.transaction_id WHERE (kvs_transactions.ended BETWEEN ? AND ?) 
-			                  AND kvs_transactions.cashier NOT IN (?) AND kvs_transactions.type in (?) GROUP BY order_day, kvs_transactiontoproducts.department');
+		$db->query('SET SQL_BIG_SELECTS=1');
+		$stmt = $db->prepare('SELECT DATE(FROM_UNIXTIME(kvs_transactions.ended)) AS "date", kvs_transactiontoproducts.department, SUM(kvs_transactiontoproducts.price) AS "amount" FROM kvs_transactiontoproducts LEFT JOIN kvs_transactions ON kvs_transactiontoproducts.transaction_id = kvs_transactions.id WHERE (kvs_transactions.started > ? AND kvs_transactions.ended < ?) AND kvs_transactions.cashier NOT IN (?) AND kvs_transactions.type in (?) AND (kvs_transactions.ended > 0) GROUP BY kvs_transactiontoproducts.department, DATE(FROM_UNIXTIME(kvs_transactions.ended)) ORDER BY DATE(FROM_UNIXTIME(kvs_transactions.ended)) DESC');
 		$stmt->bindValue(1, $start,PDO::PARAM_INT);
 		$stmt->bindValue(2, $end,PDO::PARAM_INT);
 		$stmt->bindValue(3, $admin,PDO::PARAM_STR);
 		$stmt->bindValue(4, $type,PDO::PARAM_STR);
-		$stmt->execute();
+		if (!$stmt->execute()) {
+			error_out($stmt->errorInfo());
+		}
 		$arr = array();
 		while ($rs = $stmt->fetch(PDO::FETCH_ASSOC)) {
 			if ($type == 'PAYOUT') {
 				$arr['payout'] = floatval($rs['amount']);
 				break;
 			}
-			$arr[$rs['department']] = floatval($rs['amount']);
+			if (!isset($arr[$rs['date']])) {
+				$arr[$rs['date']] = array();
+			} 
+			$arr[$rs['date']][$rs['department']] = floatval($rs['amount']);
 		}
-		if ($type == 'PAYOUTS') {
+		if ($type == 'PAYOUT') {
 			die (json_encode(array('success'=>true, 'start'=>$start, 'end'=>$end, 'payouts'=>$arr)));
 		}
 		if ($type == 'REFUND') {
 			die (json_encode(array('success'=>true, 'start'=>$start, 'end'=>$end, 'payouts'=>$arr)));
 		}
-		$refunds = refunds();
-		foreach ($arr as $department=>$amount) {
-			$arr[$department] = ($amount - (isset($refunds[$department]) ? $refunds[$department] : 0.00));
-		}
+		/*$refunds = refunds();
+		foreach ($arr as $date) {
+			foreach ($arr as $department=>$amount) {
+				$arr[$date][$department] = ($amount - (isset($refunds[$department]) ? $refunds[$department] : 0.00));
+			}
+		}*/
 		die (json_encode(array('success'=>true, 'start'=>$start, 'end'=>$end, 'totals'=>$arr)));
 	}
 	function get_all_suppliers() {

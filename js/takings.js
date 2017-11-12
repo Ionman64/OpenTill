@@ -86,77 +86,82 @@ function Takings(){
 		});
 	}
 	this.get_takings = function() {
-		window.totals = [];
-		window.semaphore = 0;
-		var date = moment().subtract(1, "months");
-		var currentTimestamp = parseInt(moment().format("x"));
-		while (currentTimestamp > parseInt(moment(date.format("YYYY-MM-DD")).format("x"))) {
-			var start = moment(date.format("YYYY-MM-DD")).format("x")/1000;
-			var end = moment(date.add(1, "days").format("YYYY-MM-DD")).format("x")/1000;
-			$.ajax({
-				url:"api/kvs.php?function=TOTALS",
-				data:{"start":start, "end":end, "type":"PURCHASE"},
-				dataType: "JSON",
-				method:"POST",
-				beforeSend: function() {
-					window.semaphore++;
-				},
-				success: function(data) {
-					if (!data.success) {
-						alert("Error collecting totals");
-					}
-					window.totals.push(data);
-					window.takings.populate_table(window.totals);
-				},
-				complete:function() {
-					window.semaphore--;
+		var start = Math.floor(moment().subtract(5, "months").format("x")/1000);
+		var end = Math.floor(moment().format("x")/1000);
+		$.ajax({
+			url:"api/kvs.php?function=TOTALS",
+			data:{"start":start, "end":end, "type":"PURCHASE"},
+			dataType: "JSON",
+			method:"POST",
+			success: function(data) {
+				if (!data.success) {
+					alert("Error collecting totals");
 				}
-			});
-		}
+				populate_table(data.totals);
+			}
+		});
 	}
 	this.populate_table = function(data) {
-		if (window.semaphore > 1) {
-			return;
-		}
-		var holder = document.getElementById("takings-viewport");
+		var holder = document.getElementById("viewport");
 		$(holder).empty();
 		var section = el("section");
-		var table = el("table", {id:"takings-table", class:"table", style:"width:100%"});
+		var table = el("table");
+		table.id = "table";
+		table.className = "table";
 		var thead = el("thead");
 		var tr = el("tr");
-		var th = el("th", {html:"Date"});
+		var th = el("th");
+		th.innerHTML = "Date";
 		tr.appendChild(th);
-		var departments = window.departmentNames;
+		var departments = window.departments;
 		for (var i=0;i<departments.length;i++) {
 			var th = el("th");
 			th.className = "head";
 			th.innerHTML = departments[i].shorthand;
 			tr.appendChild(th);
 		}
-		var th = el("th", {class:"head", html:"Total"});
+		var th = el("th");
+		th.className = "head";
+		th.innerHTML = "Total";
 		tr.appendChild(th);
 		thead.appendChild(tr);
 		table.appendChild(thead);
 		var tbody = el("tbody");
-		$.each(data, function(key, item) {
+		$.each(data, function(date, totals) {
 			var total = 0.00;
-			var tr = el("tr", {"data-start":item.start, "data-end":item.end});
-			var td = el("td", {html:moment(item.start*1000).format("YYYY-MM-DD")});
+			var tr = el("tr");
+			var td = el("td");
+			td.innerHTML = date;
 			tr.appendChild(td);
-			$.each(window.departmentNames, function(id, department) {
+			$.each(window.departments, function(id, department) {
 				var td = el("td");
-				var amount = parseFloat(item.totals[department.id] ? item.totals[department.id] : "0.00");
+				var amount = parseFloat(totals[department.id] ? totals[department.id] : "0.00");
 				total = total + amount;
 				td.innerHTML = formatMoney(amount);
 				tr.appendChild(td);
 			});
-			var td = el("td", {html:formatMoney(total)});
+			var td = el("td");
+			td.innerHTML = formatMoney(total);
 			tr.appendChild(td);
 			tbody.appendChild(tr);
 		});
 		table.appendChild(tbody);
 		section.appendChild(table);
-		//holder.appendChild(section);
+		holder.appendChild(section);
+		$(table).DataTable({
+			responsive: true,
+			dom: 'Bfrtip',
+			buttons: [
+				'copy', 'csv', 'excel', 
+				{
+					extend: 'pdfHtml5',
+					orientation: 'landscape',
+					pageSize: 'LEGAL'
+				},
+				'print'
+			],
+			"order": [[ 0, "desc" ]]
+		});
 	}
 	$("#takings-table").on("click", "tr", function() {
 		alert("hello");
