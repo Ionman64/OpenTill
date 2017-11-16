@@ -308,13 +308,15 @@
 	}
 	function get_messages() {
 		$operator = get_param('operator', null);
-		if ($operator == null) {
+		$time = get_param('time', null);
+		if ($operator == null || $time == null) {
 			error_out('missing fields');
 		}
 		$db = get_pdo_connection();
-		$stmt = $db->prepare('(SELECT kvs_tblchat.id,  kvs_tblchat.sender AS "senderId", kvs_tblchat.recipient as "recipientId", a.name AS "senderName", IFNULL(b.name, "All") AS recipientName, kvs_tblchat.message, kvs_tblchat.created FROM kvs_tblchat LEFT JOIN kvs_operators a ON a.id = kvs_tblchat.sender LEFT JOIN kvs_operators b ON b.id = kvs_tblchat.recipient WHERE kvs_tblchat.recipient = ? OR kvs_tblchat.sender = ? OR kvs_tblchat.recipient = "All" ORDER BY kvs_tblchat.created DESC LIMIT 20) ORDER BY created ASC');
+		$stmt = $db->prepare('(SELECT kvs_tblchat.id,  kvs_tblchat.sender AS "senderId", kvs_tblchat.recipient as "recipientId", a.name AS "senderName", IFNULL(b.name, "All") AS recipientName, kvs_tblchat.message, kvs_tblchat.created FROM kvs_tblchat LEFT JOIN kvs_operators a ON a.id = kvs_tblchat.sender LEFT JOIN kvs_operators b ON b.id = kvs_tblchat.recipient WHERE (kvs_tblchat.recipient = ? OR kvs_tblchat.sender = ? OR kvs_tblchat.recipient = "All") AND kvs_tblchat.created > ? ORDER BY kvs_tblchat.created DESC LIMIT 20) ORDER BY created ASC');
 		$stmt->bindValue(1, $operator, PDO::PARAM_STR);
 		$stmt->bindValue(2, $operator, PDO::PARAM_STR);
+		$stmt->bindValue(3, $time, PDO::PARAM_INT);
 		$stmt->execute();
 		$arr = array();
 		while ($rs = $stmt->fetch(PDO::FETCH_ASSOC)) {

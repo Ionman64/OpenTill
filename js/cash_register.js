@@ -1,6 +1,7 @@
 const CONTEXT = "api/";
 const CASHBACK_DEPARTMENT = "5b830176-7b71-11e7-b34e-426562cc935f";
 const NO_CATAGORY_DEPARTMENT = "5b82f89a-7b71-11e7-b34e-426562cc935f";
+var LAST_MESSAGE_UPDATE = 0;
 window.cashiersTransactions = {};
 window.Department = null;
 window.DepartmentName = "";
@@ -14,6 +15,9 @@ function getOperator() {
 }
 function setOperator(id) {
 	window.operator = id;
+	$("#chat-window-inner").empty();
+	LAST_MESSAGE_UPDATE = 0;
+	getMessage();
 }
 function logout() {
 	delete window.operator;
@@ -407,9 +411,12 @@ function sendMessage(message, to) {
 	});
 }
 function getMessage() {
+	if (!getOperator()) {
+		return;
+	};
 	$.ajax({
 		url:CONTEXT + "kvs.php?function=GETMESSAGES",
-		data: {"operator":getOperator()},
+		data: {"operator":getOperator(), "time":LAST_MESSAGE_UPDATE},
 		success:function(data) {
 			if (!data.success) {
 				bootbox.alert("Error loading contacts");
@@ -422,31 +429,37 @@ function getMessage() {
 			if (data.messages.length == 0) {
 				return;
 			}
-			$("#chat-window-inner").empty();
 			$.each(data.messages, function(key, value) {
+				if (value.senderId != getOperator()) {
+					if ((0 < LAST_MESSAGE_UPDATE < moment().unix()) && (!$("#chat-modal").is(':visible'))) {
+						$("#newMessages").removeClass("hidden");
+					}
+				}
 				var section = el("section", {class:"row"})
-				var messageHeader =  el("section", {class:"col-lg-12 col-md-12 col-sm-12 col-xs-12 message-header"});
-				var p = el("p", {class:"message-text", html:(value.senderName + " to " + value.recipientName)});
-				messageHeader.appendChild(p);
-				section.appendChild(messageHeader);
-				var messageBody = el("section", {class:"col-lg-12 col-md-12 col-sm-12 col-xs-12 message-body"});
-				var p = el("h4", {class:"message-text", html:value.message});
+				var messageBody = el("section", {class:"col-lg-12 col-md-12 col-sm-12 col-xs-12 message-body wordwrap"});
+				var p = el("h4", {class:"message-text", html:"<b>" + value.senderName + "</b>: " + value.message});
 				messageBody.appendChild(p);
 				section.appendChild(messageBody);
 				var dateSection = el("section", {class:"col-lg-12 col-md-12 col-sm-12 col-xs-12 message-footer"});
-				var p = el("p", {class:"message-text", html:moment(value.created*1000).calendar()});
+				var p = el("label", {class:"message-text", html:moment(value.created*1000).calendar()});
 				dateSection.appendChild(p);
 				section.appendChild(dateSection);
 				$("#chat-window-inner").append(section);
 			});
+			LAST_MESSAGE_UPDATE = moment().unix();
+			$("#chat-window").animate({ scrollTop: $("#chat-window-inner").height() }, 1000);
 		},
 		complete:function() {
-			$("#chat-window").animate({ scrollTop: $("#chat-window-inner").height() }, 1000);
 			setTimeout(function() {
 				if ($("#chat-modal").is(':visible')) {
 					getMessage();
 				}
-	        }, 10000);
+			}, 2000);
+			setTimeout(function() {
+				if (!$("#chat-modal").is(':visible')) {
+					getMessage();
+				}
+			}, 10000);
 		}
 	});
 }
@@ -454,6 +467,12 @@ $(document).ready( function() {
 	$.ajaxSetup({
 		method:"POST",
 		dataType:"JSON"
+	});
+	$(".notify").on("click", function() {
+		$("#chat-modal").modal("show");
+		$("#chat-window").animate({ scrollTop: $("#chat-window-inner").height() }, 1000);
+		getMessage();
+		$(this).addClass("hidden");
 	});
 	dialogAlert("Please scan your operator id to continue");
 	window.offlineStorage = new OfflineStorage();

@@ -25,6 +25,18 @@ body {
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
 }
+.notify {
+	position: absolute;
+	z-index:9999;
+	right:1em;
+	top:1em;
+	width:300px;
+	opacity:0.8;
+	border-radius:5px;
+	color:#fff;
+	padding:1em;
+	cursor:pointer;
+}
 
 .input-group > .input-group-btn:first-child > select {
     border-top-left-radius: 5px;
@@ -47,26 +59,34 @@ body {
 	background:#ddd;
 	border-radius:5px;
 	margin-top:5px;
-}
-.message-header {
-	padding:1mm;
-	background:#aaa;
-	text-align:left;
-	padding-left:1em;
+	width:100%;
 }
 .message-body {
 	padding-left:1em;
 	text-align:left;
+	width:100%;
 }
-.message-block p {
-	padding:0;
-	margin:0;
+.message-footer label {
+	padding:3px;
+}
+.wordwrap{
+	white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+	white-space: -pre-wrap;      /* Opera 4-6 */
+	white-space: -o-pre-wrap;    /* Opera 7 */
+	white-space: pre-wrap;       /* css-3 */
+	word-wrap: break-word;       /* Internet Explorer 5.5+ */
+	white-space: -webkit-pre-wrap; /* Newer versions of Chrome/Safari*/
+	word-break: break-all;
+	white-space: normal;
 }
 .message-footer {
-	background:#aaa;
+	border-bottom: 1px solid #eee;
 	text-align:right;
 	font-style:italic;
+	padding:none;
 	padding-right:1em;
+	font-style:normal;
+	width:100%;
 }
 .notification-counter {   
 	position: absolute;
@@ -370,4 +390,46 @@ input[type="number"] {
 }
 #chat-window-inner .row {
 	margin-bottom:10px;
+}
+.custom-btn-orange {
+	background: #f59065;
+}
+.custom-btn-purple {
+	background: #CB6882;
+}
+.custom-btn-grey {
+	background:#cbaaaa;
+}
+.custom-btn-graphite {
+	background: #bbb;
+}
+.custom-btn-chocolate {
+	background:#a18080;
+}
+.custom-btn-violet {
+	background:#656be9;
+}
+.custom-btn-black {
+	background:#383839;
+}
+.custom-btn-orange:hover {
+	background: #e07b50;
+}
+.custom-btn-purple:hover {
+	background: #BB5872;
+}
+.custom-btn-grey:hover {
+	background:#cbaaaa;
+}
+.custom-btn-chocolate:hover {
+	background:#796161;
+}
+.custom-btn-violet:hover {
+	background:#4f55d3;
+}
+.custom-btn-black:hover {
+	background:#272728;
+}
+.custom-btn-graphite:hover {
+	background: #999;
 }

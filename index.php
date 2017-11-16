@@ -48,6 +48,10 @@
 	<section class="offline-banner hidden">
 		<p>Offline mode-Transactions are being saved locally and will be uploaded when connection is restored</p>
 	</section>
+	<section id="newMessages" class="notify custom-btn-black hidden">
+		<label>You have a new message</label><br>
+		<i>Click to Reply</i>
+	</section>
 	<section class="container-fluid">
 	<section class="overlay hidden" id="item-search">
 		<section class="container-fluid">
