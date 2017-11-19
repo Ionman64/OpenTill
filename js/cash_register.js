@@ -431,7 +431,7 @@ function getMessage() {
 			}
 			$.each(data.messages, function(key, value) {
 				if (value.senderId != getOperator()) {
-					if ((0 < LAST_MESSAGE_UPDATE < moment().unix()) && (!$("#chat-modal").is(':visible'))) {
+					if ((0 < LAST_MESSAGE_UPDATE) && (LAST_MESSAGE_UPDATE < moment().unix()) && (!$("#chat-modal").is(':visible'))) {
 						$("#newMessages").removeClass("hidden");
 					}
 				}
@@ -450,16 +450,13 @@ function getMessage() {
 			$("#chat-window").animate({ scrollTop: $("#chat-window-inner").height() }, 1000);
 		},
 		complete:function() {
-			setTimeout(function() {
-				if ($("#chat-modal").is(':visible')) {
+			var delay = $("#chat-modal").is(':visible') == true ? 2000 : 10000;
+			if (typeof window.messageTimeout != undefined) {
+				clearTimeout(window.messageTimeout);
+			}
+			window.messageTimeout = setTimeout(function() {
 					getMessage();
-				}
-			}, 2000);
-			setTimeout(function() {
-				if (!$("#chat-modal").is(':visible')) {
-					getMessage();
-				}
-			}, 10000);
+			}, delay);
 		}
 	});
 }
