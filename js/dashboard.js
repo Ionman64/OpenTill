@@ -60,6 +60,133 @@ function showProduct(id) {
 		}
 	});
 }
+function chartTest(id, data) {
+	if (!data) {
+		$.ajax({
+			url:"api/kvs.php?function=GETPRODUCTSALES",
+			data: {"id":id, "end":moment(moment().format("YYYY-MM-DD")).unix(), "start":moment(moment().subtract(1, "months").format("YYYY-MM-DD")).unix()},
+			success:function(data) {
+				if (!data.success) {
+					return;
+				}
+				console.log(data);
+			}
+		});
+		$.ajax({
+			url:"api/kvs.php?function=GETPRODUCTLEVELS",
+			data: {"id":id},
+			success: function(data) {
+				if (!data.success) {
+					return;
+				}
+				$("#currentLevel").val((parseInt(data.product.current_stock)+parseInt(data.product.current_display)));
+				$("#graphReorderLevel").val(data.product.lowest_reorder);
+				$("#graphMaxLevel").val(data.product.max_stock);
+				$("#graphDisplayLevel").val(data.product.current_display);
+				chartTest(id, data.product);
+			}
+		});	
+		return;
+	}
+	var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+	var chartColors = {
+		red: 'rgb(255, 99, 132)',
+		orange: 'rgb(255, 159, 64)',
+		yellow: 'rgb(255, 205, 86)',
+		green: 'rgb(75, 192, 192)',
+		blue: 'rgb(54, 162, 235)',
+		purple: 'rgb(153, 102, 255)',
+		grey: 'rgb(201, 203, 207)'
+	};
+	var product = getTransaction().products[$("#product-modal").attr("product-id")];
+	var intervals = [];
+	var dataPoints = [];
+	var maxStock = [];
+	var reorderLevel = []; //re-order level
+	var onDisplay = [];
+	var date = moment();
+	var currentMonth = date.month();
+	date.subtract(date.date()-1, "days");
+	while (currentMonth==date.month()) {
+		intervals.push(date.format("DD"));
+		date.add(1, "days");
+	}
+	console.log(data);
+	for (var i=0;i<intervals.length;i++) {
+		dataPoints.push(0);
+		onDisplay.push(data.max_display);
+		reorderLevel.push(data.lowest_reorder);
+		maxStock.push(data.max_stock);
+	}
+	var config = {
+		type: 'line',
+		data: {
+		    labels: intervals,
+		    datasets: [{
+		        label: "Re-order level",
+		        backgroundColor: chartColors.red,
+		        borderColor: chartColors.red,
+		        data: reorderLevel,
+		        fill: false,
+		    },
+		    {
+		        label: "To Display",
+		        fill: false,
+		        backgroundColor: chartColors.grey,
+		        borderColor: chartColors.grey,
+		        data: onDisplay,
+		    },
+		    {
+		        label: "Max Volume",
+		        fill: false,
+		        backgroundColor: chartColors.blue,
+		        borderColor: chartColors.blue,
+		        data: maxStock,
+		    },
+		    {
+		        label: "Estimated Stock",
+		        fill: false,
+		        backgroundColor: chartColors.blue,
+		        borderColor: chartColors.blue,
+		        data: dataPoints,
+		    }]
+		},
+		options: {
+		    responsive: true,
+		    title:{
+		        display:false,
+		        text:('Estimated Stock for ' + product.name)
+		    },
+		    tooltips: {
+		        mode: 'index',
+		        intersect: false,
+		    },
+		    hover: {
+		        mode: 'nearest',
+		        intersect: true
+		    },
+		    scales: {
+		        xAxes: [{
+		            display: true,
+		            scaleLabel: {
+		                display: true,
+		                labelString: moment().format("MMMM")
+		            }
+		        }],
+		        yAxes: [{
+		            display: true,
+		            scaleLabel: {
+		                display: true,
+		                labelString: '# of stock'
+		            }
+		        }]
+		    }
+		}
+	};
+	var ctx = document.getElementById("canvas").getContext("2d");
+	window.myLine = new Chart(ctx, config);
+	var colorNames = Object.keys(chartColors);
+}
 $(document).ready(function() {
 	$.ajaxSetup({
 		method:"POST",

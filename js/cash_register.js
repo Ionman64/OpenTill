@@ -147,22 +147,23 @@ function refreshTable() {
 		if (product.priceOverride) {
 			product.comment = "Price Overide";
 		}
+		if (product.currentStock < 3) {
+			product.comment = "Product has low stock (Less than three)";
+		}
+		if (product.currentStock == 1) {
+			product.comment = "Product has very low stock (One left)";
+		}
+		if (product.maxStock == 0) {
+			product.comment = "This product has no max stock set";
+		}
 		if (product.comment.length > 0) {
-			var section = el("section", {class:"col-md-11 col-md-offset-1"});
+			var section = el("section", {class:"col-lg-11 col-md-11 col-sm-11 col-xs-11 col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-xs-offset-1"});
 			var label = el("label", {class:"text-info", html:product.comment});
 			section.appendChild(label);
 			row.appendChild(section);
-			/*if (product.inDatabase) {
-				var section = el("section", {class:"col-md-4"});
-				var button = el("button", {class:"btn btn-info"});
-				button.onclick = function() {showProduct(product.barcode.toString())};
-				button.innerHTML = "Update Product";
-				section.appendChild(button);
-			}
-			row.appendChild(section);*/
 		}
 		//bin
-		var section =  el("section", {class:"col-md-1"});
+		var section =  el("section", {class:"col-lg-1 col-md-1 col-sm-1 col-xs-1"});
 		var button = el("button", {class:"btn btn-danger delete", productID:product.id});
 		button.onclick = function() {
 			getTransaction().removeProduct($(this).attr("productID"));
@@ -171,7 +172,7 @@ function refreshTable() {
 		section.appendChild(button);
 		row.appendChild(section);
 		//name
-		var section = el("section", {class:"col-md-4"});
+		var section = el("section", {class:"col-lg-4 col-md-4 col-sm-4 col-xs-4"});
 		var button = el("button", {class:"btn btn-default", html:product.name});
 		if (product.inDatabase)
 			button.onclick = function() {showMenu(product.id)};
@@ -180,17 +181,17 @@ function refreshTable() {
 		section.appendChild(button);
 		row.appendChild(section);
 		//cost
-		var section = el("section", {class:"col-md-1"});
+		var section = el("section", {class:"col-lg-1 col-md-1 col-sm-1 col-xs-1"});
 		var h5 = el("label", {class:"clear-text", html:formatMoney(product.productCost())});
 		section.appendChild(h5);
 		row.appendChild(section);
 		//quantity 
-		var section = el("section", {class:"col-md-4"});
+		var section = el("section", {class:"col-lg-4 col-md-4 col-sm-4 col-xs-4"});
 		var input = el("input", {class:"form-control", type:"number", productID:product.id, value:product.quantity});
 		section.appendChild(input);
 		row.appendChild(section);
 		//totalCost
-		var section = el("section", {class:"col-md-2"});
+		var section = el("section", {class:"col-lg-2 col-md-2 col-sm-2 col-xs-2"});
 		var h5 = el("label", {class:"clear-text product-total", "product-id":product.id, html:formatMoney(product.totalCost())});
 		section.appendChild(h5);
 		row.appendChild(section);
@@ -267,6 +268,8 @@ function showProduct(brcode) {
 			$("#ProductCost").val(product.cost);
 			$("#ProductPrice").val(product.price);
 			$("#Name").html(product.name);
+			$("#maxStockLevel").val(product.max_stock);
+			$("#currentLevel").val(product.current_stock);
 			if (product.labelPrinted == "1") {
 				$("#PrintLabel").attr("disabled", true);
 			}
@@ -296,6 +299,8 @@ function addProduct(data) {
 	tempProduct.department = data.department;
 	tempProduct.name = data.name;
 	tempProduct.inDatabase = true;
+	tempProduct.maxStock = parseInt(data.max_stock);
+	tempProduct.currentStock = parseInt(data.current_stock);
 	getTransaction().addProduct(tempProduct);
 	if (data.isNew) {
 		showNewProductModal(data.id);
@@ -555,9 +560,6 @@ $(document).ready( function() {
 		$(this).parent().addClass("active");
 		$("#product-modal .page").addClass("hidden");
 		$("section[data-id=" + $(this).attr("data-page") + "]").removeClass("hidden");
-		if ($(this).attr("data-page") == "stock") {
-			chartTest($("#product-modal").attr("product-id"));
-		}
 	});
 	$("#currentLevel").TouchSpin({
 		min: 0,
@@ -565,23 +567,35 @@ $(document).ready( function() {
 		boostat: 5,
 		maxboostedstep: 10,
 	});
-	$("#graphReorderLevel").TouchSpin({
+	$("#maxStockLevel").TouchSpin({
 		min: 0,
 		max: 100,
 		boostat: 5,
 		maxboostedstep: 10,
 	});
-	$("#graphMaxLevel").TouchSpin({
-		min: 0,
-		max: 100,
-		boostat: 5,
-		maxboostedstep: 10,
+	$("#maxStockLevel").change(function() {
+		$.ajax({
+			url:CONTEXT + "/kvs.php?function=CHANGEMAXSTOCKLEVEL",
+			data:{"id":$("#product-modal").attr("product-id"), "amount":$("#maxStockLevel").val()},
+			success: function(data) {
+				if (!data.success) {
+					bootstrap.alert("Could not change value");
+					return;
+				}
+			}
+		});
 	});
-	$("#graphDisplayLevel").TouchSpin({
-		min: 0,
-		max: 100,
-		boostat: 5,
-		maxboostedstep: 10
+	$("#currentLevel").change(function() {
+		$.ajax({
+			url:CONTEXT + "/kvs.php?function=CHANGECURRENTSTOCKLEVEL",
+			data:{"id":$("#product-modal").attr("product-id"), "amount":$("#currentLevel").val()},
+			success:function(data) {
+				if (!data.success) {
+					bootbox.alert("Could not change value");
+					return;
+				}
+			}
+		});
 	});
 	$("#clearProductName").on("click", function() {
 		$('#ProductName').val('').focus();
@@ -873,133 +887,6 @@ $(document).ready( function() {
 		}
 	},200);
 });
-function chartTest(id, data) {
-	if (!data) {
-		$.ajax({
-			url:"api/kvs.php?function=GETPRODUCTSALES",
-			data: {"id":id, "end":moment(moment().format("YYYY-MM-DD")).unix(), "start":moment(moment().subtract(1, "months").format("YYYY-MM-DD")).unix()},
-			success:function(data) {
-				if (!data.success) {
-					return;
-				}
-				console.log(data);
-			}
-		});
-		$.ajax({
-			url:"api/kvs.php?function=GETPRODUCTLEVELS",
-			data: {"id":id},
-			success: function(data) {
-				if (!data.success) {
-					return;
-				}
-				$("#currentLevel").val((parseInt(data.product.current_stock)+parseInt(data.product.current_display)));
-				$("#graphReorderLevel").val(data.product.lowest_reorder);
-				$("#graphMaxLevel").val(data.product.max_stock);
-				$("#graphDisplayLevel").val(data.product.current_display);
-				chartTest(id, data.product);
-			}
-		});	
-		return;
-	}
-	var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-	var chartColors = {
-		red: 'rgb(255, 99, 132)',
-		orange: 'rgb(255, 159, 64)',
-		yellow: 'rgb(255, 205, 86)',
-		green: 'rgb(75, 192, 192)',
-		blue: 'rgb(54, 162, 235)',
-		purple: 'rgb(153, 102, 255)',
-		grey: 'rgb(201, 203, 207)'
-	};
-	var product = getTransaction().products[$("#product-modal").attr("product-id")];
-	var intervals = [];
-	var dataPoints = [];
-	var maxStock = [];
-	var reorderLevel = []; //re-order level
-	var onDisplay = [];
-	var date = moment();
-	var currentMonth = date.month();
-	date.subtract(date.date()-1, "days");
-	while (currentMonth==date.month()) {
-		intervals.push(date.format("DD"));
-		date.add(1, "days");
-	}
-	console.log(data);
-	for (var i=0;i<intervals.length;i++) {
-		dataPoints.push(0);
-		onDisplay.push(data.max_display);
-		reorderLevel.push(data.lowest_reorder);
-		maxStock.push(data.max_stock);
-	}
-	var config = {
-		type: 'line',
-		data: {
-		    labels: intervals,
-		    datasets: [{
-		        label: "Re-order level",
-		        backgroundColor: chartColors.red,
-		        borderColor: chartColors.red,
-		        data: reorderLevel,
-		        fill: false,
-		    },
-		    {
-		        label: "To Display",
-		        fill: false,
-		        backgroundColor: chartColors.grey,
-		        borderColor: chartColors.grey,
-		        data: onDisplay,
-		    },
-		    {
-		        label: "Max Volume",
-		        fill: false,
-		        backgroundColor: chartColors.blue,
-		        borderColor: chartColors.blue,
-		        data: maxStock,
-		    },
-		    {
-		        label: "Estimated Stock",
-		        fill: false,
-		        backgroundColor: chartColors.blue,
-		        borderColor: chartColors.blue,
-		        data: dataPoints,
-		    }]
-		},
-		options: {
-		    responsive: true,
-		    title:{
-		        display:false,
-		        text:('Estimated Stock for ' + product.name)
-		    },
-		    tooltips: {
-		        mode: 'index',
-		        intersect: false,
-		    },
-		    hover: {
-		        mode: 'nearest',
-		        intersect: true
-		    },
-		    scales: {
-		        xAxes: [{
-		            display: true,
-		            scaleLabel: {
-		                display: true,
-		                labelString: moment().format("MMMM")
-		            }
-		        }],
-		        yAxes: [{
-		            display: true,
-		            scaleLabel: {
-		                display: true,
-		                labelString: '# of stock'
-		            }
-		        }]
-		    }
-		}
-	};
-	var ctx = document.getElementById("canvas").getContext("2d");
-	window.myLine = new Chart(ctx, config);
-	var colorNames = Object.keys(chartColors);
-}
 function OfflineStorage() {
 	var transactionsKey = "transStorageKey";
 	this.put = function(key, value) {

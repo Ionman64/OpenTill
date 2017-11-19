@@ -11,27 +11,14 @@
 	  <section class="modal-body">
 	  	<section class="container-fluid page hidden" data-id="stock">
 	  		<section class="row">
-	  			<section class="col-md-3">
-					<label>Current Level</label>
-					<input type="number" id="currentLevel" value=0 class="form-control"/>
-				</section>
-	  			<section class="col-md-3">
-					<label>Max Volume</label>
-					<input type="number" id="graphMaxLevel" value=0 class="form-control"/>
-				</section>
-				<section class="col-md-3">
-					<label>On Display</label>
-					<input type="number" id="graphDisplayLevel" value=0 class="form-control"/>
-				</section>
-				<section class="col-md-3">
-					<label>Re-order Level</label>
-					<input type="number" id="graphReorderLevel" value=0 class="form-control"/>
-				</section>
-	  		</section>
-	  		<section class="row">
 	  			<section class="col-md-12">
-					<canvas id="canvas"></canvas>
-				</section>
+						<label>Max Stock Level</label>
+						<input type="number" id="maxStockLevel" value=0 class="form-control input-lg"/>
+					</section>
+					<section class="col-md-12">
+						<label>Current Stock Level</label>
+						<input type="number" id="currentLevel" value=0 class="form-control input-lg"/>
+					</section>
 	  		</section>
 	  	</section>
 	  	<section class="container-fluid page" data-id="details">

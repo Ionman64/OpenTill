@@ -136,6 +136,12 @@
 		case 'GETPRODUCTSLEVELS':
 			get_products_levels();
 			break;
+		case "CHANGEMAXSTOCKLEVEL":
+			set_max_stock_level();
+			break;
+		case "CHANGECURRENTSTOCKLEVEL":
+			set_current_stock_level();
+			break;
 		default:
 			error_out('No such function');
 	}
@@ -231,30 +237,47 @@
 	}
 	function decrement_product_level($product, $decrement_amount=1) {
 		$db = get_pdo_connection();
-		$stmt = $db->prepare('UPDATE kvs_inventory_levels SET current_display=current_display-? WHERE product = ? AND max_stock > -1');
+		$stmt = $db->prepare('UPDATE kvs_tblproducts SET current_stock=current_stock-? WHERE id = ? AND current_stock > 0');
 		$stmt->bindValue(1, $decrement_amount);
 		$stmt->bindValue(2, $product);
 		$stmt->execute();
 	}
-	function move_stock_to_display($product, $decrement_amount=1) {
+	function increment_product_level($product, $increment_amount=1) {
 		$db = get_pdo_connection();
-		$stmt = $db->prepare('UPDATE kvs_inventory_levels SET current_display=current_display+?, current_stock=current_stock-? WHERE product = ? AND max_stock > -1');
-		$stmt->bindValue(1, $decrement_amount);
-		$stmt->bindValue(1, $decrement_amount);
-		$stmt->bindValue(3, $product);
+		$stmt = $db->prepare('UPDATE kvs_tblproducts SET current_stock=current_stock+? WHERE id = ?');
+		$stmt->bindValue(1, $increment_amount);
+		$stmt->bindValue(2, $product);
 		$stmt->execute();
 	}
-	function set_display_level($product) {
+	function set_max_stock_level() {
+		$id = get_param('id', null);
+		$amount = get_param('amount', null);
+		if ($id == null || $amount == null) {
+			error_out('missing fields');
+		}
 		$db = get_pdo_connection();
-		$stmt = $db->prepare('UPDATE kvs_inventory_levels SET current_display=max_display WHERE product = ?');
-		$stmt->bindValue(1, $product);
-		$stmt->execute();
+		$stmt = $db->prepare('UPDATE kvs_tblproducts SET max_stock=? WHERE id = ?');
+		$stmt->bindValue(1, $amount);
+		$stmt->bindValue(2, $id);
+		if ($stmt->execute()) {
+			success_out();
+		}
+		error_out();
 	}
-	function set_stock_level($product) {
+	function set_current_stock_level() {
+		$id = get_param('id', null);
+		$amount = get_param('amount', null);
+		if ($id == null || $amount == null) {
+			error_out('missing fields');
+		}
 		$db = get_pdo_connection();
-		$stmt = $db->prepare('UPDATE kvs_inventory_levels SET current_stock=max_stock WHERE product = ?');
-		$stmt->bindValue(1, $product);
-		$stmt->execute();
+		$stmt = $db->prepare('UPDATE kvs_tblproducts SET current_stock=? WHERE id = ?');
+		$stmt->bindValue(1, $amount);
+		$stmt->bindValue(2, $id);
+		if ($stmt->execute()) {
+			success_out();
+		}
+		error_out();
 	}
 	function get_products_levels() {
 		$db = get_pdo_connection();

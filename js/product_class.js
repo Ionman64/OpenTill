@@ -9,6 +9,8 @@ function Product() {
 	this.department = null;
 	this.priceOverride = false;
 	this.updated = 0;
+	this.maxStock = 0;
+	this.currentStock = 0;
 	this.comment = ""; //Is the product on sale, or has missing data?
 	//this.override(overridden) {
 		

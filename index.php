@@ -205,7 +205,7 @@
 			<section class="row">
 				<section class="col-md-2">
 					<p class="navbar-text" id="menu-button"><i class="fa fa-bars fa-2x"></i></p>
-					<p class="navbar-text" id="non-barcode-btn"><i class="fa fa-search fa-2x"></i></p>
+					<p class="navbar-text hidden" id="non-barcode-btn"><i class="fa fa-search fa-2x"></i></p>
 				</section>
 				<section class="col-md-2">
 					<h2 class="navbar-text navbar-left" id="operator-name"></h2>
