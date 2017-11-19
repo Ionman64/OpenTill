@@ -97,12 +97,12 @@ function Takings(){
 				if (!data.success) {
 					alert("Error collecting totals");
 				}
-				populate_table(data.totals);
+				window.takings.populate_table(data.totals);
 			}
 		});
 	}
 	this.populate_table = function(data) {
-		var holder = document.getElementById("viewport");
+		var holder = document.getElementById("takings-viewport");
 		$(holder).empty();
 		var section = el("section");
 		var table = el("table");
@@ -113,7 +113,7 @@ function Takings(){
 		var th = el("th");
 		th.innerHTML = "Date";
 		tr.appendChild(th);
-		var departments = window.departments;
+		var departments = window.departmentNames;
 		for (var i=0;i<departments.length;i++) {
 			var th = el("th");
 			th.className = "head";
@@ -129,11 +129,11 @@ function Takings(){
 		var tbody = el("tbody");
 		$.each(data, function(date, totals) {
 			var total = 0.00;
-			var tr = el("tr");
+			var tr = el("tr", {"data-start":moment(date).unix(), "data-end":moment(date).add(1, "days").subtract(1, "seconds").unix()});
 			var td = el("td");
 			td.innerHTML = date;
 			tr.appendChild(td);
-			$.each(window.departments, function(id, department) {
+			$.each(window.departmentNames, function(id, department) {
 				var td = el("td");
 				var amount = parseFloat(totals[department.id] ? totals[department.id] : "0.00");
 				total = total + amount;
@@ -148,7 +148,13 @@ function Takings(){
 		table.appendChild(tbody);
 		section.appendChild(table);
 		holder.appendChild(section);
-		$(table).DataTable({
+		$(table).on("click", "tr", function() {
+			if (!$(this).attr("data-start") || !$(this).attr("data-end")) {
+				return;
+			}
+			window.takings.get_transactions($(this).attr("data-start"), $(this).attr("data-end"));
+		});
+		/*$(table).DataTable({
 			responsive: true,
 			dom: 'Bfrtip',
 			buttons: [
@@ -161,18 +167,9 @@ function Takings(){
 				'print'
 			],
 			"order": [[ 0, "desc" ]]
-		});
+		});*/
 	}
-	$("#takings-table").on("click", "tr", function() {
-		alert("hello");
-		if (!$(this).attr("data-start") || !$(this).attr("data-end")) {
-			return;
-		}
-		alert("again");
-		window.takings.get_transactions($(this).attr("data-start"), $(this).attr("data-end"));
-	});
 }
 function formatMoney(amount) {
 	return accounting.formatMoney(amount, "");
 }
-

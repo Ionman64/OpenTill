@@ -3,25 +3,16 @@
 		<section class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
 			
 		</section>
-		<section class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+		<section class="col-lg-6 col-md-6 col-sm-8 col-xs-6">
 			<h4>Name</h4>
 		</section>
-		<section class="col-lg-1 col-md-1 col-sm-1 col-xs-2">
+		<section class="col-lg-2 col-md-2 col-sm-1 col-xs-2">
 			<h4>Max Stock<br><span class="sub-text">(Including Display)</span></h4>
 		</section>
-		<section class="col-lg-1 col-md-1 col-sm-1 col-xs-2">
+		<section class="col-lg-2 col-md-2 col-sm-1 col-xs-2">
 			<h4>In Stock<br><span class="sub-text">(Including Display)</span></h4>
 		</section>
-		<section class="col-lg-1 col-md-1 col-sm-1 hidden-xs">
-			
-		</section>
-		<section class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
-			<h4>Max Display</h4>
-		</section>
-		<section class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
-			<h4>On Display</h4>
-		</section>
-		<section class="col-lg-1 col-md-1 col-sm-1 hidden-xs">
+		<section class="col-lg-1 col-md-1 col-sm-1 col-xs-1 hidden-xs">
 			
 		</section>
 	</section>

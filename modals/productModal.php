@@ -23,7 +23,7 @@
 	  	</section>
 	  	<section class="container-fluid page" data-id="details">
 	  		<section class="row">
-	  			<section class="col-md-6 keypad" data-focus="#ProductPrice">
+	  			<section class="col-lg-6 col-md-6 hidden-sm hidden-xs keypad" data-focus="#ProductPrice">
 	  				<section class="row" style="padding-top:10px">
 						<section class="col-md-4">
 							<button class="btn btn-danger no-digit" data-function="clear-button">Clear</button>
@@ -80,7 +80,7 @@
 						</section>
 					</section>
 	  			</section>
-	  			<section class="col-md-6">
+	  			<section class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 	  				<form>
 					  <section class="form-group">
 						<label for="ProductBarcode" class="control-label">Barcode:</label>

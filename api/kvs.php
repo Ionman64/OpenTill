@@ -281,7 +281,7 @@
 	}
 	function get_products_levels() {
 		$db = get_pdo_connection();
-		$stmt = $db->prepare('SELECT kvs_tblproducts.id, kvs_tblproducts.name, kvs_inventory_levels.max_stock, kvs_inventory_levels.max_display, kvs_inventory_levels.lowest_reorder, kvs_inventory_levels.current_display, kvs_inventory_levels.current_stock FROM kvs_inventory_levels LEFT JOIN kvs_tblproducts ON kvs_tblproducts.id = kvs_inventory_levels.product WHERE current_display < max_display OR current_stock < max_stock');
+		$stmt = $db->prepare('SELECT id, name, current_stock, max_stock FROM kvs_tblproducts WHERE current_stock < max_stock');
 		$stmt->execute();
 		$arr = array();
 		while ($rs = $stmt->fetch(PDO::FETCH_ASSOC)) {
