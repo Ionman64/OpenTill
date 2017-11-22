@@ -1,4 +1,5 @@
 function Suppliers() {
+	this.suppliers = {};
 	this.showSupplier = function(id) {
 		$.ajax({
 			url:"api/kvs.php?function=GETSUPPLIER",
@@ -59,7 +60,10 @@ function Suppliers() {
 					bootbox.alert("There has been an error");
 					return;
 				}
-				window.suppliers.populate_table({"name":"Name"}, data.suppliers);
+				$.each(data.suppliers, function(key, value) {
+					window.suppliers.suppliers[key] = value;
+				});
+				window.suppliers.populate_table();
 			}
 		});
 	}
@@ -117,16 +121,16 @@ function Suppliers() {
 			}
 		});
 	}
-	this.populate_table = function(columns, data) {
+	this.populate_table = function() {
 		var holder = document.getElementById("suppliers-viewport");
 		$(holder).empty();
-		if (data.length == 0) {
+		if (this.suppliers.length == 0) {
 			var h3 = el("h3");
 			h3.innerHTML = "No Suppliers Yet";
 			holder.appendChild(h3);
 			return;
 		}
-		$.each(data, function(key, item) {
+		$.each(this.suppliers, function(key, item) {
 			var row = el("section", {class:"row selectable", "data-id":item.id});
 			//Date
 			var col = el("section", {class:"col-lg-12 col-md-12 col-sm-12 col-xs-12"});

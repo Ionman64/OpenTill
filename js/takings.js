@@ -23,7 +23,7 @@ function Takings(){
 				window.takings.get_takings();
 			}
 		});
-		var date = moment().subtract(9, "days");
+		/*var date = moment().subtract(9, "days");
 		var currentTimestamp = parseInt(moment().format("x"));
 		while (currentTimestamp > parseInt(moment(date.format("YYYY-MM-DD")).format("x"))) {
 			var col = el("section", {class:"col-md-1 table-box"});
@@ -31,8 +31,7 @@ function Takings(){
 			col.appendChild(label);
 			$("#dates-header").append(col);
 			date.add(1, "days");
-		}
-		
+		}*/
 	}
 	this.get_transactions = function(start, end) {
 		$.ajax({

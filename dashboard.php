@@ -33,6 +33,7 @@
 	<script type="text/javascript" src="js/suppliers.js"></script>
 	<script type="text/javascript" src="js/inventory.js"></script>
 	<script type="text/javascript" src="js/departments.js"></script>
+	<script type="text/javascript" src="js/orders.js"></script>
 	<script type="text/javascript" src="js/dashboard.js"></script>
 	<link href="css/dashboard.css" rel="stylesheet" type="text/css"/>
 	<title>KVS-Dashboard</title>
@@ -67,10 +68,10 @@
 							<span>Departments</span>
 						</section>
 					</section>
-					<section class="menu-button custom-btn-violet text-center">
+					<section class="menu-button custom-btn-violet text-center" data-page="pane-primary-orders">
 						<i class="fa fa-tags"></i>
 						<section class="footer">
-							<span>Labels</span>
+							<span>Orders</span>
 						</section>
 					</section>
 					<br class="col-xs-hidden col-sm-hidden"/>
@@ -147,10 +148,14 @@
 			<div class="tab hidden" id="pane-primary-departments" data-page-name="Departments">
 				<?php require("views/departments.php"); ?>
 			</div>
+			<div class="tab hidden" id="pane-primary-orders" data-page-name="Orders">
+				<?php require("views/orders.php"); ?>
+			</div>
 		</section>
         </section>
     </section>
 	<?php require_once("modals/transactionProducts.php"); ?>
 	<?php require_once("modals/productModal.php"); ?>
+	<?php require_once("modals/supplierModal.php") ?>
 </body>
 </html>

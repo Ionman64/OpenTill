@@ -637,8 +637,8 @@ $(document).ready( function() {
 				return;
 			}
 			window.supplierArray = [];
-			data.suppliers.forEach(function(item) {
-				window.supplierArray.push({name:item.name, id:item.id});
+			$(data.suppliers, function(key, item) {
+				window.supplierArray.push({name:item.name, id:key});
 			});
 		}
 	});

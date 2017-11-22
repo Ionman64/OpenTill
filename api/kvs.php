@@ -142,6 +142,12 @@
 		case "CHANGECURRENTSTOCKLEVEL":
 			set_current_stock_level();
 			break;
+		case "CREATEORDER":
+			create_order();
+			break;
+		case "GETORDERS":
+			get_orders();
+			break;
 		default:
 			error_out('No such function');
 	}
@@ -191,6 +197,29 @@
 	}
 	function is_logged_in() {
 		isset($_SESSION["user"]) ? success_out() : error_out();
+	}
+	function get_orders() {
+		$db = get_pdo_connection();
+		$stmt = $db->prepare('SELECT kvs_tblorders.id, kvs_tblorders.supplier AS supplierId, kvs_tblsuppliers.name FROM kvs_tblorders LEFT JOIN kvs_tblsuppliers ON kvs_tblsuppliers.id = kvs_tblorders.supplier');
+		$stmt->execute();
+		$orders = array();
+		while ($rs = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			array_push($orders, $rs);
+		}
+		die (json_encode(array("success"=>true, "products"=>$orders)));
+	}
+	function create_order() {
+		$guid = GUID();
+		$supplier = get_param('supplier', null);
+		if ($supplier == null) {
+			error_out('missing fields');
+		}
+		$db = get_pdo_connection();
+		$stmt = $db->prepare('INSERT INTO kvs_tblorders (id, supplier, created, updated) VALUES (?, ?, ?, ?)');
+		if ($stmt->execute(array($guid, $supplier, time(), time()))) {
+			die (json_encode(array("success"=>true)));
+		}
+		error_out();
 	}
 	function save_label() {
 		$id = get_param('id', null);
@@ -743,7 +772,7 @@
 		$stmt->execute();
 		$arr = array();
 		while ($rs = $stmt->fetch(PDO::FETCH_ASSOC)) {
-			$arr[] = $rs;
+			$arr[$rs["id"]] = $rs;
 		}
 		die (json_encode(array("success"=>true, "suppliers"=>$arr)));
 	}

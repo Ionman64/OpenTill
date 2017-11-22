@@ -219,6 +219,8 @@ $(document).ready(function() {
 	window.inventory.init();
 	window.departments = new Departments();
 	window.departments.init();
+	window.orders = new Orders();
+	window.orders.init();
 	$.ajax({
 		url:"api/kvs.php?function=GETPRODUCT",
 		data:{"id":"EBCDB3C0-E71F-4EFC-AB5F-EDBE1119E687"},
