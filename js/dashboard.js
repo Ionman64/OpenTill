@@ -221,6 +221,10 @@ $(document).ready(function() {
 	window.departments.init();
 	window.orders = new Orders();
 	window.orders.init();
+	$(window).resize(function() {
+		$('.viewport').height($(window).height() - 107);
+	});
+	$(window).trigger('resize');
 	$.ajax({
 		url:"api/kvs.php?function=GETPRODUCT",
 		data:{"id":"EBCDB3C0-E71F-4EFC-AB5F-EDBE1119E687"},

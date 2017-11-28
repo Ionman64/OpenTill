@@ -7,10 +7,10 @@
 			<h4>Name</h4>
 		</section>
 		<section class="col-lg-2 col-md-2 col-sm-1 col-xs-2">
-			<h4>Max Stock<br><span class="sub-text">(Including Display)</span></h4>
+			<h4>Max Stock<span class="sub-text italic"> (inc. Display)</span></h4>
 		</section>
 		<section class="col-lg-2 col-md-2 col-sm-1 col-xs-2">
-			<h4>In Stock<br><span class="sub-text">(Including Display)</span></h4>
+			<h4>In Stock<span class="sub-text italic"> (inc. Display)</span></h4>
 		</section>
 		<section class="col-lg-1 col-md-1 col-sm-1 col-xs-1 hidden-xs">
 			
