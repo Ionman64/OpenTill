@@ -16,7 +16,7 @@
 			
 		</section>
 	</section>
-	<section class="row">
+	<section class="row viewport">
 		<section class="col-md-12">
 			<section id="inventory-table">
 	
