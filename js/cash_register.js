@@ -468,7 +468,7 @@ function getMessage() {
 $(document).ready( function() {
 	$.ajaxSetup({
 		method:"POST",
-		dataType:"JSON"
+		dataType:"json"
 	});
 	$(".notify").on("click", function() {
 		$("#chat-modal").modal("show");
@@ -636,9 +636,8 @@ $(document).ready( function() {
 				bootbox.alert("There was an getting the suppliers");
 				return;
 			}
-			window.supplierArray = [];
-			$(data.suppliers, function(key, item) {
-				window.supplierArray.push({name:item.name, id:key});
+			$.each(data.suppliers, function(key, item) {
+				window.supplierArray[key] = item;
 			});
 		}
 	});
