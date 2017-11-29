@@ -20,7 +20,7 @@ function Transaction() {
 	}
 	this.refundItems = function() {
 		this.type = "REFUND";
-		this.sync(true);
+		this.completeTransaction();
 	}
 	this.getProductsJSON = function() {
 		json = {}
