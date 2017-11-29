@@ -519,7 +519,7 @@
 			error_out("missing fields");
 		}
 		$db = get_pdo_connection();
-		$stmt = $db->prepare('SELECT kvs_transactions.id AS "id", kvs_operators.name AS cashier, (SELECT COUNT(*) FROM kvs_transactiontoproducts WHERE kvs_transactiontoproducts.transaction_id = kvs_transactions.id) AS "#Products", kvs_transactions.card AS "card", kvs_transactions.ended AS "ended", kvs_transactions.cashback AS "cashback", kvs_transactions.money_given AS "money_given", kvs_transactions.payee AS "payee", kvs_transactions.type AS "type", kvs_transactions.total AS "total" FROM kvs_transactions LEFT JOIN kvs_operators ON kvs_transactions.cashier = kvs_operators.id WHERE (kvs_transactions.ended BETWEEN ? AND ?) AND kvs_transactions.cashier NOT IN (?) ORDER BY kvs_transactions.ended, kvs_transactions.type');
+		$stmt = $db->prepare('SELECT kvs_transactions.id AS "id", kvs_operators.name AS cashier, (SELECT COUNT(*) FROM kvs_transactiontoproducts WHERE kvs_transactiontoproducts.transaction_id = kvs_transactions.id) AS "#Products", kvs_transactions.card AS "card", kvs_transactions.ended AS "ended", kvs_transactions.cashback AS "cashback", kvs_transactions.money_given AS "money_given", kvs_transactions.payee AS "payee", kvs_transactions.type AS "type", kvs_transactions.total AS "total" FROM kvs_transactions LEFT JOIN kvs_operators ON kvs_transactions.cashier = kvs_operators.id WHERE (kvs_transactions.ended BETWEEN ? AND ?) AND kvs_transactions.cashier NOT IN (?) ORDER BY kvs_transactions.type DESC, kvs_transactions.ended');
 		$stmt->bindValue(1, $start, PDO::PARAM_INT);
 		$stmt->bindValue(2, $end, PDO::PARAM_INT);
 		$stmt->bindValue(3, $admin, PDO::PARAM_STR);
@@ -528,27 +528,7 @@
 		while ($rs = $stmt->fetch(PDO::FETCH_ASSOC)) {
 			array_push($arr, $rs);
 		}
-		die (json_encode(array("success"=>true, "start"=>$start, "end"=>$end, "transactions"=>array_merge($arr, get_payouts()))));	
-	}
-	function get_payouts() {
-		$admin = 'a10f653a-6c20-11e7-b34e-426562cc935f';
-		$start = get_param('start', null);
-		$end = get_param('end', null);
-		if (($start == null) || ($end == null)) {
-			error_out("missing fields");
-		}
-		$db = get_pdo_connection();
-		$stmt = $db->prepare('SELECT kvs_transactions.id, kvs_operators.name AS cashier, kvs_transactions.card, kvs_transactions.ended, kvs_transactions.cashback, kvs_transactions.money_given, kvs_transactions.payee, kvs_transactions.type, kvs_transactions.total FROM kvs_transactions LEFT JOIN kvs_operators ON kvs_operators.id = kvs_transactions.cashier WHERE (kvs_transactions.started > ? AND kvs_transactions.ended < ?) AND kvs_transactions.cashier NOT IN (?) AND (kvs_transactions.ended > 0) AND type = ? ORDER BY kvs_transactions.ended');
-		$stmt->bindValue(1, $start, PDO::PARAM_INT);
-		$stmt->bindValue(2, $end, PDO::PARAM_INT);
-		$stmt->bindValue(3, $admin, PDO::PARAM_STR);
-		$stmt->bindValue(4, 'PAYOUT', PDO::PARAM_STR);
-		$stmt->execute();
-		$arr = array();
-		while ($rs = $stmt->fetch(PDO::FETCH_ASSOC)) {
-			array_push($arr, $rs);
-		}
-		return $arr;
+		die (json_encode(array("success"=>true, "start"=>$start, "end"=>$end, "transactions"=>$arr)));	
 	}
 	function start_transaction() {
 		$operator = get_param('cashier_id', null);
