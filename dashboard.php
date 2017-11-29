@@ -119,7 +119,7 @@
 							<h4 id="page-name" style="padding:9px;">Takings</h4>
 						</section>
 						<section class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-							<a href="index.php"><button class="btn btn-default btn-lg pull-right" style="margin:10px">Back to Register</button></a>
+							<a href="index.php"><button class="btn btn-default btn-lg pull-right" style="margin:10px">Register</button></a>
 						</section>
 					</section>
 				</section>

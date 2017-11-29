@@ -35,7 +35,7 @@ function Takings(){
 	}
 	this.get_transactions = function(start, end) {
 		$.ajax({
-			url:"api/kvs.php?function=GETTRANSACTIONS",
+			url:"api/kvs.php?function=GETDAYTOTALS",
 			data:{"start":start, "end":end},
 			dataType: "JSON",
 			method:"POST",
@@ -43,39 +43,18 @@ function Takings(){
 				if (!data.success) {
 					alert("Error collecting totals");
 				}
-				var refunds = 0.00;
-				var cardGiven = 0.00;
-				var totalTransactions = 0.00;
-				var totalPayouts = 0.00;
-				var payoutsGiven = 0.00;
-				var total = 0.00;
-				var payouts = 0.00;
-				var cashback = 0.00;
-				$.each(data.transactions, function(key, item) {
-					switch (item.type) {
-						case "PURCHASE":
-							totalTransactions++;
-							cardGiven += parseFloat(item.card);
-							total += parseFloat(item.total);
-							cashback += parseFloat(item.cashback);
-							break;
-						case "REFUND":
-							refunds += parseFloat(item.total);
-							total -= parseFloat(item.total); //Take away refunds from takings
-							break;
-						case "PAYOUT":
-							payouts++;
-							payoutsGiven += parseFloat(item.total);
-							break;
-					}
-				});
-				$("#payouts").html(formatMoney(payoutsGiven));
+				var refunds = parseFloat(data["refunds"]);
+				var cardGiven = parseFloat(data["card"]);
+				var total = parseFloat(data["takings"]);
+				var payouts = parseFloat(data["payouts"]);
+				var cashback = parseFloat(data["cashback"]);
+				$("#payouts").html(formatMoney(payouts));
 				$("#refunds").html(formatMoney(refunds));
 				$("#card-payments").html(formatMoney(cardGiven));
 				$("#takings").html(formatMoney(total));
 				$("#cashback").html(formatMoney(cashback));
 				var cashid = total;
-				cashid -= payoutsGiven;
+				cashid -= payouts;
 				cashid -= (cardGiven-cashback);
 				cashid -= (cashback*2); //this is taken away twice because it is added as a product
 				$("#cash-id").html(formatMoney(cashid));

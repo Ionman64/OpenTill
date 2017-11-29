@@ -28,6 +28,9 @@
 		case 'GETTRANSACTIONS':
 			get_transactions();
 			break;
+		case 'GETDAYTOTALS':
+			get_day_totals();
+			break;
 		case 'COMPLETETRANSACTION':
 			complete_transaction();
 			break;
@@ -516,7 +519,7 @@
 			error_out("missing fields");
 		}
 		$db = get_pdo_connection();
-		$stmt = $db->prepare('SELECT kvs_transactiontoproducts.transaction_id AS "id", ANY_VALUE(kvs_operators.name) AS cashier, COUNT(kvs_transactiontoproducts.transaction_id) AS "#Products", ANY_VALUE(kvs_transactions.card) AS "card", ANY_VALUE(kvs_transactions.ended) AS "ended", ANY_VALUE(kvs_transactions.cashback) AS "cashback", ANY_VALUE(kvs_transactions.money_given) AS "money_given", ANY_VALUE(kvs_transactions.payee) AS "payee", ANY_VALUE(kvs_transactions.type) AS "type", ANY_VALUE(kvs_transactions.total) AS "total" FROM kvs_transactions LEFT JOIN kvs_operators ON kvs_operators.id = kvs_transactions.cashier INNER JOIN kvs_transactiontoproducts ON kvs_transactiontoproducts.transaction_id = kvs_transactions.id WHERE (ANY_VALUE(kvs_transactions.ended) BETWEEN ? AND ?) AND ANY_VALUE(kvs_transactions.cashier) NOT IN (?) GROUP BY kvs_transactiontoproducts.transaction_id ORDER BY ANY_VALUE(kvs_transactions.ended)');
+		$stmt = $db->prepare('SELECT kvs_transactions.id AS "id", kvs_operators.name AS cashier, (SELECT COUNT(*) FROM kvs_transactiontoproducts WHERE kvs_transactiontoproducts.transaction_id = kvs_transactions.id) AS "#Products", kvs_transactions.card AS "card", kvs_transactions.ended AS "ended", kvs_transactions.cashback AS "cashback", kvs_transactions.money_given AS "money_given", kvs_transactions.payee AS "payee", kvs_transactions.type AS "type", kvs_transactions.total AS "total" FROM kvs_transactions LEFT JOIN kvs_operators ON kvs_transactions.cashier = kvs_operators.id WHERE (kvs_transactions.ended BETWEEN ? AND ?) AND kvs_transactions.cashier NOT IN (?) ORDER BY kvs_transactions.ended, kvs_transactions.type');
 		$stmt->bindValue(1, $start, PDO::PARAM_INT);
 		$stmt->bindValue(2, $end, PDO::PARAM_INT);
 		$stmt->bindValue(3, $admin, PDO::PARAM_STR);
@@ -735,6 +738,109 @@
 		}
 		return $arr;
 	}
+	function get_day_totals() {
+		die (json_encode(array('success'=>true, 'card'=>card_given(), 'cashback'=>cashback(), 'takings'=>takings(), 'refunds'=>day_refunds(), 'payouts'=>payouts())));
+	}
+	function day_refunds() {
+		$admin = 'a10f653a-6c20-11e7-b34e-426562cc935f';
+		$start = get_param('start', null);
+		$end = get_param('end', null);
+		if ($start == null || $end == null) {
+			error_out("missing fields");
+		}
+		$db = get_pdo_connection();
+		$stmt = $db->prepare('SELECT SUM(kvs_transactiontoproducts.price) AS "amount" FROM kvs_transactiontoproducts LEFT JOIN kvs_transactions ON kvs_transactions.id = kvs_transactiontoproducts.transaction_id WHERE (kvs_transactions.started > ? AND kvs_transactions.ended < ?) AND kvs_transactions.cashier NOT IN (?) AND kvs_transactions.type in (?) AND (kvs_transactions.ended > 0) GROUP BY kvs_transactiontoproducts.department');
+		$stmt->bindValue(1, $start, PDO::PARAM_INT);
+		$stmt->bindValue(2, $end, PDO::PARAM_INT);
+		$stmt->bindValue(3, $admin, PDO::PARAM_STR);
+		$stmt->bindValue(4, 'REFUND', PDO::PARAM_STR);
+		$stmt->execute();
+		$arr = array();
+		if ($rs = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			return ($rs["amount"]);
+		}
+		return 0.00;
+	}
+	function card_given() {
+		$admin = 'a10f653a-6c20-11e7-b34e-426562cc935f';
+		$start = get_param('start', null);
+		$end = get_param('end', null);
+		if ($start == null || $end == null) {
+			error_out("missing fields");
+		}
+		$db = get_pdo_connection();
+		$stmt = $db->prepare('SELECT SUM(kvs_transactions.card) AS "amount" FROM kvs_transactions WHERE (kvs_transactions.started > ? AND kvs_transactions.ended < ?) AND kvs_transactions.cashier NOT IN (?) AND kvs_transactions.type in (?) AND (kvs_transactions.ended > 0)');
+		$stmt->bindValue(1, $start, PDO::PARAM_INT);
+		$stmt->bindValue(2, $end, PDO::PARAM_INT);
+		$stmt->bindValue(3, $admin, PDO::PARAM_STR);
+		$stmt->bindValue(4, 'PURCHASE', PDO::PARAM_STR);
+		$stmt->execute();
+		$arr = array();
+		if ($rs = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			return ($rs["amount"]);
+		}
+		return 0.00;
+	}
+	function cashback() {
+		$admin = 'a10f653a-6c20-11e7-b34e-426562cc935f';
+		$start = get_param('start', null);
+		$end = get_param('end', null);
+		if ($start == null || $end == null) {
+			error_out("missing fields");
+		}
+		$db = get_pdo_connection();
+		$stmt = $db->prepare('SELECT SUM(kvs_transactions.cashback) AS "amount" FROM kvs_transactions WHERE (kvs_transactions.started > ? AND kvs_transactions.ended < ?) AND kvs_transactions.cashier NOT IN (?) AND kvs_transactions.type in (?) AND (kvs_transactions.ended > 0)');
+		$stmt->bindValue(1, $start, PDO::PARAM_INT);
+		$stmt->bindValue(2, $end, PDO::PARAM_INT);
+		$stmt->bindValue(3, $admin, PDO::PARAM_STR);
+		$stmt->bindValue(4, 'PURCHASE', PDO::PARAM_STR);
+		$stmt->execute();
+		$arr = array();
+		if ($rs = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			return ($rs["amount"]);
+		}
+		return 0.00;
+	}
+	function takings() {
+		$admin = 'a10f653a-6c20-11e7-b34e-426562cc935f';
+		$start = get_param('start', null);
+		$end = get_param('end', null);
+		if ($start == null || $end == null) {
+			error_out("missing fields");
+		}
+		$db = get_pdo_connection();
+		$stmt = $db->prepare('SELECT SUM(kvs_transactions.total) AS "amount" FROM kvs_transactions WHERE (kvs_transactions.started > ? AND kvs_transactions.ended < ?) AND kvs_transactions.cashier NOT IN (?) AND kvs_transactions.type in (?) AND (kvs_transactions.ended > 0)');
+		$stmt->bindValue(1, $start, PDO::PARAM_INT);
+		$stmt->bindValue(2, $end, PDO::PARAM_INT);
+		$stmt->bindValue(3, $admin, PDO::PARAM_STR);
+		$stmt->bindValue(4, 'PURCHASE', PDO::PARAM_STR);
+		$stmt->execute();
+		$arr = array();
+		if ($rs = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			return ($rs["amount"]);
+		}
+		return 0.00;
+	} 
+	function payouts() {
+		$admin = 'a10f653a-6c20-11e7-b34e-426562cc935f';
+		$start = get_param('start', null);
+		$end = get_param('end', null);
+		if ($start == null || $end == null) {
+			error_out("missing fields");
+		}
+		$db = get_pdo_connection();
+		$stmt = $db->prepare('SELECT IFNULL(SUM(kvs_transactions.total), 0.00) AS "amount" FROM kvs_transactions WHERE (kvs_transactions.started > ? AND kvs_transactions.ended < ?) AND kvs_transactions.cashier NOT IN (?) AND kvs_transactions.type in (?) AND (kvs_transactions.ended > 0)');
+		$stmt->bindValue(1, $start, PDO::PARAM_INT);
+		$stmt->bindValue(2, $end, PDO::PARAM_INT);
+		$stmt->bindValue(3, $admin, PDO::PARAM_STR);
+		$stmt->bindValue(4, 'PAYOUT', PDO::PARAM_STR);
+		$stmt->execute();
+		$arr = array();
+		if ($rs = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			return ($rs["amount"]);
+		}
+		return 0.00;
+	} 
 	function totals() {
 		$none_catagory = "5b82f89a-7b71-11e7-b34e-426562cc935f";
 		$admin = 'a10f653a-6c20-11e7-b34e-426562cc935f';
