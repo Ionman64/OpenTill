@@ -561,7 +561,7 @@
 		}
 		return false;
 	}
-	function write_transaction_file_to_database($id, $json=null, $type="REFUND") {
+	function write_transaction_file_to_database($id, $json=null, $type="PURCHASE") {
 		if ($json==null) {
 			error_out('Transaction file not formatted correctly');
 		}
@@ -608,7 +608,7 @@
 		}
 		$db = get_pdo_connection();
 		$stmt = $db->prepare('UPDATE kvs_transactions SET ended = ?, total = ?, cashback=?, money_given = ?, card = ?, type=?, payee=? WHERE id=? AND cashier=?');
-		if (write_transaction_file_to_database($id, $json)) {
+		if (write_transaction_file_to_database($id, $json, $type)) {
 			if ($stmt->execute(array(time(), $total, $cashback, $money_given, $card, $type, $payee, $id, $cashier_id))) {
 				L("Transaction ($id) COMPLETED by operator ($cashier_id)");
 				success_out();
