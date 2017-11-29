@@ -97,7 +97,7 @@ function payout(amount) {
 		getTransaction().total = amount;
 		getTransaction().type = "PAYOUT";
 		getTransaction().payee = $(this).attr("data-id");
-		getTransaction().sync(true);
+		getTransaction().completeTransaction();
 		e.stopPropagation();
 		$("#supplierModal").modal("hide");
 		notify($(this).attr("data-search") + " Paid £" + formatMoney(amount));
@@ -806,7 +806,6 @@ $(document).ready( function() {
 				getTransaction().products[id].price = $("#ProductPrice").val();
 				getTransaction().products[id].department = parseFloat($("#ProductDepartment").val());
 				getTransaction().products[id].name = $("#ProductName").val();
-				getTransaction().sync();
 				$("#product-modal").modal("hide");
 				refreshTable();
 			}
