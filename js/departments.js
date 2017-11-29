@@ -1,4 +1,5 @@
 function Departments() {
+	this.departmentsList = {};
 	this.showDepartment = function(id) {
 		$.ajax({
 			url:"api/kvs.php?function=GETDEPARTMENT",
@@ -57,6 +58,9 @@ function Departments() {
 					bootbox.alert("There has been an error");
 					return;
 				}
+				$.each(data.departments, function(key, value) {
+					window.departments.departmentsList[key] = value;
+				});
 				window.departments.populate_table({"name":"Name", "shorthand":"Short Hand"}, data.departments);
 			}
 		});

@@ -310,11 +310,19 @@
 	}
 	function get_products_levels() {
 		$db = get_pdo_connection();
-		$stmt = $db->prepare('SELECT id, name, current_stock, max_stock FROM kvs_tblproducts WHERE current_stock < max_stock');
+		$stmt = $db->prepare('SELECT kvs_tblproducts.id, kvs_tblproducts.name, kvs_tblproducts.current_stock, kvs_tblproducts.max_stock, kvs_tblcatagories.colour, kvs_tblcatagories.name AS "department" FROM kvs_tblproducts LEFT JOIN kvs_tblcatagories ON kvs_tblproducts.department = kvs_tblcatagories.id WHERE kvs_tblproducts.current_stock < kvs_tblproducts.max_stock ORDER BY kvs_tblproducts.name');
 		$stmt->execute();
 		$arr = array();
 		while ($rs = $stmt->fetch(PDO::FETCH_ASSOC)) {
-			$arr[$rs["id"]] = $rs;
+			$department = $rs["department"];
+			if (!isset($arr[$department])) {
+				$arr[$department] = array("colour"=>$rs["colour"]);
+			}
+			$id = $rs["id"];
+			unset($rs["id"]);
+			unset($rs["colour"]);
+			unset($rs["department"]);
+			$arr[$department][$id] = $rs;
 		}
 		die (json_encode(array("success"=>true, "products"=>$arr)));
 	}
