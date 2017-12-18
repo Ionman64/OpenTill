@@ -502,7 +502,7 @@
 			error_out('missing fields');
 		}
 		$db = get_pdo_connection();
-		$stmt = $db->prepare('SELECT kvs_tblproducts.id, kvs_tblproducts.name,  kvs_transactiontoproducts.price, IFNULL(kvs_tblproducts.name, kvs_tblcatagories.name) as "name" FROM kvs_transactiontoproducts LEFT JOIN kvs_tblproducts ON kvs_tblproducts.id = kvs_transactiontoproducts.product_id LEFT JOIN kvs_tblcatagories ON kvs_tblcatagories.id = kvs_transactiontoproducts.department WHERE kvs_transactiontoproducts.transaction_id = ?');
+		$stmt = $db->prepare('SELECT COUNT(*) AS "quantity", kvs_tblproducts.id, kvs_transactiontoproducts.price, IFNULL(kvs_tblproducts.name, kvs_tblcatagories.name) AS "name" FROM kvs_transactiontoproducts LEFT JOIN kvs_tblproducts ON kvs_tblproducts.id = kvs_transactiontoproducts.product_id LEFT JOIN kvs_tblcatagories ON kvs_tblcatagories.id = kvs_transactiontoproducts.department WHERE kvs_transactiontoproducts.transaction_id = ? GROUP BY kvs_tblproducts.id, kvs_transactiontoproducts.price');
 		$stmt->bindValue(1, $id, PDO::PARAM_STR);
 		$stmt->execute();
 		$arr = array();

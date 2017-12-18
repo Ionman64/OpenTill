@@ -7,6 +7,12 @@ function Transactions() {
 			}
 			window.transactions.showTransaction($(this).attr("data-id"));
 		});
+		$("#product-list").on("click", ".selectable", function() {
+			if ($(this).attr("data-id") == "") {
+				return;
+			}
+			window.open("https://www.goldstandardresearch.co.uk/kvs/product.php?id=" + $(this).attr("data-id"), '_blank');
+		});
 	}
 	this.get_transactions = function() {
 		var date = moment();
@@ -120,27 +126,18 @@ function Transactions() {
 				var transQuantity = 0;
 				$.each(data.products, function(key, item) {
 					var total
-					var row = el("section", {class:"row selectable"});
+					var row = el("section", {class:"row selectable", "data-id":item.id ? item.id : ""});
 					//quantity
 					var col = el("section", {class:"col-md-2 col-xs-2 col-sm-2"});
 					var label = el("label");
-					label.innerHTML = 1;
+					label.innerHTML = item.quantity;
 					//transQuantity += parseInt(item.quantity);
 					col.appendChild(label);
 					row.appendChild(col);
 					//name
 					var col = el("section", {class:"col-md-8 col-xs-8 col-sm-8"});
-					var label = el("label");
-					if (item.id) {
-						var a = el("a");
-						a.href = "https://www.goldstandardresearch.co.uk/kvs/product.php?id=" + item.id;
-						a.target = "_blank";
-						a.innerHTML = item.name;
-						label.appendChild(a);
-					}
-					else {
-						label.innerHTML = item.name;
-					}
+					var label = el("label", {class:item.id ? "text-info" : ""});
+					label.innerHTML = item.name;
 					col.appendChild(label);
 					row.appendChild(col);
 					//price
