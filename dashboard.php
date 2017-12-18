@@ -23,9 +23,10 @@
 	<!--ChartJS-->
 	<script type="text/javascript" src="thirdParty/chartJS/js/chart.bundle.js"></script>
 	<!--bootstrap-->
-	<link rel="stylesheet" href="thirdParty/bootstrap/css/bootstrap.css"/>
 	<link rel="stylesheet" href="thirdParty/bootstrap/css/bootstrap.min.css"/>
 	<script src="thirdParty/bootstrap/js/bootstrap.min.js"></script>
+	<!--Bootbox-->
+	<script src="thirdParty/bootbox/js/bootbox.min.js"></script>
 	<!--custom-->
 	<script type="text/javascript" src="js/takings.js"></script>
 	<script type="text/javascript" src="js/transactions.js"></script>
@@ -115,8 +116,20 @@
 				<section class="container-fluid">
 					<section class="row">
 						<section class="col-lg-10 col-md-10 col-sm-10 col-xs-10" style="padding-top:5px;">
-							<p id="menu-button"><i class="fa fa-bars fa-3x"></i></p>
-							<h4 id="page-name" style="padding:9px;">Takings</h4>
+							<p id="menu-button" class="navbar-text"><i class="fa fa-bars fa-3x"></i></p>
+								<p class="dropdown navbar-text">
+									<h4 class="dropdown-toggle" style="padding-top:9px;" id="page-name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+										Takings
+										<span class="caret"></span>
+									</h4>
+									<ul id="page-dropdown-menu" class="dropdown-menu" aria-labelledby="dropdownMenu1">
+										<li><a href="#">Action</a></li>
+										<li><a href="#">Another action</a></li>
+										<li><a href="#">Something else here</a></li>
+										<li role="separator" class="divider"></li>
+										<li><a href="#">Separated link</a></li>
+									</ul>
+								</p>
 						</section>
 						<section class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
 							<a href="index.php"><button class="btn btn-default btn-lg pull-right" style="margin:10px">Register</button></a>

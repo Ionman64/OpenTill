@@ -224,6 +224,7 @@
 		</div>
 	</section>
 	<?php require_once("modals/productModal.php"); ?>
+	<?php require_once("modals/caseModal.php"); ?>
 	<?php require_once("modals/cashOut.php"); ?>
 	<?php require_once("modals/productMenuModal.php"); ?>
 	<?php require_once("modals/priceOverrideModal.php"); ?>

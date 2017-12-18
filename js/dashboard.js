@@ -203,6 +203,18 @@ $(document).ready(function() {
 		$(".tab").addClass("hidden");
 		$("#" + $(this).attr("data-page")).removeClass("hidden");
 		$("#page-name").html($("#" + $(this).attr("data-page")).attr("data-page-name"));
+		$("#page-dropdown-menu").empty();
+		if ($(this).attr("data-page").toLowerCase()) {
+			$.each(window.operators.menuItems, function(key, value) {
+				var li = el("li");
+				var a = el("a", {html:key, "data-id":key, class:"context-menu-btn"});
+				li.appendChild(a);
+				$("#page-dropdown-menu").append(li);
+			});
+		}
+		$(".context-menu-btn").on("click", function() {
+			window.operators.createOperator();
+		});
 	});
 	$("#menu-button").click(function() {
 		$("#menu").hasClass("hidden") ? $("#menu").removeClass("hidden") : $("#menu").addClass("hidden");

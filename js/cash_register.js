@@ -284,7 +284,8 @@ function showProduct(brcode) {
 function addProduct(data) {
 	//Data should be JSON 
 	if (data.isCase) {
-		//Do nothing
+		$("#case-modal").modal("show");
+		return;
 	}
 	if (data.name == "Error") {
 		bootbox.alert("Invalid product");

@@ -979,6 +979,7 @@
 		$name = get_param('name', null);
 		$telephone = get_param('telephone', null);
 		$email = get_param('email', null);
+		$password = get_param('password', null);
 		$website = get_param('website', null);
 		$comments = get_param('comments', null);
 		if ($name == null) {
@@ -987,14 +988,15 @@
 		$db = get_pdo_connection();
 		$guid = GUID();
 		$code = explode("-", GUID())[0]; //generates the first part of a UUID for a barcode key
-		$stmt = $db->prepare('INSERT INTO kvs_operators (id, code, name, telephone, email, created, updated) VALUES (?,?,?,?,?,?,?)');
+		$stmt = $db->prepare('INSERT INTO kvs_operators (id, code, name, passwordHash, telephone, email, created, updated) VALUES (?,?,?,?,?,?,?,?)');
 		$stmt->bindValue(1, $guid, PDO::PARAM_STR);
 		$stmt->bindValue(2, $code, PDO::PARAM_STR);
 		$stmt->bindValue(3, $name, PDO::PARAM_STR);
-		$stmt->bindValue(4, $telephone, PDO::PARAM_STR);
-		$stmt->bindValue(5, $email, PDO::PARAM_STR);
-		$stmt->bindValue(6, time(), PDO::PARAM_INT);
+		$stmt->bindValue(4, hash("sha512", $password), PDO::PARAM_STR);
+		$stmt->bindValue(5, $telephone, PDO::PARAM_STR);
+		$stmt->bindValue(6, $email, PDO::PARAM_STR);
 		$stmt->bindValue(7, time(), PDO::PARAM_INT);
+		$stmt->bindValue(8, time(), PDO::PARAM_INT);
 		if ($stmt->execute()) {
 			die (json_encode(array("success"=>true, "id"=>$guid)));
 		}

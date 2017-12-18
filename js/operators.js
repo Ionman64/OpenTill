@@ -1,4 +1,7 @@
 function Operators() {
+	this.menuItems = {
+		"Create New Operator":this.createOperator
+	}
 	this.showOperator = function(id) {
 		$.ajax({
 			url:"api/kvs.php?function=GETOPERATOR",
@@ -29,7 +32,7 @@ function Operators() {
 		$("#operator-comments").val("");
 	}
 	this.createOperator = function() {
-		window.operators.clearOperatorModal();
+		this.clearOperatorModal();
 		$("#operatorInfo").attr("data-id", null).modal("show");
 	}
 	this.deleteOperator = function() {
