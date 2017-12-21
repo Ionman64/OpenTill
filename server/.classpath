@@ -66,5 +66,7 @@
 	<classpathentry kind="lib" path="/home/lemongrab/Documents/OpenTill/server/thirdParty/jetty-distribution-9.4.8.v20171121/lib/annotations/javax.annotation-api-1.2.jar"/>
 	<classpathentry kind="lib" path="/home/lemongrab/Documents/OpenTill/server/thirdParty/jetty-distribution-9.4.8.v20171121/lib/annotations/asm-commons-6.0.jar"/>
 	<classpathentry kind="lib" path="/home/lemongrab/Documents/OpenTill/server/thirdParty/jetty-distribution-9.4.8.v20171121/lib/annotations/asm-6.0.jar"/>
+	<classpathentry kind="lib" path="/home/lemongrab/Documents/OpenTill/server/thirdParty/json-simple-1.1.1.jar"/>
+	<classpathentry kind="lib" path="/home/lemongrab/Documents/OpenTill/server/thirdParty/mysql-connector-java-5.1.45/mysql-connector-java-5.1.45-bin.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
