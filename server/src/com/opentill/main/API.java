@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 //import org.omg.CORBA.Request;
 
-public class Application extends AbstractHandler
+public class API extends AbstractHandler
 {
 	@Override
 	public void handle(String target, org.eclipse.jetty.server.Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
