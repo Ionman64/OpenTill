@@ -1,9 +1,8 @@
 package com.opentill.main;
 
+import com.opentill.logging.*;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-
-import com.opentill.log.Log;
 
 public class Main {
 		public static final int PORT = 8080;
