@@ -14,10 +14,10 @@
 							<button class="btn btn-danger no-digit" data-function="clear-button">Clear</button>
 						</section>
 						<section class="col-md-4">
-							<button class="btn btn-default no-digit" data-function="no-sale" disabled>N/S</button>
+							<button class="btn btn-default no-digit" data-function="no-sale" disabled="disabled">N/S</button>
 						</section>
 						<section class="col-md-4">
-							<button class="btn btn-info no-digit" data-function="pay-out" disabled>P/O</button>
+							<button class="btn btn-info no-digit" data-function="pay-out" disabled="disabled">P/O</button>
 						</section>
 					</section>
 	  				<section class="row" style="padding-top:10px">
@@ -67,37 +67,21 @@
 	  			</section>
 			<section class="col-md-6">
 			  <section class="form-group">
-				  <?php
-					//outputs the buttons for the change given
-					$path = "img/currency/uk/";
-					$images = ['Fifty_Pound.jpg', 'Twenty_Pound.jpg', 'Ten_Pound.jpg', 'Five_Pound.jpg', 'Two_Pound.jpg', 'One_Pound.jpg'];
-					$CurrencyValue = [50.00, 20.00, 10.00, 5.00, 2.00, 1.00];
-					$i = 0;
-					foreach ($images as $image) {
-						echo ("<button class='btn btn-default money-given-button' moneyvalue='" . $CurrencyValue[$i] . "'><img src='" . $path . $image . "'/></button>");
-						$i++;
-					}
-					$images = ['Fifty_Pence.jpg', 'Twenty_Pence.jpg', 'Ten_Pence.jpg', 'Five_Pence.jpg', 'Two_Pence.jpg', 'One_Penny.jpg']; 
-					$CurrencyValue = [0.50, 0.20, 0.10, 0.05, 0.02, 0.01];
-					$i=0;
-					foreach ($images as $image) {
-						echo ("<button class='btn btn-default money-given-button' moneyvalue='" . $CurrencyValue[$i] . "'><img src='" . $path . $image . "'/></button>");
-						$i++;
-					}
-			  ?>
+			  	
+				  <button class="btn btn-default money-given-button" moneyvalue="50"><img src="img/currency/uk/Fifty_Pound.jpg"></button><button class="btn btn-default money-given-button" moneyvalue="20"><img src="img/currency/uk/Twenty_Pound.jpg"></button><button class="btn btn-default money-given-button" moneyvalue="10"><img src="img/currency/uk/Ten_Pound.jpg"></button><button class="btn btn-default money-given-button" moneyvalue="5"><img src="img/currency/uk/Five_Pound.jpg"></button><button class="btn btn-default money-given-button" moneyvalue="2"><img src="img/currency/uk/Two_Pound.jpg"></button><button class="btn btn-default money-given-button" moneyvalue="1"><img src="img/currency/uk/One_Pound.jpg"></button><button class="btn btn-default money-given-button" moneyvalue="0.5"><img src="img/currency/uk/Fifty_Pence.jpg"></button><button class="btn btn-default money-given-button" moneyvalue="0.2"><img src="img/currency/uk/Twenty_Pence.jpg"></button><button class="btn btn-default money-given-button" moneyvalue="0.1"><img src="img/currency/uk/Ten_Pence.jpg"></button><button class="btn btn-default money-given-button" moneyvalue="0.05"><img src="img/currency/uk/Five_Pence.jpg"></button><button class="btn btn-default money-given-button" moneyvalue="0.02"><img src="img/currency/uk/Two_Pence.jpg"></button><button class="btn btn-default money-given-button" moneyvalue="0.01"><img src="img/currency/uk/One_Penny.jpg"></button>			  
 			  </section>
 			  <section class="form-group">
 				<label for="costText" class="control-label text-danger">Total</label>
-				<input type="text" id="costText" class="form-control input-lg" placeholder="Cost" disabled>	
+				<input type="text" id="costText" class="form-control input-lg" placeholder="Cost" disabled="disabled"></input>
 				<label for="moneyText" class="control-label text-danger">Money Given</label>
 				<section class="input-group">
-					<input type="text" id="moneyText" class="form-control input-lg" placeholder="0.00" disabled>
+					<input type="text" id="moneyText" class="form-control input-lg" placeholder="0.00" disabled="disabled"></input>
 					<section class="input-group-btn">
 						<button class="btn btn-default btn-lg" id="clearChange">Clear</button>
 					</section>
 				</section>
 				<label for="changeText" class="control-label text-danger">Change Due</label>
-				<input type="text" id="changeText" class="form-control input-lg" placeholder="0.00" disabled>
+				<input type="text" id="changeText" class="form-control input-lg" placeholder="0.00" disabled="disabled"></input>
 			  </section>
 			</section>
 		</section>

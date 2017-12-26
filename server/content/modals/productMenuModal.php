@@ -2,7 +2,7 @@
   <section class="modal-dialog">
 	<section class="modal-content">
 	  <section class="modal-header">
-		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<button class="btn btn-default pull-right" data-dismiss="modal" aria-label="Close">Close</button>
 		<h4 class="modal-title" id="productMenuName">Unknown Item</h4>
 	  </section>
 	  <section class="modal-body">

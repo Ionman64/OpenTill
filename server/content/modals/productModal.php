@@ -2,7 +2,7 @@
   <section class="modal-dialog modal-lg">
 	<section class="modal-content">
 	  <section class="modal-header">
-		<button type="button" class="btn btn-default pull-right" data-dismiss="modal" aria-label="Close">Close</button>
+		<button class="btn btn-default pull-right" data-dismiss="modal" aria-label="Close">Close</button>
 		<ul class="nav nav-pills pull-left" id="productModalNav">
 		  <li class="active"><a href="#" data-page="details">Details</a></li>
 		  <li><a href="#" data-page="stock">Inventory</a></li> 
@@ -13,11 +13,11 @@
 	  		<section class="row">
 	  			<section class="col-md-12">
 						<label>Max Stock Level</label>
-						<input type="number" id="maxStockLevel" value=0 class="form-control input-lg"/>
+						<input type="number" id="maxStockLevel" value="0" class="form-control input-lg"></input>
 					</section>
 					<section class="col-md-12">
 						<label>Current Stock Level</label>
-						<input type="number" id="currentLevel" value=0 class="form-control input-lg"/>
+						<input type="number" id="currentLevel" value="0" class="form-control input-lg"></input>
 					</section>
 	  		</section>
 	  	</section>
@@ -29,10 +29,10 @@
 							<button class="btn btn-danger no-digit" data-function="clear-button">Clear</button>
 						</section>
 						<section class="col-md-4">
-							<button class="btn btn-default no-digit" data-function="no-sale" disabled>N/S</button>
+							<button class="btn btn-default no-digit" data-function="no-sale" disabled="disabled">N/S</button>
 						</section>
 						<section class="col-md-4">
-							<button class="btn btn-info no-digit" data-function="pay-out" disabled>P/O</button>
+							<button class="btn btn-info no-digit" data-function="pay-out" disabled="disabled">P/O</button>
 						</section>
 					</section>
 	  				<section class="row" style="padding-top:10px">
@@ -84,12 +84,12 @@
 	  				<form>
 					  <section class="form-group">
 						<label for="ProductBarcode" class="control-label">Barcode:</label>
-						<input type="text" class="form-control input-lg" id="ProductBarcode" readonly>
+						<input type="text" class="form-control input-lg" id="ProductBarcode" readonly="readonly"></input>
 					  </section>
 					  <section class="form-group">
 					  	<label for="ProductName" class="control-label text-default">Name:</label>
 		  				<section class="input-group">
-							<input id="ProductName" class="form-control input-lg" placeholder="Name" type="text">
+							<input id="ProductName" class="form-control input-lg" placeholder="Name" type="text"></input>
 							<section class="input-group-btn">
 								<button class="btn btn-default btn-lg" id="clearProductName">Clear</button>
 							</section>
@@ -105,7 +105,7 @@
 						  <label for="ProductPrice" class="control-label text-success">Price:</label>
 						  <section class="input-group">
 							<span class="input-group-addon">£</span>
-							<input type="text" class="form-control input-lg" id="ProductPrice">
+							<input type="text" class="form-control input-lg" id="ProductPrice"></input>
 						  </section>
 					  </section>
 					</form>

@@ -2,7 +2,7 @@
   <section class="modal-dialog modal-lg">
 	<section class="modal-content">
 	  <section class="modal-header">
-		<button type="button" class="btn btn-default pull-right" data-dismiss="modal" aria-label="Close">Close</button>
+		<button class="btn btn-default pull-right" data-dismiss="modal" aria-label="Close">Close</button>
 		<h4 class="modal-title">Chat</h4>
 	  </section>
 	  <section class="modal-body" id="chat-window">
@@ -16,9 +16,9 @@
 				<section class="input-group-btn">
 					<select id="chat-contact" class="form-control input-lg input-group-addon" data-live-search="true" title="All"></select>
 				</section>
-				<input id="chat-message" class="form-control input-lg" placeholder="Enter your message here" type="text" maxlength="200">
+				<input id="chat-message" class="form-control input-lg" placeholder="Enter your message here" type="text" maxlength="200"></input>
 				<section class="input-group-btn">
-					<input value="Enter" id="chat-submit" class="btn btn-default btn-lg" type="submit">
+					<input value="Enter" id="chat-submit" class="btn btn-default btn-lg" type="submit"></input>
 				</section>
 			</section>
 			<p class="text-info italic pull-left">*For problems, best message admin</p>

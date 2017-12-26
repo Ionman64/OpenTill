@@ -2,7 +2,7 @@
   <section class="modal-dialog modal-lg">
 	<section class="modal-content">
 	  <section class="modal-header">
-		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<button class="btn btn-default pull-right" data-dismiss="modal" aria-label="Close">Close</button>
 		<h4 class="modal-title" id="productMenuName">Unknown Item</h4>
 	  </section>
 	  <section class="modal-body">
@@ -14,10 +14,10 @@
 							<button class="btn btn-danger no-digit" data-function="clear-button">Clear</button>
 						</section>
 						<section class="col-md-4">
-							<button class="btn btn-default no-digit" data-function="no-sale" disabled>N/S</button>
+							<button class="btn btn-default no-digit" data-function="no-sale" disabled="disabled">N/S</button>
 						</section>
 						<section class="col-md-4">
-							<button class="btn btn-info no-digit" data-function="pay-out" disabled>P/O</button>
+							<button class="btn btn-info no-digit" data-function="pay-out" disabled="disabled">P/O</button>
 						</section>
 					</section>
 	  				<section class="row" style="padding-top:10px">
@@ -68,11 +68,11 @@
 	  			<section class="col-md-6">
 					  <section class="form-group">
 						<label for="originalPrice" class="control-label">Original Price</label>
-						<input type="text" id="original-price" class="form-control input-lg" disabled>
+						<input type="text" id="original-price" class="form-control input-lg" disabled="disabled"></input>
 					  </section>
 					  <section class="form-group">
 						<label for="newPrice" class="control-label">New Price</label>
-						<input type="text" id="overide-price" class="form-control input-lg">
+						<input type="text" id="overide-price" class="form-control input-lg"></input>
 					  </section>
 				</section>
   			</section>

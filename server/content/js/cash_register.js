@@ -173,10 +173,8 @@ function refreshTable() {
 		row.appendChild(section);
 		//name
 		var section = el("section", {class:"col-lg-4 col-md-4 col-sm-4 col-xs-4"});
-		var button = el("button", {class:"btn btn-default", html:product.name});
-		if (product.inDatabase)
-			button.onclick = function() {showMenu(product.id)};
-		else
+		var button = el("button", {class:"btn btn-default product-button", html:product.name, "data-id":product.id});
+		if (!product.inDatabase)
 			button.disabled = "disabled";
 		section.appendChild(button);
 		row.appendChild(section);
@@ -222,6 +220,9 @@ function refreshTable() {
 	$("#no-goods").addClass("hidden");
 	$("#table-holder").removeClass("hidden");
 	refreshTotals();
+	$("#table").on("click", ".product-button", function() {
+		showMenu($(this).attr("data-id"));
+	});
 	$('#table-holder').jScrollPane({
 		verticalGutter:-16,
 		animateScroll: true
@@ -285,10 +286,6 @@ function addProduct(data) {
 	//Data should be JSON 
 	if (data.isCase) {
 		$("#case-modal").modal("show");
-		return;
-	}
-	if (data.name == "Error") {
-		bootbox.alert("Invalid product");
 		return;
 	}
 	var tempProduct = new Product();
@@ -466,11 +463,31 @@ function getMessage() {
 		}
 	});
 }
+function loadModals() {
+	var modals= ["modals/productModal.php", 
+	"modals/caseModal.php", 
+	"modals/cashOut.php", 
+	"modals/productMenuModal.php", 
+	"modals/priceOverrideModal.php", 
+	"modals/newProduct.php", 
+	"modals/supplierModal.php", 
+	"modals/chat.php"];
+	for (var i=0;i<modals.length;i++) {
+		$.ajax({
+			method:"GET",
+			dataType:"HTML",
+			success: function(data) {
+				$(document).append(data);
+			}
+		});
+	}
+}
 $(document).ready( function() {
 	$.ajaxSetup({
 		method:"POST",
 		dataType:"json"
 	});
+	loadModals();
 	$(".notify").on("click", function() {
 		$("#chat-modal").modal("show");
 		$("#chat-window").animate({ scrollTop: $("#chat-window-inner").height() }, 1000);

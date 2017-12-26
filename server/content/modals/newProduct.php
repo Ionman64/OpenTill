@@ -2,7 +2,7 @@
   <section class="modal-dialog modal-lg">
 	<section class="modal-content">
 	  <section class="modal-header">
-		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<button class="btn btn-default pull-right" data-dismiss="modal" aria-label="Close">Close</button>
 		<h4 class="modal-title" id="TansactionName">You have added a new Product</h4>
 	  </section>
 	  <section class="modal-body">
@@ -14,10 +14,10 @@
 							<button class="btn btn-danger no-digit" data-function="clear-button">Clear</button>
 						</section>
 						<section class="col-md-4">
-							<button class="btn btn-default no-digit" data-function="no-sale" disabled>N/S</button>
+							<button class="btn btn-default no-digit" data-function="no-sale" disabled="disabled">N/S</button>
 						</section>
 						<section class="col-md-4">
-							<button class="btn btn-info no-digit" data-function="pay-out" disabled>P/O</button>
+							<button class="btn btn-info no-digit" data-function="pay-out" disabled="disabled">P/O</button>
 						</section>
 					</section>
 	  				<section class="row" style="padding-top:10px">
@@ -69,7 +69,7 @@
 	  				<section class="form-group">
 	  					<label for="newName" class="control-label text-default">Name of this item?</label>
 		  				<section class="input-group">
-							<input id="newName" class="form-control input-lg" placeholder="Name" type="text">
+							<input id="newName" class="form-control input-lg" placeholder="Name" type="text"></input>
 							<section class="input-group-btn">
 								<button class="btn btn-default btn-lg" id="clearNewProductName">Clear</button>
 							</section>
@@ -84,7 +84,7 @@
 				  		<label for="ProductCost" class="control-label">Cost:</label>
 						<section class="input-group">
 							<span class="input-group-addon">£</span>
-							<input type="text" class="form-control input-lg" id="newCost" placeholder="Cost">
+							<input type="text" class="form-control input-lg" id="newCost" placeholder="Cost"></input>
 						</section>	
 				  	</section>
 	  			</section>

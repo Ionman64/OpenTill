@@ -13,9 +13,9 @@
 <head>
 	<title>OpenTill</title>
 	<link rel="shortcut icon" href="img/site/icon.ico">
-	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
-	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; img-src 'self' http://localhost:8888/drawer http://127.0.0.1:8888/drawer http://localhost:8888/receipt http://127.0.0.1:8888/receipt; style-src 'self' 'unsafe-inline'"/>
-	<meta name="robots" content="noindex, nofollow"/>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; img-src 'self' http://localhost:8888/drawer http://127.0.0.1:8888/drawer http://localhost:8888/receipt http://127.0.0.1:8888/receipt; style-src 'self' 'unsafe-inline'">
+	<meta name="robots" content="noindex, nofollow">
 	<meta name="viewport" content="width=device-width, user-scalable=no">
 	<!--jQuery-->
 	<script type="text/javascript" src="thirdParty/jQuery/js/jquery.min.js"></script>
@@ -223,13 +223,20 @@
 			</section>
 		</div>
 	</section>
-	<?php require_once("modals/productModal.php"); ?>
-	<?php require_once("modals/caseModal.php"); ?>
-	<?php require_once("modals/cashOut.php"); ?>
-	<?php require_once("modals/productMenuModal.php"); ?>
-	<?php require_once("modals/priceOverrideModal.php"); ?>
-	<?php require_once("modals/newProduct.php"); ?>
-	<?php require_once("modals/supplierModal.php"); ?>
-	<?php require_once("modals/chat.php"); ?>
+	
+	<jsp:include page="modals/productMenuModal.php"></jsp:include>
+	<jsp:include page="modals/cashOut.php"></jsp:include>
+	<jsp:include page="modals/caseModal.php"></jsp:include>
+	<jsp:include page="modals/chat.php"></jsp:include>
+	<jsp:include page="modals/departmentInfo.php"></jsp:include>
+	<jsp:include page="modals/newProduct.php"></jsp:include>
+	<jsp:include page="modals/operatorInfo.php"></jsp:include>
+	<jsp:include page="modals/orderModal.php"></jsp:include>
+	<jsp:include page="modals/priceOverrideModal.php"></jsp:include>
+	<jsp:include page="modals/productModal.php"></jsp:include>
+	<jsp:include page="modals/supplierInfo.php"></jsp:include>
+	<jsp:include page="modals/supplierModal.php"></jsp:include>
+	<jsp:include page="modals/takings.php"></jsp:include>
+	<jsp:include page="modals/transactionProducts.php"></jsp:include>
 </body>
 </html>
