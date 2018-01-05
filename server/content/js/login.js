@@ -8,7 +8,7 @@ $(document).ready(function() {
         data:{},
         success:function(data){
             if (data.success) {
-                window.location = "dashboard.php";
+                window.location = "dashboard.jsp";
                 return;
             }
         }
@@ -24,7 +24,7 @@ function login() {
         data:{"email":$("#inputEmail").val(), "password":$("#inputPassword").val()},
         success:function(data){
             if (data.success) {
-                window.location = "dashboard.php";
+                window.location = "dashboard.jsp";
                 return;
             }
             $("#serverMessage").html(data.reason).removeClass("hidden");

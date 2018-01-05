@@ -69,7 +69,7 @@
 	</section>
 	<section class="menu overlay overlay-ontop hidden" id="menu">
 		<section class="menu-buttons">
-			<a href="dashboard.php">
+			<a href="login.jsp">
 				<section class="menu-button btn-info text-center">
 					<i class="fa fa-dashboard"></i>
 					<section class="footer">

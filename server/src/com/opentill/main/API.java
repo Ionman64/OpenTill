@@ -19,12 +19,21 @@ package com.opentill.main;
 //
 
 import org.json.simple.*;
+import org.json.simple.parser.*;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
+import javax.mail.Session;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.session.SessionHandler;
+import org.eclipse.jetty.webapp.WebAppContext;
 
 import com.opentill.logging.Log;
 import com.opentill.database.DatabaseHandler;
@@ -33,27 +42,35 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.UUID;
 
+import org.eclipse.jetty.http2.server.HTTP2ServerSession;
 import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.SessionIdManager;
 
 public class API extends ContextHandler
 {
-	public API (String context) {
+	private SessionHandler sessionHandler;
+	public API (WebAppContext webAppContext, String context) {
 		super.setContextPath(context);
 		super.setAllowNullPathInfo(true); ///Allows Post
+		this.sessionHandler = webAppContext.getSessionHandler();
 	}
 	@Override
 	public void doHandle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		// TODO Auto-generated method stub
 		response.setContentType("application/json; charset=utf-8");
 		response.setStatus(HttpServletResponse.SC_OK);
+		if (baseRequest.getSessionHandler() == null) {
+			SessionHandler handler = new SessionHandler();
+			handler.setMaxInactiveInterval(3600);
+			baseRequest.setSessionHandler(handler);
+		}
 		switch (baseRequest.getParameter("function")) {
 			case "BARCODE":
 				barcode(baseRequest, response);
-				break;
-			case "OPERATORLOGON":
-				operatorLogin(baseRequest, response);
 				break;
 			case "TRANSACTION":
 				startTransaction(baseRequest, response);
@@ -61,16 +78,611 @@ public class API extends ContextHandler
 			case "DEPARTMENTS":
 				getDepartments(response);
 				break;
+			case "LOGIN":
+				login(baseRequest, response);
+				break;
+			case "LOGOUT":
+				logout(baseRequest, response);
+				break;
+			case "GETTRANSACTION":
+				getTransactionProducts(baseRequest, response);
+				break;
+			case "GETPRODUCTSALES":
+				getProductTransactions(baseRequest, response);
+				break;
+			case "GETTRANSACTIONS":
+				getTransactions(baseRequest, response);
+				break;
+			case "GETDAYTOTALS":
+				getDayTotals(baseRequest, response);
+				break;
+			case "COMPLETETRANSACTION":
+				completeTransaction(baseRequest, response);
+				break;
+			case "CLEARTRANSACTION":
+				cancelTransaction(baseRequest, response);
+				break;
+			case "UPDATEPRODUCT":
+				updateProduct(baseRequest, response);
+				break;
+			case "GETPRODUCT":
+				getProduct(baseRequest, response);
+				break;
+			case "PRINTLABEL":
+				//printLabel(baseRequest, response);
+				break;
 			case "GETALLSUPPLIERS":
+				//getAllSuppliers(baseRequest, response);
+				break;
+			case "GETSUPPLIER":
+				//selectSupplier(baseRequest, response);
+				break;
+			case "UPDATESUPPLIER":
+				//updateSupplier(baseRequest, response);
+				break;
+			case "ADDSUPPLIER":
+				//createSupplier(baseRequest, response);
+				break;
+			case "DELETESUPPLIER":
+				//deleteSupplier(baseRequest, response);
+				break;
+			case "GETALLOPERATORS":
+				//getAllOperators(baseRequest, response);
+				break;
+			case "GETOPERATOR":
+				//selectOperator(baseRequest, response);
+				break;
+			case "UPDATEOPERATOR":
+				//updateOperator(baseRequest, response);
+				break;
+			case "ADDOPERATOR":
+				//createOperator(baseRequest, response);
+				break;
+			case "DELETEOPERATOR":
+				//deleteOperator(baseRequest, response);
+				break;
+			case "GETALLDEPARTMENTS":
+				//getAllDepartments(baseRequest, response);
+				break;
+			case "GETDEPARTMENT":
+				//selectDepartment(baseRequest, response);
+				break;
+			case "UPDATEDEPARTMENT":
+				//updateDepartment(baseRequest, response);
+				break;
+			case "ADDDEPARTMENT":
+				//createDepartment(baseRequest, response);
+				break;
+			case "DELETEDEPARTMENT":
+				//deleteDepartment(baseRequest, response);
+				break;
+			case "SEARCH":
+				//search(baseRequest, response);
+				break;
+			case "TAKINGS":
+				//getTakings(baseRequest, response);
+				break;
+			case "SAVETAKINGS":
+				//saveTakings(baseRequest, response);
+				break;
+			case "CLEARLABELS":
+				//clearLabels(baseRequest, response);
+				break;
+			case "OPERATORLOGON":
+				operatorLogin(baseRequest, response);
+				break;
+			case "TOTALS":
+				//totals(baseRequest, response);
+				break;
+			case "SENDMESSAGE":
+				//sendMessage(baseRequest, response);
 				break;
 			case "GETMESSAGES":
 				getMessages(baseRequest, response);
 				break;
+			case "SAVELABELSTYLE":
+				//saveLabel(baseRequest, response);
+				break;
+			case "GETLABELSTYLE":
+				//getLabelStyle(baseRequest, response);
+				break;
+			case "GETLABELSTYLES":
+				//getLabelStyles(baseRequest, response);
+				break;
+			case "ISLOGGEDIN":
+				//isLoggedIn(baseRequest, response);
+				break;
+			case "GETPRODUCTLEVELS":
+				//getProductLevels(baseRequest, response);
+				break;
+			case "GETPRODUCTSLEVELS":
+				//getProductsLevels(baseRequest, response);
+				break;
+			case "CHANGEMAXSTOCKLEVEL":
+				//setMaxStockLevel(baseRequest, response);
+				break;
+			case "CHANGECURRENTSTOCKLEVEL":
+				//setCurrentStockLevel(baseRequest, response);
+				break;
+			case "CREATEORDER":
+				//createOrder(baseRequest, response);
+				break;
+			case "GETORDERS":
+				//getOrders(baseRequest, response);
+				break;
 			default:
 				errorOut(response, "No such function");
+				break;
 		}
 	    // Inform jetty that this request has now been handled
 	    baseRequest.setHandled(true);
+	}
+	
+	private void getProduct(Request baseRequest, HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		
+	}
+	private void updateProduct(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		// TODO Auto-generated method stub
+		String id = baseRequest.getParameter("id");
+		if (id == null) {
+			errorOut(response, "missing id");
+			return;
+		}
+		String name = baseRequest.getParameter("name");
+		String priceText = baseRequest.getParameter("price");
+		String department = baseRequest.getParameter("department");
+		String cashier = baseRequest.getParameter("cashier");
+		if (name==null || priceText==null || department==null || cashier==null) {
+			errorOut(response, "missing fields");
+			return;
+		}
+		float price; 
+		try {
+			price = Float.parseFloat(priceText);
+		}
+		catch (NumberFormatException ex) {
+			Log.log(ex.getMessage());
+			errorOut(response, "Could not interpret price field");
+			return;
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("UPDATE kvs_tblproducts SET name = ?, price = ?, department=?, updated = ? WHERE id=?");
+			pstmt.setString(1, name);
+			pstmt.setFloat(2, price);
+			pstmt.setString(3, department);
+			pstmt.setLong(4, getCurrentTimeStamp());
+			pstmt.setString(5, id);
+			if (pstmt.executeUpdate() > 0) {
+				Log.log("Product ($id) UPDATED by operator ($operator)");
+				successOut(response);
+				return;
+			}
+			errorOut(response);
+		}
+		catch (Exception ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			closeDBResources(null, pstmt, conn);
+		}
+	}
+	private void cancelTransaction(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		// TODO Auto-generated method stub
+		String id = baseRequest.getParameter("transaction_id");
+		if (!transactionExists(id)) {
+			errorOut(response, "transaction does not exist");
+			return;
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("DELETE FROM kvs_transactions WHERE (id = ? AND ended = 0) LIMIT 1");
+			pstmt.setString(1, id);
+			if (pstmt.execute()) {
+				successOut(response);
+				return;
+			}
+			errorOut(response);
+		}
+		catch (Exception ex) {
+			Log.log(ex.getMessage());
+		}
+		finally {
+			closeDBResources(null, pstmt, conn);
+		}
+	}
+	@SuppressWarnings("unchecked")
+	private void completeTransaction(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		// TODO Auto-generated method stub
+		String id = baseRequest.getParameter("id");
+		float money_given = (float) (baseRequest.getParameter("money_given") == null ? 0.00 : Float.parseFloat(baseRequest.getParameter("money_given")));
+		float total = (float) (baseRequest.getParameter("total") == null ? 0.00 : Float.parseFloat(baseRequest.getParameter("total")));
+		float card = (float) (baseRequest.getParameter("card") == null ? 0.00 : Float.parseFloat(baseRequest.getParameter("card")));
+		float cashback = (float) (baseRequest.getParameter("cashback") == null ? 0.00 : Float.parseFloat(baseRequest.getParameter("cashback")));
+		String type = baseRequest.getParameter("type");
+		String payee = baseRequest.getParameter("payee");
+		String cashier_id = baseRequest.getParameter("cashier");
+		String json = baseRequest.getParameter("json");
+		if (id == null) {
+			errorOut(response);
+			return;
+		}
+		if (!transactionExists(id)) {
+			errorOut(response, "transaction does not exist");
+			return;
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			if (!writeTransactionFileToDatabase(id, json, type)) {
+				Log.log("Failed to write transaction(" + id + ") to database, rolling back");
+				errorOut(response);
+				return;
+			}
+			JSONObject jo = new JSONObject();
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("UPDATE kvs_transactions SET ended = ?, total = ?, cashback=?, money_given = ?, card = ?, type=?, payee=? WHERE id=? AND cashier=?");
+			pstmt.setLong(1, getCurrentTimeStamp());
+			pstmt.setFloat(2, total);
+			pstmt.setFloat(3, cashback);
+			pstmt.setFloat(4, money_given);
+			pstmt.setFloat(5, card);
+			pstmt.setString(6, type);
+			pstmt.setString(7, payee);
+			pstmt.setString(8, id);
+			pstmt.setString(9, cashier_id);
+			pstmt.execute();
+			if (pstmt.getUpdateCount() > 0) {
+				Log.log("Transaction ($id) COMPLETED by operator ($cashier_id)");
+				successOut(response);
+				return;
+			}
+		}
+		catch (SQLException ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			closeDBResources(rs, pstmt, conn);
+		}
+		errorOut(response);
+	}
+	private boolean writeTransactionFileToDatabase(String id, String json, String type) throws SQLException {
+		// TODO Auto-generated method stub
+		if (json==null) {
+			return false;
+		}
+		JSONObject jo = null;
+		try {
+			JSONParser parser = new JSONParser();
+			jo = (JSONObject) parser.parse(json);
+		}
+		catch (ParseException ex) {
+			Log.log(ex.getMessage());
+			return false;
+		}
+		Connection conn =  null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			conn.setAutoCommit(false);
+			JSONArray products = (JSONArray) jo.get("products");
+			for (int i=0;i<products.size();i++) {
+				JSONObject joProduct = (JSONObject) products.get(i);
+				Long productQuantity = (Long) joProduct.get("quantity");
+				if (productQuantity == 0L) {
+					Log.log("Error, transaction (" + id + ") tried to buy 0 products (" + joProduct.get("id") + ")");
+					continue;
+				}
+				switch (type) {
+					case "PURCHASE":
+						decrementProductLevel(conn, id, productQuantity);
+						break;
+					case "REFUND":
+						incrementProductLevel(conn, id, productQuantity);
+						break;
+				}
+				while (productQuantity-- > 0) {
+					if (!insertTransactionProduct(conn, id, ((boolean) joProduct.get("inDatabase") ? (String) joProduct.get("id"): null), Float.parseFloat((String) joProduct.get("price")), (String) joProduct.get("department"))) {
+						throw new Exception();
+					}
+				}
+			}
+			conn.commit();
+			return true;
+		}
+		catch (Exception ex) {
+			conn.rollback();
+			Log.log(ex.toString());
+			return false;
+		}
+		finally {
+			closeDBResources(null, null, conn);
+		}
+	}
+	private boolean insertTransactionProduct(Connection conn, String transactionId, String productId, float price, String departmentId) throws SQLException {
+		String noneCatagory = "5b82f89a-7b71-11e7-b34e-426562cc935f";
+		PreparedStatement pstmt = conn.prepareStatement("INSERT INTO kvs_transactiontoproducts (id, transaction_id, product_id, price, department, created) VALUES (?, ?, ?, ?, ?, ?)");
+		pstmt.setString(1, GUID());
+		pstmt.setString(2, transactionId);
+		pstmt.setString(3, productId);
+		pstmt.setFloat(4, price);
+		pstmt.setString(5, departmentId == null ? noneCatagory : departmentId);
+		pstmt.setLong(6, getCurrentTimeStamp());
+		pstmt.execute();
+		if (pstmt.getUpdateCount() > 0) {
+			return true;
+		}
+		return false;
+	}
+	private boolean incrementProductLevel(Connection conn, String productId, Long productQuantity) throws SQLException {
+		// TODO Auto-generated method stub
+		PreparedStatement pstmt = conn.prepareStatement("UPDATE kvs_tblproducts SET current_stock=current_stock+? WHERE id = ?");
+		pstmt.setLong(1, productQuantity);
+		pstmt.setString(2, productId);
+		if (pstmt.executeUpdate() > 0) {
+			return true;
+		}
+		return false;
+	}
+	private boolean decrementProductLevel(Connection conn, String productId, Long productQuantity) throws SQLException {
+		// TODO Auto-generated method stub
+		PreparedStatement pstmt = conn.prepareStatement("UPDATE kvs_tblproducts SET current_stock=current_stock-? WHERE id = ? AND current_stock > 0");
+		pstmt.setLong(1, productQuantity);
+		pstmt.setString(2, productId);
+		if (pstmt.executeUpdate() > 0) {
+			return true;
+		}
+		return false;
+	}
+	private int getCurrentTimeStamp() {
+		// TODO Auto-generated method stub
+		return Math.round(System.currentTimeMillis() / 1000);
+	}
+	private boolean transactionExists(String id) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		// TODO Auto-generated method stub
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("SELECT 1 FROM kvs_transactions WHERE (id = ? AND ended = 0) LIMIT 1");
+			pstmt.setString(1, id);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				return true;
+			}
+		}
+		catch (SQLException ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			closeDBResources(rs, pstmt, conn);
+		}
+		return false;
+	}
+	private void getDayTotals(Request baseRequest, HttpServletResponse response) throws IOException {
+		// TODO Auto-generated method stub
+		JSONObject jo = new JSONObject();
+		jo.put("success", false);
+		//jo.put("card", cardGiven());
+		//jo.put("cashback", cashback());
+		//jo.put("takings", takings());
+		//jo.put("refunds", refunds());true
+		//jo.put("payouts", payouts());
+		response.getWriter().print(jo.toJSONString());
+	}
+	@SuppressWarnings("unchecked")
+	private void getTransactions(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		// TODO Auto-generated method stub
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String startString = baseRequest.getParameter("start");
+		String endString = baseRequest.getParameter("end");
+		String admin = "a10f653a-6c20-11e7-b34e-426562cc935f";
+		if (startString == null || endString == null) {
+			errorOut(response, "missing parameters");
+			return;
+		}
+		long start = 0; 
+		long end = 0;
+		try {
+			start = Long.parseLong(startString);
+			end = Long.parseLong(endString);
+		}
+		catch (NumberFormatException ex) {
+			errorOut(response, "Could not parse start or end");
+			return;
+		}
+		try {
+			JSONArray jsonArr = new JSONArray();
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("SELECT kvs_transactions.id AS \"id\", kvs_operators.name AS cashier, (SELECT COUNT(*) FROM kvs_transactiontoproducts WHERE kvs_transactiontoproducts.transaction_id = kvs_transactions.id) AS \"#Products\", kvs_transactions.card AS \"card\", kvs_transactions.ended AS \"ended\", kvs_transactions.cashback AS \"cashback\", kvs_transactions.money_given AS \"money_given\", kvs_transactions.payee AS \"payee\", kvs_transactions.type AS \"type\", kvs_transactions.total AS \"total\" FROM kvs_transactions LEFT JOIN kvs_operators ON kvs_transactions.cashier = kvs_operators.id WHERE (kvs_transactions.ended BETWEEN ? AND ?) AND kvs_transactions.cashier NOT IN (?) ORDER BY kvs_transactions.type DESC, kvs_transactions.ended");
+			//pstmt.setString(1, id);
+			pstmt.setLong(1, start);
+			pstmt.setLong(2, end);
+			pstmt.setString(3, admin);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("id", rs.getString(1));
+				jsonObject.put("quantity", rs.getString(2));
+				jsonObject.put("price", rs.getString(3));
+				jsonObject.put("name", rs.getString(4));
+				jsonArr.add(jsonObject);
+				return;
+			}
+			response.getWriter().write(jsonArr.toJSONString());
+		}
+		catch (SQLException ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			closeDBResources(rs, pstmt, conn);
+		}
+		/*$admin = "a10f653a-6c20-11e7-b34e-426562cc935f";
+		$start = get_param("start", null);
+		$end = get_param("end", null);
+		if ($start == null || ($end == null)) {
+			error_out("missing fields");
+		}
+		$db = get_pdo_connection();
+		$stmt = $db->prepare("SELECT kvs_transactions.id AS "id", kvs_operators.name AS cashier, (SELECT COUNT(*) FROM kvs_transactiontoproducts WHERE kvs_transactiontoproducts.transaction_id = kvs_transactions.id) AS "#Products", kvs_transactions.card AS "card", kvs_transactions.ended AS "ended", kvs_transactions.cashback AS "cashback", kvs_transactions.money_given AS "money_given", kvs_transactions.payee AS "payee", kvs_transactions.type AS "type", kvs_transactions.total AS "total" FROM kvs_transactions LEFT JOIN kvs_operators ON kvs_transactions.cashier = kvs_operators.id WHERE (kvs_transactions.ended BETWEEN ? AND ?) AND kvs_transactions.cashier NOT IN (?) ORDER BY kvs_transactions.type DESC, kvs_transactions.ended');
+		$stmt->bindValue(1, $start, PDO::PARAM_INT);
+		$stmt->bindValue(2, $end, PDO::PARAM_INT);
+		$stmt->bindValue(3, $admin, PDO::PARAM_STR);
+		$stmt->execute();
+		$arr = array();
+		while ($rs = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			array_push($arr, $rs);
+		}
+		die (json_encode(array("success"=>true, "start"=>$start, "end"=>$end, "transactions"=>$arr)));	*/
+	}
+	private void getProductTransactions(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		// TODO Auto-generated method stub
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String id = baseRequest.getParameter("id");
+		String startString = baseRequest.getParameter("start");
+		String endString = baseRequest.getParameter("end");
+		if (id == null || startString == null || endString == null) {
+			errorOut(response, "missing parameters");
+			return;
+		}
+		long start = 0; 
+		long end = 0;
+		try {
+			start = Long.parseLong(startString);
+			end = Long.parseLong(endString);
+		}
+		catch (NumberFormatException ex) {
+			errorOut(response, "Could not parse start or end");
+			return;
+		}
+		try {
+			JSONArray jsonArr = new JSONArray();
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("SELECT * FROM `kvs_transactiontoproducts` WHERE product_id = ? AND created BETWEEN ? AND ?");
+			pstmt.setString(1, id);
+			pstmt.setLong(2, start);
+			pstmt.setLong(2, end);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("id", rs.getString(1));
+				jsonObject.put("quantity", rs.getString(2));
+				jsonObject.put("price", rs.getString(3));
+				jsonObject.put("name", rs.getString(4));
+				jsonArr.add(jsonObject);
+				return;
+			}
+			response.getWriter().write(jsonArr.toJSONString());
+		}
+		catch (SQLException ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			closeDBResources(rs, pstmt, conn);
+		}
+	}
+	@SuppressWarnings("unchecked")
+	private void getTransactionProducts(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		// TODO Auto-generated method stub
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String id = baseRequest.getParameter("id");
+		if (id == null) {
+			errorOut(response, "missing parameters");
+			return;
+		}
+		try {
+			JSONArray jsonArr = new JSONArray();
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("SELECT kvs_tblproducts.id, COUNT(*) AS \"quantity\", kvs_transactiontoproducts.price, IFNULL(kvs_tblproducts.name, kvs_tblcatagories.name) AS \"name\" FROM kvs_transactiontoproducts LEFT JOIN kvs_tblproducts ON kvs_tblproducts.id = kvs_transactiontoproducts.product_id LEFT JOIN kvs_tblcatagories ON kvs_tblcatagories.id = kvs_transactiontoproducts.department WHERE kvs_transactiontoproducts.transaction_id = ? GROUP BY kvs_tblproducts.id, kvs_transactiontoproducts.price");
+			pstmt.setString(1, id);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("id", rs.getString(1));
+				jsonObject.put("quantity", rs.getString(2));
+				jsonObject.put("price", rs.getString(3));
+				jsonObject.put("name", rs.getString(4));
+				jsonArr.add(jsonObject);
+				return;
+			}
+			response.getWriter().write(jsonArr.toJSONString());
+		}
+		catch (SQLException ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			closeDBResources(rs, pstmt, conn);
+		}
+	}
+	private void logout(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		// TODO Auto-generated method stub
+		baseRequest.getSession().removeAttribute("user");
+		successOut(response);
+	}
+	//TODO: This should be replaced with a stronger hashing function, try Apache commons Crypt
+	public String hashPassword(String passwordToHash, String salt){
+		//https://stackoverflow.com/questions/33085493/hash-a-password-with-sha-512-in-java	
+		String generatedPassword = null;
+		    try {
+		         MessageDigest md = MessageDigest.getInstance("SHA-512");
+		         md.update(salt.getBytes("UTF-8"));
+		         byte[] bytes = md.digest(passwordToHash.getBytes("UTF-8"));
+		         StringBuilder sb = new StringBuilder();
+		         for(int i=0; i< bytes.length ;i++){
+		            sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+		         }
+		         generatedPassword = sb.toString();
+		        } 
+		       catch (NoSuchAlgorithmException e){
+		        e.printStackTrace();
+		       } catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		    return generatedPassword;
+		}
+	private void login(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		// TODO Auto-generated method stub
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String email = baseRequest.getParameter("email");
+		String password = baseRequest.getParameter("password");
+		if ((email == null) || (password == null)) {
+			errorOut(response, "missing parameters");
+			return;
+		}
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("SELECT id, name FROM kvs_operators WHERE LCASE(email) = LCASE(?) AND passwordHash = ? LIMIT 1");
+			pstmt.setString(1, email);
+			pstmt.setString(2,  hashPassword(password, ""));
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				Log.log("User (" + rs.getString(1) + ") " + rs.getString(2) + " logged in successfully");
+				successOut(response);
+				return;
+			}
+			errorOut(response, "Incorrect Email/Password combination");
+		}
+		catch (SQLException ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			closeDBResources(rs, pstmt, conn);
+		}
 	}
 	private void startTransaction(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		// TODO Auto-generated method stub
@@ -264,14 +876,26 @@ public class API extends ContextHandler
 			closeDBResources(rs, pstmt, conn);
 		}
 	}
+	public void errorOut(HttpServletResponse response) throws IOException, ServletException {
+		errorOut(response, null);
+	}
 	@SuppressWarnings("unchecked")
 	public void errorOut(HttpServletResponse response, String reason) throws IOException, ServletException   {
 		JSONObject json = new JSONObject();
+		response.setStatus(200);
 		json.put("success", false);
 		if (reason != null) {
 			json.put("reason", reason);
 		}
 		response.getWriter().print(json.toJSONString());
+	}
+	@SuppressWarnings("unchecked")
+	public void successOut(HttpServletResponse response) throws IOException, ServletException   {
+		JSONObject json = new JSONObject();
+		json.put("success", true);
+		response.setStatus(200);
+		response.getWriter().print(json.toJSONString());
+		
 	}
 	public void closeDBResources(ResultSet rs, PreparedStatement pstmt, Connection conn) {
 			try {

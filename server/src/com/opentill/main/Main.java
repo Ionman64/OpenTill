@@ -8,6 +8,7 @@ import org.apache.jasper.servlet.JasperInitializer;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.SessionIdManager;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
@@ -24,6 +25,7 @@ public class Main {
 			//System.setProperty("org.apache.jasper.compiler.disablejsr199", "true");
 			Server server = new Server();
 		    server.setStopAtShutdown(true);
+		    SessionIdManager sessionManager = server.getSessionIdManager();
 		    ServerConnector http = new ServerConnector(server);
 		    http.setHost("localhost");
 	        http.setPort(8080);
@@ -46,12 +48,13 @@ public class Main {
 	        webAppContext.setContextPath(".");
 	        webAppContext.setResourceBase("content");
 	        webAppContext.setInitParameter("dirAllowed", "false");
+
 	        new JspStarter(webAppContext).doStart();
 	        
 	        //webAppContext.setServer(server);
 	        // Add the ResourceHandler to the server.
 	        HandlerCollection handlers = new HandlerCollection();
-	        handlers.addHandler(new API("/api/kvs.php"));
+	        handlers.addHandler(new API(webAppContext, "/api/kvs.php"));
 	        handlers.addHandler(webAppContext);
 	        
 	        handlers.addHandler(resourceHandler);

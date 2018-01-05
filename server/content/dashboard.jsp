@@ -1,9 +1,9 @@
-<?php
-	session_start();
-	if (!isset($_SESSION['user'])) {
-		header('Location: login.php');
-	}
-?>
+<% 
+	//if(session == null || session.getAttribute("user") == null) {
+	//	response.sendRedirect("login.jsp");
+	//	return;
+	//}
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -132,7 +132,7 @@
 								</p>
 						</section>
 						<section class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-							<a href="index.php"><button class="btn btn-default btn-lg pull-right" style="margin:10px">Register</button></a>
+							<a href="index.jsp"><button class="btn btn-default btn-lg pull-right" style="margin:10px">Register</button></a>
 						</section>
 					</section>
 				</section>
@@ -167,8 +167,8 @@
 		</section>
         </section>
     </section>
-	<?php require_once("modals/transactionProducts.php"); ?>
-	<?php require_once("modals/productModal.php"); ?>
-	<?php require_once("modals/supplierModal.php") ?>
+    <jsp:include page="modals/transactionProducts.php"></jsp:include>
+    <jsp:include page="modals/productModal.php"></jsp:include>
+    <jsp:include page="modals/supplierModal.php"></jsp:include>
 </body>
 </html>

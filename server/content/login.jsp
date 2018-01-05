@@ -1,9 +1,9 @@
-<?php
-	session_start();
-	if (isset($_SESSION['user'])) {
-		header('Location: dashboard.php');
-	}
-?>
+<% 
+	//if(session != null && session.getAttribute("user") != null) {
+	//	response.sendRedirect("dashboard.jsp");
+	//	return;
+	//}
+%>
 <!DOCTYPE html>
 <html>
 <head>
