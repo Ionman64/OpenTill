@@ -43,11 +43,11 @@ function Takings(){
 				if (!data.success) {
 					alert("Error collecting totals");
 				}
-				var refunds = parseFloat(data["refunds"]);
-				var cardGiven = parseFloat(data["card"]);
-				var total = parseFloat(data["takings"]);
-				var payouts = parseFloat(data["payouts"]);
-				var cashback = parseFloat(data["cashback"]);
+				var refunds = data["refunds"];
+				var cardGiven = data["card"];
+				var total = data["takings"];
+				var payouts = data["payouts"];
+				var cashback = data["cashback"];
 				$("#payouts").html(formatMoney(payouts));
 				$("#refunds").html(formatMoney(refunds));
 				$("#card-payments").html(formatMoney(cardGiven));
@@ -149,5 +149,8 @@ function Takings(){
 	}
 }
 function formatMoney(amount) {
+	if (typeof amount != "String") {
+		amount = amount.toString();
+	}
 	return accounting.formatMoney(amount, "");
 }

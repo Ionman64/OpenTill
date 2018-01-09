@@ -138,31 +138,31 @@
 				</section>
 			</section>
 			<div class="tab hidden" id="pane-primary-home" data-page-name="Home">
-				<?php require("views/home.php"); ?>
+				<jsp:include page="views/home.jsp"></jsp:include>
 			</div>
 			<div class="tab hidden" id="pane-primary-overview" data-page-name="Overview">
-				<?php require("views/overview.php"); ?>
+				<jsp:include page="views/overview.jsp"></jsp:include>
 			</div>
 			<div class="tab" id="pane-primary-takings" data-page-name="Takings">
-				<?php require("views/takings.php"); ?>
+				<jsp:include page="views/takings.jsp"></jsp:include>
 			</div>
 			<div class="tab hidden" id="pane-primary-transactions" data-page-name="Transactions">
-				<?php require("views/transactions.php"); ?>
+				<jsp:include page="views/transactions.jsp"></jsp:include>
 			</div>
 			<div class="tab hidden" id="pane-primary-operators" data-page-name="Operators">
-				<?php require("views/operators.php"); ?>
+				<jsp:include page="views/operators.jsp"></jsp:include>
 			</div>
 			<div class="tab hidden" id="pane-primary-suppliers" data-page-name="Suppliers">
-				<?php require("views/suppliers.php"); ?>
+				<jsp:include page="views/suppliers.jsp"></jsp:include>
 			</div>
 			<div class="tab hidden" id="pane-primary-inventory" data-page-name="Inventory">
-				<?php require("views/inventory.php"); ?>
+				<jsp:include page="views/inventory.jsp"></jsp:include>
 			</div>
 			<div class="tab hidden" id="pane-primary-departments" data-page-name="Departments">
-				<?php require("views/departments.php"); ?>
+				<jsp:include page="views/departments.jsp"></jsp:include>
 			</div>
 			<div class="tab hidden" id="pane-primary-orders" data-page-name="Orders">
-				<?php require("views/orders.php"); ?>
+				<jsp:include page="views/orders.jsp"></jsp:include>
 			</div>
 		</section>
         </section>

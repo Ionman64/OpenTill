@@ -17,7 +17,6 @@ public class DatabaseHandler {
 	    connectionProps.put("user", DatabaseHandler.user);
 	    connectionProps.put("password", DatabaseHandler.password);
 	    conn = DriverManager.getConnection("jdbc:" + DatabaseHandler.dbms + "://" + DatabaseHandler.url + ":" + DatabaseHandler.port + "/" + DatabaseHandler.name, connectionProps);
-	    System.out.println("Connected to database");
 	    return conn;
 	}
 }

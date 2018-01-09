@@ -106,7 +106,7 @@ public class API extends ContextHandler
 				updateProduct(baseRequest, response);
 				break;
 			case "GETPRODUCT":
-				getProduct(baseRequest, response);
+				//getProduct(baseRequest, response);
 				break;
 			case "PRINTLABEL":
 				//printLabel(baseRequest, response);
@@ -157,10 +157,10 @@ public class API extends ContextHandler
 				//deleteDepartment(baseRequest, response);
 				break;
 			case "SEARCH":
-				//search(baseRequest, response);
+				search(baseRequest, response);
 				break;
 			case "TAKINGS":
-				//getTakings(baseRequest, response);
+				getTakings(baseRequest, response);
 				break;
 			case "SAVETAKINGS":
 				//saveTakings(baseRequest, response);
@@ -172,7 +172,7 @@ public class API extends ContextHandler
 				operatorLogin(baseRequest, response);
 				break;
 			case "TOTALS":
-				//totals(baseRequest, response);
+				getTakings(baseRequest, response);
 				break;
 			case "SENDMESSAGE":
 				//sendMessage(baseRequest, response);
@@ -218,9 +218,86 @@ public class API extends ContextHandler
 	    baseRequest.setHandled(true);
 	}
 	
-	private void getProduct(Request baseRequest, HttpServletResponse response) {
-		// TODO Auto-generated method stub
-		
+	private void getTakings(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		String admin = "a10f653a-6c20-11e7-b34e-426562cc935f";
+		String startString = baseRequest.getParameter("start");
+		String endString = baseRequest.getParameter("end");
+		String type = baseRequest.getParameter("type") == null ? "PURCHASE" : baseRequest.getParameter("type");
+		if (startString == null || endString == null) {
+			errorOut(response, "missing parameters");
+			return;
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("SELECT DATE(FROM_UNIXTIME(kvs_transactions.ended)) AS \"date\", kvs_transactiontoproducts.department, SUM(kvs_transactiontoproducts.price) AS \"amount\" FROM kvs_transactiontoproducts LEFT JOIN kvs_transactions ON kvs_transactiontoproducts.transaction_id = kvs_transactions.id WHERE (kvs_transactions.started > ? AND kvs_transactions.ended < ?) AND kvs_transactions.cashier NOT IN (?) AND kvs_transactions.type in (?) AND (kvs_transactions.ended > 0) GROUP BY kvs_transactiontoproducts.department, DATE(FROM_UNIXTIME(kvs_transactions.ended)) ORDER BY DATE(FROM_UNIXTIME(kvs_transactions.ended)) DESC");
+			pstmt.setLong(1, Long.parseLong(startString));
+			pstmt.setLong(2, Long.parseLong(endString));
+			pstmt.setString(3, admin);
+			pstmt.setString(4, type);
+			rs = pstmt.executeQuery();
+			JSONObject allDates = new JSONObject();
+			while (rs.next()) {
+				if (allDates.get(rs.getString(1)) != null) {
+					JSONObject date = (JSONObject) allDates.get(rs.getString(1));
+					date.put(rs.getString(2), rs.getFloat(3));
+				}
+				else {
+					JSONObject date = new JSONObject();
+					date.put(rs.getString(2), rs.getFloat(3));
+					allDates.put(rs.getString(1), date);
+				}
+			}
+			JSONObject jo = new JSONObject();
+			jo.put("success", true);
+			jo.put("totals", allDates);
+			response.getWriter().write(jo.toJSONString());
+			return;
+		}
+		catch (Exception ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			closeDBResources(rs, pstmt, conn);
+		}
+		errorOut(response);
+	}
+	@SuppressWarnings("unchecked")
+	private void search(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		String search = baseRequest.getParameter("search");
+		if (search.length() == 0) {
+			errorOut(response, "No search criteria");
+			return;
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("SELECT kvs_tblproducts.name, kvs_tblproducts.barcode, kvs_tblproducts.price, kvs_tblproducts.name FROM kvs_tblproducts WHERE LOWER(name) LIKE LOWER(?) ORDER BY name LIMIT 20");
+			pstmt.setString(1, "%" + search + "%");
+			rs = pstmt.executeQuery();
+			JSONArray joArr = new JSONArray();
+			while (rs.next()) {
+				JSONObject jo = new JSONObject();
+				jo.put("id",  rs.getString(1));
+				jo.put("barcode",  rs.getString(2));
+				jo.put("price",  rs.getFloat(3));
+				jo.put("name",  rs.getString(4));
+				joArr.add(jo);
+			}
+			response.getWriter().write(joArr.toJSONString());
+			return;
+		}
+		catch (Exception ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			closeDBResources(rs, pstmt, conn);
+		}
+		errorOut(response);
 	}
 	private void updateProduct(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		// TODO Auto-generated method stub
@@ -457,7 +534,7 @@ public class API extends ContextHandler
 				return true;
 			}
 		}
-		catch (SQLException ex) {
+		catch (Exception ex) {
 			Log.log(ex.toString());
 		}
 		finally {
@@ -465,20 +542,171 @@ public class API extends ContextHandler
 		}
 		return false;
 	}
-	private void getDayTotals(Request baseRequest, HttpServletResponse response) throws IOException {
+	@SuppressWarnings("unchecked")
+	private void getDayTotals(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		// TODO Auto-generated method stub
 		JSONObject jo = new JSONObject();
-		jo.put("success", false);
-		//jo.put("card", cardGiven());
-		//jo.put("cashback", cashback());
-		//jo.put("takings", takings());
-		//jo.put("refunds", refunds());true
-		//jo.put("payouts", payouts());
+		jo.put("success", true);
+		jo.put("card", cardGiven(baseRequest, response));
+		jo.put("cashback", cashback(baseRequest, response));
+		jo.put("takings", takings(baseRequest, response));
+		jo.put("refunds", refunds(baseRequest, response));
+		jo.put("payouts", payouts(baseRequest, response));
 		response.getWriter().print(jo.toJSONString());
+	}
+	
+	private float payouts(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		String admin = "a10f653a-6c20-11e7-b34e-426562cc935f";
+		String startString = baseRequest.getParameter("start");
+		String endString = baseRequest.getParameter("end");
+		if (startString == null || endString == null) {
+			errorOut(response, "missing fields");
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("SELECT IFNULL(SUM(kvs_transactions.total), 0.00) AS \"amount\" FROM kvs_transactions WHERE (kvs_transactions.started > ? AND kvs_transactions.ended < ?) AND kvs_transactions.cashier NOT IN (?) AND kvs_transactions.type in (?) AND (kvs_transactions.ended > 0)");
+			pstmt.setFloat(1, Float.parseFloat(startString));
+			pstmt.setFloat(2, Float.parseFloat(endString));
+			pstmt.setString(3, admin);
+			pstmt.setString(4, "PAYOUT");
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				return rs.getFloat(1);
+			}
+		}
+		catch (Exception ex) {
+			Log.log(ex.getMessage());
+		}
+		finally {
+			closeDBResources(rs, pstmt, conn);
+		}
+		return 0.00F;
+	}
+	private float refunds(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		String admin = "a10f653a-6c20-11e7-b34e-426562cc935f";
+		String startString = baseRequest.getParameter("start");
+		String endString = baseRequest.getParameter("end");
+		if (startString == null || endString == null) {
+			errorOut(response, "missing fields");
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("SELECT SUM(kvs_transactiontoproducts.price) AS \"amount\" FROM kvs_transactiontoproducts LEFT JOIN kvs_transactions ON kvs_transactions.id = kvs_transactiontoproducts.transaction_id WHERE (kvs_transactions.started > ? AND kvs_transactions.ended < ?) AND kvs_transactions.cashier NOT IN (?) AND kvs_transactions.type in (?) AND (kvs_transactions.ended > 0) GROUP BY kvs_transactiontoproducts.department");
+			pstmt.setFloat(1, Float.parseFloat(startString));
+			pstmt.setFloat(2, Float.parseFloat(endString));
+			pstmt.setString(3, admin);
+			pstmt.setString(4, "REFUND");
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				return rs.getFloat(1);
+			}
+		}
+		catch (Exception ex) {
+			Log.log(ex.getMessage());
+		}
+		finally {
+			closeDBResources(rs, pstmt, conn);
+		}
+		return 0.00F;
+	}
+	private float takings(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		String admin = "a10f653a-6c20-11e7-b34e-426562cc935f";
+		String startString = baseRequest.getParameter("start");
+		String endString = baseRequest.getParameter("end");
+		if (startString == null || endString == null) {
+			errorOut(response, "missing fields");
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("SELECT SUM(kvs_transactions.total) AS \"amount\" FROM kvs_transactions WHERE (kvs_transactions.started > ? AND kvs_transactions.ended < ?) AND kvs_transactions.cashier NOT IN (?) AND kvs_transactions.type in (?) AND (kvs_transactions.ended > 0)");
+			pstmt.setFloat(1, Float.parseFloat(startString));
+			pstmt.setFloat(2, Float.parseFloat(endString));
+			pstmt.setString(3, admin);
+			pstmt.setString(4, "PURCHASE");
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				return rs.getFloat(1);
+			}
+		}
+		catch (Exception ex) {
+			Log.log(ex.getMessage());
+		}
+		finally {
+			closeDBResources(rs, pstmt, conn);
+		}
+		return 0.00F;
+	}
+	private float cashback(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		String admin = "a10f653a-6c20-11e7-b34e-426562cc935f";
+		String startString = baseRequest.getParameter("start");
+		String endString = baseRequest.getParameter("end");
+		if (startString == null || endString == null) {
+			errorOut(response, "missing fields");
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("SELECT SUM(kvs_transactions.cashback) AS \"amount\" FROM kvs_transactions WHERE (kvs_transactions.started > ? AND kvs_transactions.ended < ?) AND kvs_transactions.cashier NOT IN (?) AND kvs_transactions.type in (?) AND (kvs_transactions.ended > 0)");
+			pstmt.setFloat(1, Float.parseFloat(startString));
+			pstmt.setFloat(2, Float.parseFloat(endString));
+			pstmt.setString(3, admin);
+			pstmt.setString(4, "PURCHASE");
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				return rs.getFloat(1);
+			}
+		}
+		catch (Exception ex) {
+			Log.log(ex.getMessage());
+		}
+		finally {
+			closeDBResources(rs, pstmt, conn);
+		}
+		return 0.00F;
+	}
+	private float cardGiven(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		String admin = "a10f653a-6c20-11e7-b34e-426562cc935f";
+		String startString = baseRequest.getParameter("start");
+		String endString = baseRequest.getParameter("end");
+		if (startString == null || endString == null) {
+			errorOut(response, "missing fields");
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("SELECT SUM(kvs_transactions.card) AS \"amount\" FROM kvs_transactions WHERE (kvs_transactions.started > ? AND kvs_transactions.ended < ?) AND kvs_transactions.cashier NOT IN (?) AND kvs_transactions.type in (?) AND (kvs_transactions.ended > 0)");
+			pstmt.setFloat(1, Float.parseFloat(startString));
+			pstmt.setFloat(2, Float.parseFloat(endString));
+			pstmt.setString(3, admin);
+			pstmt.setString(4, "PURCHASE");
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				return rs.getFloat(1);
+			}
+		}
+		catch (Exception ex) {
+			Log.log(ex.getMessage());
+		}
+		finally {
+			closeDBResources(rs, pstmt, conn);
+		}
+		return 0.00F;
 	}
 	@SuppressWarnings("unchecked")
 	private void getTransactions(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
-		// TODO Auto-generated method stub
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

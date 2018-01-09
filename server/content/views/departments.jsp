@@ -15,4 +15,4 @@
 		</section>
 	</section>
 </section>
-<?php require("modals/departmentInfo.php") ?>
+<jsp:include page="modals/departmentInfo.php"></jsp:include>
