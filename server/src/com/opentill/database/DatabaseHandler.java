@@ -5,8 +5,8 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class DatabaseHandler {
-	private static String name = "opentill";
-	private static String user = "peter";
+	private static String name = "goldstandardresearch_co_uk_kvs";
+	private static String user = "root";
 	private static String password = "";
 	private static String url = "127.0.0.1";
 	private static String port = "3306";

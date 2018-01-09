@@ -25,7 +25,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import javax.mail.Session;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,9 +42,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 
-import org.eclipse.jetty.http2.server.HTTP2ServerSession;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.SessionIdManager;
@@ -106,7 +105,7 @@ public class API extends ContextHandler
 				updateProduct(baseRequest, response);
 				break;
 			case "GETPRODUCT":
-				//getProduct(baseRequest, response);
+				getProduct(baseRequest, response);
 				break;
 			case "PRINTLABEL":
 				//printLabel(baseRequest, response);
@@ -162,9 +161,6 @@ public class API extends ContextHandler
 			case "TAKINGS":
 				getTakings(baseRequest, response);
 				break;
-			case "SAVETAKINGS":
-				//saveTakings(baseRequest, response);
-				break;
 			case "CLEARLABELS":
 				//clearLabels(baseRequest, response);
 				break;
@@ -196,13 +192,13 @@ public class API extends ContextHandler
 				//getProductLevels(baseRequest, response);
 				break;
 			case "GETPRODUCTSLEVELS":
-				//getProductsLevels(baseRequest, response);
+				getProductsLevels(baseRequest, response);
 				break;
 			case "CHANGEMAXSTOCKLEVEL":
-				//setMaxStockLevel(baseRequest, response);
+				setMaxStockLevel(baseRequest, response);
 				break;
 			case "CHANGECURRENTSTOCKLEVEL":
-				//setCurrentStockLevel(baseRequest, response);
+				setCurrentStockLevel(baseRequest, response);
 				break;
 			case "CREATEORDER":
 				//createOrder(baseRequest, response);
@@ -217,7 +213,144 @@ public class API extends ContextHandler
 	    // Inform jetty that this request has now been handled
 	    baseRequest.setHandled(true);
 	}
+	private void getProductsLevels(Request baseRequest, HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("SELECT kvs_tblproducts.id, kvs_tblproducts.name, kvs_tblproducts.current_stock, kvs_tblproducts.max_stock, kvs_tblcatagories.colour, kvs_tblcatagories.name AS \"department\" FROM kvs_tblproducts LEFT JOIN kvs_tblcatagories ON kvs_tblproducts.department = kvs_tblcatagories.id WHERE kvs_tblproducts.current_stock < kvs_tblproducts.max_stock ORDER BY kvs_tblproducts.name");
+			rs = pstmt.executeQuery();
+			JSONObject jo = new JSONObject();
+			while (rs.next()) {
+				JSONObject department;
+				if (!jo.containsKey(rs.getString(rs.getString(6)))) {
+					department = new JSONObject();
+					department.put("colour", rs.getString(5));
+					jo.put(rs.getString(6), department);
+				}
+				else {
+					department = (JSONObject) jo.get(rs.getString(6));
+				}
+				JSONObject product = new JSONObject();
+				product.put("id", rs.getString(1));
+				product.put("name",  rs.getString(2));
+				product.put("current_stock", rs.getString(3));
+				product.put("max_stock", rs.getString(4));
+				department.put(rs.getString(1), product);
+			}
+			JSONObject responseJSON = new JSONObject();
+			responseJSON.put("success", true);
+			responseJSON.put("products", jo.toJSONString());
+			response.getWriter().write(responseJSON.toJSONString());
+		}
+		catch (Exception ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			closeDBResources(null, pstmt, conn);
+		}
+	}
+	private void setCurrentStockLevel(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		// TODO Auto-generated method stub
+		String id = baseRequest.getParameter("id");
+		String amountString = baseRequest.getParameter("amount");
+		if (id == null || amountString == null) {
+			errorOut(response, "missing fields");
+		}
+		int amount = Integer.parseInt(amountString);
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("UPDATE kvs_tblproducts SET current_stock=? WHERE id = ?");
+			pstmt.setString(1, id);
+			pstmt.setInt(1, amount);
+			pstmt.execute();
+			if (pstmt.getUpdateCount() > 0) {
+				successOut(response);
+				return;
+			}
+			errorOut(response);
+		}
+		catch (Exception ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			closeDBResources(null, pstmt, conn);
+		}
+	}
 	
+	private void setMaxStockLevel(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		// TODO Auto-generated method stub
+		String id = baseRequest.getParameter("id");
+		String amountString = baseRequest.getParameter("amount");
+		if (id == null || amountString == null) {
+			errorOut(response, "missing fields");
+		}
+		int amount = Integer.parseInt(amountString);
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("UPDATE kvs_tblproducts SET max_stock=? WHERE id = ?");
+			pstmt.setString(1, id);
+			pstmt.setInt(1, amount);
+			pstmt.execute();
+			if (pstmt.getUpdateCount() > 0) {
+				successOut(response);
+				return;
+			}
+			errorOut(response);
+		}
+		catch (Exception ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			closeDBResources(null, pstmt, conn);
+		}
+	}
+	private void getProduct(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		// TODO Auto-generated method stub
+		String id = baseRequest.getParameter("id");
+		if (id == null) {
+			errorOut(response, "missing fields");
+		}
+		PreparedStatement pstmt = null;
+		Connection conn = null;
+		ResultSet rs = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("SELECT kvs_tblproducts.id, kvs_tblproducts.name, kvs_tblproducts.price, kvs_tblproducts.barcode,"
+					+ " kvs_tblproducts.supplier, kvs_tblproducts.department, kvs_tblproducts.max_stock, kvs_tblproducts.current_stock FROM kvs_tblproducts WHERE id = ? LIMIT 1");
+			pstmt.setString(1, id);
+			rs = pstmt.executeQuery();
+			JSONObject product = new JSONObject();
+			if (rs.next()) {
+				product.put("id", rs.getString(1));
+				product.put("name", rs.getString(2));
+				product.put("price", rs.getString(3));
+				product.put("barcode", rs.getString(4));
+				product.put("supplier", rs.getString(5));
+				product.put("department", rs.getString(6));
+				product.put("max_stock", rs.getString(7));
+				product.put("current_stock", rs.getString(8));
+			}
+			JSONObject jo = new JSONObject();
+			jo.put("success", true);
+			jo.put("product", product);
+			response.getWriter().write(jo.toJSONString());
+			return;
+		}
+		catch (Exception ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			closeDBResources(rs, pstmt, conn);
+		}
+		errorOut(response);
+	}
 	private void getTakings(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		String admin = "a10f653a-6c20-11e7-b34e-426562cc935f";
 		String startString = baseRequest.getParameter("start");
@@ -416,7 +549,7 @@ public class API extends ContextHandler
 			pstmt.setString(9, cashier_id);
 			pstmt.execute();
 			if (pstmt.getUpdateCount() > 0) {
-				Log.log("Transaction ($id) COMPLETED by operator ($cashier_id)");
+				Log.log("Transaction " + id + " COMPLETED by operator (" + cashier_id + ")");
 				successOut(response);
 				return;
 			}
@@ -464,7 +597,7 @@ public class API extends ContextHandler
 						break;
 				}
 				while (productQuantity-- > 0) {
-					if (!insertTransactionProduct(conn, id, ((boolean) joProduct.get("inDatabase") ? (String) joProduct.get("id"): null), Float.parseFloat((String) joProduct.get("price")), (String) joProduct.get("department"))) {
+					if (!insertTransactionProduct(conn, id, ((boolean) joProduct.get("inDatabase") ? (String) joProduct.get("id"): null), (double) joProduct.get("price"), (String) joProduct.get("department"))) {
 						throw new Exception();
 					}
 				}
@@ -481,13 +614,13 @@ public class API extends ContextHandler
 			closeDBResources(null, null, conn);
 		}
 	}
-	private boolean insertTransactionProduct(Connection conn, String transactionId, String productId, float price, String departmentId) throws SQLException {
+	private boolean insertTransactionProduct(Connection conn, String transactionId, String productId, double price, String departmentId) throws SQLException {
 		String noneCatagory = "5b82f89a-7b71-11e7-b34e-426562cc935f";
 		PreparedStatement pstmt = conn.prepareStatement("INSERT INTO kvs_transactiontoproducts (id, transaction_id, product_id, price, department, created) VALUES (?, ?, ?, ?, ?, ?)");
 		pstmt.setString(1, GUID());
 		pstmt.setString(2, transactionId);
 		pstmt.setString(3, productId);
-		pstmt.setFloat(4, price);
+		pstmt.setDouble(4, price);
 		pstmt.setString(5, departmentId == null ? noneCatagory : departmentId);
 		pstmt.setLong(6, getCurrentTimeStamp());
 		pstmt.execute();
