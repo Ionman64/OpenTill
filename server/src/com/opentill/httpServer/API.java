@@ -1,4 +1,4 @@
-package com.opentill.main;
+package com.opentill.httpServer;
 
 //
 //========================================================================
@@ -108,10 +108,10 @@ public class API extends ContextHandler
 				getProduct(baseRequest, response);
 				break;
 			case "PRINTLABEL":
-				//printLabel(baseRequest, response);
+				printLabel(baseRequest, response);
 				break;
 			case "GETALLSUPPLIERS":
-				//getAllSuppliers(baseRequest, response);
+				getAllSuppliers(baseRequest, response);
 				break;
 			case "GETSUPPLIER":
 				//selectSupplier(baseRequest, response);
@@ -126,7 +126,7 @@ public class API extends ContextHandler
 				//deleteSupplier(baseRequest, response);
 				break;
 			case "GETALLOPERATORS":
-				//getAllOperators(baseRequest, response);
+				getAllOperators(baseRequest, response);
 				break;
 			case "GETOPERATOR":
 				//selectOperator(baseRequest, response);
@@ -141,7 +141,7 @@ public class API extends ContextHandler
 				//deleteOperator(baseRequest, response);
 				break;
 			case "GETALLDEPARTMENTS":
-				//getAllDepartments(baseRequest, response);
+				getAllDepartments(baseRequest, response);
 				break;
 			case "GETDEPARTMENT":
 				//selectDepartment(baseRequest, response);
@@ -171,7 +171,7 @@ public class API extends ContextHandler
 				getTakings(baseRequest, response);
 				break;
 			case "SENDMESSAGE":
-				//sendMessage(baseRequest, response);
+				sendMessage(baseRequest, response);
 				break;
 			case "GETMESSAGES":
 				getMessages(baseRequest, response);
@@ -213,6 +213,154 @@ public class API extends ContextHandler
 	    // Inform jetty that this request has now been handled
 	    baseRequest.setHandled(true);
 	}
+	private void getAllDepartments(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		// TODO Auto-generated method stub
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("SELECT kvs_tblcatagories.id, kvs_tblcatagories.name FROM kvs_tblcatagories WHERE kvs_tblcatagories.deleted = 0 ORDER BY kvs_tblcatagories.name");
+			rs = pstmt.executeQuery();
+			JSONArray joArr = new JSONArray();
+			while (rs.next()) {
+				JSONObject department = new JSONObject();
+				department.put("id", rs.getString(1));
+				department.put("name",  rs.getString(2));
+				joArr.add(department);
+			}
+			JSONObject responseJSON = new JSONObject();
+			responseJSON.put("success", true);
+			responseJSON.put("departments", joArr);
+			response.getWriter().write(responseJSON.toJSONString());
+			return;
+		}
+		catch (Exception ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			closeDBResources(null, pstmt, conn);
+		}
+		errorOut(response);
+	}
+	private void getAllOperators(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("SELECT kvs_operators.id, kvs_operators.name FROM kvs_operators WHERE kvs_operators.deleted = 0 ORDER BY kvs_operators.name");
+			rs = pstmt.executeQuery();
+			JSONObject jo = new JSONObject();
+			while (rs.next()) {
+				JSONObject product = new JSONObject();
+				product.put("id", rs.getString(1));
+				product.put("name",  rs.getString(2));
+				jo.put(rs.getString(1), product);
+			}
+			JSONObject responseJSON = new JSONObject();
+			responseJSON.put("success", true);
+			responseJSON.put("operators", jo);
+			response.getWriter().write(responseJSON.toJSONString());
+			return;
+		}
+		catch (Exception ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			closeDBResources(null, pstmt, conn);
+		}
+		errorOut(response);
+	}
+	private void getAllSuppliers(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("SELECT kvs_tblsuppliers.id, kvs_tblsuppliers.name FROM kvs_tblsuppliers WHERE kvs_tblsuppliers.deleted = 0 ORDER BY kvs_tblsuppliers.name");
+			rs = pstmt.executeQuery();
+			JSONObject jo = new JSONObject();
+			while (rs.next()) {
+				JSONObject product = new JSONObject();
+				product.put("id", rs.getString(1));
+				product.put("name",  rs.getString(2));
+				jo.put(rs.getString(1), product);
+			}
+			JSONObject responseJSON = new JSONObject();
+			responseJSON.put("success", true);
+			responseJSON.put("suppliers", jo);
+			response.getWriter().write(responseJSON.toJSONString());
+			return;
+		}
+		catch (Exception ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			closeDBResources(null, pstmt, conn);
+		}
+		errorOut(response);
+	}
+	private void sendMessage(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		// TODO Auto-generated method stub
+		String sender = baseRequest.getParameter("from");
+		String message = baseRequest.getParameter("message");
+		String recipient = baseRequest.getParameter("to");
+		if ((sender == null) || (message == null)) {
+			errorOut(response, "missing fields");
+			return;
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("INSERT kvs_tblchat (id, sender, recipient, message, updated, created) VALUES (?, ?, ?, ?, ?, ?)");
+			pstmt.setString(1, GUID());
+			pstmt.setString(2, sender);
+			pstmt.setString(3,  recipient);
+			pstmt.setString(4,  message);
+			pstmt.setInt(5,  getCurrentTimeStamp());
+			pstmt.setInt(6,  getCurrentTimeStamp());
+			pstmt.execute();
+			if (pstmt.getUpdateCount() > 0) {
+				successOut(response);
+				return;
+			}
+		}
+		catch (Exception ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			closeDBResources(null, pstmt, conn);
+		}
+		errorOut(response);
+	}
+	private void printLabel(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		// TODO Auto-generated method stub
+		String id = baseRequest.getParameter("id");
+		if (id == null) {
+			errorOut(response, "missing parameters");
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("UPDATE kvs_tblproducts SET labelprinted = 1 WHERE id = ?");
+			pstmt.setString(1, id);
+			pstmt.execute();
+			if (pstmt.getUpdateCount() > 0) {
+				successOut(response);
+				return;
+			}
+		}
+		catch (Exception ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			closeDBResources(null, pstmt, conn);
+		}
+		errorOut(response);
+	}
 	private void getProductsLevels(Request baseRequest, HttpServletResponse response) {
 		// TODO Auto-generated method stub
 		Connection conn = null;
@@ -225,7 +373,7 @@ public class API extends ContextHandler
 			JSONObject jo = new JSONObject();
 			while (rs.next()) {
 				JSONObject department;
-				if (!jo.containsKey(rs.getString(rs.getString(6)))) {
+				if (!jo.containsKey(rs.getString(6))) {
 					department = new JSONObject();
 					department.put("colour", rs.getString(5));
 					jo.put(rs.getString(6), department);
@@ -242,7 +390,7 @@ public class API extends ContextHandler
 			}
 			JSONObject responseJSON = new JSONObject();
 			responseJSON.put("success", true);
-			responseJSON.put("products", jo.toJSONString());
+			responseJSON.put("products", jo);
 			response.getWriter().write(responseJSON.toJSONString());
 		}
 		catch (Exception ex) {
@@ -323,7 +471,7 @@ public class API extends ContextHandler
 		try {
 			conn = DatabaseHandler.getDatabase();
 			pstmt = conn.prepareStatement("SELECT kvs_tblproducts.id, kvs_tblproducts.name, kvs_tblproducts.price, kvs_tblproducts.barcode,"
-					+ " kvs_tblproducts.supplier, kvs_tblproducts.department, kvs_tblproducts.max_stock, kvs_tblproducts.current_stock FROM kvs_tblproducts WHERE id = ? LIMIT 1");
+					+ " kvs_tblproducts.department, kvs_tblproducts.max_stock, kvs_tblproducts.current_stock FROM kvs_tblproducts WHERE id = ? LIMIT 1");
 			pstmt.setString(1, id);
 			rs = pstmt.executeQuery();
 			JSONObject product = new JSONObject();
@@ -332,10 +480,9 @@ public class API extends ContextHandler
 				product.put("name", rs.getString(2));
 				product.put("price", rs.getString(3));
 				product.put("barcode", rs.getString(4));
-				product.put("supplier", rs.getString(5));
-				product.put("department", rs.getString(6));
-				product.put("max_stock", rs.getString(7));
-				product.put("current_stock", rs.getString(8));
+				product.put("department", rs.getString(5));
+				product.put("max_stock", rs.getString(6));
+				product.put("current_stock", rs.getString(7));
 			}
 			JSONObject jo = new JSONObject();
 			jo.put("success", true);
@@ -373,7 +520,7 @@ public class API extends ContextHandler
 			rs = pstmt.executeQuery();
 			JSONObject allDates = new JSONObject();
 			while (rs.next()) {
-				if (allDates.get(rs.getString(1)) != null) {
+				if (allDates.containsKey(rs.getString(1))) {
 					JSONObject date = (JSONObject) allDates.get(rs.getString(1));
 					date.put(rs.getString(2), rs.getFloat(3));
 				}
@@ -382,6 +529,7 @@ public class API extends ContextHandler
 					date.put(rs.getString(2), rs.getFloat(3));
 					allDates.put(rs.getString(1), date);
 				}
+				Log.log(rs.getString(1));
 			}
 			JSONObject jo = new JSONObject();
 			jo.put("success", true);
@@ -845,16 +993,15 @@ public class API extends ContextHandler
 		ResultSet rs = null;
 		String startString = baseRequest.getParameter("start");
 		String endString = baseRequest.getParameter("end");
-		String admin = "a10f653a-6c20-11e7-b34e-426562cc935f";
 		if (startString == null || endString == null) {
 			errorOut(response, "missing parameters");
 			return;
 		}
-		long start = 0; 
-		long end = 0;
+		int start = 0; 
+		int end = 0;
 		try {
-			start = Long.parseLong(startString);
-			end = Long.parseLong(endString);
+			start = Integer.parseInt(startString);
+			end = Integer.parseInt(endString);
 		}
 		catch (NumberFormatException ex) {
 			errorOut(response, "Could not parse start or end");
@@ -863,22 +1010,30 @@ public class API extends ContextHandler
 		try {
 			JSONArray jsonArr = new JSONArray();
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT kvs_transactions.id AS \"id\", kvs_operators.name AS cashier, (SELECT COUNT(*) FROM kvs_transactiontoproducts WHERE kvs_transactiontoproducts.transaction_id = kvs_transactions.id) AS \"#Products\", kvs_transactions.card AS \"card\", kvs_transactions.ended AS \"ended\", kvs_transactions.cashback AS \"cashback\", kvs_transactions.money_given AS \"money_given\", kvs_transactions.payee AS \"payee\", kvs_transactions.type AS \"type\", kvs_transactions.total AS \"total\" FROM kvs_transactions LEFT JOIN kvs_operators ON kvs_transactions.cashier = kvs_operators.id WHERE (kvs_transactions.ended BETWEEN ? AND ?) AND kvs_transactions.cashier NOT IN (?) ORDER BY kvs_transactions.type DESC, kvs_transactions.ended");
-			//pstmt.setString(1, id);
-			pstmt.setLong(1, start);
-			pstmt.setLong(2, end);
-			pstmt.setString(3, admin);
+			pstmt = conn.prepareStatement("SELECT kvs_transactions.id AS 'id', kvs_operators.name AS cashier, (SELECT COUNT(*) FROM kvs_transactiontoproducts WHERE kvs_transactiontoproducts.transaction_id = kvs_transactions.id) AS '#Products', kvs_transactions.card AS 'card', kvs_transactions.ended AS 'ended', kvs_transactions.cashback AS 'cashback', kvs_transactions.money_given AS 'money_given', kvs_transactions.payee AS 'payee', kvs_transactions.type AS 'type', kvs_transactions.total AS 'total' FROM kvs_transactions LEFT JOIN kvs_operators ON kvs_transactions.cashier = kvs_operators.id WHERE (kvs_transactions.ended BETWEEN ? AND ?) AND kvs_transactions.cashier NOT IN (?) ORDER BY kvs_transactions.type DESC, kvs_transactions.ended");
+			pstmt.setInt(1, start);
+			pstmt.setInt(2, end);
+			pstmt.setString(3, "a10f653a-6c20-11e7-b34e-426562cc935f"); // Admin
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				JSONObject jsonObject = new JSONObject();
 				jsonObject.put("id", rs.getString(1));
-				jsonObject.put("quantity", rs.getString(2));
-				jsonObject.put("price", rs.getString(3));
-				jsonObject.put("name", rs.getString(4));
+				jsonObject.put("cashier", rs.getString(2));
+				jsonObject.put("numProducts", rs.getInt(3));
+				jsonObject.put("card", rs.getFloat(4));
+				jsonObject.put("ended", rs.getInt(5));
+				jsonObject.put("cashback", rs.getFloat(6));
+				jsonObject.put("money_given", rs.getFloat(7));
+				jsonObject.put("payee", rs.getString(8));
+				jsonObject.put("type", rs.getString(9));
+				jsonObject.put("total", rs.getFloat(10));
 				jsonArr.add(jsonObject);
-				return;
 			}
-			response.getWriter().write(jsonArr.toJSONString());
+			JSONObject responseJson = new JSONObject();
+			responseJson.put("success", true);
+			responseJson.put("transactions", jsonArr);
+			response.getWriter().write(responseJson.toJSONString());
+			return;
 		}
 		catch (SQLException ex) {
 			Log.log(ex.toString());
@@ -886,6 +1041,7 @@ public class API extends ContextHandler
 		finally {
 			closeDBResources(rs, pstmt, conn);
 		}
+		errorOut(response);
 		/*$admin = "a10f653a-6c20-11e7-b34e-426562cc935f";
 		$start = get_param("start", null);
 		$end = get_param("end", null);
@@ -932,7 +1088,7 @@ public class API extends ContextHandler
 			pstmt = conn.prepareStatement("SELECT * FROM `kvs_transactiontoproducts` WHERE product_id = ? AND created BETWEEN ? AND ?");
 			pstmt.setString(1, id);
 			pstmt.setLong(2, start);
-			pstmt.setLong(2, end);
+			pstmt.setLong(3, end);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				JSONObject jsonObject = new JSONObject();
@@ -1080,12 +1236,55 @@ public class API extends ContextHandler
 			closeDBResources(null, pstmt, conn);
 		}
 	}
-	private void getMessages(Request baseRequest, HttpServletResponse response) throws IOException {
-		// TODO Auto-generated method stub
-		JSONObject json = new JSONObject();
-		json.put("success", true);
-		json.put("messages", new JSONArray());
-		response.getWriter().print(json.toJSONString());
+	private void getMessages(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		String operator = baseRequest.getParameter("operator");
+		String timeString = baseRequest.getParameter("time");
+		if (operator == null || timeString == null) {
+			errorOut(response, "missing fields");
+			return;
+		}
+		int time = 0;
+		try {
+			time = Integer.parseInt(timeString);
+		}
+		catch (NumberFormatException e) {
+			Log.log(e.toString());
+			errorOut(response, "time not formatted correctly");
+			return;
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("(SELECT kvs_tblchat.id,  kvs_tblchat.sender AS \"senderId\", kvs_tblchat.recipient as \"recipientId\", a.name AS \"senderName\", IFNULL(b.name, \"All\") AS recipientName, kvs_tblchat.message, kvs_tblchat.created FROM kvs_tblchat LEFT JOIN kvs_operators a ON a.id = kvs_tblchat.sender LEFT JOIN kvs_operators b ON b.id = kvs_tblchat.recipient WHERE (kvs_tblchat.recipient = ? OR kvs_tblchat.sender = ? OR kvs_tblchat.recipient = \"All\") AND kvs_tblchat.created > ? ORDER BY kvs_tblchat.created DESC LIMIT 20) ORDER BY created ASC");
+			pstmt.setString(1, operator);
+			pstmt.setString(2, operator);
+			pstmt.setInt(3, time);
+			rs = pstmt.executeQuery();
+			JSONArray messages = new JSONArray();
+			while (rs.next()) {
+				JSONObject jo = new JSONObject();
+				jo.put("id",  rs.getString(1));
+				jo.put("senderId", rs.getString(2));
+				jo.put("recipientId", rs.getString(3));
+				jo.put("senderName", rs.getString(4));
+				jo.put("recipientName", rs.getString(5));
+				jo.put("message", rs.getString(6));
+				jo.put("created", rs.getInt(7));
+				messages.add(jo);
+			}
+			JSONObject responseJson = new JSONObject();
+			responseJson.put("success", true);
+			responseJson.put("messages", messages);
+			response.getWriter().print(responseJson.toJSONString());
+		}
+		catch (SQLException ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			closeDBResources(rs, pstmt, conn);
+		}
 	}
 	@SuppressWarnings("unchecked")
 	public JSONObject getItemFromBarcode(String barcode) {

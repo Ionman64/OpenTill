@@ -1,4 +1,4 @@
-package com.opentill.main;
+package com.opentill.httpServer;
 
 import org.apache.tomcat.util.scan.StandardJarScanner;
 import org.eclipse.jetty.apache.jsp.JettyJasperInitializer;
@@ -18,7 +18,7 @@ public class JspStarter extends AbstractLifeCycle implements ServletContextHandl
     }
 
     @Override
-    protected void doStart() throws Exception
+	public void doStart() throws Exception
     {
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(context.getClassLoader());

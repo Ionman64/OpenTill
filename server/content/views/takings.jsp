@@ -7,4 +7,4 @@
 		</section>
 	</section>
 </section>
-<jsp:include page="modals/takings.php"></jsp:include>
+<jsp:include page="/modals/takings.jsp"></jsp:include>

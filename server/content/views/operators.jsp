@@ -12,4 +12,4 @@
 		</section>
 	</section>
 </section>
-<?php require("modals/operatorInfo.php") ?>
+<jsp:include page="/modals/operatorInfo.php"></jsp:include>

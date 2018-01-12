@@ -70,22 +70,22 @@ function Transactions() {
 			row.appendChild(col);
 			//Products
 			var col = el("section", {class:"col-lg-2 col-md-1 col-sm-1 hidden-xs"});
-			var label = el("h4", {html:item["#Products"]});
+			var label = el("h4", {html:item.numProducts});
 			col.appendChild(label);
 			row.appendChild(col);
 			//Card
 			var col = el("section", {class:"col-lg-2 col-md-1 col-sm-1 hidden-xs"});
-			var label = el("h4", {html:item.card});
+			var label = el("h4", {html:formatMoney(item.card)});
 			col.appendChild(label);
 			row.appendChild(col);
 			//Cashback
 			var col = el("section", {class:"col-lg-1 col-md-1 col-sm-1 hidden-xs"});
-			var label = el("h4", {html:item.cashback});
+			var label = el("h4", {html:formatMoney(item.cashback)});
 			col.appendChild(label);
 			row.appendChild(col);
 			//money_given
 			var col = el("section", {class:"col-lg-1 col-md-1 col-sm-3 hidden-xs"});
-			var label = el("h4", {html:item.money_given});
+			var label = el("h4", {html:formatMoney(item.money_given)});
 			col.appendChild(label);
 			row.appendChild(col);
 			//type 
@@ -95,7 +95,7 @@ function Transactions() {
 			row.appendChild(col);
 			//total
 			var col = el("section", {class:"col-lg-1 col-md-1 col-sm-1 col-xs-3"});
-			var label = el("h4", {html:item.total});
+			var label = el("h4", {html:formatMoney(item.total)});
 			col.appendChild(label);
 			row.appendChild(col);
 			holder.appendChild(row);

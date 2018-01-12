@@ -12,4 +12,4 @@
 		</section>
 	</section>
 </section>
-<?php require("modals/supplierInfo.php") ?>
+<jsp:include page="/modals/supplierInfo.php"></jsp:include>

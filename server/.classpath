@@ -68,5 +68,10 @@
 	<classpathentry kind="lib" path="C:/wamp64/www/OpenTill/server/thirdParty/jetty-distribution-9.4.8.v20171121/lib/websocket/websocket-common-9.4.8.v20171121.jar"/>
 	<classpathentry kind="lib" path="C:/wamp64/www/OpenTill/server/thirdParty/jetty-distribution-9.4.8.v20171121/lib/websocket/websocket-server-9.4.8.v20171121.jar"/>
 	<classpathentry kind="lib" path="C:/wamp64/www/OpenTill/server/thirdParty/jetty-distribution-9.4.8.v20171121/lib/websocket/websocket-servlet-9.4.8.v20171121.jar"/>
+	<classpathentry kind="lib" path="C:/wamp64/www/OpenTill/server/thirdParty/commons-email-1.5/commons-email-1.5.jar"/>
+	<classpathentry kind="lib" path="C:/wamp64/www/OpenTill/server/thirdParty/commons-email-1.5/commons-email-1.5-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/wamp64/www/OpenTill/server/thirdParty/commons-email-1.5/commons-email-1.5-sources.jar"/>
+	<classpathentry kind="lib" path="C:/wamp64/www/OpenTill/server/thirdParty/commons-email-1.5/commons-email-1.5-tests.jar"/>
+	<classpathentry kind="lib" path="C:/wamp64/www/OpenTill/server/thirdParty/commons-email-1.5/commons-email-1.5-test-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

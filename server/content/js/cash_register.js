@@ -390,10 +390,10 @@ function loadContacts() {
 			var option = el("option", {html:"All"});
 			$("#chat-contact").append(option).attr("selected", "all");
 			$.each(data.operators, function(key, value) {
-				if (value.id == getOperator()) {
+				if (key == getOperator()) {
 					return;
 				}
-				var option = el("option", {"value":value.id, html:value.name});
+				var option = el("option", {"value":key, html:value.name});
 				$("#chat-contact").append(option);
 			});
 		}

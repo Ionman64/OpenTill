@@ -132,17 +132,11 @@
 								</p>
 						</section>
 						<section class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-							<a href="index.jsp"><button class="btn btn-default btn-lg pull-right" style="margin:10px">Register</button></a>
+							<!--<a href="index.jsp"><button class="btn btn-default btn-lg pull-right" style="margin:10px">Register</button></a>-->
 						</section>
 					</section>
 				</section>
 			</section>
-			<div class="tab hidden" id="pane-primary-home" data-page-name="Home">
-				<jsp:include page="views/home.jsp"></jsp:include>
-			</div>
-			<div class="tab hidden" id="pane-primary-overview" data-page-name="Overview">
-				<jsp:include page="views/overview.jsp"></jsp:include>
-			</div>
 			<div class="tab" id="pane-primary-takings" data-page-name="Takings">
 				<jsp:include page="views/takings.jsp"></jsp:include>
 			</div>
