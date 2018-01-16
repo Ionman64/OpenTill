@@ -23,16 +23,7 @@ import org.eclipse.jetty.webapp.WebAppContext;
 
 public class Main {
 		public static void main(String[] args) throws Exception
-	    {
-			MailHandler mailHandler = new MailHandler("peterpickerill2014@gmail.com", "pjp104104");
-			Thread thread = new Thread(mailHandler);
-			thread.run();
-			EmailMessage email = new EmailMessage();
-			email.setBody("Hello");
-			email.addRecipient("peterpickerill2016@gmail.com");
-			email.setSubject("Hello");
-			mailHandler.addMail(email);
-			
+	    {	
 			ServerHandler.run();
 	    }
 }
