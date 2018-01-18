@@ -9,7 +9,7 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import com.opentill.logging.Log;
 
 public final class ServerHandler {
-	public static final void run() {
+	public static void run() {
 		// TODO Auto-generated method stub
         try {
         	int port = 8080;

@@ -236,7 +236,7 @@
 	<jsp:include page="modals/productModal.php"></jsp:include>
 	<jsp:include page="modals/supplierInfo.php"></jsp:include>
 	<jsp:include page="modals/supplierModal.php"></jsp:include>
-	<jsp:include page="modals/takings.php"></jsp:include>
+	<jsp:include page="modals/takings.jsp"></jsp:include>
 	<jsp:include page="modals/transactionProducts.php"></jsp:include>
 </body>
 </html>
