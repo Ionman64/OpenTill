@@ -28,8 +28,6 @@ import java.security.NoSuchAlgorithmException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -41,14 +39,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Properties;
 import java.util.UUID;
 
 import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.SessionIdManager;
 
 public class API extends ContextHandler
 {
@@ -683,7 +676,6 @@ public class API extends ContextHandler
 				errorOut(response);
 				return;
 			}
-			JSONObject jo = new JSONObject();
 			conn = DatabaseHandler.getDatabase();
 			pstmt = conn.prepareStatement("UPDATE kvs_transactions SET ended = ?, total = ?, cashback=?, money_given = ?, card = ?, type=?, payee=? WHERE id=? AND cashier=?");
 			pstmt.setLong(1, getCurrentTimeStamp());
@@ -1391,7 +1383,7 @@ public class API extends ContextHandler
 	}
 	public void barcode(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		String barcode = baseRequest.getParameter("number");
-		String units = baseRequest.getParameter("units");
+		baseRequest.getParameter("units");
 		JSONObject product = null;
 		if (barcode == null) {
 			errorOut(response, "no barcode");

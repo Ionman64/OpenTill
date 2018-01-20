@@ -4,18 +4,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.json.simple.JSONObject;
-
-import com.opentill.database.DatabaseHandler;
 import com.opentill.logging.Log;
 
 public final class Config {
 	public static String USER_HOME = System.getProperty("user.home");
+	public static String APP_HOME = Config.USER_HOME + File.separatorChar + ".opentill";
 	public final static Properties databaseProperties = Config.readPropertiesFile();
 	public final static Properties emailProperties = Config.getEmailProperties();
 	public static boolean setup() {

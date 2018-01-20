@@ -1,12 +1,12 @@
 package com.opentill.main;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
-import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.SimpleEmail;
 
+import com.opentill.document.TakingsReportGenerator;
 import com.opentill.httpServer.ServerHandler;
 import com.opentill.mail.MailHandler;
 
@@ -32,9 +32,10 @@ public class Main {
 			thread1.setDaemon(true);
 			thread1.start();
 			Email email = new SimpleEmail();
-			email.setSubject("TestMail");
-			email.setMsg("This is a test mail ... :-)");
-			email.addTo("peterpickerill2016@gmail.com");
+			email.setSubject("OpenTill Server Started");
+			email.setMsg("Your OpenTill server instance has started at " + new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
+			email.addTo("peterpickerill2014@gmail.com");
 			MailHandler.emails.add(email);
+			new TakingsReportGenerator().testWrite();
 	    }
 }
