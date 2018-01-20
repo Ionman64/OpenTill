@@ -86,7 +86,7 @@ function payout(amount) {
 	createTransaction();
 	$("#supplierList").empty();
 	$.each(window.supplierArray, function(key, value) {
-		var li = el('li', {class:'btn btn-default', "data-id":value.id, "data-search":value.name, html:value.name});
+		var li = el('li', {class:'btn btn-default', "data-id":key, "data-search":value.name, html:value.name});
 		$("#supplierList").append(li);
 	});
 	$("#supplierModal").modal("show");
@@ -877,20 +877,20 @@ $(document).ready( function() {
 	$.ajax({
 		url : CONTEXT + "kvs.php?function=DEPARTMENTS",
 		success : function(data) {
-			var code = "";
-			code += "<section class='row'>";
+			var holder = document.getElementById("department");
+			$(holder).empty();
+			var row = el("section", {class:"row"});
 			data.forEach(function(item) {
-				code += "<section class='col-md-6 col-sm-6 col-xs-6 col-lg-4'>";
-				var style = "border-right:5px solid " + item.colour + ";border-left:5px solid " + item.colour;
-				code += "<button class='btn btn-default' productDepartment='" + item.id + "' style='" + style + "'>" + item.shorthand + "</button>";
-				code += "</section>";
+				var col = el("section", {class:"col-md-6 col-sm-6 col-xs-6 col-lg-4"});
+				var btn = el("button", {class:"btn btn-default", productDepartment:item.id, style:"border-right:5px solid " + item.colour + ";border-left:5px solid " + item.colour, html:item.shorthand});
+				col.appendChild(btn);
+				row.appendChild(col);
 				var option = el("option", {html:item.name, value:item.id});
 				$("#ProductDepartment").append(option);
 				var option = el("option", {html:item.name, value:item.id});
 				$("#newProductDepartment").append(option);
 			});
-			code += "</section>";
-			$("#department").append(code);
+			holder.appendChild(row);
 		}
 	});
 	setInterval(function() { 

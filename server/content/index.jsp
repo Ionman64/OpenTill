@@ -13,7 +13,7 @@
 <head>
 	<title>OpenTill</title>
 	<link rel="shortcut icon" href="img/site/icon.ico">
-	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<meta charset="utf-8" /> 
 	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; img-src 'self' http://localhost:8888/drawer http://127.0.0.1:8888/drawer http://localhost:8888/receipt http://127.0.0.1:8888/receipt; style-src 'self' 'unsafe-inline'">
 	<meta name="robots" content="noindex, nofollow">
 	<meta name="viewport" content="width=device-width, user-scalable=no">
@@ -166,7 +166,7 @@
 		</section>
 		<section id="department"></section>
 		</section>
-	<section class="col-md-9 col-xs-9 col-sm-9 col-lg-9">
+		<section class="col-md-9 col-xs-9 col-sm-9 col-lg-9">
 		<section id="tableColumns" class="row shadow-bottom">
 			<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4 col-md-offset-1 col-xs-offset-1 col-sm-offset-1 col-lg-offset-1">
 				<label>Items <span id="total-items"></span></label>

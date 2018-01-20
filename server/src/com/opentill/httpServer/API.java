@@ -43,6 +43,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Properties;
 import java.util.UUID;
 
 import org.eclipse.jetty.server.Request;
@@ -61,6 +62,7 @@ public class API extends ContextHandler
 	public void doHandle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		// TODO Auto-generated method stub
 		response.setContentType("application/json; charset=utf-8");
+		response.setCharacterEncoding("UTF-8");
 		response.setStatus(HttpServletResponse.SC_OK);
 		if (baseRequest.getSessionHandler() == null) {
 			SessionHandler handler = new SessionHandler();
@@ -254,7 +256,6 @@ public class API extends ContextHandler
 			JSONObject jo = new JSONObject();
 			while (rs.next()) {
 				JSONObject product = new JSONObject();
-				product.put("id", rs.getString(1));
 				product.put("name",  rs.getString(2));
 				jo.put(rs.getString(1), product);
 			}
@@ -283,7 +284,6 @@ public class API extends ContextHandler
 			JSONObject jo = new JSONObject();
 			while (rs.next()) {
 				JSONObject product = new JSONObject();
-				product.put("id", rs.getString(1));
 				product.put("name",  rs.getString(2));
 				jo.put(rs.getString(1), product);
 			}

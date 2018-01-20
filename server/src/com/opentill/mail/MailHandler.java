@@ -8,49 +8,44 @@ import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
 
 import com.opentill.logging.Log;
+import com.opentill.main.Config;
 
-public class MailHandler implements Runnable {
-	private ArrayList<EmailMessage> emails = new ArrayList<EmailMessage>();
-	private String handlerMailAddress = null;
-	private String handlerMailPassword = null;
-	public MailHandler(String handlerMailAddress, String handlerMailPassword) {
-		this.handlerMailAddress = handlerMailAddress;
-		this.handlerMailPassword = handlerMailPassword;
-	}
-	public void addMail(EmailMessage email) {
-		this.emails.add(email);
-	}
-	@Override
-	public void run() {
-		while (true) {
-			if (this.emails.size() > 0) {
+public class MailHandler {
+	public static ArrayList<Email> emails = new ArrayList<Email>();
+	public static boolean running = false;
+	public static void run() {
+		 Log.log("Mail Handler Started");
+		 while (true) {
+			 while (MailHandler.emails.size() > 0) {
 				try {
-					EmailMessage emailMessage = this.emails.get(0);
-					Email email = new SimpleEmail();
-					email.setHostName("smtp.googlemail.com");
-					email.setSmtpPort(465);
-					email.setAuthenticator(new DefaultAuthenticator(this.handlerMailAddress, this.handlerMailPassword));
+					Email email = MailHandler.emails.get(0);
+					email.setHostName(Config.emailProperties.getProperty("email_hostname"));
+					email.setSmtpPort(Integer.parseInt(Config.emailProperties.getProperty("email_port")));
+					email.setAuthenticator(new DefaultAuthenticator(Config.emailProperties.getProperty("email_user"), Config.emailProperties.getProperty("email_password")));
 					email.setSSLOnConnect(true);
-					email.setFrom(this.handlerMailAddress);
-					email.setSubject(emailMessage.getSubject());
-					email.setMsg(emailMessage.getBody());
-					for (String to : emailMessage.getRecipients()) {
-						email.addTo(to);
-					}
+					email.setFrom(Config.emailProperties.getProperty("email_user"));
 					email.send();
-					this.emails.remove(0);
-					
+					MailHandler.emails.remove(0);
 				} catch (EmailException e) {
+					Log.log("Could not send email");
 					e.printStackTrace();
+				}
+				catch (Exception e) {
+					break;
 				}
 			}
 			try {
 				Thread.sleep(1000);
 			}
-			catch (InterruptedException e) {
-				Log.log("MailHandler has failed to sleep and has shut down");
+			catch (InterruptedException ex) {
+				Log.log(ex.toString());
 				break;
 			}
-		}
+		 }
+		 Log.log("Mail Handler has died");
+	};
+	public static void add(Email email) {
+		// TODO Auto-generated method stub
+		MailHandler.add(email);
 	}
 }
