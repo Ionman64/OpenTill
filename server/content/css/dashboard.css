@@ -298,6 +298,18 @@ tbody tr:hover {
 	border:0.5px solid #ccc;
 	padding:1em;
 }
+.checkbox-select {
+	list-style-type: none;
+	margin: 0;
+	padding: 5px;
+	overflow-x: hidden;
+	height: 200px;
+	overflow: auto;
+	/*border: 1px solid #000;*/
+}
+.checkbox-select input[type="checkbox"] {
+	margin-right:1em;
+}
 #page-name {
 	display: inline-block;
 	max-width:300px;

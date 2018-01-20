@@ -20,3 +20,4 @@
 	</section>
 </section>
 <jsp:include page="/modals/takings.jsp"></jsp:include>
+<jsp:include page="/modals/export-takings.jsp"></jsp:include>

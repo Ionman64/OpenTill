@@ -1,0 +1,118 @@
+.calendar-widget-noselect {
+  /*http://stackoverflow.com/questions/826782/how-to-disable-text-selection-highlighting-using-css#4407335*/
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Chrome/Safari/Opera */
+  -khtml-user-select: none; /* Konqueror */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently not supported by any browser */
+}
+.calendar-widget {
+	position:absolute;
+	height:auto;
+	width:250px;
+	background:#333;
+	border-radius:0.2em;
+	display:none;
+	z-index:9999;
+}
+.calendar-widget-header {
+	top:0;
+	left:0;
+	padding:0.25em;
+	min-height:1em;
+	text-align:center;
+}
+.calendar-widget-body {
+	padding:0.1em;
+	background:#222;
+}
+.calendar-widget-monthname {
+	display:inline-block;
+	width:40%;
+	border:0px;
+	background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+    border: 0 none;
+	text-align:right;
+	color:#FFB266;
+	-webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0; 
+	float:center;
+	cursor:pointer;
+}
+.calendar-widget-year {
+	display:inline-block;
+	width:25%;
+	border:0px;
+	background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+    border: 0 none;
+	color:#FFB266;
+	-webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0; 
+	float:center;
+	padding-left:0.25em;
+}
+input[type=number].calendar-widget-year {
+	-moz-appearance:textfield;
+}
+input[type=number].calendar-widget-year::-webkit-inner-spin-button, 
+input[type=number].calendar-widget-year::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0; 
+}
+.calendar-widget-btn {
+	margin:0;
+	padding:0.1em;
+	display:inline-block;
+	border:0;
+	background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+    border: 0 none;
+	color:#FFB266;
+	cursor:pointer;
+}
+.calendar-widget-btn-month-up {
+	float:right;
+}
+.calendar-widget-btn-month-down {
+	float:left;
+}
+
+.calendar-widget-table {
+	width:100%;
+	text-align:center;
+	font-size:0.7em;
+	font-weight:bold;
+}
+.calendar-widget-table th {
+	color:#FFB266;
+	padding:0;
+	height:2em;
+	width:2em;
+	font-style:italic;
+}
+.calendar-widget-table td {
+	color:#FFF;
+	padding:0;
+	height:2em;
+	width:2em;
+	border: 0.2px solid #eee;
+	cursor:pointer;
+}
+.calendar-widget-table td.out-of-month {
+	color:#ddd;
+	background:#777;
+}
+.calendar-widget-table td.today {
+	color:#ddd;
+	background:#22c;
+}
+.calendar-widget-table td.selected {
+	color:#ddd;
+	background:#272;
+}

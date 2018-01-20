@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="css/calendar.css"/>
+	<script src="js/moment.js"></script>
+	<script src="js/calendar.js"></script>
+	
+</head>
+<body>
+	<input id="calendarpopup-output"></input>
+	
+	<section id="calendarpopup" class="calendar-widget calendar-widget-noselect">
+		<section class="calendar-widget-header">
+			<button class="calendar-widget-btn calendar-widget-btn-month-down"><<</button>
+			<button class="calendar-widget-btn calendar-widget-btn-month-up">>></button>
+			
+			<select class="calendar-widget-monthname" dir="rtl"></select>
+			<input type="number" min="1900" max="2100" class="calendar-widget-year"></input>
+		</section>
+		<section class="calendar-widget-body">
+			<table class="calendar-widget-table">
+			</table>
+		</section>
+	</section>
+</body>
+</html>

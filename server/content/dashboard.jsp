@@ -25,6 +25,9 @@
 	<!--bootstrap-->
 	<link rel="stylesheet" href="thirdParty/bootstrap/css/bootstrap.min.css"/>
 	<script src="thirdParty/bootstrap/js/bootstrap.min.js"></script>
+	<!--bootstrap-->
+	<link rel="stylesheet" href="thirdParty/calendarMaster/css/calendar.css"/>
+	<script src="thirdParty/calendarMaster/js/calendar.js"></script>
 	<!--Bootbox-->
 	<script src="thirdParty/bootbox/js/bootbox.min.js"></script>
 	<!--custom-->

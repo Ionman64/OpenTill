@@ -1,4 +1,4 @@
-window.departmentNames = [];
+window.departmentNames = {};
 function Takings(){
 	this.init = function() {
 		$.ajax({
@@ -6,7 +6,7 @@ function Takings(){
 			dataType: "JSON",
 			success: function(data) {
 				$.each(data, function(key, item) {
-					window.departmentNames.push(item);
+					window.departmentNames[key] = item;
 					var row = el("section", {class:"row table-box"});
 					var col = el("section", {class:"col-md-2", style:"padding-left:0;padding-right:0;"});
 					var p = el("b", {html:item.name});
@@ -22,6 +22,49 @@ function Takings(){
 				});
 				window.takings.get_takings();
 			}
+		});
+		//var calendar1 = new CalendarView("takings-date-start");
+		//var calendar2 = new CalendarView("takings-date-end");
+		$("#takings-export-btn").click(function() {
+			$("#takings-date-start").val(moment().format("YYYY-MM-DD"));
+			$("#takings-date-end").val(moment().format("YYYY-MM-DD"));
+			var holder = document.getElementById("takings-departments-export");
+			$(holder).empty();
+			$.each(window.departmentNames, function(id, department) {
+				var li = el("li");
+				var label = el("label", {"for":"takings-checkbox-" + id});
+				var input = el("input", {"id":"takings-checkbox-" + id, type:"checkbox", checked:true, "data-id":department.id});
+				label.appendChild(input);
+				label.appendChild(document.createTextNode(department.name));
+				li.appendChild(label);
+				holder.appendChild(li);
+			});
+			$("#export-takings").modal("show");
+		});
+		$("#takings-departments-export").on("change", "input[type=checkbox]", function() {
+			if ($("#takings-departments-export input[type=checkbox]:checked").length == 0) {
+				$("#takings-export").attr("disabled", true);
+			}
+			else {
+				$("#takings-export").attr("disabled", false);
+			}
+		});
+		$("#takings-export").click(function() {
+			var selectedDepartments = [];
+			$("#takings-departments-export input[type=checkbox]:checked").each(function() {
+				selectedDepartments.push(this.getAttribute("data-id"));
+			});
+			$.ajax({
+				url:"api/kvs.php?function=GENERATETAKINGSREPORT",
+				dataType: "JSON",
+				data:{"takings-export-type":$("#takings-export-type").val(), "start":$("#takings-date-start").val(), "end":$("#takings-date-end").val(), "departments":selectedDepartments},
+				success: function(data) {
+					if (!data.success) {
+						alert("Error exporting takings");
+						return;
+					}
+				}
+			});
 		});
 		/*var date = moment().subtract(9, "days");
 		var currentTimestamp = parseInt(moment().format("x"));
@@ -91,13 +134,12 @@ function Takings(){
 		var th = el("th");
 		th.innerHTML = "Date";
 		tr.appendChild(th);
-		var departments = window.departmentNames;
-		for (var i=0;i<departments.length;i++) {
+		$.each(window.departmentNames, function(id, department) {
 			var th = el("th");
 			th.className = "head";
-			th.innerHTML = departments[i].shorthand;
+			th.innerHTML = department.shorthand;
 			tr.appendChild(th);
-		}
+		});
 		var th = el("th");
 		th.className = "head";
 		th.innerHTML = "Total";
@@ -113,7 +155,7 @@ function Takings(){
 			tr.appendChild(td);
 			$.each(window.departmentNames, function(id, department) {
 				var td = el("td");
-				var amount = parseFloat(totals[department.id] ? totals[department.id] : "0.00");
+				var amount = parseFloat(totals[id] ? totals[id] : "0.00");
 				total = total + amount;
 				td.innerHTML = formatMoney(amount);
 				tr.appendChild(td);

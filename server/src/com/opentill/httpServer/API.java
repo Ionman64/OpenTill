@@ -34,11 +34,15 @@ import org.eclipse.jetty.webapp.WebAppContext;
 
 import com.opentill.logging.Log;
 import com.opentill.database.DatabaseHandler;
+import com.opentill.document.TakingsReportGenerator;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.UUID;
 
 import org.eclipse.jetty.server.Request;
@@ -107,6 +111,9 @@ public class API extends ContextHandler
 				break;
 			case "GETALLSUPPLIERS":
 				getAllSuppliers(baseRequest, response);
+				break;
+			case "GENERATETAKINGSREPORT":
+				generateTakingsReport(baseRequest, response);
 				break;
 			case "GETSUPPLIER":
 				//selectSupplier(baseRequest, response);
@@ -207,6 +214,71 @@ public class API extends ContextHandler
 		}
 	    // Inform jetty that this request has now been handled
 	    baseRequest.setHandled(true);
+	}
+	private void generateTakingsReport(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		// TODO Auto-generated method stub
+		String exportType = baseRequest.getParameter("takings-export-type");
+		String startTimeString = baseRequest.getParameter("start");
+		String endTimeString = baseRequest.getParameter("end");
+		String[] departments = baseRequest.getParameterValues("departments[]");
+		if (exportType == null || startTimeString == null || endTimeString == null || departments == null) {
+			errorOut(response, "missing parameters");
+			return;
+		}
+		Long startTime = 0L;
+		Long endTime = 0L;
+		try {
+			startTime = Long.parseLong(startTimeString);
+			endTime = Long.parseLong(endTimeString);
+		}
+		catch (NumberFormatException e) {
+			errorOut(response, "Could not parse time");
+			return;
+		}
+		String admin = "a10f653a-6c20-11e7-b34e-426562cc935f";
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("SELECT DATE(FROM_UNIXTIME(kvs_transactions.ended)) AS \"date\", kvs_transactiontoproducts.department, SUM(kvs_transactiontoproducts.price) AS \"amount\" FROM kvs_transactiontoproducts LEFT JOIN kvs_transactions ON kvs_transactiontoproducts.transaction_id = kvs_transactions.id WHERE (kvs_transactions.started > ? AND kvs_transactions.ended < ?) AND kvs_transactions.cashier NOT IN (?) AND kvs_transactions.type in (?) AND (kvs_transactions.ended > 0) GROUP BY kvs_transactiontoproducts.department, DATE(FROM_UNIXTIME(kvs_transactions.ended)) ORDER BY DATE(FROM_UNIXTIME(kvs_transactions.ended)) DESC");
+			pstmt.setLong(1, startTime);
+			pstmt.setLong(2, endTime);
+			pstmt.setString(3, admin);
+			pstmt.setString(4, "PURCHASE");
+			rs = pstmt.executeQuery();
+			HashMap<String, HashMap<String, Double>> allDates = new HashMap<String, HashMap<String, Double>>();
+			while (rs.next()) {
+				if (allDates.containsKey(rs.getString(1))) {
+					HashMap<String, Double> date = allDates.get(rs.getString(1));
+					date.put(rs.getString(2), rs.getDouble(3));
+				}
+				else {
+					HashMap<String, Double> date = new HashMap<String, Double>();
+					date.put(rs.getString(2), rs.getDouble(3));
+					if (Arrays.asList(departments).indexOf(rs.getString(2)) > -1) {
+						allDates.put(rs.getString(1), date);
+					}
+				}
+			}
+			pstmt.close();
+			rs.close();
+			pstmt = conn.prepareStatement("SELECT kvs_tblcatagories.id, kvs_tblcatagories.name FROM kvs_tblcatagories WHERE kvs_tblcatagories.deleted = 0 ORDER BY kvs_tblcatagories.name");
+			rs = pstmt.executeQuery();
+			HashMap<String, String> departmentsToNames = new HashMap<String, String>();
+			while (rs.next()) {
+				departmentsToNames.put(rs.getString(1), rs.getString(2));
+			}
+			closeDBResources(rs, pstmt, conn);
+			new TakingsReportGenerator().createExcelReport(departmentsToNames, departments, allDates, "Exported Report.xls");
+		}
+		catch (Exception ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			closeDBResources(rs, pstmt, conn);
+		}
+		successOut(response);
 	}
 	private void getAllDepartments(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		// TODO Auto-generated method stub
@@ -522,7 +594,6 @@ public class API extends ContextHandler
 					date.put(rs.getString(2), rs.getFloat(3));
 					allDates.put(rs.getString(1), date);
 				}
-				Log.log(rs.getString(1));
 			}
 			JSONObject jo = new JSONObject();
 			jo.put("success", true);
@@ -647,7 +718,6 @@ public class API extends ContextHandler
 			closeDBResources(null, pstmt, conn);
 		}
 	}
-	@SuppressWarnings("unchecked")
 	private void completeTransaction(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		// TODO Auto-generated method stub
 		String id = baseRequest.getParameter("id");

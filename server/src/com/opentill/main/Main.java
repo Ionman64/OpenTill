@@ -35,7 +35,7 @@ public class Main {
 			email.setSubject("OpenTill Server Started");
 			email.setMsg("Your OpenTill server instance has started at " + new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
 			email.addTo("peterpickerill2014@gmail.com");
-			MailHandler.emails.add(email);
+			//MailHandler.emails.add(email);
 			new TakingsReportGenerator().testWrite();
 	    }
 }
