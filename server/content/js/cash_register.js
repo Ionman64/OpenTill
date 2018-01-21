@@ -7,6 +7,7 @@ window.Department = null;
 window.DepartmentName = "";
 window.cache = {};
 window.supplierArray = {};
+window.shouldPrintReciept = true;
 function getTransaction() {
 	return window.cashiersTransactions[window.operator] ?  window.cashiersTransactions[window.operator] : false;
 }
@@ -35,6 +36,9 @@ function refund() {
 	});
 }
 function printReciept() {
+	if (!window.shouldPrintReciept) {
+		return;
+	}
 	if (!getTransaction() || getTransaction().numItems() == 0) {
 		bootbox.alert("No products added");
 		return;
@@ -463,31 +467,26 @@ function getMessage() {
 		}
 	});
 }
-function loadModals() {
-	var modals= ["modals/productModal.php", 
-	"modals/caseModal.php", 
-	"modals/cashOut.php", 
-	"modals/productMenuModal.php", 
-	"modals/priceOverrideModal.php", 
-	"modals/newProduct.php", 
-	"modals/supplierModal.php", 
-	"modals/chat.php"];
-	for (var i=0;i<modals.length;i++) {
-		$.ajax({
-			method:"GET",
-			dataType:"HTML",
-			success: function(data) {
-				$(document).append(data);
-			}
-		});
-	}
-}
 $(document).ready( function() {
 	$.ajaxSetup({
 		method:"POST",
 		dataType:"json"
 	});
-	loadModals();
+	$("#printReceipt").click(function() {
+		if (window.shouldPrintReciept) {
+			$(this).addClass("btn-danger").removeClass("btn-default");
+			window.shouldPrintReciept = false;
+		}
+		else {
+			$(this).removeClass("btn-danger").addClass("btn-default");
+			window.shouldPrintReciept = true;
+			bootbox.confirm("Do you want to print a reciept now?", function(result) {
+				if (result) {
+					printReciept();
+				} 
+			});
+		}
+	});
 	$(".notify").on("click", function() {
 		$("#chat-modal").modal("show");
 		$("#chat-window").animate({ scrollTop: $("#chat-window-inner").height() }, 1000);
