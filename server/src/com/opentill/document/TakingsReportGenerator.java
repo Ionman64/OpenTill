@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -45,7 +46,7 @@ public class TakingsReportGenerator {
 			e.printStackTrace();
 		}
 	}
-	public void createExcelReport(HashMap<String, String> departmentsToNames, String[] departments, HashMap<String, HashMap<String, Double>> values, String stringJSONObject) {
+	public void createExcelReport(HashMap<String, String> departmentsToNames, String[] departments, LinkedHashMap<String, HashMap<String, Double>> values, String stringJSONObject) {
 		//Workbook wb = new HSSFWorkbook();
 	    XSSFWorkbook wb = new XSSFWorkbook();
 	    XSSFSheet sheet = wb.createSheet("Generated Report");
