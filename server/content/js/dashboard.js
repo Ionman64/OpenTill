@@ -236,6 +236,20 @@ $(document).ready(function() {
 			});
 		});
 	});
+	$("#update-product").click(function() {
+		var barcode = $("#ProductBarcode").val();
+		$.ajax({
+			url: "api/kvs.php?function=UPDATEPRODUCT",
+			data : {"id":$("#product-modal").attr("product-id"), "cashier":"", "barcode":barcode, "department":$("#ProductDepartment").val(), "name" : $("#ProductName").val(), "cost" : 0.00, "price" : $("#ProductPrice").val()},
+			success: function(data) {
+				if (!data.success) {
+					bootbox.alert("Product Not Updated");
+					return;
+				}
+				$("#product-modal").modal("hide");
+			}
+		});
+	});
 	$("#menu-button").click(function() {
 		$("#menu").hasClass("hidden") ? $("#menu").removeClass("hidden") : $("#menu").addClass("hidden");
 	});
