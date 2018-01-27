@@ -3,7 +3,7 @@
 	<section class="modal-content">
 	  <section class="modal-header">
 		<button class="btn btn-default pull-right" data-dismiss="modal" aria-label="Close">Close</button>
-		<h4 class="modal-title" id="productMenuName">Unknown Item</h4>
+		<h4 class="modal-title" id="overrideModalProductName">Unknown Item</h4>
 	  </section>
 	  <section class="modal-body">
 	  	<section class="container-fluid">
@@ -78,11 +78,8 @@
   			</section>
   		</section>
   	</section>
-	  	
-	 
 	  <section class="modal-footer">
-		<button type="button" id="closeCocktailButton" class="btn btn-default btn-lg" data-dismiss="modal">Cancel</button>
-		<button type="button" class="btn btn-danger btn-lg" id="completeCash">Override</button>
+		<button type="button" class="btn btn-danger btn-lg" id="override-submit-button">Override</button>
 	  </section>
   </section>
  </section>

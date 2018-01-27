@@ -114,7 +114,7 @@
 	  	</section>
 	  </section>
 	  <section class="modal-footer">
-		<button type="button" class="btn btn-danger btn-lg pull-left" id="delete-product">Delete Product</button>
+		<button type="button" class="btn btn-danger btn-lg pull-left" id="delete-product">Discontinue Product</button>
 		<button type="button" class="btn btn-success btn-lg" id="PrintLabel">Print Label</button>
 		<button type="button" class="btn btn-primary btn-lg" id="update-product">Update Product</button>
 	  </section>

@@ -216,6 +216,26 @@ $(document).ready(function() {
 			window.operators.createOperator();
 		});
 	});
+	$("#delete-product").click(function() {
+		var id = $("#product-modal").attr("product-id");
+		bootbox.confirm("Are you sure you want to delete this product from the system?", function(result) {
+			if (!result) {
+				return;
+			}
+			$.ajax({
+				url:"api/kvs.php?function=DELETEPRODUCT",
+				data:{"id":id},
+				success: function(data) {
+					if (!data.success) {
+						bootbox.alert("Could not remove product");
+						return;
+					}
+					$("#product-modal").modal("hide");
+					$("button[data-id='" + id + "']").parents(".row").first().remove()
+				}
+			});
+		});
+	});
 	$("#menu-button").click(function() {
 		$("#menu").hasClass("hidden") ? $("#menu").removeClass("hidden") : $("#menu").addClass("hidden");
 	});

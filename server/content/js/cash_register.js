@@ -7,7 +7,7 @@ window.Department = null;
 window.DepartmentName = "";
 window.cache = {};
 window.supplierArray = {};
-window.shouldPrintReciept = true;
+window.shouldPrintReciept = false;
 function getTransaction() {
 	return window.cashiersTransactions[window.operator] ?  window.cashiersTransactions[window.operator] : false;
 }
@@ -59,7 +59,8 @@ function printReciept() {
 }
 function showMenu(id) {
 	$("#productMenu").modal('show');
-	$("#productMenu").attr("data-id", getTransaction().products[id].barcode);
+	console.log(id);
+	$("#productMenu").attr("data-id", id);
 	$("#productMenu #productMenuName").html(getTransaction().products[id].name);
 }
 function GUID() {
@@ -148,9 +149,6 @@ function refreshTable() {
 			product.comment = "This product has no department";
 		if (!product.inDatabase)
 			product.comment = "Product is not in database";
-		if (product.priceOverride) {
-			product.comment = "Price Overide";
-		}
 		if (product.currentStock < 3) {
 			product.comment = "Product has low stock (Less than three)";
 		}
@@ -159,6 +157,9 @@ function refreshTable() {
 		}
 		if (product.maxStock == 0) {
 			product.comment = "This product has no max stock set";
+		}
+		if (product.priceOverride) {
+			product.comment = "Price Overide";
 		}
 		if (product.comment.length > 0) {
 			var section = el("section", {class:"col-lg-11 col-md-11 col-sm-11 col-xs-11 col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-xs-offset-1"});
@@ -261,30 +262,52 @@ function clearTransactionTable() {
 	clearDepartment();
 }
 function showProduct(brcode) {
-	$.ajax({
-		url: CONTEXT + "kvs.php?function=BARCODE",
-		data : {number : brcode},
-		dataType: "JSON",
-		success: function(product) {
-			$("#product-modal").attr("product-id", product.id);
-			$("#ProductBarcode").val(product.barcode);
-			$("#ProductName").val(product.name);
-			$("#ProductDepartment").val(product.department)
-			$("#ProductCost").val(product.cost);
-			$("#ProductPrice").val(product.price);
-			$("#Name").html(product.name);
-			$("#maxStockLevel").val(product.max_stock);
-			$("#currentLevel").val(product.current_stock);
-			if (product.labelPrinted == "1") {
-				$("#PrintLabel").attr("disabled", true);
-			}
-			else {
-				$("#PrintLabel").attr("disabled", false);
-			}
-			$("#productMenu").modal('hide');
-			$("#product-modal").modal("show");
+	if (window.cache[barcode]) {
+		var product = window.cache;
+		$("#product-modal").attr("product-id", product.id);
+		$("#ProductBarcode").val(product.barcode);
+		$("#ProductName").val(product.name);
+		$("#ProductDepartment").val(product.department)
+		$("#ProductCost").val(product.cost);
+		$("#ProductPrice").val(product.price);
+		$("#Name").html(product.name);
+		$("#maxStockLevel").val(product.max_stock);
+		$("#currentLevel").val(product.current_stock);
+		if (product.labelPrinted == "1") {
+			$("#PrintLabel").attr("disabled", true);
 		}
-	});
+		else {
+			$("#PrintLabel").attr("disabled", false);
+		}
+		$("#productMenu").modal('hide');
+		$("#product-modal").modal("show");
+	}
+	else {
+		$.ajax({
+			url: CONTEXT + "kvs.php?function=BARCODE",
+			data : {number : brcode},
+			dataType: "JSON",
+			success: function(product) {
+				$("#product-modal").attr("product-id", product.id);
+				$("#ProductBarcode").val(product.barcode);
+				$("#ProductName").val(product.name);
+				$("#ProductDepartment").val(product.department)
+				$("#ProductCost").val(product.cost);
+				$("#ProductPrice").val(product.price);
+				$("#Name").html(product.name);
+				$("#maxStockLevel").val(product.max_stock);
+				$("#currentLevel").val(product.current_stock);
+				if (product.labelPrinted == "1") {
+					$("#PrintLabel").attr("disabled", true);
+				}
+				else {
+					$("#PrintLabel").attr("disabled", false);
+				}
+				$("#productMenu").modal('hide');
+				$("#product-modal").modal("show");
+			}
+		});
+	}
 }
 function addProduct(data) {
 	//Data should be JSON 
@@ -294,7 +317,7 @@ function addProduct(data) {
 	}
 	var tempProduct = new Product();
 	tempProduct.id = data.id;
-	tempProduct.cost = data.price;
+	tempProduct.cost = parseFloat(data.price);
 	tempProduct.updated = parseInt(data.updated);
 	tempProduct.inDatabase = true;
 	tempProduct.barcode = data.barcode;
@@ -521,7 +544,18 @@ $(document).ready( function() {
 			if (!result) {
 				return;
 			}
-			//NOT IMPLEMENTED
+			$.ajax({
+				url:CONTEXT + "kvs.php?function=DELETEPRODUCT",
+				data:{"id":id},
+				success: function(data) {
+					if (!data.success) {
+						bootbox.alert("Could not remove product");
+						return;
+					}
+					$("#product-modal").modal("hide");
+					getTransaction().removeProduct(id);
+				}
+			});
 		});
 	});
 	$("#completeCard").click(function() {
@@ -620,12 +654,22 @@ $(document).ready( function() {
 	$("#clearChange").on("click", function() {
 		clearChange();
 	});
+	$("#override-submit-button").click(function() {
+		var newPrice = $("#overide-price").val();
+		var item = getTransaction().products[$('#productMenu').attr('data-id')];
+		item.overridePrice(newPrice);
+		$('#priceOverrideModal').modal('hide').removeAttr("data-id");
+	});
 	$("#showPriceOverride").on("click", function() {
-		$('#priceOverrideModal').modal('show');
+		var item = getTransaction().products[$('#productMenu').attr('data-id')];
+		$("#original-price").val(formatMoney(item.cost));
+		$("#overide-price").attr("placeholder", formatMoney(item.cost)).focus();
+		$("#overrideModalProductName").html(item.name)
+		$('#priceOverrideModal').modal('show').attr("data-id", $('#productMenu').attr('data-id'));
 		$('#productMenu').modal('hide');
 	});
 	$("#showProductInfo").on("click", function() {
-		showProduct($('#productMenu').attr('data-id'));
+		showProduct(getTransaction().products[$('#productMenu').attr('data-id')].barcode);
 	});
 	$("#closeProductMenu").on("click", function() {
 		$('#productMenu').modal('hide');
@@ -721,6 +765,7 @@ $(document).ready( function() {
 					}
 					var li = el("li", {class: "btn btn-default"});
 					$(li).attr("product-data", item.barcode);
+					item.id = key;
 					window.cache[item.barcode.toString()] = item;
 					var span1 = el("span", {html:(item.name + "<br>@" + formatMoney(item.price, "£"))});
 					li.appendChild(span1);
@@ -821,7 +866,7 @@ $(document).ready( function() {
 				var id = $("#product-modal").attr("product-id");
 				getTransaction().products[id].cost = $("#ProductPrice").val();
 				getTransaction().products[id].price = $("#ProductPrice").val();
-				getTransaction().products[id].department = parseFloat($("#ProductDepartment").val());
+				getTransaction().products[id].department = $("#ProductDepartment").val();
 				getTransaction().products[id].name = $("#ProductName").val();
 				$("#product-modal").modal("hide");
 				refreshTable();
