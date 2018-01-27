@@ -96,18 +96,17 @@ public class ExcelHelper {
 	public void createProductLevelsReport(HashMap<String, String> departmentsToNames, String[] departments, HashMap<String, HashMap<String, Product>> values) {
 		//Workbook wb = new HSSFWorkbook();
 	    XSSFWorkbook wb = new XSSFWorkbook();
-	    XSSFSheet sheet = null;
-	    int rowId = 0;
-	    int columnId = 0;
 	    for (String department : departments) {
 	    	if (department == null) {
 	    		continue;
 	    	}
-	    	 sheet = wb.createSheet(departmentsToNames.get(department).replace("/", ""));
+	    	 XSSFSheet sheet = wb.createSheet(departmentsToNames.get(department).replace("/", "-"));
 	    	 HashMap<String, Product> products = values.get(department);
 	    	 if (products == null) {
 	    		 continue;
 	    	 }
+	    	 int rowId = 0;
+	    	 int columnId = 0;
 	    	 XSSFRow row = sheet.createRow(rowId++);
 		 	    XSSFCell cell = row.createCell(columnId++);
 		     	cell.setCellType(XSSFCell.CELL_TYPE_STRING);
@@ -125,8 +124,8 @@ public class ExcelHelper {
 	    	 for (Entry<String, Product> product : products.entrySet()) {
 	    		 Product tempProduct = product.getValue();
 	    		 if (tempProduct == null || tempProduct.name == null) {
-		 	        	continue;
-		 	        }
+		 	        continue;
+		 	     }
 	    		columnId = 0;
 	 	        
 	 	        row = sheet.createRow(rowId++);

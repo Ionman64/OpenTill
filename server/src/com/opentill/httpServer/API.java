@@ -230,7 +230,6 @@ public class API extends ContextHandler
 			errorOut(response, "missing parameters");
 			return;
 		}
-		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
