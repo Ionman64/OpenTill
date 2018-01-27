@@ -30,6 +30,8 @@
 	<script src="thirdParty/calendarMaster/js/calendar.js"></script>
 	<!--Bootbox-->
 	<script src="thirdParty/bootbox/js/bootbox.min.js"></script>
+	<!--Mithril-->
+	<script src="thirdParty/mithril/js/mithril.min.js"></script>
 	<!--custom-->
 	<script type="text/javascript" src="js/takings.js"></script>
 	<script type="text/javascript" src="js/transactions.js"></script>

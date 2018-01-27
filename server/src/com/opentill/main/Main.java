@@ -6,7 +6,7 @@ import java.util.Calendar;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.SimpleEmail;
 
-import com.opentill.document.TakingsReportGenerator;
+import com.opentill.document.ExcelHelper;
 import com.opentill.httpServer.ServerHandler;
 import com.opentill.mail.MailHandler;
 
@@ -36,6 +36,6 @@ public class Main {
 			email.setMsg("Your OpenTill server instance has started at " + new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
 			email.addTo("peterpickerill2014@gmail.com");
 			//MailHandler.emails.add(email);
-			new TakingsReportGenerator().testWrite();
+			new ExcelHelper().testWrite();
 	    }
 }

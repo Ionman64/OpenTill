@@ -216,7 +216,7 @@
 				<section class="col-md-4">
 					<div class="btn-group navbar-right" role="toolbar" aria-label="...">
 						<button class="navbar-btn btn btn-lg btn-default" id="clearTrans" disabled>Clear</button>
-						<button class="navbar-btn btn btn-lg btn-default" id="printReceipt">Print Receipt</button>
+						<button class="navbar-btn btn btn-lg btn-danger" id="printReceipt">Print Receipt</button>
 						<button class="navbar-btn btn btn-lg btn-success" id="cashOutMainButton">CASH OUT</button>
 					</div>
 				</section>

@@ -216,6 +216,40 @@ $(document).ready(function() {
 			window.operators.createOperator();
 		});
 	});
+	$("#delete-product").click(function() {
+		var id = $("#product-modal").attr("product-id");
+		bootbox.confirm("Are you sure you want to delete this product from the system?", function(result) {
+			if (!result) {
+				return;
+			}
+			$.ajax({
+				url:"api/kvs.php?function=DELETEPRODUCT",
+				data:{"id":id},
+				success: function(data) {
+					if (!data.success) {
+						bootbox.alert("Could not remove product");
+						return;
+					}
+					$("#product-modal").modal("hide");
+					$("button[data-id='" + id + "']").parents(".row").first().remove()
+				}
+			});
+		});
+	});
+	$("#update-product").click(function() {
+		var barcode = $("#ProductBarcode").val();
+		$.ajax({
+			url: "api/kvs.php?function=UPDATEPRODUCT",
+			data : {"id":$("#product-modal").attr("product-id"), "cashier":"", "barcode":barcode, "department":$("#ProductDepartment").val(), "name" : $("#ProductName").val(), "cost" : 0.00, "price" : $("#ProductPrice").val()},
+			success: function(data) {
+				if (!data.success) {
+					bootbox.alert("Product Not Updated");
+					return;
+				}
+				$("#product-modal").modal("hide");
+			}
+		});
+	});
 	$("#menu-button").click(function() {
 		$("#menu").hasClass("hidden") ? $("#menu").removeClass("hidden") : $("#menu").addClass("hidden");
 	});

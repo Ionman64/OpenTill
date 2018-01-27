@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -14,8 +13,9 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import com.opentill.main.Config;
+import com.opentill.products.Product;
 
-public class TakingsReportGenerator {
+public class ExcelHelper {
 	public void testWrite() {
 		//Workbook wb = new HSSFWorkbook();
 	    XSSFWorkbook wb = new XSSFWorkbook();
@@ -46,10 +46,10 @@ public class TakingsReportGenerator {
 			e.printStackTrace();
 		}
 	}
-	public void createExcelReport(HashMap<String, String> departmentsToNames, String[] departments, LinkedHashMap<String, HashMap<String, Double>> values, String stringJSONObject) {
+	public void createTakingsReport(HashMap<String, String> departmentsToNames, String[] departments, HashMap<String, HashMap<String, Double>> values) {
 		//Workbook wb = new HSSFWorkbook();
 	    XSSFWorkbook wb = new XSSFWorkbook();
-	    XSSFSheet sheet = wb.createSheet("Generated Report");
+	    XSSFSheet sheet = wb.createSheet("Takings");
 	    int rowId = 1;
 	    int columnId = 1;
 	    XSSFRow row = sheet.createRow(0);
@@ -93,4 +93,71 @@ public class TakingsReportGenerator {
 			e.printStackTrace();
 		}
 	}
+	public void createProductLevelsReport(HashMap<String, String> departmentsToNames, String[] departments, HashMap<String, HashMap<String, Product>> values) {
+		//Workbook wb = new HSSFWorkbook();
+	    XSSFWorkbook wb = new XSSFWorkbook();
+	    XSSFSheet sheet = null;
+	    int rowId = 0;
+	    int columnId = 0;
+	    for (String department : departments) {
+	    	if (department == null) {
+	    		continue;
+	    	}
+	    	 sheet = wb.createSheet(departmentsToNames.get(department).replace("/", ""));
+	    	 HashMap<String, Product> products = values.get(department);
+	    	 if (products == null) {
+	    		 continue;
+	    	 }
+	    	 XSSFRow row = sheet.createRow(rowId++);
+		 	    XSSFCell cell = row.createCell(columnId++);
+		     	cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+		     	cell.setCellValue("Name");
+		     	
+		     	cell = row.createCell(columnId++);
+		     	cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+		     	cell.setCellValue("Current Stock");
+		     	
+		     	cell = row.createCell(columnId++);
+		     	cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+		     	cell.setCellValue("Max Stock");
+	    	 
+	    	 
+	    	 for (Entry<String, Product> product : products.entrySet()) {
+	    		 Product tempProduct = product.getValue();
+	    		 if (tempProduct == null || tempProduct.name == null) {
+		 	        	continue;
+		 	        }
+	    		columnId = 0;
+	 	        
+	 	        row = sheet.createRow(rowId++);
+	 	        
+	 	        row.createCell(columnId++).setCellValue(tempProduct.name);
+	 	        cell = row.createCell(columnId++);
+	 	        cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+	 	        cell.setCellValue(tempProduct.current_stock);
+	 	        
+	 	        cell = row.createCell(columnId++);
+	 	        cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+	 	        cell.setCellValue(tempProduct.max_stock);
+	 	    }
+	    }
+	    
+	    // Write the output to a file
+	    String filename = "Inventory Report.xls";
+	    File file = new File(Config.APP_HOME + File.separatorChar + filename);
+	    FileOutputStream fileO;
+		try {
+			fileO = new FileOutputStream(file);
+			wb.write(fileO);
+			fileO.flush();
+		    fileO.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 }

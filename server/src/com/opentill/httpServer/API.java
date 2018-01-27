@@ -33,8 +33,9 @@ import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 import com.opentill.logging.Log;
+import com.opentill.products.Product;
 import com.opentill.database.DatabaseHandler;
-import com.opentill.document.TakingsReportGenerator;
+import com.opentill.document.ExcelHelper;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -116,6 +117,9 @@ public class API extends ContextHandler
 			case "GENERATETAKINGSREPORT":
 				generateTakingsReport(baseRequest, response);
 				break;
+			case "GENERATEINVENTORYREPORT":
+				generateInventoryReport(baseRequest, response);
+				break;
 			case "GETSUPPLIER":
 				//selectSupplier(baseRequest, response);
 				break;
@@ -157,6 +161,9 @@ public class API extends ContextHandler
 				break;
 			case "DELETEDEPARTMENT":
 				//deleteDepartment(baseRequest, response);
+				break;
+			case "DELETEPRODUCT":
+				deleteProduct(baseRequest, response);
 				break;
 			case "SEARCH":
 				search(baseRequest, response);
@@ -216,6 +223,84 @@ public class API extends ContextHandler
 	    // Inform jetty that this request has now been handled
 	    baseRequest.setHandled(true);
 	}
+	private void generateInventoryReport(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		String exportType = baseRequest.getParameter("export-type");
+		String[] departments = baseRequest.getParameterValues("departments[]");
+		if (exportType == null || departments == null) {
+			errorOut(response, "missing parameters");
+			return;
+		}
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("SELECT kvs_tblcatagories.id, kvs_tblproducts.id, kvs_tblproducts.name, kvs_tblproducts.current_stock, kvs_tblproducts.max_stock FROM kvs_tblproducts LEFT JOIN kvs_tblcatagories ON kvs_tblproducts.department = kvs_tblcatagories.id WHERE kvs_tblproducts.deleted = 0 ORDER BY kvs_tblproducts.name");
+			rs = pstmt.executeQuery();
+			HashMap<String, HashMap<String, Product>> inventory = new HashMap<String, HashMap<String, Product>>();
+			while (rs.next()) {
+				Product tempProduct = new Product();
+				tempProduct.id = rs.getString(2);
+				tempProduct.name = rs.getString(3);
+				tempProduct.current_stock = rs.getInt(4);
+				tempProduct.max_stock = rs.getInt(5);
+				if (inventory.containsKey(rs.getString(1))) {
+					HashMap<String, Product> department = inventory.get(rs.getString(1));
+					department.put(rs.getString(2), tempProduct);
+				}
+				else {
+					if (Arrays.asList(departments).indexOf(rs.getString(1)) > -1) {
+						HashMap<String, Product> department = new HashMap<String, Product>();
+						department.put(rs.getString(2), tempProduct);
+						inventory.put(rs.getString(1), department);					
+					}
+				}
+			}
+			closeDBResources(rs, pstmt, null);
+			pstmt = conn.prepareStatement("SELECT kvs_tblcatagories.id, kvs_tblcatagories.name FROM kvs_tblcatagories WHERE kvs_tblcatagories.deleted = 0 ORDER BY kvs_tblcatagories.name");
+			rs = pstmt.executeQuery();
+			HashMap<String, String> departmentsToNames = new HashMap<String, String>();
+			while (rs.next()) {
+				departmentsToNames.put(rs.getString(1), rs.getString(2));
+			}
+			new ExcelHelper().createProductLevelsReport(departmentsToNames, departments, inventory);
+		}
+		catch (Exception ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			closeDBResources(rs, pstmt, conn);
+		}
+		successOut(response);
+	}
+	private void deleteProduct(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		String id = baseRequest.getParameter("id");
+		if (id == null) {
+			errorOut(response, "missing params");
+			return;
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("UPDATE kvs_tblproducts SET deleted = 1, updated=? WHERE id=?");
+			pstmt.setLong(1, getCurrentTimeStamp());
+			pstmt.setString(2, id);
+			if (pstmt.executeUpdate() > 0) {
+				Log.log("Product ($id) DELETED by operator ($operator)");
+				successOut(response);
+				return;
+			}
+			errorOut(response);
+		}
+		catch (Exception ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			closeDBResources(null, pstmt, conn);
+		}
+	}
 	private void generateTakingsReport(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		// TODO Auto-generated method stub
 		String exportType = baseRequest.getParameter("takings-export-type");
@@ -271,7 +356,7 @@ public class API extends ContextHandler
 				departmentsToNames.put(rs.getString(1), rs.getString(2));
 			}
 			closeDBResources(rs, pstmt, conn);
-			new TakingsReportGenerator().createExcelReport(departmentsToNames, departments, allDates, "Exported Report.xls");
+			new ExcelHelper().createTakingsReport(departmentsToNames, departments, allDates);
 		}
 		catch (Exception ex) {
 			Log.log(ex.toString());
@@ -290,16 +375,13 @@ public class API extends ContextHandler
 			conn = DatabaseHandler.getDatabase();
 			pstmt = conn.prepareStatement("SELECT kvs_tblcatagories.id, kvs_tblcatagories.name FROM kvs_tblcatagories WHERE kvs_tblcatagories.deleted = 0 ORDER BY kvs_tblcatagories.name");
 			rs = pstmt.executeQuery();
-			JSONArray joArr = new JSONArray();
+			JSONObject departments = new JSONObject();
 			while (rs.next()) {
-				JSONObject department = new JSONObject();
-				department.put("id", rs.getString(1));
-				department.put("name",  rs.getString(2));
-				joArr.add(department);
+				departments.put(rs.getString(1), rs.getString(2));
 			}
 			JSONObject responseJSON = new JSONObject();
 			responseJSON.put("success", true);
-			responseJSON.put("departments", joArr);
+			responseJSON.put("departments", departments);
 			response.getWriter().write(responseJSON.toJSONString());
 			return;
 		}
@@ -428,13 +510,12 @@ public class API extends ContextHandler
 		errorOut(response);
 	}
 	private void getProductsLevels(Request baseRequest, HttpServletResponse response) {
-		// TODO Auto-generated method stub
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT kvs_tblproducts.id, kvs_tblproducts.name, kvs_tblproducts.current_stock, kvs_tblproducts.max_stock, kvs_tblcatagories.colour, kvs_tblcatagories.name AS \"department\" FROM kvs_tblproducts LEFT JOIN kvs_tblcatagories ON kvs_tblproducts.department = kvs_tblcatagories.id WHERE kvs_tblproducts.current_stock < kvs_tblproducts.max_stock ORDER BY kvs_tblproducts.name");
+			pstmt = conn.prepareStatement("SELECT kvs_tblproducts.id, kvs_tblproducts.name, kvs_tblproducts.current_stock, kvs_tblproducts.max_stock, kvs_tblcatagories.colour, kvs_tblcatagories.id FROM kvs_tblproducts LEFT JOIN kvs_tblcatagories ON kvs_tblproducts.department = kvs_tblcatagories.id WHERE kvs_tblproducts.deleted = 0 ORDER BY kvs_tblproducts.name");
 			rs = pstmt.executeQuery();
 			JSONObject jo = new JSONObject();
 			while (rs.next()) {
@@ -467,7 +548,6 @@ public class API extends ContextHandler
 		}
 	}
 	private void setCurrentStockLevel(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
-		// TODO Auto-generated method stub
 		String id = baseRequest.getParameter("id");
 		String amountString = baseRequest.getParameter("amount");
 		if (id == null || amountString == null) {
@@ -622,19 +702,18 @@ public class API extends ContextHandler
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT kvs_tblproducts.name, kvs_tblproducts.barcode, kvs_tblproducts.price, kvs_tblproducts.name FROM kvs_tblproducts WHERE LOWER(name) LIKE LOWER(?) ORDER BY name LIMIT 20");
+			pstmt = conn.prepareStatement("SELECT kvs_tblproducts.id, kvs_tblproducts.name, kvs_tblproducts.barcode, kvs_tblproducts.price FROM kvs_tblproducts WHERE LOWER(name) LIKE LOWER(?) AND deleted = 0 ORDER BY name LIMIT 20");
 			pstmt.setString(1, "%" + search + "%");
 			rs = pstmt.executeQuery();
-			JSONArray joArr = new JSONArray();
+			JSONObject responseJson = new JSONObject();
 			while (rs.next()) {
 				JSONObject jo = new JSONObject();
-				jo.put("id",  rs.getString(1));
-				jo.put("barcode",  rs.getString(2));
-				jo.put("price",  rs.getFloat(3));
-				jo.put("name",  rs.getString(4));
-				joArr.add(jo);
+				jo.put("name",  rs.getString(2));
+				jo.put("barcode",  rs.getString(3));
+				jo.put("price",  rs.getDouble(4));
+				responseJson.put(rs.getString(1), jo);
 			}
-			response.getWriter().write(joArr.toJSONString());
+			response.getWriter().write(responseJson.toJSONString());
 			return;
 		}
 		catch (Exception ex) {
@@ -807,6 +886,7 @@ public class API extends ContextHandler
 						incrementProductLevel(conn, id, productQuantity);
 						break;
 				}
+				//TODO:: USE A DIFFERENT LIBRARY TO HANDLE THE TRANSACTION
 				while (productQuantity-- > 0) {
 					if (!insertTransactionProduct(conn, id, ((boolean) joProduct.get("inDatabase") ? (String) joProduct.get("id"): null), (double) joProduct.get("price"), (String) joProduct.get("department"))) {
 						throw new Exception();
@@ -1458,6 +1538,10 @@ public class API extends ContextHandler
 		JSONObject product = null;
 		if (barcode == null) {
 			errorOut(response, "no barcode");
+			return;
+		}
+		if (!barcode.matches("-?\\d+(\\.\\d+)?")) { //is numeric
+			errorOut(response, "invalid barcode");
 			return;
 		}
 		product = getItemFromBarcode(barcode);

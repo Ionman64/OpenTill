@@ -8,21 +8,30 @@ function Product() {
 	this.inDatabase = false;
 	this.department = null;
 	this.priceOverride = false;
+	this.priceOverrideNewCost = 0.00;
 	this.updated = 0;
 	this.maxStock = 0;
 	this.currentStock = 0;
 	this.comment = ""; //Is the product on sale, or has missing data?
-	//this.override(overridden) {
-		
-	//}
+	this.overridePrice = function(newCost) {
+		this.priceOverride = true;
+		this.priceOverrideNewCost = newCost;
+		getTransaction().refreshTable();
+	}
 	this.setCost = function(cost) {
 		this.cost = cost;
 	}
 	this.totalCost = function() {
-		return (this.cost * this.quantity);
+		if (!this.priceOverride) {
+			return (this.cost * this.quantity);
+		}
+		return (this.priceOverrideNewCost * this.quantity);
 	}
 	this.productCost = function() {
-		return this.cost;
+		if (!this.priceOverride) {
+			return parseFloat(this.cost);
+		}
+		return this.priceOverrideNewCost;
 	}
 	this.update = function(barcode, cost, price) {
 		$.ajax({

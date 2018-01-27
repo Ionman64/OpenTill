@@ -19,9 +19,17 @@
     </plugins>
   </build>
   <dependencies>
+  <dependency>
+  <groupId>com.google.code.gson</groupId>
+  <artifactId>gson</artifactId>
+</dependency>
    <dependency>
     <groupId>org.apache.commons</groupId>
     <artifactId>commons-collections4</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.apache.pdfbox</groupId>
+    <artifactId>pdfbox</artifactId>
 </dependency>
 <dependency>
     <groupId>org.apache.poi</groupId>
@@ -75,6 +83,16 @@
   			<groupId>mysql</groupId>
   			<artifactId>mysql-connector-java</artifactId>
   			<version>5.1.45</version>
+  		</dependency>
+  		<dependency>
+  			<groupId>org.apache.pdfbox</groupId>
+  			<artifactId>pdfbox</artifactId>
+  			<version>2.0.8</version>
+  		</dependency>
+  		<dependency>
+  			<groupId>com.google.code.gson</groupId>
+  			<artifactId>gson</artifactId>
+  			<version>2.8.2</version>
   		</dependency>
   	</dependencies>
   </dependencyManagement>

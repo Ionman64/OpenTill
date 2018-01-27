@@ -18,9 +18,8 @@
 			</section>
 	  </section>
 	  <section class="modal-footer">
-		<button type="button" class="btn btn-danger btn-lg pull-left" id="delete-product">Delete Product</button>
-		<button type="button" class="btn btn-success btn-lg" id="PrintLabel">Print Label</button>
-		<button type="button" class="btn btn-primary btn-lg" id="update-product">Update Product</button>
+		<button type="button" class="btn btn-danger btn-lg pull-left" id="delete-case">Delete Product</button>
+		<button type="button" class="btn btn-primary btn-lg" id="update-case">Update Case</button>
 	  </section>
 	</section>
   </section>

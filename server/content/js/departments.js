@@ -60,6 +60,9 @@ function Departments() {
 				}
 				$.each(data.departments, function(key, value) {
 					window.departments.departmentsList[key] = value;
+					var option = el("option", {value:key});
+					option.innerHTML = value;
+					$("#ProductDepartment").append(option);
 				});
 				window.departments.populate_table({"name":"Name", "shorthand":"Short Hand"}, data.departments);
 			}
