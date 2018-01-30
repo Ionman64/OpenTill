@@ -102,7 +102,7 @@ function Departments() {
 					if (!data.success) {
 						bootbox.alert("There has been an error");
 					}
-					$("#departmentInfo").attr("data-id", null).modal("hide");
+					$("#create-department-modal").modal("hide");
 					window.departments.getDepartments();
 				}
 			});
