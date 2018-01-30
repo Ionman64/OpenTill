@@ -45,6 +45,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.UUID;
 
 import org.eclipse.jetty.server.Request;
@@ -329,7 +330,6 @@ public class API extends ContextHandler
 			errorOut(response, "missing parameters");
 			return;
 		}
-		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -432,7 +432,7 @@ public class API extends ContextHandler
 			pstmt.setString(3, admin);
 			pstmt.setString(4, "PURCHASE");
 			rs = pstmt.executeQuery();
-			HashMap<String, HashMap<String, Double>> allDates = new HashMap<String, HashMap<String, Double>>();
+			LinkedHashMap<String, HashMap<String, Double>> allDates = new LinkedHashMap<String, HashMap<String, Double>>();
 			while (rs.next()) {
 				if (allDates.containsKey(rs.getString(1))) {
 					HashMap<String, Double> date = allDates.get(rs.getString(1));

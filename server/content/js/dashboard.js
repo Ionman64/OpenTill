@@ -374,4 +374,3 @@ function getSalesData(daysToLookBack, id) {
 				}
 			}
 		});
-	}
