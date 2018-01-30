@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS `opentill_operators` (
   `name` varchar(50) NOT NULL,
   `telephone` varchar(20) DEFAULT NULL,
   `email` varchar(100) DEFAULT NULL,
+  `comments` varchar(100) DEFAULT NULL,
   `created` int(13) NOT NULL DEFAULT '0',
   `updated` int(13) NOT NULL DEFAULT '0',
   `deleted` int(1) NOT NULL DEFAULT '0',

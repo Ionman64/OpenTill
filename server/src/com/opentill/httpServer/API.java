@@ -143,7 +143,7 @@ public class API extends ContextHandler
 				//updateOperator(baseRequest, response);
 				break;
 			case "ADDOPERATOR":
-				//createOperator(baseRequest, response);
+				createOperator(baseRequest, response);
 				break;
 			case "DELETEOPERATOR":
 				//deleteOperator(baseRequest, response);
@@ -223,6 +223,46 @@ public class API extends ContextHandler
 		}
 	    // Inform jetty that this request has now been handled
 	    baseRequest.setHandled(true);
+	}
+	private void createOperator(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		String name = baseRequest.getParameter("name");
+		String telephone = baseRequest.getParameter("telephone");
+		String email = baseRequest.getParameter("email");
+		String password = baseRequest.getParameter("password");
+		String comments = baseRequest.getParameter("comments");
+		if ((name == null) || (email == null) || (password == null)) {
+			errorOut(response, "missing fields");
+			return;
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			String guid = GUID();
+			String code = GUID().split("-")[0];
+			pstmt = conn.prepareStatement("INSERT INTO " + Config.DATABASE_TABLE_PREFIX + "operators (id, code, name, passwordHash, telephone, email, comments, created, updated) VALUES (?,?,?,?,?,?,?,?,?)");
+			pstmt.setString(1, guid);
+			pstmt.setString(2, code);
+			pstmt.setString(3, name);
+			pstmt.setString(4, hashPassword(password, ""));
+			pstmt.setString(5, telephone);
+			pstmt.setString(6, email);
+			pstmt.setString(7, comments);
+			pstmt.setInt(8,  getCurrentTimeStamp());
+			pstmt.setInt(9,  getCurrentTimeStamp());
+			pstmt.execute();
+			if (pstmt.getUpdateCount() > 0) {
+				successOut(response);
+				return;
+			}
+		}
+		catch (Exception ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
+		}
+		errorOut(response);
 	}
 	private void selectDepartment(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		String id = baseRequest.getParameter("id");

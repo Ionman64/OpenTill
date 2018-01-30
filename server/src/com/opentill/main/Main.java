@@ -1,5 +1,7 @@
 package com.opentill.main;
 
+import org.json.simple.JSONObject;
+
 import com.opentill.database.DatabaseMigration;
 import com.opentill.httpServer.ServerHandler;
 import com.opentill.mail.MailHandler;
@@ -20,6 +22,10 @@ public class Main {
 			};
 			thread2.setDaemon(true);
 			thread2.start();
+			
+			JSONObject jsonObj = new JSONObject();
+			jsonObj.put("text", "Server Started");
+
 			
 			DatabaseMigration db = new DatabaseMigration(Config.CURRENT_VERSION);
 			db.up();

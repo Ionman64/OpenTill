@@ -17,7 +17,6 @@ function Operators() {
 				$("#operator-name").val(operator.name);
 				$("#operator-telephone").val(operator.telephone);
 				$("#operator-email").val(operator.email);
-				$("#operator-website").val(operator.website);
 				$("#operator-comments").val(operator.comments);
 				$("#operatorInfo").attr("data-id", operator.id).modal("show");
 			}
@@ -28,12 +27,7 @@ function Operators() {
 		$("#operator-name").val("");
 		$("#operator-telephone").val("");
 		$("#operator-email").val("");
-		$("#operator-website").val("");
 		$("#operator-comments").val("");
-	}
-	this.createOperator = function() {
-		this.clearOperatorModal();
-		$("#operatorInfo").attr("data-id", null).modal("show");
 	}
 	this.deleteOperator = function() {
 		var id = $("#operatorInfo").attr("data-id");
@@ -77,8 +71,8 @@ function Operators() {
 		$("#update-operator").on("click", function() {
 			window.operators.saveOperator($("#operatorInfo").attr("data-id"));
 		});
-		$("#add-operator").on("click", function() {
-			window.operators.createOperator();
+		$("#add-operator-btn").on("click", function() {
+			$("#create-operator-modal").modal("show");
 		});
 		$("#delete-operator").on("click", function() {
 			window.operators.deleteOperator();
@@ -89,31 +83,38 @@ function Operators() {
 				window.operators.showOperator(id);
 			}
 		});
+		$("#create-operator").on("click", function() {
+			window.operators.saveOperator();
+		});
 	};
 	this.saveOperator = function(id) {
-		var name = $("#operator-name").val();
-		var pass = $("#operator-password").val();
-		var telephone = $("#operator-telephone").val();
-		var email = $("#operator-email").val();
-		var website = $("#operator-website").val();
-		var comments = $("#operator-comments").val();
 		if (id == null) {
+			var name = $("#new-operator-name").val();
+			var pass = $("#new-operator-password").val();
+			var telephone = $("#new-operator-telephone").val();
+			var email = $("#new-operator-email").val();
+			var comments = $("#new-operator-comments").val();
 			$.ajax({
 				url:"api/kvs.php?function=ADDOPERATOR",
-				data:{"name":name, "password":pass, "telephone":telephone, "email":email, "website":website, "comments":comments},
+				data:{"name":name, "password":pass, "telephone":telephone, "email":email, "comments":comments},
 				success:function(data) {
 					if (!data.success) {
 						bootbox.alert("There has been an error");
 					}
-					$("#operatorInfo").attr("data-id", null).modal("hide");
+					$("#create-operator-modal").attr("data-id", null).modal("hide");
 					window.operators.getOperators();
 				}
 			});
 			return;
 		}	
+		var name = $("#operator-name").val();
+		var pass = $("#operator-password").val();
+		var telephone = $("#operator-telephone").val();
+		var email = $("#operator-email").val();
+		var comments = $("#operator-comments").val();
 		$.ajax({
 			url:"api/kvs.php?function=UPDATEOPERATOR",
-			data:{"id":id, "name":name, "password":pass, "telephone":telephone, "email":email, "website":website, "comments":comments},
+			data:{"id":id, "name":name, "password":pass, "telephone":telephone, "email":email, "comments":comments},
 			success:function(data) {
 				if (!data.success) {
 					bootbox.alert("There has been an error");
