@@ -16,6 +16,10 @@ function el(tagName, options) {
 		el.innerHTML = options.html;
 		delete options.html;
 	}
+	if (options.text) {
+		el.appendChild(document.createTextNode(options.text));
+		delete options.text;
+	}
 	$.each(options, function(key, value) {
 		el.setAttribute(key, value);
 	});

@@ -9,9 +9,11 @@ import java.util.Properties;
 import com.opentill.logging.Log;
 
 public final class Config {
+	public static String CURRENT_VERSION = "0.01";
+	public static String DATABASE_TABLE_PREFIX = "opentill_";
 	public static String USER_HOME = System.getProperty("user.home");
 	public static String APP_HOME = Config.USER_HOME + File.separatorChar + ".opentill";
-	public final static Properties databaseProperties = Config.readPropertiesFile();
+	public final static Properties databaseProperties = Config.readDatabasePropertiesFile();
 	public final static Properties emailProperties = Config.getEmailProperties();
 	public static boolean setup() {
 		if (!createEnvironmentIfNotExists()) {
@@ -62,7 +64,6 @@ public final class Config {
 				Properties props = new Properties();
 				props.load(fileO);
 				fileO.close();
-				Log.log("Reading Properties File");
 				return props;
 			} catch (IOException e) {
 				Log.log("Cannot read default props file");
@@ -74,7 +75,7 @@ public final class Config {
 		}
 		return null;
 	}
-	private static Properties readPropertiesFile() {
+	private static Properties readDatabasePropertiesFile() {
 		String props_path = Config.USER_HOME + File.separatorChar + ".opentill" + File.separatorChar + "database.properties";
 		File props_file = new File(props_path);
 		if (props_file.exists()) {
@@ -83,7 +84,6 @@ public final class Config {
 				Properties props = new Properties();
 				props.load(fileO);
 				fileO.close();
-				Log.log("Reading Properties File");
 				return props;
 			} catch (IOException e) {
 				Log.log("Cannot read default props file");

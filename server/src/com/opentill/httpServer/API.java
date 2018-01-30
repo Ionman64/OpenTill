@@ -33,6 +33,7 @@ import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 import com.opentill.logging.Log;
+import com.opentill.main.Config;
 import com.opentill.products.Product;
 import com.opentill.database.DatabaseHandler;
 import com.opentill.document.ExcelHelper;
@@ -150,16 +151,16 @@ public class API extends ContextHandler
 				getAllDepartments(baseRequest, response);
 				break;
 			case "GETDEPARTMENT":
-				//selectDepartment(baseRequest, response);
+				selectDepartment(baseRequest, response);
 				break;
 			case "UPDATEDEPARTMENT":
 				//updateDepartment(baseRequest, response);
 				break;
 			case "ADDDEPARTMENT":
-				//createDepartment(baseRequest, response);
+				createDepartment(baseRequest, response);
 				break;
 			case "DELETEDEPARTMENT":
-				//deleteDepartment(baseRequest, response);
+				deleteDepartment(baseRequest, response);
 				break;
 			case "DELETEPRODUCT":
 				deleteProduct(baseRequest, response);
@@ -222,6 +223,105 @@ public class API extends ContextHandler
 	    // Inform jetty that this request has now been handled
 	    baseRequest.setHandled(true);
 	}
+	private void selectDepartment(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		String id = baseRequest.getParameter("id");
+		if (id == null) {
+			errorOut(response, "missing fields");
+			return;
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("SELECT id, name, shorthand, comments, colour FROM " + Config.DATABASE_TABLE_PREFIX + "tblcatagories WHERE id = ? LIMIT 1");
+			pstmt.setString(1, id);
+			rs = pstmt.executeQuery();
+			JSONObject jo = new JSONObject();
+			if (rs.next()) {
+				jo.put("id", rs.getString(1));
+				jo.put("name", rs.getString(2));
+				jo.put("shorthand", rs.getString(3));
+				jo.put("comments", rs.getString(4));
+				jo.put("colour", rs.getString(5));
+			}
+			JSONObject responseJSON = new JSONObject();
+			responseJSON.put("success", true);
+			responseJSON.put("department", jo);
+			response.getWriter().write(responseJSON.toJSONString());
+			return;
+		}
+		catch (Exception ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
+		}
+		errorOut(response);
+	}
+	private void deleteDepartment(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		String id = baseRequest.getParameter("id");
+		if (id == null) {
+			errorOut(response, "missing fields");
+			return;
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("UPDATE " + Config.DATABASE_TABLE_PREFIX + "tblcatagories SET deleted = 1 WHERE id = ? LIMIT 1");
+			pstmt.setString(1, id);
+			pstmt.execute();
+			if (pstmt.getUpdateCount() > 0) {
+				successOut(response);
+				return;
+			}
+		}
+		catch (Exception ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
+		}
+		errorOut(response);
+		
+	}
+	private void createDepartment(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		String name = baseRequest.getParameter("name");
+		String colour = baseRequest.getParameter("colour");
+		String shorthand = baseRequest.getParameter("shorthand");
+		String comments = baseRequest.getParameter("comments");
+		if ((name == null) || (colour == null) || (shorthand == null)) {
+			errorOut(response, "missing fields");
+			return;
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			String guid = GUID();
+			pstmt = conn.prepareStatement("INSERT INTO " + Config.DATABASE_TABLE_PREFIX + "tblcatagories (id, name, shorthand, colour, comments, created, updated) VALUES (?,?,?,?,?,?,?)");
+			pstmt.setString(1, guid);
+			pstmt.setString(2, name);
+			pstmt.setString(3, shorthand);
+			pstmt.setString(4,  colour);
+			pstmt.setString(5,  comments);
+			pstmt.setInt(6,  getCurrentTimeStamp());
+			pstmt.setInt(7,  getCurrentTimeStamp());
+			pstmt.execute();
+			if (pstmt.getUpdateCount() > 0) {
+				successOut(response);
+				return;
+			}
+		}
+		catch (Exception ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
+		}
+		errorOut(response);
+	}
 	private void generateInventoryReport(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		String exportType = baseRequest.getParameter("export-type");
 		String[] departments = baseRequest.getParameterValues("departments[]");
@@ -235,7 +335,7 @@ public class API extends ContextHandler
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT kvs_tblcatagories.id, kvs_tblproducts.id, kvs_tblproducts.name, kvs_tblproducts.current_stock, kvs_tblproducts.max_stock FROM kvs_tblproducts LEFT JOIN kvs_tblcatagories ON kvs_tblproducts.department = kvs_tblcatagories.id WHERE kvs_tblproducts.deleted = 0 ORDER BY kvs_tblproducts.name");
+			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.id, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.name, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.current_stock, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.max_stock FROM " + Config.DATABASE_TABLE_PREFIX + "tblproducts LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "tblcatagories ON " + Config.DATABASE_TABLE_PREFIX + "tblproducts.department = " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id WHERE " + Config.DATABASE_TABLE_PREFIX + "tblproducts.deleted = 0 ORDER BY " + Config.DATABASE_TABLE_PREFIX + "tblproducts.name");
 			rs = pstmt.executeQuery();
 			HashMap<String, HashMap<String, Product>> inventory = new HashMap<String, HashMap<String, Product>>();
 			while (rs.next()) {
@@ -256,8 +356,8 @@ public class API extends ContextHandler
 					}
 				}
 			}
-			closeDBResources(rs, pstmt, null);
-			pstmt = conn.prepareStatement("SELECT kvs_tblcatagories.id, kvs_tblcatagories.name FROM kvs_tblcatagories WHERE kvs_tblcatagories.deleted = 0 ORDER BY kvs_tblcatagories.name");
+			DatabaseHandler.closeDBResources(rs, pstmt, null);
+			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id, " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.name FROM " + Config.DATABASE_TABLE_PREFIX + "tblcatagories WHERE " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.deleted = 0 ORDER BY " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.name");
 			rs = pstmt.executeQuery();
 			HashMap<String, String> departmentsToNames = new HashMap<String, String>();
 			while (rs.next()) {
@@ -269,7 +369,7 @@ public class API extends ContextHandler
 			Log.log(ex.toString());
 		}
 		finally {
-			closeDBResources(rs, pstmt, conn);
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
 		successOut(response);
 	}
@@ -283,7 +383,7 @@ public class API extends ContextHandler
 		PreparedStatement pstmt = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("UPDATE kvs_tblproducts SET deleted = 1, updated=? WHERE id=?");
+			pstmt = conn.prepareStatement("UPDATE " + Config.DATABASE_TABLE_PREFIX + "tblproducts SET deleted = 1, updated=? WHERE id=?");
 			pstmt.setLong(1, getCurrentTimeStamp());
 			pstmt.setString(2, id);
 			if (pstmt.executeUpdate() > 0) {
@@ -297,7 +397,7 @@ public class API extends ContextHandler
 			Log.log(ex.toString());
 		}
 		finally {
-			closeDBResources(null, pstmt, conn);
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
 	}
 	private void generateTakingsReport(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
@@ -326,7 +426,7 @@ public class API extends ContextHandler
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT DATE(FROM_UNIXTIME(kvs_transactions.ended)) AS \"date\", kvs_transactiontoproducts.department, SUM(kvs_transactiontoproducts.price) AS \"amount\" FROM kvs_transactiontoproducts LEFT JOIN kvs_transactions ON kvs_transactiontoproducts.transaction_id = kvs_transactions.id WHERE (kvs_transactions.started > ? AND kvs_transactions.ended < ?) AND kvs_transactions.cashier NOT IN (?) AND kvs_transactions.type in (?) AND (kvs_transactions.ended > 0) GROUP BY kvs_transactiontoproducts.department, DATE(FROM_UNIXTIME(kvs_transactions.ended)) ORDER BY DATE(FROM_UNIXTIME(kvs_transactions.ended)) DESC");
+			pstmt = conn.prepareStatement("SELECT DATE(FROM_UNIXTIME(" + Config.DATABASE_TABLE_PREFIX + "transactions.ended)) AS \"date\", " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.department, SUM(" + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.price) AS \"amount\" FROM " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "transactions ON " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.transaction_id = " + Config.DATABASE_TABLE_PREFIX + "transactions.id WHERE (" + Config.DATABASE_TABLE_PREFIX + "transactions.started > ? AND " + Config.DATABASE_TABLE_PREFIX + "transactions.ended < ?) AND " + Config.DATABASE_TABLE_PREFIX + "transactions.cashier NOT IN (?) AND " + Config.DATABASE_TABLE_PREFIX + "transactions.type in (?) AND (" + Config.DATABASE_TABLE_PREFIX + "transactions.ended > 0) GROUP BY " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.department, DATE(FROM_UNIXTIME(" + Config.DATABASE_TABLE_PREFIX + "transactions.ended)) ORDER BY DATE(FROM_UNIXTIME(" + Config.DATABASE_TABLE_PREFIX + "transactions.ended)) DESC");
 			pstmt.setLong(1, startTime);
 			pstmt.setLong(2, endTime);
 			pstmt.setString(3, admin);
@@ -348,20 +448,20 @@ public class API extends ContextHandler
 			}
 			pstmt.close();
 			rs.close();
-			pstmt = conn.prepareStatement("SELECT kvs_tblcatagories.id, kvs_tblcatagories.name FROM kvs_tblcatagories WHERE kvs_tblcatagories.deleted = 0 ORDER BY kvs_tblcatagories.name");
+			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id, " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.name FROM " + Config.DATABASE_TABLE_PREFIX + "tblcatagories WHERE " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.deleted = 0 ORDER BY " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.name");
 			rs = pstmt.executeQuery();
 			HashMap<String, String> departmentsToNames = new HashMap<String, String>();
 			while (rs.next()) {
 				departmentsToNames.put(rs.getString(1), rs.getString(2));
 			}
-			closeDBResources(rs, pstmt, conn);
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 			new ExcelHelper().createTakingsReport(departmentsToNames, departments, allDates);
 		}
 		catch (Exception ex) {
 			Log.log(ex.toString());
 		}
 		finally {
-			closeDBResources(rs, pstmt, conn);
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
 		successOut(response);
 	}
@@ -372,7 +472,7 @@ public class API extends ContextHandler
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT kvs_tblcatagories.id, kvs_tblcatagories.name FROM kvs_tblcatagories WHERE kvs_tblcatagories.deleted = 0 ORDER BY kvs_tblcatagories.name");
+			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id, " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.name FROM " + Config.DATABASE_TABLE_PREFIX + "tblcatagories WHERE " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.deleted = 0 ORDER BY " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.name");
 			rs = pstmt.executeQuery();
 			JSONObject departments = new JSONObject();
 			while (rs.next()) {
@@ -388,7 +488,7 @@ public class API extends ContextHandler
 			Log.log(ex.toString());
 		}
 		finally {
-			closeDBResources(null, pstmt, conn);
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
 		errorOut(response);
 	}
@@ -398,7 +498,7 @@ public class API extends ContextHandler
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT kvs_operators.id, kvs_operators.name FROM kvs_operators WHERE kvs_operators.deleted = 0 ORDER BY kvs_operators.name");
+			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "operators.id, " + Config.DATABASE_TABLE_PREFIX + "operators.name FROM " + Config.DATABASE_TABLE_PREFIX + "operators WHERE " + Config.DATABASE_TABLE_PREFIX + "operators.deleted = 0 ORDER BY " + Config.DATABASE_TABLE_PREFIX + "operators.name");
 			rs = pstmt.executeQuery();
 			JSONObject jo = new JSONObject();
 			while (rs.next()) {
@@ -416,7 +516,7 @@ public class API extends ContextHandler
 			Log.log(ex.toString());
 		}
 		finally {
-			closeDBResources(null, pstmt, conn);
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
 		errorOut(response);
 	}
@@ -426,7 +526,7 @@ public class API extends ContextHandler
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT kvs_tblsuppliers.id, kvs_tblsuppliers.name FROM kvs_tblsuppliers WHERE kvs_tblsuppliers.deleted = 0 ORDER BY kvs_tblsuppliers.name");
+			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblsuppliers.id, " + Config.DATABASE_TABLE_PREFIX + "tblsuppliers.name FROM " + Config.DATABASE_TABLE_PREFIX + "tblsuppliers WHERE " + Config.DATABASE_TABLE_PREFIX + "tblsuppliers.deleted = 0 ORDER BY " + Config.DATABASE_TABLE_PREFIX + "tblsuppliers.name");
 			rs = pstmt.executeQuery();
 			JSONObject jo = new JSONObject();
 			while (rs.next()) {
@@ -444,12 +544,11 @@ public class API extends ContextHandler
 			Log.log(ex.toString());
 		}
 		finally {
-			closeDBResources(null, pstmt, conn);
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
 		errorOut(response);
 	}
 	private void sendMessage(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
-		// TODO Auto-generated method stub
 		String sender = baseRequest.getParameter("from");
 		String message = baseRequest.getParameter("message");
 		String recipient = baseRequest.getParameter("to");
@@ -461,7 +560,7 @@ public class API extends ContextHandler
 		PreparedStatement pstmt = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("INSERT kvs_tblchat (id, sender, recipient, message, updated, created) VALUES (?, ?, ?, ?, ?, ?)");
+			pstmt = conn.prepareStatement("INSERT " + Config.DATABASE_TABLE_PREFIX + "tblchat (id, sender, recipient, message, updated, created) VALUES (?, ?, ?, ?, ?, ?)");
 			pstmt.setString(1, GUID());
 			pstmt.setString(2, sender);
 			pstmt.setString(3,  recipient);
@@ -478,7 +577,7 @@ public class API extends ContextHandler
 			Log.log(ex.toString());
 		}
 		finally {
-			closeDBResources(null, pstmt, conn);
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
 		errorOut(response);
 	}
@@ -492,7 +591,7 @@ public class API extends ContextHandler
 		PreparedStatement pstmt = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("UPDATE kvs_tblproducts SET labelprinted = 1 WHERE id = ?");
+			pstmt = conn.prepareStatement("UPDATE " + Config.DATABASE_TABLE_PREFIX + "tblproducts SET labelprinted = 1 WHERE id = ?");
 			pstmt.setString(1, id);
 			pstmt.execute();
 			if (pstmt.getUpdateCount() > 0) {
@@ -504,7 +603,7 @@ public class API extends ContextHandler
 			Log.log(ex.toString());
 		}
 		finally {
-			closeDBResources(null, pstmt, conn);
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
 		errorOut(response);
 	}
@@ -514,7 +613,7 @@ public class API extends ContextHandler
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT kvs_tblproducts.id, kvs_tblproducts.name, kvs_tblproducts.current_stock, kvs_tblproducts.max_stock, kvs_tblcatagories.colour, kvs_tblcatagories.id FROM kvs_tblproducts LEFT JOIN kvs_tblcatagories ON kvs_tblproducts.department = kvs_tblcatagories.id WHERE kvs_tblproducts.deleted = 0 ORDER BY kvs_tblproducts.name");
+			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblproducts.id, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.name, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.current_stock, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.max_stock, " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.colour, " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id FROM " + Config.DATABASE_TABLE_PREFIX + "tblproducts LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "tblcatagories ON " + Config.DATABASE_TABLE_PREFIX + "tblproducts.department = " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id WHERE " + Config.DATABASE_TABLE_PREFIX + "tblproducts.deleted = 0 ORDER BY " + Config.DATABASE_TABLE_PREFIX + "tblproducts.name");
 			rs = pstmt.executeQuery();
 			JSONObject jo = new JSONObject();
 			while (rs.next()) {
@@ -543,7 +642,7 @@ public class API extends ContextHandler
 			Log.log(ex.toString());
 		}
 		finally {
-			closeDBResources(null, pstmt, conn);
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
 	}
 	private void setCurrentStockLevel(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
@@ -557,7 +656,7 @@ public class API extends ContextHandler
 		PreparedStatement pstmt = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("UPDATE kvs_tblproducts SET current_stock=? WHERE id = ?");
+			pstmt = conn.prepareStatement("UPDATE " + Config.DATABASE_TABLE_PREFIX + "tblproducts SET current_stock=? WHERE id = ?");
 			pstmt.setString(1, id);
 			pstmt.setInt(1, amount);
 			pstmt.execute();
@@ -571,7 +670,7 @@ public class API extends ContextHandler
 			Log.log(ex.toString());
 		}
 		finally {
-			closeDBResources(null, pstmt, conn);
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
 	}
 	
@@ -587,7 +686,7 @@ public class API extends ContextHandler
 		PreparedStatement pstmt = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("UPDATE kvs_tblproducts SET max_stock=? WHERE id = ?");
+			pstmt = conn.prepareStatement("UPDATE " + Config.DATABASE_TABLE_PREFIX + "tblproducts SET max_stock=? WHERE id = ?");
 			pstmt.setString(1, id);
 			pstmt.setInt(1, amount);
 			pstmt.execute();
@@ -601,7 +700,7 @@ public class API extends ContextHandler
 			Log.log(ex.toString());
 		}
 		finally {
-			closeDBResources(null, pstmt, conn);
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
 	}
 	private void getProduct(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
@@ -615,8 +714,8 @@ public class API extends ContextHandler
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT kvs_tblproducts.id, kvs_tblproducts.name, kvs_tblproducts.price, kvs_tblproducts.barcode,"
-					+ " kvs_tblproducts.department, kvs_tblproducts.max_stock, kvs_tblproducts.current_stock FROM kvs_tblproducts WHERE id = ? LIMIT 1");
+			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblproducts.id, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.name, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.price, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.barcode,"
+					+ " " + Config.DATABASE_TABLE_PREFIX + "tblproducts.department, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.max_stock, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.current_stock FROM " + Config.DATABASE_TABLE_PREFIX + "tblproducts WHERE id = ? LIMIT 1");
 			pstmt.setString(1, id);
 			rs = pstmt.executeQuery();
 			JSONObject product = new JSONObject();
@@ -639,7 +738,7 @@ public class API extends ContextHandler
 			Log.log(ex.toString());
 		}
 		finally {
-			closeDBResources(rs, pstmt, conn);
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
 		errorOut(response);
 	}
@@ -657,7 +756,7 @@ public class API extends ContextHandler
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT DATE(FROM_UNIXTIME(kvs_transactions.ended)) AS \"date\", kvs_transactiontoproducts.department, SUM(kvs_transactiontoproducts.price) AS \"amount\" FROM kvs_transactiontoproducts LEFT JOIN kvs_transactions ON kvs_transactiontoproducts.transaction_id = kvs_transactions.id WHERE (kvs_transactions.started > ? AND kvs_transactions.ended < ?) AND kvs_transactions.cashier NOT IN (?) AND kvs_transactions.type in (?) AND (kvs_transactions.ended > 0) GROUP BY kvs_transactiontoproducts.department, DATE(FROM_UNIXTIME(kvs_transactions.ended)) ORDER BY DATE(FROM_UNIXTIME(kvs_transactions.ended)) DESC");
+			pstmt = conn.prepareStatement("SELECT DATE(FROM_UNIXTIME(" + Config.DATABASE_TABLE_PREFIX + "transactions.ended)) AS \"date\", " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.department, SUM(" + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.price) AS \"amount\" FROM " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "transactions ON " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.transaction_id = " + Config.DATABASE_TABLE_PREFIX + "transactions.id WHERE (" + Config.DATABASE_TABLE_PREFIX + "transactions.started > ? AND " + Config.DATABASE_TABLE_PREFIX + "transactions.ended < ?) AND " + Config.DATABASE_TABLE_PREFIX + "transactions.cashier NOT IN (?) AND " + Config.DATABASE_TABLE_PREFIX + "transactions.type in (?) AND (" + Config.DATABASE_TABLE_PREFIX + "transactions.ended > 0) GROUP BY " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.department, DATE(FROM_UNIXTIME(" + Config.DATABASE_TABLE_PREFIX + "transactions.ended)) ORDER BY DATE(FROM_UNIXTIME(" + Config.DATABASE_TABLE_PREFIX + "transactions.ended)) DESC");
 			pstmt.setLong(1, Long.parseLong(startString));
 			pstmt.setLong(2, Long.parseLong(endString));
 			pstmt.setString(3, admin);
@@ -685,7 +784,7 @@ public class API extends ContextHandler
 			Log.log(ex.toString());
 		}
 		finally {
-			closeDBResources(rs, pstmt, conn);
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
 		errorOut(response);
 	}
@@ -701,7 +800,7 @@ public class API extends ContextHandler
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT kvs_tblproducts.id, kvs_tblproducts.name, kvs_tblproducts.barcode, kvs_tblproducts.price FROM kvs_tblproducts WHERE LOWER(name) LIKE LOWER(?) AND deleted = 0 ORDER BY name LIMIT 20");
+			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblproducts.id, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.name, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.barcode, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.price FROM " + Config.DATABASE_TABLE_PREFIX + "tblproducts WHERE LOWER(name) LIKE LOWER(?) AND deleted = 0 ORDER BY name LIMIT 20");
 			pstmt.setString(1, "%" + search + "%");
 			rs = pstmt.executeQuery();
 			JSONObject responseJson = new JSONObject();
@@ -719,7 +818,7 @@ public class API extends ContextHandler
 			Log.log(ex.toString());
 		}
 		finally {
-			closeDBResources(rs, pstmt, conn);
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
 		errorOut(response);
 	}
@@ -751,7 +850,7 @@ public class API extends ContextHandler
 		PreparedStatement pstmt = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("UPDATE kvs_tblproducts SET name = ?, price = ?, department=?, updated = ? WHERE id=?");
+			pstmt = conn.prepareStatement("UPDATE " + Config.DATABASE_TABLE_PREFIX + "tblproducts SET name = ?, price = ?, department=?, updated = ? WHERE id=?");
 			pstmt.setString(1, name);
 			pstmt.setFloat(2, price);
 			pstmt.setString(3, department);
@@ -768,7 +867,7 @@ public class API extends ContextHandler
 			Log.log(ex.toString());
 		}
 		finally {
-			closeDBResources(null, pstmt, conn);
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
 	}
 	private void cancelTransaction(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
@@ -782,7 +881,7 @@ public class API extends ContextHandler
 		PreparedStatement pstmt = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("DELETE FROM kvs_transactions WHERE (id = ? AND ended = 0) LIMIT 1");
+			pstmt = conn.prepareStatement("DELETE FROM " + Config.DATABASE_TABLE_PREFIX + "transactions WHERE (id = ? AND ended = 0) LIMIT 1");
 			pstmt.setString(1, id);
 			if (pstmt.execute()) {
 				successOut(response);
@@ -794,7 +893,7 @@ public class API extends ContextHandler
 			Log.log(ex.getMessage());
 		}
 		finally {
-			closeDBResources(null, pstmt, conn);
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
 	}
 	private void completeTransaction(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
@@ -826,7 +925,7 @@ public class API extends ContextHandler
 				return;
 			}
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("UPDATE kvs_transactions SET ended = ?, total = ?, cashback=?, money_given = ?, card = ?, type=?, payee=? WHERE id=? AND cashier=?");
+			pstmt = conn.prepareStatement("UPDATE " + Config.DATABASE_TABLE_PREFIX + "transactions SET ended = ?, total = ?, cashback=?, money_given = ?, card = ?, type=?, payee=? WHERE id=? AND cashier=?");
 			pstmt.setLong(1, getCurrentTimeStamp());
 			pstmt.setFloat(2, total);
 			pstmt.setFloat(3, cashback);
@@ -847,7 +946,7 @@ public class API extends ContextHandler
 			Log.log(ex.toString());
 		}
 		finally {
-			closeDBResources(rs, pstmt, conn);
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
 		errorOut(response);
 	}
@@ -901,12 +1000,12 @@ public class API extends ContextHandler
 			return false;
 		}
 		finally {
-			closeDBResources(null, null, conn);
+			DatabaseHandler.closeDBResources(null, null, conn);
 		}
 	}
 	private boolean insertTransactionProduct(Connection conn, String transactionId, String productId, double price, String departmentId) throws SQLException {
 		String noneCatagory = "5b82f89a-7b71-11e7-b34e-426562cc935f";
-		PreparedStatement pstmt = conn.prepareStatement("INSERT INTO kvs_transactiontoproducts (id, transaction_id, product_id, price, department, created) VALUES (?, ?, ?, ?, ?, ?)");
+		PreparedStatement pstmt = conn.prepareStatement("INSERT INTO " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts (id, transaction_id, product_id, price, department, created) VALUES (?, ?, ?, ?, ?, ?)");
 		pstmt.setString(1, GUID());
 		pstmt.setString(2, transactionId);
 		pstmt.setString(3, productId);
@@ -921,7 +1020,7 @@ public class API extends ContextHandler
 	}
 	private boolean incrementProductLevel(Connection conn, String productId, Long productQuantity) throws SQLException {
 		// TODO Auto-generated method stub
-		PreparedStatement pstmt = conn.prepareStatement("UPDATE kvs_tblproducts SET current_stock=current_stock+? WHERE id = ?");
+		PreparedStatement pstmt = conn.prepareStatement("UPDATE " + Config.DATABASE_TABLE_PREFIX + "tblproducts SET current_stock=current_stock+? WHERE id = ?");
 		pstmt.setLong(1, productQuantity);
 		pstmt.setString(2, productId);
 		if (pstmt.executeUpdate() > 0) {
@@ -931,7 +1030,7 @@ public class API extends ContextHandler
 	}
 	private boolean decrementProductLevel(Connection conn, String productId, Long productQuantity) throws SQLException {
 		// TODO Auto-generated method stub
-		PreparedStatement pstmt = conn.prepareStatement("UPDATE kvs_tblproducts SET current_stock=current_stock-? WHERE id = ? AND current_stock > 0");
+		PreparedStatement pstmt = conn.prepareStatement("UPDATE " + Config.DATABASE_TABLE_PREFIX + "tblproducts SET current_stock=current_stock-? WHERE id = ? AND current_stock > 0");
 		pstmt.setLong(1, productQuantity);
 		pstmt.setString(2, productId);
 		if (pstmt.executeUpdate() > 0) {
@@ -950,7 +1049,7 @@ public class API extends ContextHandler
 		// TODO Auto-generated method stub
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT 1 FROM kvs_transactions WHERE (id = ? AND ended = 0) LIMIT 1");
+			pstmt = conn.prepareStatement("SELECT 1 FROM " + Config.DATABASE_TABLE_PREFIX + "transactions WHERE (id = ? AND ended = 0) LIMIT 1");
 			pstmt.setString(1, id);
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
@@ -961,7 +1060,7 @@ public class API extends ContextHandler
 			Log.log(ex.toString());
 		}
 		finally {
-			closeDBResources(rs, pstmt, conn);
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
 		return false;
 	}
@@ -990,7 +1089,7 @@ public class API extends ContextHandler
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT IFNULL(SUM(kvs_transactions.total), 0.00) AS \"amount\" FROM kvs_transactions WHERE (kvs_transactions.started > ? AND kvs_transactions.ended < ?) AND kvs_transactions.cashier NOT IN (?) AND kvs_transactions.type in (?) AND (kvs_transactions.ended > 0)");
+			pstmt = conn.prepareStatement("SELECT IFNULL(SUM(" + Config.DATABASE_TABLE_PREFIX + "transactions.total), 0.00) AS \"amount\" FROM " + Config.DATABASE_TABLE_PREFIX + "transactions WHERE (" + Config.DATABASE_TABLE_PREFIX + "transactions.started > ? AND " + Config.DATABASE_TABLE_PREFIX + "transactions.ended < ?) AND " + Config.DATABASE_TABLE_PREFIX + "transactions.cashier NOT IN (?) AND " + Config.DATABASE_TABLE_PREFIX + "transactions.type in (?) AND (" + Config.DATABASE_TABLE_PREFIX + "transactions.ended > 0)");
 			pstmt.setFloat(1, Float.parseFloat(startString));
 			pstmt.setFloat(2, Float.parseFloat(endString));
 			pstmt.setString(3, admin);
@@ -1004,7 +1103,7 @@ public class API extends ContextHandler
 			Log.log(ex.getMessage());
 		}
 		finally {
-			closeDBResources(rs, pstmt, conn);
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
 		return 0.00F;
 	}
@@ -1020,7 +1119,7 @@ public class API extends ContextHandler
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT SUM(kvs_transactiontoproducts.price) AS \"amount\" FROM kvs_transactiontoproducts LEFT JOIN kvs_transactions ON kvs_transactions.id = kvs_transactiontoproducts.transaction_id WHERE (kvs_transactions.started > ? AND kvs_transactions.ended < ?) AND kvs_transactions.cashier NOT IN (?) AND kvs_transactions.type in (?) AND (kvs_transactions.ended > 0) GROUP BY kvs_transactiontoproducts.department");
+			pstmt = conn.prepareStatement("SELECT SUM(" + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.price) AS \"amount\" FROM " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "transactions ON " + Config.DATABASE_TABLE_PREFIX + "transactions.id = " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.transaction_id WHERE (" + Config.DATABASE_TABLE_PREFIX + "transactions.started > ? AND " + Config.DATABASE_TABLE_PREFIX + "transactions.ended < ?) AND " + Config.DATABASE_TABLE_PREFIX + "transactions.cashier NOT IN (?) AND " + Config.DATABASE_TABLE_PREFIX + "transactions.type in (?) AND (" + Config.DATABASE_TABLE_PREFIX + "transactions.ended > 0) GROUP BY " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.department");
 			pstmt.setFloat(1, Float.parseFloat(startString));
 			pstmt.setFloat(2, Float.parseFloat(endString));
 			pstmt.setString(3, admin);
@@ -1034,7 +1133,7 @@ public class API extends ContextHandler
 			Log.log(ex.getMessage());
 		}
 		finally {
-			closeDBResources(rs, pstmt, conn);
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
 		return 0.00F;
 	}
@@ -1050,7 +1149,7 @@ public class API extends ContextHandler
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT SUM(kvs_transactions.total) AS \"amount\" FROM kvs_transactions WHERE (kvs_transactions.started > ? AND kvs_transactions.ended < ?) AND kvs_transactions.cashier NOT IN (?) AND kvs_transactions.type in (?) AND (kvs_transactions.ended > 0)");
+			pstmt = conn.prepareStatement("SELECT SUM(" + Config.DATABASE_TABLE_PREFIX + "transactions.total) AS \"amount\" FROM " + Config.DATABASE_TABLE_PREFIX + "transactions WHERE (" + Config.DATABASE_TABLE_PREFIX + "transactions.started > ? AND " + Config.DATABASE_TABLE_PREFIX + "transactions.ended < ?) AND " + Config.DATABASE_TABLE_PREFIX + "transactions.cashier NOT IN (?) AND " + Config.DATABASE_TABLE_PREFIX + "transactions.type in (?) AND (" + Config.DATABASE_TABLE_PREFIX + "transactions.ended > 0)");
 			pstmt.setFloat(1, Float.parseFloat(startString));
 			pstmt.setFloat(2, Float.parseFloat(endString));
 			pstmt.setString(3, admin);
@@ -1064,7 +1163,7 @@ public class API extends ContextHandler
 			Log.log(ex.getMessage());
 		}
 		finally {
-			closeDBResources(rs, pstmt, conn);
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
 		return 0.00F;
 	}
@@ -1080,7 +1179,7 @@ public class API extends ContextHandler
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT SUM(kvs_transactions.cashback) AS \"amount\" FROM kvs_transactions WHERE (kvs_transactions.started > ? AND kvs_transactions.ended < ?) AND kvs_transactions.cashier NOT IN (?) AND kvs_transactions.type in (?) AND (kvs_transactions.ended > 0)");
+			pstmt = conn.prepareStatement("SELECT SUM(" + Config.DATABASE_TABLE_PREFIX + "transactions.cashback) AS \"amount\" FROM " + Config.DATABASE_TABLE_PREFIX + "transactions WHERE (" + Config.DATABASE_TABLE_PREFIX + "transactions.started > ? AND " + Config.DATABASE_TABLE_PREFIX + "transactions.ended < ?) AND " + Config.DATABASE_TABLE_PREFIX + "transactions.cashier NOT IN (?) AND " + Config.DATABASE_TABLE_PREFIX + "transactions.type in (?) AND (" + Config.DATABASE_TABLE_PREFIX + "transactions.ended > 0)");
 			pstmt.setFloat(1, Float.parseFloat(startString));
 			pstmt.setFloat(2, Float.parseFloat(endString));
 			pstmt.setString(3, admin);
@@ -1094,7 +1193,7 @@ public class API extends ContextHandler
 			Log.log(ex.getMessage());
 		}
 		finally {
-			closeDBResources(rs, pstmt, conn);
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
 		return 0.00F;
 	}
@@ -1110,7 +1209,7 @@ public class API extends ContextHandler
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT SUM(kvs_transactions.card) AS \"amount\" FROM kvs_transactions WHERE (kvs_transactions.started > ? AND kvs_transactions.ended < ?) AND kvs_transactions.cashier NOT IN (?) AND kvs_transactions.type in (?) AND (kvs_transactions.ended > 0)");
+			pstmt = conn.prepareStatement("SELECT SUM(" + Config.DATABASE_TABLE_PREFIX + "transactions.card) AS \"amount\" FROM " + Config.DATABASE_TABLE_PREFIX + "transactions WHERE (" + Config.DATABASE_TABLE_PREFIX + "transactions.started > ? AND " + Config.DATABASE_TABLE_PREFIX + "transactions.ended < ?) AND " + Config.DATABASE_TABLE_PREFIX + "transactions.cashier NOT IN (?) AND " + Config.DATABASE_TABLE_PREFIX + "transactions.type in (?) AND (" + Config.DATABASE_TABLE_PREFIX + "transactions.ended > 0)");
 			pstmt.setFloat(1, Float.parseFloat(startString));
 			pstmt.setFloat(2, Float.parseFloat(endString));
 			pstmt.setString(3, admin);
@@ -1124,7 +1223,7 @@ public class API extends ContextHandler
 			Log.log(ex.getMessage());
 		}
 		finally {
-			closeDBResources(rs, pstmt, conn);
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
 		return 0.00F;
 	}
@@ -1152,7 +1251,7 @@ public class API extends ContextHandler
 		try {
 			JSONArray jsonArr = new JSONArray();
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT kvs_transactions.id AS 'id', kvs_operators.name AS cashier, (SELECT COUNT(*) FROM kvs_transactiontoproducts WHERE kvs_transactiontoproducts.transaction_id = kvs_transactions.id) AS '#Products', kvs_transactions.card AS 'card', kvs_transactions.ended AS 'ended', kvs_transactions.cashback AS 'cashback', kvs_transactions.money_given AS 'money_given', kvs_transactions.payee AS 'payee', kvs_transactions.type AS 'type', kvs_transactions.total AS 'total' FROM kvs_transactions LEFT JOIN kvs_operators ON kvs_transactions.cashier = kvs_operators.id WHERE (kvs_transactions.ended BETWEEN ? AND ?) AND kvs_transactions.cashier NOT IN (?) ORDER BY kvs_transactions.type DESC, kvs_transactions.ended");
+			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "transactions.id AS 'id', " + Config.DATABASE_TABLE_PREFIX + "operators.name AS cashier, (SELECT COUNT(*) FROM " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts WHERE " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.transaction_id = " + Config.DATABASE_TABLE_PREFIX + "transactions.id) AS '#Products', " + Config.DATABASE_TABLE_PREFIX + "transactions.card AS 'card', " + Config.DATABASE_TABLE_PREFIX + "transactions.ended AS 'ended', " + Config.DATABASE_TABLE_PREFIX + "transactions.cashback AS 'cashback', " + Config.DATABASE_TABLE_PREFIX + "transactions.money_given AS 'money_given', " + Config.DATABASE_TABLE_PREFIX + "transactions.payee AS 'payee', " + Config.DATABASE_TABLE_PREFIX + "transactions.type AS 'type', " + Config.DATABASE_TABLE_PREFIX + "transactions.total AS 'total' FROM " + Config.DATABASE_TABLE_PREFIX + "transactions LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "operators ON " + Config.DATABASE_TABLE_PREFIX + "transactions.cashier = " + Config.DATABASE_TABLE_PREFIX + "operators.id WHERE (" + Config.DATABASE_TABLE_PREFIX + "transactions.ended BETWEEN ? AND ?) AND " + Config.DATABASE_TABLE_PREFIX + "transactions.cashier NOT IN (?) ORDER BY " + Config.DATABASE_TABLE_PREFIX + "transactions.type DESC, " + Config.DATABASE_TABLE_PREFIX + "transactions.ended");
 			pstmt.setInt(1, start);
 			pstmt.setInt(2, end);
 			pstmt.setString(3, "a10f653a-6c20-11e7-b34e-426562cc935f"); // Admin
@@ -1181,7 +1280,7 @@ public class API extends ContextHandler
 			Log.log(ex.toString());
 		}
 		finally {
-			closeDBResources(rs, pstmt, conn);
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
 		errorOut(response);
 		/*$admin = "a10f653a-6c20-11e7-b34e-426562cc935f";
@@ -1191,7 +1290,7 @@ public class API extends ContextHandler
 			error_out("missing fields");
 		}
 		$db = get_pdo_connection();
-		$stmt = $db->prepare("SELECT kvs_transactions.id AS "id", kvs_operators.name AS cashier, (SELECT COUNT(*) FROM kvs_transactiontoproducts WHERE kvs_transactiontoproducts.transaction_id = kvs_transactions.id) AS "#Products", kvs_transactions.card AS "card", kvs_transactions.ended AS "ended", kvs_transactions.cashback AS "cashback", kvs_transactions.money_given AS "money_given", kvs_transactions.payee AS "payee", kvs_transactions.type AS "type", kvs_transactions.total AS "total" FROM kvs_transactions LEFT JOIN kvs_operators ON kvs_transactions.cashier = kvs_operators.id WHERE (kvs_transactions.ended BETWEEN ? AND ?) AND kvs_transactions.cashier NOT IN (?) ORDER BY kvs_transactions.type DESC, kvs_transactions.ended');
+		$stmt = $db->prepare("SELECT " + Config.DATABASE_PREFIX + "transactions.id AS "id", " + Config.DATABASE_PREFIX + "operators.name AS cashier, (SELECT COUNT(*) FROM " + Config.DATABASE_PREFIX + "transactiontoproducts WHERE " + Config.DATABASE_PREFIX + "transactiontoproducts.transaction_id = " + Config.DATABASE_PREFIX + "transactions.id) AS "#Products", " + Config.DATABASE_PREFIX + "transactions.card AS "card", " + Config.DATABASE_PREFIX + "transactions.ended AS "ended", " + Config.DATABASE_PREFIX + "transactions.cashback AS "cashback", " + Config.DATABASE_PREFIX + "transactions.money_given AS "money_given", " + Config.DATABASE_PREFIX + "transactions.payee AS "payee", " + Config.DATABASE_PREFIX + "transactions.type AS "type", " + Config.DATABASE_PREFIX + "transactions.total AS "total" FROM " + Config.DATABASE_PREFIX + "transactions LEFT JOIN " + Config.DATABASE_PREFIX + "operators ON " + Config.DATABASE_PREFIX + "transactions.cashier = " + Config.DATABASE_PREFIX + "operators.id WHERE (" + Config.DATABASE_PREFIX + "transactions.ended BETWEEN ? AND ?) AND " + Config.DATABASE_PREFIX + "transactions.cashier NOT IN (?) ORDER BY " + Config.DATABASE_PREFIX + "transactions.type DESC, " + Config.DATABASE_PREFIX + "transactions.ended');
 		$stmt->bindValue(1, $start, PDO::PARAM_INT);
 		$stmt->bindValue(2, $end, PDO::PARAM_INT);
 		$stmt->bindValue(3, $admin, PDO::PARAM_STR);
@@ -1227,7 +1326,7 @@ public class API extends ContextHandler
 		try {
 			JSONArray jsonArr = new JSONArray();
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT * FROM `kvs_transactiontoproducts` WHERE product_id = ? AND created BETWEEN ? AND ?");
+			pstmt = conn.prepareStatement("SELECT * FROM `" + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts` WHERE product_id = ? AND created BETWEEN ? AND ?");
 			pstmt.setString(1, id);
 			pstmt.setLong(2, start);
 			pstmt.setLong(3, end);
@@ -1247,7 +1346,7 @@ public class API extends ContextHandler
 			Log.log(ex.toString());
 		}
 		finally {
-			closeDBResources(rs, pstmt, conn);
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
 	}
 	@SuppressWarnings("unchecked")
@@ -1264,7 +1363,7 @@ public class API extends ContextHandler
 		try {
 			JSONArray jsonArr = new JSONArray();
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT kvs_tblproducts.id, COUNT(*) AS \"quantity\", kvs_transactiontoproducts.price, IFNULL(kvs_tblproducts.name, kvs_tblcatagories.name) AS \"name\" FROM kvs_transactiontoproducts LEFT JOIN kvs_tblproducts ON kvs_tblproducts.id = kvs_transactiontoproducts.product_id LEFT JOIN kvs_tblcatagories ON kvs_tblcatagories.id = kvs_transactiontoproducts.department WHERE kvs_transactiontoproducts.transaction_id = ? GROUP BY kvs_tblproducts.id, kvs_transactiontoproducts.price");
+			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblproducts.id, COUNT(*) AS \"quantity\", " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.price, IFNULL(" + Config.DATABASE_TABLE_PREFIX + "tblproducts.name, " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.name) AS \"name\" FROM " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "tblproducts ON " + Config.DATABASE_TABLE_PREFIX + "tblproducts.id = " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.product_id LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "tblcatagories ON " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id = " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.department WHERE " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.transaction_id = ? GROUP BY " + Config.DATABASE_TABLE_PREFIX + "tblproducts.id, " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.price");
 			pstmt.setString(1, id);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
@@ -1282,7 +1381,7 @@ public class API extends ContextHandler
 			Log.log(ex.toString());
 		}
 		finally {
-			closeDBResources(rs, pstmt, conn);
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
 	}
 	private void logout(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
@@ -1325,7 +1424,7 @@ public class API extends ContextHandler
 		}
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT id, name FROM kvs_operators WHERE LCASE(email) = LCASE(?) AND passwordHash = ? LIMIT 1");
+			pstmt = conn.prepareStatement("SELECT id, name FROM " + Config.DATABASE_TABLE_PREFIX + "operators WHERE LCASE(email) = LCASE(?) AND passwordHash = ? LIMIT 1");
 			pstmt.setString(1, email);
 			pstmt.setString(2,  hashPassword(password, ""));
 			rs = pstmt.executeQuery();
@@ -1340,7 +1439,7 @@ public class API extends ContextHandler
 			Log.log(ex.toString());
 		}
 		finally {
-			closeDBResources(rs, pstmt, conn);
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
 	}
 	private void startTransaction(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
@@ -1354,7 +1453,7 @@ public class API extends ContextHandler
 		}
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("INSERT INTO kvs_transactions (id, started, cashier) VALUES (?, ?, ?)");
+			pstmt = conn.prepareStatement("INSERT INTO " + Config.DATABASE_TABLE_PREFIX + "transactions (id, started, cashier) VALUES (?, ?, ?)");
 			String guid = GUID();
 			long timestamp = new Timestamp(System.currentTimeMillis()).getTime();
 			pstmt.setString(1, guid);
@@ -1375,7 +1474,7 @@ public class API extends ContextHandler
 			Log.log(ex.toString());
 		}
 		finally {
-			closeDBResources(null, pstmt, conn);
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
 	}
 	private void getMessages(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
@@ -1399,7 +1498,7 @@ public class API extends ContextHandler
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("(SELECT kvs_tblchat.id,  kvs_tblchat.sender AS \"senderId\", kvs_tblchat.recipient as \"recipientId\", a.name AS \"senderName\", IFNULL(b.name, \"All\") AS recipientName, kvs_tblchat.message, kvs_tblchat.created FROM kvs_tblchat LEFT JOIN kvs_operators a ON a.id = kvs_tblchat.sender LEFT JOIN kvs_operators b ON b.id = kvs_tblchat.recipient WHERE (kvs_tblchat.recipient = ? OR kvs_tblchat.sender = ? OR kvs_tblchat.recipient = \"All\") AND kvs_tblchat.created > ? ORDER BY kvs_tblchat.created DESC LIMIT 20) ORDER BY created ASC");
+			pstmt = conn.prepareStatement("(SELECT " + Config.DATABASE_TABLE_PREFIX + "tblchat.id,  " + Config.DATABASE_TABLE_PREFIX + "tblchat.sender AS \"senderId\", " + Config.DATABASE_TABLE_PREFIX + "tblchat.recipient as \"recipientId\", a.name AS \"senderName\", IFNULL(b.name, \"All\") AS recipientName, " + Config.DATABASE_TABLE_PREFIX + "tblchat.message, " + Config.DATABASE_TABLE_PREFIX + "tblchat.created FROM " + Config.DATABASE_TABLE_PREFIX + "tblchat LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "operators a ON a.id = " + Config.DATABASE_TABLE_PREFIX + "tblchat.sender LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "operators b ON b.id = " + Config.DATABASE_TABLE_PREFIX + "tblchat.recipient WHERE (" + Config.DATABASE_TABLE_PREFIX + "tblchat.recipient = ? OR " + Config.DATABASE_TABLE_PREFIX + "tblchat.sender = ? OR " + Config.DATABASE_TABLE_PREFIX + "tblchat.recipient = \"All\") AND " + Config.DATABASE_TABLE_PREFIX + "tblchat.created > ? ORDER BY " + Config.DATABASE_TABLE_PREFIX + "tblchat.created DESC LIMIT 20) ORDER BY created ASC");
 			pstmt.setString(1, operator);
 			pstmt.setString(2, operator);
 			pstmt.setInt(3, time);
@@ -1425,7 +1524,7 @@ public class API extends ContextHandler
 			Log.log(ex.toString());
 		}
 		finally {
-			closeDBResources(rs, pstmt, conn);
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
 	}
 	@SuppressWarnings("unchecked")
@@ -1435,11 +1534,11 @@ public class API extends ContextHandler
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT kvs_tblproducts.id, kvs_tblproducts.name, kvs_tblproducts.price, "
-					+ "kvs_tblproducts.barcode, kvs_tblproducts.department, kvs_tblproducts.labelPrinted, "
-					+ "kvs_tblproducts.isCase, kvs_tblproducts.units, kvs_tblproducts.unitType, kvs_tblproducts.updated, "
-					+ "kvs_tblproducts.created, kvs_tblproducts.deleted, kvs_tblproducts.status, kvs_tblproducts.max_stock, "
-					+ "kvs_tblproducts.current_stock FROM kvs_tblproducts WHERE barcode = ? LIMIT 1");
+			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblproducts.id, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.name, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.price, "
+					+ "" + Config.DATABASE_TABLE_PREFIX + "tblproducts.barcode, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.department, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.labelPrinted, "
+					+ "" + Config.DATABASE_TABLE_PREFIX + "tblproducts.isCase, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.units, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.unitType, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.updated, "
+					+ "" + Config.DATABASE_TABLE_PREFIX + "tblproducts.created, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.deleted, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.status, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.max_stock, "
+					+ "" + Config.DATABASE_TABLE_PREFIX + "tblproducts.current_stock FROM " + Config.DATABASE_TABLE_PREFIX + "tblproducts WHERE barcode = ? LIMIT 1");
 			pstmt.setString(1, barcode);
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
@@ -1466,7 +1565,7 @@ public class API extends ContextHandler
 			Log.log(ex.toString());
 		}
 		finally {
-			closeDBResources(rs, pstmt, conn);
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
 		return null;
 	}
@@ -1479,7 +1578,7 @@ public class API extends ContextHandler
 		PreparedStatement pstmt = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("INSERT IGNORE INTO kvs_tblproducts (id, barcode, name, created) VALUES (?, ?, ?, ?)");
+			pstmt = conn.prepareStatement("INSERT IGNORE INTO " + Config.DATABASE_TABLE_PREFIX + "tblproducts (id, barcode, name, created) VALUES (?, ?, ?, ?)");
 			pstmt.setString(1, guid);
 			pstmt.setString(2, barcode);
 			pstmt.setString(3, name);
@@ -1493,7 +1592,7 @@ public class API extends ContextHandler
 			Log.log(ex.toString());
 		}
 		finally {
-			closeDBResources(null, pstmt, conn);
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
 		return null;
 	}
@@ -1510,7 +1609,7 @@ public class API extends ContextHandler
 		Log.log(code + "attemping to login");
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT kvs_operators.id, kvs_operators.name FROM kvs_operators WHERE code = ? AND deleted = 0 LIMIT 1");
+			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "operators.id, " + Config.DATABASE_TABLE_PREFIX + "operators.name FROM " + Config.DATABASE_TABLE_PREFIX + "operators WHERE code = ? AND deleted = 0 LIMIT 1");
 			pstmt.setString(1, code);
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
@@ -1527,7 +1626,7 @@ public class API extends ContextHandler
 			Log.log(ex.toString());
 		}
 		finally {
-			closeDBResources(rs, pstmt, conn);
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
 		errorOut(response, null);
 	}
@@ -1562,7 +1661,7 @@ public class API extends ContextHandler
 		JSONArray jsonArray = new JSONArray();
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT kvs_tblcatagories.id, kvs_tblcatagories.name, kvs_tblcatagories.shorthand, kvs_tblcatagories.colour FROM kvs_tblcatagories WHERE deleted = 0 ORDER BY orderNum ASC");
+			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id, " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.name, " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.shorthand, " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.colour FROM " + Config.DATABASE_TABLE_PREFIX + "tblcatagories WHERE deleted = 0 ORDER BY orderNum ASC");
 			rs = pstmt.executeQuery();
 			JSONObject jsonObject = null;
 			while (rs.next()) {
@@ -1579,7 +1678,7 @@ public class API extends ContextHandler
 			Log.log(ex.toString());
 		}
 		finally {
-			closeDBResources(rs, pstmt, conn);
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
 	}
 	public void errorOut(HttpServletResponse response) throws IOException, ServletException {
@@ -1602,21 +1701,5 @@ public class API extends ContextHandler
 		response.setStatus(200);
 		response.getWriter().print(json.toJSONString());
 		
-	}
-	public void closeDBResources(ResultSet rs, PreparedStatement pstmt, Connection conn) {
-			try {
-				if (rs != null && !rs.isClosed()) {
-					rs.close();
-				}
-				if (pstmt != null && !pstmt.isClosed()) {
-					pstmt.close();
-				}
-				if (conn != null && !conn.isClosed()) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 	}
 }
