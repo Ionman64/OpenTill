@@ -18,10 +18,6 @@
 						<input type="text" id="operator-name" class="form-control input-lg">
 					  </section>
 					  <section class="form-group">
-						<label for="operator-name" class="control-label">Password</label>
-						<input type="password" id="operator-password" class="form-control input-lg">
-					  </section>
-					  <section class="form-group">
 						<label for="operator-telephone" class="control-label">Telephone Number</label>
 						<input type="text" id="operator-telephone" class="form-control input-lg">
 					  </section>

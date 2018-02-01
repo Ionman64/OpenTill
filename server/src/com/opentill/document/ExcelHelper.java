@@ -108,17 +108,21 @@ public class ExcelHelper {
 	    	 int rowId = 0;
 	    	 int columnId = 0;
 	    	 XSSFRow row = sheet.createRow(rowId++);
-		 	    XSSFCell cell = row.createCell(columnId++);
-		     	cell.setCellType(XSSFCell.CELL_TYPE_STRING);
-		     	cell.setCellValue("Name");
-		     	
-		     	cell = row.createCell(columnId++);
-		     	cell.setCellType(XSSFCell.CELL_TYPE_STRING);
-		     	cell.setCellValue("Current Stock");
-		     	
-		     	cell = row.createCell(columnId++);
-		     	cell.setCellType(XSSFCell.CELL_TYPE_STRING);
-		     	cell.setCellValue("Max Stock");
+	 	    XSSFCell cell = row.createCell(columnId++);
+	     	cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+	     	cell.setCellValue("Name");
+	     	
+	     	cell = row.createCell(columnId++);
+	     	cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+	     	cell.setCellValue("Current Stock");
+	     	
+	     	cell = row.createCell(columnId++);
+	     	cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+	     	cell.setCellValue("Max Stock");
+	     	
+	     	cell = row.createCell(columnId++);
+	     	cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+	     	cell.setCellValue("Order Amount");
 	    	 
 	    	 
 	    	 for (Entry<String, Product> product : products.entrySet()) {
@@ -130,7 +134,10 @@ public class ExcelHelper {
 	 	        
 	 	        row = sheet.createRow(rowId++);
 	 	        
-	 	        row.createCell(columnId++).setCellValue(tempProduct.name);
+	 	        cell = row.createCell(columnId++);
+	 	        cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+	 	        cell.setCellValue(tempProduct.name);
+	 	        
 	 	        cell = row.createCell(columnId++);
 	 	        cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
 	 	        cell.setCellValue(tempProduct.current_stock);
@@ -138,7 +145,15 @@ public class ExcelHelper {
 	 	        cell = row.createCell(columnId++);
 	 	        cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
 	 	        cell.setCellValue(tempProduct.max_stock);
+	 	        
+	 	        cell = row.createCell(columnId++);
+	 	        cell.setCellType(XSSFCell.CELL_TYPE_FORMULA);
+	 	        cell.setCellFormula("C" + rowId + "-B" + rowId + "");
 	 	    }
+	    	sheet.autoSizeColumn(0);
+	    	sheet.autoSizeColumn(1);
+	    	sheet.autoSizeColumn(2);
+	    	sheet.autoSizeColumn(3);
 	    }
 	    
 	    // Write the output to a file

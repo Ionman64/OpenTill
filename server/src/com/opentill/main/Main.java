@@ -26,6 +26,8 @@ public class Main {
 			JSONObject jsonObj = new JSONObject();
 			jsonObj.put("text", "Server Started");
 
+			//TODO: Put this into the config file - DO NOT COMMIT
+
 			
 			DatabaseMigration db = new DatabaseMigration(Config.CURRENT_VERSION);
 			db.up();

@@ -10,7 +10,7 @@ import com.opentill.logging.Log;
 
 public final class Config {
 	public static String CURRENT_VERSION = "0.01";
-	public static String DATABASE_TABLE_PREFIX = "opentill_";
+	public static String DATABASE_TABLE_PREFIX = "kvs_";
 	public static String USER_HOME = System.getProperty("user.home");
 	public static String APP_HOME = Config.USER_HOME + File.separatorChar + ".opentill";
 	public final static Properties databaseProperties = Config.readDatabasePropertiesFile();

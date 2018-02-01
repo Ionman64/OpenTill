@@ -128,7 +128,7 @@ function Operators() {
 		var holder = document.getElementById("operators-viewport");
 		$(holder).empty();
 		$.each(data, function(key, item) {
-			var row = el("section", {class:"row selectable", "data-id":item.id});
+			var row = el("section", {class:"row selectable", "data-id":key});
 			//Name
 			var col = el("section", {class:"col-lg-12 col-md-12 col-sm-12 col-xs-12"});
 			var label = el("h4", {html:item.name});

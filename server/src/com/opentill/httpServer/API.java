@@ -137,7 +137,7 @@ public class API extends ContextHandler
 				getAllOperators(baseRequest, response);
 				break;
 			case "GETOPERATOR":
-				//selectOperator(baseRequest, response);
+				selectOperator(baseRequest, response);
 				break;
 			case "UPDATEOPERATOR":
 				//updateOperator(baseRequest, response);
@@ -223,6 +223,42 @@ public class API extends ContextHandler
 		}
 	    // Inform jetty that this request has now been handled
 	    baseRequest.setHandled(true);
+	}
+	private void selectOperator(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		String id = baseRequest.getParameter("id");
+		if (id == null) {
+			errorOut(response, "missing fields");
+			return;
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("SELECT name, telephone, email, comments, code FROM " + Config.DATABASE_TABLE_PREFIX + "operators WHERE id = ? LIMIT 1");
+			pstmt.setString(1, id);
+			rs = pstmt.executeQuery();
+			JSONObject jo = new JSONObject();
+			if (rs.next()) {
+				jo.put("name", rs.getString(1));
+				jo.put("telephone", rs.getString(2));
+				jo.put("email", rs.getString(3));
+				jo.put("comments", rs.getString(4));
+				jo.put("code", rs.getString(5));
+			}
+			JSONObject responseJSON = new JSONObject();
+			responseJSON.put("success", true);
+			responseJSON.put("operator", jo);
+			response.getWriter().write(responseJSON.toJSONString());
+			return;
+		}
+		catch (Exception ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
+		}
+		errorOut(response);
 	}
 	private void createOperator(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		String name = baseRequest.getParameter("name");
@@ -1403,7 +1439,7 @@ public class API extends ContextHandler
 		try {
 			JSONArray jsonArr = new JSONArray();
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblproducts.id, COUNT(*) AS \"quantity\", " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.price, IFNULL(" + Config.DATABASE_TABLE_PREFIX + "tblproducts.name, " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.name) AS \"name\" FROM " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "tblproducts ON " + Config.DATABASE_TABLE_PREFIX + "tblproducts.id = " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.product_id LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "tblcatagories ON " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id = " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.department WHERE " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.transaction_id = ? GROUP BY " + Config.DATABASE_TABLE_PREFIX + "tblproducts.id, " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.price");
+			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.product_id, COUNT(*) AS \"quantity\", " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.price, IFNULL((SELECT name FROM " + Config.DATABASE_TABLE_PREFIX + "tblproducts WHERE id = " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.product_id LIMIT 1), " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.name) AS \"name\" FROM " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "tblproducts ON " + Config.DATABASE_TABLE_PREFIX + "tblproducts.id = " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.product_id LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "tblcatagories ON " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id = " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.department WHERE " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.transaction_id = ? GROUP BY " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.product_id, " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.price, " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.name");
 			pstmt.setString(1, id);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
@@ -1423,6 +1459,7 @@ public class API extends ContextHandler
 		finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
+		errorOut(response);
 	}
 	private void logout(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		// TODO Auto-generated method stub
