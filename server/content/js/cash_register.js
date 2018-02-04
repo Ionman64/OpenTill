@@ -91,7 +91,7 @@ function payout(amount) {
 	createTransaction();
 	$("#supplierList").empty();
 	$.each(window.supplierArray, function(key, value) {
-		var li = el('li', {class:'btn btn-default', "data-id":key, "data-search":value.name, html:value.name});
+		var li = el('li', {class:'btn btn-default', "data-id":key, "data-search":value, html:value});
 		$("#supplierList").append(li);
 	});
 	$("#supplierModal").modal("show");
@@ -694,7 +694,7 @@ $(document).ready( function() {
 		url: CONTEXT + "kvs.php?function=GETALLSUPPLIERS",
 		success: function(data) {
 			if (!data.success) {
-				bootbox.alert("There was an getting the suppliers");
+				bootbox.alert("There was an error getting the suppliers");
 				return;
 			}
 			$.each(data.suppliers, function(key, item) {

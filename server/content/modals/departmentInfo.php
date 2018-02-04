@@ -31,7 +31,7 @@
   		</section>
   	  </section>
 	  <section class="modal-footer">
-	  	<button type="button" class="btn btn-danger btn-lg" id="delete-department">Delete Department</button>
+	  	<button type="button" class="btn btn-danger btn-lg pull-left" id="delete-department">Delete Department</button>
 		<button type="button" class="btn btn-success btn-lg" id="update-department">Update Department</button>
 	  </section>
   </section>

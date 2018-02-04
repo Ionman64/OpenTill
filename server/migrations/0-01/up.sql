@@ -60,6 +60,15 @@ CREATE TABLE IF NOT EXISTS `opentill_tblchat` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+CREATE TABLE IF NOT EXISTS `opentill_tblorders_to_products` (
+  `orderId` varchar(36) COLLATE utf8_bin NOT NULL,
+  `productId` varchar(36) NOT NULL,
+  `quantity` int(13) NOT NULL,
+  `created` int(13) DEFAULT NULL,
+  `updated` int(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`productId`, `orderId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
 CREATE TABLE IF NOT EXISTS `opentill_tblorders` (
   `id` varchar(36) COLLATE utf8_bin NOT NULL,
   `supplier` varchar(36) COLLATE utf8_bin NOT NULL,

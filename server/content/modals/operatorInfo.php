@@ -34,7 +34,7 @@
   		</section>
   	  </section>
 	  <section class="modal-footer">
-	  	<button type="button" class="btn btn-danger btn-lg" id="delete-operator">Delete Operator</button>
+	  	<button type="button" class="btn btn-danger btn-lg pull-left" id="delete-operator">Delete Operator</button>
 		<button type="button" class="btn btn-success btn-lg" id="update-operator">Update Operator</button>
 	  </section>
   </section>

@@ -25,9 +25,7 @@ function Orders() {
 					bootstrap.alert("There has been an error");
 					return;
 				}
-				$.each(data.products, function(key, product) {
-					window.orders.addProductToCurrentOrder(product);
-				});
+				window.orders.orders = data.orders;
 				window.orders.refreshTable();
 			}
 		});
@@ -37,7 +35,7 @@ function Orders() {
 		if (supplier == null) {
 			$("#supplierList").empty();
 			$.each(window.suppliers.suppliers, function(key, value) {
-				var li = el('li', {class:'btn btn-default', "data-id":key, "data-search":value.name, html:value.name});
+				var li = el('li', {class:'btn btn-default', "data-id":key, "data-search":value, html:value});
 				$("#supplierList").append(li);
 			});
 			$("#supplierList li").on("click", function(e) {
@@ -63,6 +61,40 @@ function Orders() {
 	this.showProduct = function(id) {
 		alert(id);
 	}
+	this.getProductsInOrder = function() {
+		$.ajax({
+			url:"api/kvs.php?function=GETORDER",
+			data:{"id":$("#orderModal").attr("data-id")},
+			dataType: "JSON",
+			method:"POST",
+			success: function(data) {
+				if (!data.success) {
+					alert("Error retreiving details");
+					return;
+				}
+				var holder = $("#order-product-list")[0];
+				$(holder).empty();
+				$.each(data.products, function(key, item) {
+					var row = el("section", {class:"row selectable", "data-id":key});
+					//quantity
+					var col = el("section", {class:"col-md-2 col-xs-2 col-sm-2"});
+					var label = el("label");
+					label.innerHTML = item.quantity;
+					col.appendChild(label);
+					row.appendChild(col);
+					//name
+					var col = el("section", {class:"col-md-6 col-xs-6 col-sm-6"});
+					var label = el("label", {class:item.id ? "text-info" : ""});
+					label.innerHTML = item.name;
+					col.appendChild(label);
+					row.appendChild(col);
+					
+					holder.appendChild(row);
+				});
+				$("#orderModal").modal("show");
+			}
+		});
+	}
 	this.init = function() {
 		$.ajaxSetup({
 			method:"POST",
@@ -72,8 +104,9 @@ function Orders() {
 		this.setCurrentOrderId("alpha");
 		this.setCurrentOrder({"products":{}});
 		this.getOrders();
-		$("#order-table").on("click", ".product-btn", function() {
-			showProduct(this.getAttribute("data-id"));
+		$("#orders-table").on("click", ".selectable", function() {
+			$("#orderModal").attr("data-id", this.getAttribute("data-id"));
+			window.orders.getProductsInOrder();
 		});
 		$("#order-table").on("click", ".order", function() {
 			window.orders.orderproduct(this.getAttribute("data-id"));
@@ -81,26 +114,62 @@ function Orders() {
 		$("#create-order").on("click", function() {
 			window.orders.createOrder();
 		});
+		$("#product-modal-barcode-form").on("submit", function(e) {
+			e.preventDefault();
+			$.ajax({
+				url:"api/kvs.php?function=ADDPRODUCTTOORDER",
+				data:{order:$("#orderModal").attr("data-id"), "productBarcode":$("#product-modal-barcode").val()},
+				dataType: "JSON",
+				success: function(data) {
+					if (!data.success) {
+						alert("Error adding product to order");
+						return;
+					}
+					$("#product-modal-barcode").val("");
+					window.orders.getProductsInOrder();
+				}
+			});
+		});
 	}
 	this.refreshTable = function() {
-		$("#orders-table").empty();
-		$.each(this.getCurrentOrder().products, function(key, product) {
-			var row = el("section", {class:"row product"});
-			//bin
-			var section =  el("section", {class:"col-lg-1 col-md-1 col-sm-1 col-xs-1"});
-			var button = el("button", {class:"btn btn-danger btn-lg delete", "data-id":key});
-			button.onclick = function() {
-				getTransaction().removeProduct($(this).attr("productID"));
-			};
-			button.appendChild(el("i", {class:"fa fa-times"}));
-			section.appendChild(button);
-			row.appendChild(section);
-			//name
-			var section = el("section", {class:"col-lg-11 col-md-11 col-sm-11 col-xs-11"});
-			var button = el("button", {class:"btn btn-default btn-lg product-btn", html:product.name, "data-id":key});
-			section.appendChild(button);
-			row.appendChild(section);
-			$("#orders-table").append(row);
+		var holder = document.getElementById("orders-table");
+		$(holder).empty();
+		if (this.orders.length == 0) {
+			var h3 = el("h3");
+			h3.innerHTML = "No Orders Yet";
+			holder.appendChild(h3);
+			return;
+		}
+		$.each(this.orders, function(key, item) {
+			var row = el("section", {class:"row selectable", "data-id":key});
+			//Date
+			var col = el("section", {class:"col-lg-11 col-md-11 col-sm-10 col-xs-10"});
+			var label = el("h4", {html:item});
+			col.appendChild(label);
+			row.appendChild(col);
+			
+			var col = el("section", {class:"col-lg-1 col-md-1 col-xs-2 col-sm-2"});
+			var btn = el("button", {class:"btn btn-success btn-block order-complete pull-left", text:"Complete", "data-id":key});
+			col.appendChild(btn);
+			row.appendChild(col);
+			
+			holder.appendChild(row);
+		});	
+		$(".order-complete").on("click", function(e) {
+			e.stopPropagation();
+			$.ajax({
+				url:"api/kvs.php?function=COMPLETEORDER",
+				data:{"id":this.getAttribute("data-id")},
+				dataType: "JSON",
+				method:"POST",
+				success: function(data) {
+					if (!data.success) {
+						alert("Error completing order");
+						return;
+					}
+					window.orders.getOrders();
+				}
+			});
 		});
 	}
 }

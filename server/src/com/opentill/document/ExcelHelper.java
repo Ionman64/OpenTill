@@ -114,11 +114,11 @@ public class ExcelHelper {
 	     	
 	     	cell = row.createCell(columnId++);
 	     	cell.setCellType(XSSFCell.CELL_TYPE_STRING);
-	     	cell.setCellValue("Current Stock");
+	     	cell.setCellValue("Max Stock");
 	     	
 	     	cell = row.createCell(columnId++);
 	     	cell.setCellType(XSSFCell.CELL_TYPE_STRING);
-	     	cell.setCellValue("Max Stock");
+	     	cell.setCellValue("Current Stock");
 	     	
 	     	cell = row.createCell(columnId++);
 	     	cell.setCellType(XSSFCell.CELL_TYPE_STRING);
@@ -140,15 +140,15 @@ public class ExcelHelper {
 	 	        
 	 	        cell = row.createCell(columnId++);
 	 	        cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
-	 	        cell.setCellValue(tempProduct.current_stock);
-	 	        
-	 	        cell = row.createCell(columnId++);
-	 	        cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
 	 	        cell.setCellValue(tempProduct.max_stock);
 	 	        
 	 	        cell = row.createCell(columnId++);
+	 	        cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+	 	        cell.setCellValue(tempProduct.current_stock);
+	 	        
+	 	        cell = row.createCell(columnId++);
 	 	        cell.setCellType(XSSFCell.CELL_TYPE_FORMULA);
-	 	        cell.setCellFormula("C" + rowId + "-B" + rowId + "");
+	 	        cell.setCellFormula("B" + rowId + "-C" + rowId + "");
 	 	    }
 	    	sheet.autoSizeColumn(0);
 	    	sheet.autoSizeColumn(1);

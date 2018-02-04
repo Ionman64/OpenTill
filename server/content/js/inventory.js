@@ -84,22 +84,22 @@ function Inventory() {
 				var row = el("section", {class:"row product hidden", "data-id":departmentKey});
 				//name
 				var section = el("section", {class:"col-lg-5 col-md-5 col-sm-8 col-xs-6"});
-				var button = el("button", {class:"btn btn-default btn-lg product-btn", html:product.name, "data-id":productKey});
+				var button = el("button", {class:"btn btn-default btn-lg product-btn", text:product.name, "data-id":productKey});
 				section.appendChild(button);
 				row.appendChild(section);
 				//max stock
 				var section = el("section", {class:"col-lg-3 col-md-3 col-sm-2 col-xs-3"});
-				var p = el("h4", {class:"text-default clear-text", html:product.max_stock});
+				var p = el("h4", {class:"text-default clear-text", text:product.max_stock});
 				section.appendChild(p);
 				row.appendChild(section);
 				//in stock 
 				var section = el("section", {class:"col-lg-3 col-md-3 col-sm-2 col-xs-3"});
-				var p = el("h4", {class:"text-default clear-text", html:product.current_stock});
+				var p = el("h4", {class:"text-default clear-text", text:product.current_stock});
 				section.appendChild(p);
 				row.appendChild(section);
 				//Order
 				var section = el("section", {class:"col-lg-1 col-md-1 hidden-sm hidden-xs"});
-				var button = el("button", {class:"btn btn-info btn-lg order", html:"Order", "data-id":productKey});
+				var button = el("button", {class:"btn btn-info btn-lg order-btn", text:"Order", "data-id":productKey});
 				section.appendChild(button);
 				row.appendChild(section);
 				$("#inventory-table").append(row);
@@ -110,6 +110,19 @@ function Inventory() {
 		});
 		$("#inventory-table").on("click", ".inventory-department", function() {
 			$(".product[data-id='" + $(this).attr("data-id") + "']").toggleClass("hidden");
+		});
+		$("#inventory-table").on("click", ".order-btn", function() {
+			$.ajax({
+				url:"api/kvs.php?function=ADDPRODUCTTOORDER",
+				data:{id:this.getAttribute("data-id")},
+				dataType: "JSON",
+				success: function(data) {
+					if (!data.success) {
+						alert("Error adding product to order");
+						return;
+					}
+				}
+			});
 		});
 	}
 }

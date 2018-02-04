@@ -119,6 +119,7 @@ function Transactions() {
 			success: function(data) {
 				if (!data.success) {
 					alert("Error retreiving details");
+					return;
 				}
 				var holder = $("#product-list")[0];
 				$(holder).empty();

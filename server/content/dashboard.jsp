@@ -122,22 +122,11 @@
 					<section class="row">
 						<section class="col-lg-10 col-md-10 col-sm-10 col-xs-10" style="padding-top:5px;">
 							<p id="menu-button" class="navbar-text"><i class="fa fa-bars fa-3x"></i></p>
-								<p class="dropdown navbar-text">
-									<h4 class="dropdown-toggle" style="padding-top:9px;" id="page-name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-										Takings
-										<span class="caret"></span>
-									</h4>
-									<ul id="page-dropdown-menu" class="dropdown-menu" aria-labelledby="dropdownMenu1">
-										<li><a href="#">Action</a></li>
-										<li><a href="#">Another action</a></li>
-										<li><a href="#">Something else here</a></li>
-										<li role="separator" class="divider"></li>
-										<li><a href="#">Separated link</a></li>
-									</ul>
-								</p>
+							<h3 class="navbar-text" id="page-name">Takings</h3>
 						</section>
 						<section class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-							<!--<a href="index.jsp"><button class="btn btn-default btn-lg pull-right" style="margin:10px">Register</button></a>-->
+							<img class="img img-rounded img-responsive pull-right" src="img/default-user.png"></img>
+							<h3 class="navbar-text pull-right" id="user-name">Peter</h3>
 						</section>
 					</section>
 				</section>

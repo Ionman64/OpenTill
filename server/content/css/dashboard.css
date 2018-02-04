@@ -38,6 +38,12 @@ tbody tr:hover {
 	max-width:100%;
 	z-index:999;
 }
+.custom-navbar .img {
+	width:45px;
+	height:45px;
+	margin:10px;
+	cursor:pointer;	
+}
 .overlay-ontop {
 	z-index:1001;
 }

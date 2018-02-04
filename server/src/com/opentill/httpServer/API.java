@@ -122,13 +122,13 @@ public class API extends ContextHandler
 				generateInventoryReport(baseRequest, response);
 				break;
 			case "GETSUPPLIER":
-				//selectSupplier(baseRequest, response);
+				selectSupplier(baseRequest, response);
 				break;
 			case "UPDATESUPPLIER":
-				//updateSupplier(baseRequest, response);
+				updateSupplier(baseRequest, response);
 				break;
 			case "ADDSUPPLIER":
-				//createSupplier(baseRequest, response);
+				createSupplier(baseRequest, response);
 				break;
 			case "DELETESUPPLIER":
 				//deleteSupplier(baseRequest, response);
@@ -140,7 +140,7 @@ public class API extends ContextHandler
 				selectOperator(baseRequest, response);
 				break;
 			case "UPDATEOPERATOR":
-				//updateOperator(baseRequest, response);
+				updateOperator(baseRequest, response);
 				break;
 			case "ADDOPERATOR":
 				createOperator(baseRequest, response);
@@ -212,10 +212,19 @@ public class API extends ContextHandler
 				setCurrentStockLevel(baseRequest, response);
 				break;
 			case "CREATEORDER":
-				//createOrder(baseRequest, response);
+				createOrder(baseRequest, response);
+				break;
+			case "COMPLETEORDER":
+				completeOrder(baseRequest, response);
+				break;
+			case "GETORDER":
+				getOrder(baseRequest, response);
 				break;
 			case "GETORDERS":
-				//getOrders(baseRequest, response);
+				getOrders(baseRequest, response);
+				break;
+			case "ADDPRODUCTTOORDER":
+				addProductToOrder(baseRequest, response);
 				break;
 			default:
 				errorOut(response, "No such function");
@@ -223,6 +232,328 @@ public class API extends ContextHandler
 		}
 	    // Inform jetty that this request has now been handled
 	    baseRequest.setHandled(true);
+	}
+	private void completeOrder(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		String id = baseRequest.getParameter("id");
+		if (id == null) {
+			errorOut(response, "missing id");
+			return;
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("UPDATE " + Config.DATABASE_TABLE_PREFIX + "tblorders SET ended = ? WHERE id = ?");
+			pstmt.setLong(1, getCurrentTimeStamp());
+			pstmt.setString(2, id);
+			if (pstmt.executeUpdate() > 0) {
+				Log.log("Order ($id) COMPLETED by operator ($operator)");
+				successOut(response);
+				return;
+			}
+		}
+		catch (Exception ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
+		}
+		errorOut(response);
+	}
+	private void addProductToOrder(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		String order = baseRequest.getParameter("order");
+		String productId = baseRequest.getParameter("productId");
+		String productBarcode = baseRequest.getParameter("productBarcode");
+		String quantityString = baseRequest.getParameter("quantity");
+		if (order == null || (productId == null && productBarcode == null)) {
+			errorOut(response, "missing fields");
+			return;
+		}
+		int quantity;
+		if (quantityString == null) {
+			quantity = 1;
+		}
+		else {
+			try {
+				quantity = Integer.parseInt(quantityString);
+			}
+			catch (NumberFormatException e) {
+				errorOut(response, "Could not parse quantity");
+				return;
+			}
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("INSERT INTO " + Config.DATABASE_TABLE_PREFIX + "tblorders_to_products (productId, orderId, quantity, created, updated) VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE quantity = quantity + 1");
+			JSONObject productJson;
+			if (productBarcode != null) {
+				productJson = getItemFromBarcode(productBarcode);
+				if (productJson == null) {
+					errorOut(response, "Could not find product");
+					return;
+				}
+				pstmt.setString(1, (String) productJson.get("id"));
+			}
+			else {
+				pstmt.setString(1, productId);
+			}
+			pstmt.setString(2, order);
+			pstmt.setInt(3, quantity);
+			pstmt.setLong(4, getCurrentTimeStamp());
+			pstmt.setLong(5, getCurrentTimeStamp());
+			pstmt.execute();
+			if (pstmt.getUpdateCount() > 0) {
+				successOut(response);
+				return;
+			}
+		}
+		catch (Exception ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
+		}
+		errorOut(response);
+	}
+	private void getOrder(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		String id = baseRequest.getParameter("id");
+		if (id == null) {
+			errorOut(response, "missing fields");
+			return;
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblproducts.name, "+ Config.DATABASE_TABLE_PREFIX + "tblorders_to_products.productId, " + Config.DATABASE_TABLE_PREFIX + "tblorders_to_products.quantity FROM   "+ Config.DATABASE_TABLE_PREFIX + "tblorders_to_products LEFT JOIN "+ Config.DATABASE_TABLE_PREFIX + "tblproducts ON "+ Config.DATABASE_TABLE_PREFIX + "tblproducts.id = "+ Config.DATABASE_TABLE_PREFIX + "tblorders_to_products.productId WHERE "+ Config.DATABASE_TABLE_PREFIX + "tblorders_to_products.orderId = ?");
+			pstmt.setString(1, id);
+			rs = pstmt.executeQuery();
+			JSONObject jo = new JSONObject();
+			while (rs.next()) {
+				JSONObject tempJo = new JSONObject();
+				tempJo.put("name", rs.getString(1));
+				tempJo.put("quantity", rs.getInt(3));
+				jo.put(rs.getString(2), tempJo);
+			}
+			JSONObject responseJSON = new JSONObject();
+			responseJSON.put("success", true);
+			responseJSON.put("products", jo);
+			response.getWriter().write(responseJSON.toJSONString());
+			return;
+		}
+		catch (Exception ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
+		}
+		errorOut(response);
+	}
+	private void getOrders(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblorders.id, " + Config.DATABASE_TABLE_PREFIX + "tblsuppliers.name FROM " + Config.DATABASE_TABLE_PREFIX + "tblorders LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "tblsuppliers ON " + Config.DATABASE_TABLE_PREFIX + "tblsuppliers.id = " + Config.DATABASE_TABLE_PREFIX + "tblorders.supplier WHERE " + Config.DATABASE_TABLE_PREFIX + "tblorders.ended = 0 ORDER BY " + Config.DATABASE_TABLE_PREFIX + "tblsuppliers.name");
+			rs = pstmt.executeQuery();
+			JSONObject jo = new JSONObject();
+			while (rs.next()) {
+				jo.put(rs.getString(1), rs.getString(2));
+			}
+			JSONObject responseJSON = new JSONObject();
+			responseJSON.put("success", true);
+			responseJSON.put("orders", jo);
+			response.getWriter().write(responseJSON.toJSONString());
+			return;
+		}
+		catch (Exception ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
+		}
+		errorOut(response);
+	}
+	private void createOrder(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		String supplier = baseRequest.getParameter("supplier");
+		if (supplier == null) {
+			errorOut(response, "missing fields");
+			return;
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("INSERT INTO " + Config.DATABASE_TABLE_PREFIX + "tblorders (id, supplier, created, updated, ended) VALUES (?, ?, ?, ?, 0)");
+			pstmt.setString(1, GUID());
+			pstmt.setString(2, supplier);
+			pstmt.setLong(3, getCurrentTimeStamp());
+			pstmt.setLong(4, getCurrentTimeStamp());
+			pstmt.execute();
+			if (pstmt.getUpdateCount() > 0) {
+				successOut(response);
+				return;
+			}
+		}
+		catch (Exception ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
+		}
+		errorOut(response);
+	}
+	private void updateOperator(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		String id = baseRequest.getParameter("id");
+		String name = baseRequest.getParameter("name");
+		String telephone = baseRequest.getParameter("telephone");
+		String email = baseRequest.getParameter("email");
+		String password = baseRequest.getParameter("password");
+		String comments = baseRequest.getParameter("comments");
+		if (id == null || name == null || email == null || password == null) {
+			errorOut(response, "missing fields");
+			return;
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("INSERT INTO " + Config.DATABASE_TABLE_PREFIX + "operators SET name=?, passwordHash=?, telephone=?, email=?, comments=?, updated=?) WHERE id=?");
+			pstmt.setString(1, name);
+			pstmt.setString(2, hashPassword(password, ""));
+			pstmt.setString(3, telephone);
+			pstmt.setString(4, email);
+			pstmt.setString(5, comments);
+			pstmt.setInt(6,  getCurrentTimeStamp());
+			pstmt.setString(7, id);
+			pstmt.execute();
+			if (pstmt.getUpdateCount() > 0) {
+				successOut(response);
+				return;
+			}
+		}
+		catch (Exception ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
+		}
+		errorOut(response);
+	}
+	private void createSupplier(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		String name = baseRequest.getParameter("name");
+		String telephone = baseRequest.getParameter("telephone");
+		String email = baseRequest.getParameter("email");
+		String website = baseRequest.getParameter("website");
+		String comments = baseRequest.getParameter("comments");
+		if (name == null) {
+			errorOut(response, "missing params");
+			return;
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("UPDATE " + Config.DATABASE_TABLE_PREFIX + "tblsuppliers (id, name, telephone, email, website, comments, created, updated) VALUES (?,?,?,?,?,?,?,?)");
+			pstmt.setString(1, GUID());
+			pstmt.setString(2, name);
+			pstmt.setString(3, telephone);
+			pstmt.setString(4, email);
+			pstmt.setString(5, website);
+			pstmt.setString(6, comments);
+			pstmt.setLong(7, getCurrentTimeStamp());
+			pstmt.setLong(8, getCurrentTimeStamp());
+			if (pstmt.executeUpdate() > 0) {
+				Log.log("Supplier ($id) CREATED by operator ($operator)");
+				successOut(response);
+				return;
+			}
+		}
+		catch (Exception ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
+		}
+		errorOut(response);
+	}
+	private void updateSupplier(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		String id = baseRequest.getParameter("id");
+		String name = baseRequest.getParameter("name");
+		String telephone = baseRequest.getParameter("telephone");
+		String email = baseRequest.getParameter("email");
+		String website = baseRequest.getParameter("website");
+		String comments = baseRequest.getParameter("comments");
+		if (id == null || name == null) {
+			errorOut(response, "missing params");
+			return;
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("UPDATE " + Config.DATABASE_TABLE_PREFIX + "tblsuppliers SET name = ?, telephone = ?, email = ?, website = ?, comments = ?, updated = ? WHERE id = ? LIMIT 1");
+			pstmt.setString(1, name);
+			pstmt.setString(2, telephone);
+			pstmt.setString(3, email);
+			pstmt.setString(4, website);
+			pstmt.setString(5, comments);
+			pstmt.setLong(6, getCurrentTimeStamp());
+			pstmt.setString(7, id);
+			if (pstmt.executeUpdate() > 0) {
+				Log.log("Supplier ($id) UPDATED by operator ($operator)");
+				successOut(response);
+				return;
+			}
+		}
+		catch (Exception ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
+		}
+		errorOut(response);
+		
+	}
+	private void selectSupplier(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+		String id = baseRequest.getParameter("id");
+		if (id == null) {
+			errorOut(response, "missing fields");
+			return;
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("SELECT name, telephone, website, email, comments FROM " + Config.DATABASE_TABLE_PREFIX + "tblsuppliers WHERE id = ? LIMIT 1");
+			pstmt.setString(1, id);
+			rs = pstmt.executeQuery();
+			JSONObject jo = new JSONObject();
+			if (rs.next()) {
+				jo.put("name", rs.getString(1));
+				jo.put("telephone", rs.getString(2));
+				jo.put("website", rs.getString(3));
+				jo.put("email", rs.getString(4));
+				jo.put("comments", rs.getString(5));
+			}
+			JSONObject responseJSON = new JSONObject();
+			responseJSON.put("success", true);
+			responseJSON.put("supplier", jo);
+			response.getWriter().write(responseJSON.toJSONString());
+			return;
+		}
+		catch (Exception ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
+		}
+		errorOut(response);
 	}
 	private void selectOperator(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		String id = baseRequest.getParameter("id");
@@ -606,9 +937,7 @@ public class API extends ContextHandler
 			rs = pstmt.executeQuery();
 			JSONObject jo = new JSONObject();
 			while (rs.next()) {
-				JSONObject product = new JSONObject();
-				product.put("name",  rs.getString(2));
-				jo.put(rs.getString(1), product);
+				jo.put(rs.getString(1), rs.getString(2));
 			}
 			JSONObject responseJSON = new JSONObject();
 			responseJSON.put("success", true);
@@ -1707,6 +2036,7 @@ public class API extends ContextHandler
 		}
 		errorOut(response, null);
 	}
+	
 	public void barcode(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		String barcode = baseRequest.getParameter("number");
 		baseRequest.getParameter("units");
