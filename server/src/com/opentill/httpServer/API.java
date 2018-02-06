@@ -1237,30 +1237,37 @@ public class API extends ContextHandler
 		String name = baseRequest.getParameter("name");
 		String priceText = baseRequest.getParameter("price");
 		String department = baseRequest.getParameter("department");
-		String cashier = baseRequest.getParameter("cashier");
-		if (name==null || priceText==null || department==null || cashier==null) {
+		String currentStockString = baseRequest.getParameter("current_stock");
+		String maxStockString = baseRequest.getParameter("max_stock");
+		if (name==null || priceText==null || department==null) {
 			errorOut(response, "missing fields");
 			return;
 		}
 		float price; 
+		int currentStockInt = 0;
+		int maxStockInt = 0;
 		try {
 			price = Float.parseFloat(priceText);
+			currentStockInt = Integer.parseInt(currentStockString);
+			maxStockInt = Integer.parseInt(maxStockString);
 		}
 		catch (NumberFormatException ex) {
 			Log.log(ex.getMessage());
-			errorOut(response, "Could not interpret price field");
+			errorOut(response, "Could not interpret numeric field");
 			return;
 		}
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("UPDATE " + Config.DATABASE_TABLE_PREFIX + "tblproducts SET name = ?, price = ?, department=?, updated = ? WHERE id=?");
+			pstmt = conn.prepareStatement("UPDATE " + Config.DATABASE_TABLE_PREFIX + "tblproducts SET name = ?, price = ?, department=?, current_stock=?, max_stock=?, updated = ? WHERE id=?");
 			pstmt.setString(1, name);
 			pstmt.setFloat(2, price);
 			pstmt.setString(3, department);
-			pstmt.setLong(4, getCurrentTimeStamp());
-			pstmt.setString(5, id);
+			pstmt.setInt(4, currentStockInt);
+			pstmt.setInt(5, maxStockInt);
+			pstmt.setLong(6, getCurrentTimeStamp());
+			pstmt.setString(7, id);
 			if (pstmt.executeUpdate() > 0) {
 				Log.log("Product ($id) UPDATED by operator ($operator)");
 				successOut(response);

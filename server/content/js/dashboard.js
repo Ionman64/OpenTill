@@ -53,6 +53,8 @@ function showProduct(id) {
 			$("#ProductCost").val(product.cost);
 			$("#ProductPrice").val(product.price);
 			$("#Name").html(product.name);
+			$("#maxStockLevel").val(product.max_stock);
+			$("#currentLevel").val(product.current_stock);
 			if (product.labelPrinted == "1") {
 				$("#PrintLabel").attr("disabled", true);
 			}
@@ -220,6 +222,12 @@ $(document).ready(function() {
 			window.operators.createOperator();
 		});
 	});
+	$("#productModalNav").on("click", "a", function() {
+		$("#productModalNav li").removeClass("active");
+		$(this).parent().addClass("active");
+		$("#product-modal .page").addClass("hidden");
+		$("section[data-id=" + $(this).attr("data-page") + "]").removeClass("hidden");
+	});
 	$("#delete-product").click(function() {
 		var id = $("#product-modal").attr("product-id");
 		bootbox.confirm("Are you sure you want to delete this product from the system?", function(result) {
@@ -244,7 +252,7 @@ $(document).ready(function() {
 		var barcode = $("#ProductBarcode").val();
 		$.ajax({
 			url: "api/kvs.php?function=UPDATEPRODUCT",
-			data : {"id":$("#product-modal").attr("product-id"), "cashier":"", "barcode":barcode, "department":$("#ProductDepartment").val(), "name" : $("#ProductName").val(), "cost" : 0.00, "price" : $("#ProductPrice").val()},
+			data : {"id":$("#product-modal").attr("product-id"), "cashier":"", "barcode":barcode, "current_stock":$("#currentLevel").val(),"max_stock":$("#maxStockLevel").val(), "department":$("#ProductDepartment").val(), "name" : $("#ProductName").val(), "cost" : 0.00, "price" : $("#ProductPrice").val()},
 			success: function(data) {
 				if (!data.success) {
 					bootbox.alert("Product Not Updated");

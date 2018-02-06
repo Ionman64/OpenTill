@@ -1,11 +1,7 @@
 package com.opentill.httpServer;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Collections;
 
-import org.apache.commons.mail.Email;
-import org.apache.commons.mail.SimpleEmail;
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
@@ -20,7 +16,6 @@ import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 import com.opentill.logging.Log;
-import com.opentill.mail.MailHandler;
 
 public final class ServerHandler {
 	public static void run() {

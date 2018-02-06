@@ -1,5 +1,5 @@
 <section class="modal" id="takings-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-  <section class="modal-dialog">
+  <section class="modal-dialog modal-lg">
 	<section class="modal-content">
 	  <section class="modal-header">
 		<button type="button" class="btn btn-default pull-right" data-dismiss="modal" aria-label="Close">Close</button>
