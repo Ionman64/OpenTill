@@ -1,7 +1,5 @@
 package com.opentill.main;
 
-import org.json.simple.JSONObject;
-
 import com.opentill.database.DatabaseMigration;
 import com.opentill.httpServer.ServerHandler;
 import com.opentill.mail.MailHandler;
@@ -9,7 +7,6 @@ import com.opentill.mail.MailHandler;
 public class Main {
 		public static void main(String[] args) throws Exception
 	    {	
-			
 			if (!Config.setup()) {
 				System.out.println("System cannot setup configuration properly");
 				return;
@@ -23,14 +20,12 @@ public class Main {
 			thread2.setDaemon(true);
 			thread2.start();
 			
-			JSONObject jsonObj = new JSONObject();
-			jsonObj.put("text", "Server Started");
-
-			//TODO: Put this into the config file - DO NOT COMMIT
-
+			Updater.update();
 			
 			DatabaseMigration db = new DatabaseMigration(Config.CURRENT_VERSION);
 			db.up();
+			
+			
 			
 			ServerHandler.run();
 	    }

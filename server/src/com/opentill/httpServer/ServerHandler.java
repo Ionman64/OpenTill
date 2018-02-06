@@ -36,35 +36,16 @@ public final class ServerHandler {
             http_config.setSecureScheme("https");
             http_config.setSendServerVersion(true);
             
-            ConstraintSecurityHandler security = new ConstraintSecurityHandler();
-            server.setHandler(security);
-            
-            Constraint constraint = new Constraint();
-            constraint.setName("auth");
-            constraint.setAuthenticate(true);
-            constraint.setRoles(new String[] { "user", "admin" });
-
-            ConstraintMapping mapping = new ConstraintMapping();
-            mapping.setPathSpec("/*");
-            mapping.setConstraint(constraint);
-            security.setConstraintMappings(Collections.singletonList(mapping));
-            security.setAuthenticator(new BasicAuthenticator());
-            //security.setLoginService();
-            
     	    ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(http_config));
     	    http.setHost("localhost");
             http.setPort(port);
             http.setIdleTimeout(30000);
             server.addConnector(http);
-            
-            ResourceHandler resourceHandler = new ResourceHandler();
-            resourceHandler.setDirectoriesListed(true);
-            resourceHandler.setWelcomeFiles(new String[]{"index.php"});
-            resourceHandler.setResourceBase("content");
-            security.setHandler(resourceHandler);
+           
             
             WebAppContext webAppContext = new WebAppContext();
             webAppContext.setContextPath(".");
+            webAppContext.setWelcomeFiles(new String[]{"index.php"});
             webAppContext.setResourceBase("content");
             webAppContext.setInitParameter("dirAllowed", "false");
 			new JspStarter(webAppContext).doStart();
@@ -72,7 +53,6 @@ public final class ServerHandler {
 			HandlerCollection handlers = new HandlerCollection();
 		    handlers.addHandler(new API(webAppContext, "/api/kvs.php"));
 		    handlers.addHandler(webAppContext);
-		    handlers.addHandler(resourceHandler);
 		    server.setHandler(handlers);
 		    server.start();
 		    Log.log("Server Started on PORT:" + port);

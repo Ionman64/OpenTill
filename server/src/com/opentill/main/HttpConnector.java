@@ -15,9 +15,7 @@ public class HttpConnector {
 	public final static String CONTENT_TYPE_JSON = "application/json";
 
 	// HTTP GET request
-	private void sendGet() throws Exception {
-
-		String url = "http://www.google.com/search?q=mkyong";
+	private String sendGet(String url) throws Exception {
 
 		URL obj = new URL(url);
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -41,10 +39,7 @@ public class HttpConnector {
 			response.append(inputLine);
 		}
 		in.close();
-
-		//print result
-		System.out.println(response.toString());
-
+		return response.toString();
 	}
 
 	// HTTP POST request

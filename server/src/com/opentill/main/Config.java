@@ -16,11 +16,14 @@ public final class Config {
 	public final static Properties databaseProperties = Config.readDatabasePropertiesFile();
 	public final static Properties emailProperties = Config.getEmailProperties();
 	public static boolean setup() {
-		if (!createEnvironmentIfNotExists()) {
+		if (! createRootFolderIfNotExists()) {
 			return false;
 		}
-		if (!createLogsFolderIfNotExists()) {
-			return false;
+		String[] folders = new String[] {"logs", "temp"};
+		for (String folder: folders) {
+			if (!createFolderIfNotExists(folder)) {
+				return false;
+			}
 		}
 		if (!createDatabasePropertiesFileIfNotExists()) {
 			return false;
@@ -95,9 +98,8 @@ public final class Config {
 		}
 		return null;
 	}
-	public static boolean createEnvironmentIfNotExists() {
-		String env_path = Config.USER_HOME + File.separatorChar + ".opentill";
-		File env_directory = new File(env_path);
+	public static boolean createRootFolderIfNotExists() {
+		File env_directory = new File(Config.APP_HOME);
 		if (!env_directory.exists()) {
 			return env_directory.mkdirs();
 		}
@@ -105,8 +107,8 @@ public final class Config {
 			return true;
 		}
 	}
-	public static boolean createLogsFolderIfNotExists() {
-		String env_path = Config.USER_HOME + File.separatorChar + ".opentill" + File.separatorChar + "logs";
+	public static boolean createFolderIfNotExists(String foldername) {
+		String env_path = Config.APP_HOME + File.separatorChar + foldername;
 		File env_directory = new File(env_path);
 		if (!env_directory.exists()) {
 			return env_directory.mkdirs();

@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import com.opentill.logging.Log;
+import com.opentill.main.Config;
 
 /** 
  * Class to handle a single Database Migration
@@ -24,7 +25,7 @@ public class DatabaseMigration {
 	}
 	private boolean runSQLfile(File sqlFile) throws IOException, SQLException {
 		if (!sqlFile.exists()) {
-			throw new IOException(sqlFile.getAbsolutePath() + "file does not exist");
+			throw new IOException(sqlFile.getAbsolutePath() + ": file does not exist");
 		}
 		Connection conn = null;
 		Statement stmt = null;
@@ -57,7 +58,11 @@ public class DatabaseMigration {
 		return true;
 	}
 	public void up() throws IOException, SQLException  {
-		File file = Paths.get("migrations", this.version, "up.sql").toFile();
+		File file = Paths.get(Config.APP_HOME, "migrations", this.version, "up.sql").toFile();
+		if (!file.exists()) {
+			Log.log("Cannot Find Migration File:" + file.getAbsolutePath());
+			return;
+		}
 		if (this.runSQLfile(file)) {
 			Log.log("Database upgraded successfully to version " + this.version);
 			return;
@@ -67,6 +72,10 @@ public class DatabaseMigration {
 	}
 	public void down() throws IOException, SQLException {
 		File file = Paths.get("migrations", this.version, "down.sql").toFile();
+		if (!file.exists()) {
+			Log.log("Cannot Find Migration File:" + file.getAbsolutePath());
+			return;
+		}
 		if (this.runSQLfile(file)) {
 			Log.log("Database reverted successfully from version " + this.version);
 			return;
