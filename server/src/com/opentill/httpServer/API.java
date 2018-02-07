@@ -1295,11 +1295,10 @@ public class API extends ContextHandler
 			conn = DatabaseHandler.getDatabase();
 			pstmt = conn.prepareStatement("DELETE FROM " + Config.DATABASE_TABLE_PREFIX + "transactions WHERE (id = ? AND ended = 0) LIMIT 1");
 			pstmt.setString(1, id);
-			if (pstmt.execute()) {
+			if (pstmt.executeUpdate() > 0) {
 				successOut(response);
 				return;
 			}
-			errorOut(response);
 		}
 		catch (Exception ex) {
 			Log.log(ex.getMessage());
@@ -1307,6 +1306,7 @@ public class API extends ContextHandler
 		finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
+		errorOut(response);
 	}
 	private void completeTransaction(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		// TODO Auto-generated method stub
