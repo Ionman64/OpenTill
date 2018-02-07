@@ -624,30 +624,6 @@ $(document).ready( function() {
 		boostat: 5,
 		maxboostedstep: 10,
 	});
-	$("#maxStockLevel").change(function() {
-		$.ajax({
-			url:CONTEXT + "/kvs.php?function=CHANGEMAXSTOCKLEVEL",
-			data:{"id":$("#product-modal").attr("product-id"), "amount":$("#maxStockLevel").val()},
-			success: function(data) {
-				if (!data.success) {
-					bootstrap.alert("Could not change value");
-					return;
-				}
-			}
-		});
-	});
-	$("#currentLevel").change(function() {
-		$.ajax({
-			url:CONTEXT + "/kvs.php?function=CHANGECURRENTSTOCKLEVEL",
-			data:{"id":$("#product-modal").attr("product-id"), "amount":$("#currentLevel").val()},
-			success:function(data) {
-				if (!data.success) {
-					bootbox.alert("Could not change value");
-					return;
-				}
-			}
-		});
-	});
 	$("#clearProductName").on("click", function() {
 		$('#ProductName').val('').focus();
 	});
@@ -857,7 +833,7 @@ $(document).ready( function() {
 		delete window.cache[barcode];
 		$.ajax({
 			url: CONTEXT + "kvs.php?function=UPDATEPRODUCT",
-			data : {"id":$("#product-modal").attr("product-id"), "cashier":getOperator(), "barcode":barcode, "department":$("#ProductDepartment").val(), "name" : $("#ProductName").val(), "cost" : 0.00, "price" : $("#ProductPrice").val()},
+			data : {"id":$("#product-modal").attr("product-id"), "cashier":"", "barcode":barcode, "current_stock":$("#currentLevel").val(),"max_stock":$("#maxStockLevel").val(), "department":$("#ProductDepartment").val(), "name" : $("#ProductName").val(), "cost" : 0.00, "price" : $("#ProductPrice").val()},
 			success: function(data) {
 				if (!data.success) {
 					bootbox.alert("Product Not Updated");
