@@ -32,8 +32,9 @@
 	<script src="thirdParty/bootbox/js/bootbox.min.js"></script>
 	<!--Mithril-->
 	<script src="thirdParty/mithril/js/mithril.min.js"></script>
-	<!--Bootstrap DateTime Picker-->
-	<script src="thirdParty/bootstrap-datetime-picker/js/bootstrap-datetimepicker.js"></script>
+	<!--CalendarView-->
+	<script src="thirdParty/CalendarView/js/calendar.js"></script>
+	<link rel="stylesheet" href="thirdParty/CalendarView/css/calendar.css"/>
 	<!--custom-->
 	<script type="text/javascript" src="js/takings.js"></script>
 	<script type="text/javascript" src="js/transactions.js"></script>

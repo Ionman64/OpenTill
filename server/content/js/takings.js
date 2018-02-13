@@ -57,7 +57,7 @@ function Takings(){
 			$.ajax({
 				url:"api/kvs.php?function=GENERATETAKINGSREPORT",
 				dataType: "JSON",
-				data:{"takings-export-type":$("#takings-export-type").val(), "start":$("#takings-date-start").val(), "end":$("#takings-date-end").val(), "departments":selectedDepartments},
+				data:{"takings-export-type":$("#takings-export-type").val(), "start":moment($("#takings-date-start").val()).format("x"), "end":moment($("#takings-date-end").val()).format("x"), "departments":selectedDepartments},
 				success: function(data) {
 					if (!data.success) {
 						alert("Error exporting takings");

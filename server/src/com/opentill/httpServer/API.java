@@ -821,8 +821,8 @@ public class API extends ContextHandler
 		Long startTime = 0L;
 		Long endTime = 0L;
 		try {
-			startTime = new Date(startTimeString).getTime();
-			endTime = new Date(endTimeString).getTime();
+			startTime = Long.parseLong(startTimeString);
+			endTime = Long.parseLong(endTimeString);
 		}
 		catch (NumberFormatException e) {
 			errorOut(response, "Could not parse time");

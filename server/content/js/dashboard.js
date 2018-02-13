@@ -248,8 +248,10 @@ $(document).ready(function() {
 			});
 		});
 	});
-	$('#takings-date-start').datetimepicker({ format: 'YYYY-MM-DD' });
-	$('#takings-date-end').datetimepicker({ format: 'YYYY-MM-DD' });
+	var calendar = new CalendarView($("#takings-date-start")[0]);
+	calendar.init();
+	var calendar2 = new CalendarView($("#takings-date-end")[0]);
+	calendar2.init();
 	$("#update-product").click(function() {
 		var barcode = $("#ProductBarcode").val();
 		$.ajax({

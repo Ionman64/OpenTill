@@ -18,20 +18,14 @@
 				</section>
 				<section class="col-md-6">
 					<section class="form-group">
-						<label>From Date</label>
-						<div class="input-append date form_datetime"  data-date="" data-date-format="yyyy-mm-dd">
-						   <input type="text" id="takings-date-start" class="span2 form-control input-lg" size="16" type="text" value="">
-						   <span class="add-on"><i class="icon-th"></i></span>
-						</div>            
+				      <label>To Date</label>
+				       <input type="text" id="takings-date-start" class="span2 form-control input-lg" placeholder="Search for...">
 					</section>
 				</section>
 				<section class="col-md-6">
 					<section class="form-group">
-				      <label>To Date</label>
-				      <div class="input-append date form_datetime" id="takings-date-end" data-date="12-02-2012" data-date-format="yyyy-mm-dd">
-						   <input type="text" class="span2 form-control input-lg" size="16" type="text" value="12-02-2012">
-						   <span class="add-on"><i class="icon-th"></i></span>
-						</div>  
+				      <label>From Date</label>
+				      <input type="text" id="takings-date-end" class="span2 form-control input-lg" placeholder="Search for...">
 					</section>
 				</section>
 				<section class="col-md-12">
