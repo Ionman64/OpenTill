@@ -10,20 +10,17 @@ body {
 			  user-select: none; /* Non-prefixed version, currently
 									supported by Chrome and Opera */
   }
-.dataTables_filter {
-	float:right;
-}
 .mui-tabs__pane {
 	padding-top:10px;
 }
-#viewport {
+/*.viewport .table {
 	padding:5px;
 	margin-top:5px;
 }
-tbody tr:hover {
+.viewport .table tbody tr:hover {
 	cursor:pointer;
 	background:#bbb;
-}
+}*/
 .overlay {
 	position: absolute;
 	width: 100%; 
@@ -71,42 +68,6 @@ tbody tr:hover {
 }
 .padding-right {
 	padding-right:40px;
-}
-.card {
-	text-align:left;
-	color:#aaa;
-}
-.card .title {
-	font-size:18px;
-	padding:0;
-	margin:0;
-}
-.card .info {
-	color:#000;
-	font-size:38px;
-	padding:0;
-	margin:0;
-	margin-top:5px;
-}
-.card .change {
-	font-size:26px;
-	
-}
-.card .sub-title {
-	font-size:14px;
-	font-style:italic;
-	padding:0;
-	margin:0;
-	margin-top:5px;
-}
-.card .fa:hover {
-	font-color:#000;
-	cursor:pointer;
-}
-.card-success {
-	background:#4F8970;
-	color:#fff;
-	border:0;
 }
 canvas {
 	margin-top:1em;
@@ -255,10 +216,6 @@ canvas {
 }
 .dataTables_filter {
 	float:right;
-}
-tbody tr:hover {
-	cursor:pointer;
-	background:#bbb;
 }
 .panel h2 {
 	margin-top:0;

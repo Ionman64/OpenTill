@@ -32,6 +32,8 @@
 	<script src="thirdParty/bootbox/js/bootbox.min.js"></script>
 	<!--Mithril-->
 	<script src="thirdParty/mithril/js/mithril.min.js"></script>
+	<!--Bootstrap DateTime Picker-->
+	<script src="thirdParty/bootstrap-datetime-picker/js/bootstrap-datetimepicker.js"></script>
 	<!--custom-->
 	<script type="text/javascript" src="js/takings.js"></script>
 	<script type="text/javascript" src="js/transactions.js"></script>

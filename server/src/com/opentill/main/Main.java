@@ -20,7 +20,7 @@ public class Main {
 			thread2.setDaemon(true);
 			thread2.start();
 			
-			Updater.update();
+			//Updater.update();
 			
 			DatabaseMigration db = new DatabaseMigration(Config.CURRENT_VERSION);
 			db.up();

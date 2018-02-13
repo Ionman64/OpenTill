@@ -44,6 +44,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.UUID;
@@ -820,8 +821,8 @@ public class API extends ContextHandler
 		Long startTime = 0L;
 		Long endTime = 0L;
 		try {
-			startTime = Long.parseLong(startTimeString);
-			endTime = Long.parseLong(endTimeString);
+			startTime = new Date(startTimeString).getTime();
+			endTime = new Date(endTimeString).getTime();
 		}
 		catch (NumberFormatException e) {
 			errorOut(response, "Could not parse time");

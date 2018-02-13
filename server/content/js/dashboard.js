@@ -248,6 +248,8 @@ $(document).ready(function() {
 			});
 		});
 	});
+	$('#takings-date-start').datetimepicker({ format: 'YYYY-MM-DD' });
+	$('#takings-date-end').datetimepicker({ format: 'YYYY-MM-DD' });
 	$("#update-product").click(function() {
 		var barcode = $("#ProductBarcode").val();
 		$.ajax({
