@@ -39,6 +39,8 @@ function Takings(){
 				li.appendChild(label);
 				holder.appendChild(li);
 			});
+			$("#takings-export-success").addClass("hidden");
+			$("#takings-export-failure").addClass("hidden");
 			$("#export-takings").modal("show");
 		});
 		$("#takings-departments-export").on("change", "input[type=checkbox]", function() {
@@ -57,12 +59,21 @@ function Takings(){
 			$.ajax({
 				url:"api/kvs.php?function=GENERATETAKINGSREPORT",
 				dataType: "JSON",
-				data:{"takings-export-type":$("#takings-export-type").val(), "start":moment($("#takings-date-start").val()).format("x"), "end":moment($("#takings-date-end").val()).format("x"), "departments":selectedDepartments},
+				data:{"takings-export-type":$("#takings-export-type").val(), "start":moment($("#takings-date-start").val(), "YYYY-MM-DD").format("x"), "end":moment($("#takings-date-end").val(),  "YYYY-MM-DD").format("x"), "departments":selectedDepartments},
+				beforeSend: function() {
+					$("#takings-export-progress").removeClass("hidden");
+				},
 				success: function(data) {
 					if (!data.success) {
-						alert("Error exporting takings");
+						$("#takings-export-failure").removeClass("hidden");
 						return;
 					}
+					$("#takings-export-success").removeClass("hidden");
+					$("#takings-export-alt-download").attr("href", data.file);
+					window.open(data.file, 'Download');  
+				},
+				complete: function() {
+					$("#takings-export-progress").addClass("hidden");
 				}
 			});
 		});

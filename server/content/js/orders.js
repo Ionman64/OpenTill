@@ -22,7 +22,7 @@ function Orders() {
 			url:"api/kvs.php?function=GETORDERS",
 			success:function(data) {
 				if (!data.success) {
-					bootstrap.alert("There has been an error");
+					bootstrap.alert("There has been an error getting the orders");
 					return;
 				}
 				window.orders.orders = data.orders;
@@ -50,7 +50,7 @@ function Orders() {
 			data:{"supplier":supplier},
 			success:function(data) {
 				if (!data.success) {
-					alert("There has been an error");
+					alert("There has been an error creating the order");
 					return;
 				}
 				$("#supplierModal").modal("hide");

@@ -5,9 +5,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.Map.Entry;
 
+import org.apache.poi.ss.usermodel.DataFormat;
 import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFCreationHelper;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -46,12 +50,20 @@ public class ExcelHelper {
 			e.printStackTrace();
 		}
 	}
-	public void createTakingsReport(HashMap<String, String> departmentsToNames, String[] departments, HashMap<String, HashMap<String, Double>> values) {
+	public File createTakingsReport(HashMap<String, String> departmentsToNames, String[] departments, HashMap<String, HashMap<String, Double>> values) {
 		//Workbook wb = new HSSFWorkbook();
 	    XSSFWorkbook wb = new XSSFWorkbook();
 	    XSSFSheet sheet = wb.createSheet("Takings");
 	    int rowId = 1;
 	    int columnId = 1;
+	    
+	    DataFormat datafrmt = wb.createDataFormat();
+	    Map<String, XSSFCellStyle> styles = new HashMap<>();
+	    XSSFCellStyle style3 = wb.createCellStyle();
+	    style3.setAlignment(XSSFCellStyle.ALIGN_RIGHT);  // THIS LINE HERE!
+	    style3.setDataFormat(datafrmt.getFormat("£#,##0.00_);[Red](£#,##0.00)")); //Change for international
+	    styles.put("currency", style3);
+	    
 	    XSSFRow row = sheet.createRow(0);
 	    for (String department : departments) {
 	    	XSSFCell cell = row.createCell(columnId++);
@@ -66,7 +78,7 @@ public class ExcelHelper {
 	        row.createCell(columnId++).setCellValue(date);
 	    	for (String department : departments) {
 	    		XSSFCell cell = row.createCell(columnId++);
-	    		cell.setCellType(XSSFCell.CELL_TYPE_NUMERIC);
+	    		cell.setCellType(styles.get("currency").getIndex());
 	    		if (dayTotal.containsKey(department)) {
 	    			cell.setCellValue(dayTotal.get(department));
 	    		}
@@ -76,15 +88,19 @@ public class ExcelHelper {
 	    		
 	    	}
 	    }
-	    // Write the output to a file
-	    String filename = "TakingsReport.xls";
-	    File file = new File(Config.APP_HOME + File.separatorChar + filename);
-	    FileOutputStream fileO;
+	    for (int i=0; i<departments.length;i++) {
+	    	sheet.autoSizeColumn(i);
+	    }
 		try {
+			 // Write the output to a file
+		    String filename = UUID.randomUUID().toString() + ".xlsx";
+		    File file = new File(Config.APP_HOME + File.separatorChar + "temp" + File.separatorChar + filename);
+		    FileOutputStream fileO;
 			fileO = new FileOutputStream(file);
 			wb.write(fileO);
 			fileO.flush();
 		    fileO.close();
+		    return file;
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -92,8 +108,9 @@ public class ExcelHelper {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return null;
 	}
-	public void createProductLevelsReport(HashMap<String, String> departmentsToNames, String[] departments, HashMap<String, HashMap<String, Product>> values) {
+	public File createProductLevelsReport(HashMap<String, String> departmentsToNames, String[] departments, HashMap<String, HashMap<String, Product>> values) {
 		//Workbook wb = new HSSFWorkbook();
 	    XSSFWorkbook wb = new XSSFWorkbook();
 	    for (String department : departments) {
@@ -155,16 +172,16 @@ public class ExcelHelper {
 	    	sheet.autoSizeColumn(2);
 	    	sheet.autoSizeColumn(3);
 	    }
-	    
-	    // Write the output to a file
-	    String filename = "Inventory Report.xls";
-	    File file = new File(Config.APP_HOME + File.separatorChar + filename);
-	    FileOutputStream fileO;
-		try {
+	    try {
+			 // Write the output to a file
+		    String filename = UUID.randomUUID().toString() + ".xlsx";
+		    File file = new File(Config.APP_HOME + File.separatorChar + "temp" + File.separatorChar + filename);
+		    FileOutputStream fileO;
 			fileO = new FileOutputStream(file);
 			wb.write(fileO);
 			fileO.flush();
 		    fileO.close();
+		    return file;
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -172,6 +189,7 @@ public class ExcelHelper {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return null;
 	}
 	
 }

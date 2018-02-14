@@ -34,6 +34,23 @@
 					<label for="new-sheet-for-each-department" checked>Use new sheet for each department</label>
   				</section>
   				</section>
+  				<section class="col-md-12">
+  					<section class="panel panel-info hidden" id="inventory-export-progress">
+						<section class="panel-body">
+							<i class="fa fa-spinner fa-spin"></i> Exporting...
+						</section>
+					</section>
+					<section class="panel panel-success hidden" id="inventory-export-success">
+						<section class="panel-body">
+							Export Successful! File should download automatically, otherwise click <a href="#" id="inventory-export-alt-download">here</a>
+						</section>
+					</section>
+					<section class="panel panel-danger hidden" id="inventory-export-failure">
+						<section class="panel-body">
+							Export Failure
+						</section>
+					</section>
+  				</section>
   		</section>
   	  </section>
   	  </section>

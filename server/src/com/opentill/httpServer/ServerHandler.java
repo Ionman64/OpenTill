@@ -1,14 +1,19 @@
 package com.opentill.httpServer;
 
+import java.io.File;
+
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.HandlerCollection;
+import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 import com.opentill.logging.Log;
+import com.opentill.main.Config;
 
 public final class ServerHandler {
 	public static void run() {
@@ -29,6 +34,12 @@ public final class ServerHandler {
             http_config.setSecureScheme("https");
             http_config.setSendServerVersion(true);
             
+            ResourceHandler holderHome = new ResourceHandler();
+            holderHome.setDirAllowed(false);
+            holderHome.setPathInfoOnly(true);
+            holderHome.setResourceBase(Config.APP_HOME);
+            
+            
     	    ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(http_config));
     	    http.setHost("localhost");
             http.setPort(port);
@@ -45,6 +56,7 @@ public final class ServerHandler {
 			
 			HandlerCollection handlers = new HandlerCollection();
 		    handlers.addHandler(new API(webAppContext, "/api/kvs.php"));
+		    handlers.addHandler(holderHome);
 		    handlers.addHandler(webAppContext);
 		    server.setHandler(handlers);
 		    server.start();

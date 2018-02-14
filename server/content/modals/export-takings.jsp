@@ -30,18 +30,27 @@
 				</section>
 				<section class="col-md-12">
 					<section class="form-group">
-					<label>Departments</label>
-				  <ul id="takings-departments-export" class="checkbox-select form-control">  	
-                       <li><label for="chk1"><input name="chk1" id="chk1" type="checkbox">First</label></li>
-                       <li><label for="chk2"><input name="chk2" id="chk2" type="checkbox">Second</label></li>
-                       <li><label for="chk3"><input name="chk3" id="chk3" type="checkbox">Third</label></li>
-                       <li><label for="chk4"><input name="chk4" id="chk4" type="checkbox">Fourth</label></li>
-                       <li><label for="chk5"><input name="chk5" id="chk5" type="checkbox">Fifth</label></li>
-                       <li><label for="chk6"><input name="chk6" id="chk6" type="checkbox">Sixth</label></li>
-                       <li><label for="chk7"><input name="chk7" id="chk7" type="checkbox">Seventh</label></li>
-				  </ul>
-				  </section>
-  			</section>
+						<label>Departments</label>
+				  		<ul id="takings-departments-export" class="checkbox-select form-control"></ul>
+				 	 </section>
+  				</section>
+  				<section class="col-md-12">
+  					<section class="panel panel-info hidden" id="takings-export-progress">
+						<section class="panel-body">
+							<i class="fa fa-spinner fa-spin"></i> Exporting...
+						</section>
+					</section>
+					<section class="panel panel-success hidden" id="takings-export-success">
+						<section class="panel-body">
+							Export Successful! File should download automatically, otherwise click <a href="#" id="takings-export-alt-download">here</a>
+						</section>
+					</section>
+					<section class="panel panel-danger hidden" id="takings-export-failure">
+						<section class="panel-body">
+							Export Failure
+						</section>
+					</section>
+  				</section>
   		</section>
   	  </section>
   	  </section>

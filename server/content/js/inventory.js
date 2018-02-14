@@ -42,6 +42,8 @@ function Inventory() {
 				li.appendChild(label);
 				holder.appendChild(li);
 			});
+			$("#inventory-export-success").addClass("hidden");
+			$("#inventory-export-failure").addClass("hidden");
 			$("#export-inventory").modal("show");
 		});
 		$("#inventory-departments-export").on("change", "input[type=checkbox]", function() {
@@ -61,11 +63,20 @@ function Inventory() {
 				url:"api/kvs.php?function=GENERATEINVENTORYREPORT",
 				dataType: "JSON",
 				data:{"export-type":$("#inventory-export-type").val(), "departments":selectedDepartments},
+				beforeSend: function() {
+					$("#inventory-export-progress").removeClass("hidden");
+				},
 				success: function(data) {
 					if (!data.success) {
 						alert("Error exporting inventory");
 						return;
 					}
+					$("#inventory-export-success").removeClass("hidden");
+					$("#inventory-export-alt-download").attr("href", data.file);
+					window.open(data.file, 'Download');  
+				},
+				complete: function() {
+					$("#inventory-export-progress").addClass("hidden");
 				}
 			});
 		});

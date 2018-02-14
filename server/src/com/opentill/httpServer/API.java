@@ -20,6 +20,8 @@ package com.opentill.httpServer;
 
 import org.json.simple.*;
 import org.json.simple.parser.*;
+
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -771,7 +773,16 @@ public class API extends ContextHandler
 			while (rs.next()) {
 				departmentsToNames.put(rs.getString(1), rs.getString(2));
 			}
-			new ExcelHelper().createProductLevelsReport(departmentsToNames, departments, inventory);
+			File file = new ExcelHelper().createProductLevelsReport(departmentsToNames, departments, inventory);
+			if (file == null) {
+				errorOut(response);
+				return;
+			}
+			JSONObject responseJo = new JSONObject();
+			responseJo.put("success", true);
+			responseJo.put("file", Config.OPEN_TILL_URL + file.getName());
+			response.getWriter().write(responseJo.toJSONString());
+			return;
 		}
 		catch (Exception ex) {
 			Log.log(ex.toString());
@@ -779,7 +790,7 @@ public class API extends ContextHandler
 		finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
-		successOut(response);
+		errorOut(response);
 	}
 	private void deleteProduct(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		String id = baseRequest.getParameter("id");
@@ -821,8 +832,8 @@ public class API extends ContextHandler
 		Long startTime = 0L;
 		Long endTime = 0L;
 		try {
-			startTime = Long.parseLong(startTimeString);
-			endTime = Long.parseLong(endTimeString);
+			startTime = Long.parseLong(startTimeString) / 1000;
+			endTime = Long.parseLong(endTimeString) / 1000;
 		}
 		catch (NumberFormatException e) {
 			errorOut(response, "Could not parse time");
@@ -863,7 +874,17 @@ public class API extends ContextHandler
 				departmentsToNames.put(rs.getString(1), rs.getString(2));
 			}
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
-			new ExcelHelper().createTakingsReport(departmentsToNames, departments, allDates);
+			ExcelHelper excel = new ExcelHelper();
+			File file = excel.createTakingsReport(departmentsToNames, departments, allDates);
+			if (file == null) {
+				errorOut(response);
+				return;
+			}
+			JSONObject responseJo = new JSONObject();
+			responseJo.put("success", true);
+			responseJo.put("file", Config.OPEN_TILL_URL + file.getName());
+			response.getWriter().write(responseJo.toJSONString());
+			return;
 		}
 		catch (Exception ex) {
 			Log.log(ex.toString());
@@ -871,7 +892,7 @@ public class API extends ContextHandler
 		finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
-		successOut(response);
+		errorOut(response);
 	}
 	private void getAllDepartments(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		// TODO Auto-generated method stub
