@@ -36,9 +36,18 @@ import org.eclipse.jetty.webapp.WebAppContext;
 
 import com.opentill.logging.Log;
 import com.opentill.main.Config;
+import com.opentill.main.Utils;
 import com.opentill.products.Product;
+import com.google.gson.JsonObject;
 import com.opentill.database.DatabaseHandler;
 import com.opentill.document.ExcelHelper;
+import com.opentill.idata.Department;
+import com.opentill.idata.Inventory;
+import com.opentill.idata.Operators;
+import com.opentill.idata.Order;
+import com.opentill.idata.Supplier;
+import com.opentill.idata.Takings;
+import com.opentill.idata.Transaction;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -81,6 +90,9 @@ public class API extends ContextHandler
 				break;
 			case "DEPARTMENTS":
 				getDepartments(response);
+				break;
+			case "DASHBOARD":
+				getDashboard(baseRequest, response);
 				break;
 			case "LOGIN":
 				login(baseRequest, response);
@@ -236,6 +248,17 @@ public class API extends ContextHandler
 	    // Inform jetty that this request has now been handled
 	    baseRequest.setHandled(true);
 	}
+	private void getDashboard(Request baseRequest, HttpServletResponse response) throws IOException {
+		JSONObject jo = new JSONObject();
+		jo.put("inventory", Inventory.get_product_levels());
+		jo.put("orders", Order.getOrders());
+		jo.put("departments", Department.getDepartments());
+		jo.put("takings", Takings.getTakings(0L, Utils.getCurrentTimeStamp(), "a10f653a-6c20-11e7-b34e-426562cc935f", "PURCHASE"));
+		jo.put("suppliers", Supplier.getSuppliers());
+		jo.put("operators", Operators.getOperators());
+		jo.put("transactions", Transaction.getTransactions(Utils.getCurrentTimeStamp()-(3600*24), Utils.getCurrentTimeStamp()));
+		response.getWriter().write(jo.toJSONString());
+	}
 	private void completeOrder(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		String id = baseRequest.getParameter("id");
 		if (id == null) {
@@ -247,7 +270,7 @@ public class API extends ContextHandler
 		try {
 			conn = DatabaseHandler.getDatabase();
 			pstmt = conn.prepareStatement("UPDATE " + Config.DATABASE_TABLE_PREFIX + "tblorders SET ended = ? WHERE id = ?");
-			pstmt.setLong(1, getCurrentTimeStamp());
+			pstmt.setLong(1, Utils.getCurrentTimeStamp());
 			pstmt.setString(2, id);
 			if (pstmt.executeUpdate() > 0) {
 				Log.log("Order ($id) COMPLETED by operator ($operator)");
@@ -304,8 +327,8 @@ public class API extends ContextHandler
 			}
 			pstmt.setString(2, order);
 			pstmt.setInt(3, quantity);
-			pstmt.setLong(4, getCurrentTimeStamp());
-			pstmt.setLong(5, getCurrentTimeStamp());
+			pstmt.setLong(4, Utils.getCurrentTimeStamp());
+			pstmt.setLong(5, Utils.getCurrentTimeStamp());
 			pstmt.execute();
 			if (pstmt.getUpdateCount() > 0) {
 				successOut(response);
@@ -356,30 +379,15 @@ public class API extends ContextHandler
 		errorOut(response);
 	}
 	private void getOrders(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try {
-			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblorders.id, " + Config.DATABASE_TABLE_PREFIX + "tblsuppliers.name FROM " + Config.DATABASE_TABLE_PREFIX + "tblorders LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "tblsuppliers ON " + Config.DATABASE_TABLE_PREFIX + "tblsuppliers.id = " + Config.DATABASE_TABLE_PREFIX + "tblorders.supplier WHERE " + Config.DATABASE_TABLE_PREFIX + "tblorders.ended = 0 ORDER BY " + Config.DATABASE_TABLE_PREFIX + "tblsuppliers.name");
-			rs = pstmt.executeQuery();
-			JSONObject jo = new JSONObject();
-			while (rs.next()) {
-				jo.put(rs.getString(1), rs.getString(2));
-			}
-			JSONObject responseJSON = new JSONObject();
-			responseJSON.put("success", true);
-			responseJSON.put("orders", jo);
-			response.getWriter().write(responseJSON.toJSONString());
+		JSONObject jo = Order.getOrders();
+		if (jo == null) {
+			errorOut(response);
 			return;
 		}
-		catch (Exception ex) {
-			Log.log(ex.toString());
-		}
-		finally {
-			DatabaseHandler.closeDBResources(null, pstmt, conn);
-		}
-		errorOut(response);
+		JSONObject responseJSON = new JSONObject();
+		responseJSON.put("success", true);
+		responseJSON.put("orders", jo);
+		response.getWriter().write(responseJSON.toJSONString());
 	}
 	private void createOrder(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		String supplier = baseRequest.getParameter("supplier");
@@ -394,8 +402,8 @@ public class API extends ContextHandler
 			pstmt = conn.prepareStatement("INSERT INTO " + Config.DATABASE_TABLE_PREFIX + "tblorders (id, supplier, created, updated, ended) VALUES (?, ?, ?, ?, 0)");
 			pstmt.setString(1, GUID());
 			pstmt.setString(2, supplier);
-			pstmt.setLong(3, getCurrentTimeStamp());
-			pstmt.setLong(4, getCurrentTimeStamp());
+			pstmt.setLong(3, Utils.getCurrentTimeStamp());
+			pstmt.setLong(4, Utils.getCurrentTimeStamp());
 			pstmt.execute();
 			if (pstmt.getUpdateCount() > 0) {
 				successOut(response);
@@ -427,11 +435,11 @@ public class API extends ContextHandler
 			conn = DatabaseHandler.getDatabase();
 			pstmt = conn.prepareStatement("INSERT INTO " + Config.DATABASE_TABLE_PREFIX + "operators SET name=?, passwordHash=?, telephone=?, email=?, comments=?, updated=?) WHERE id=?");
 			pstmt.setString(1, name);
-			pstmt.setString(2, hashPassword(password, ""));
+			pstmt.setString(2, Utils.hashPassword(password, ""));
 			pstmt.setString(3, telephone);
 			pstmt.setString(4, email);
 			pstmt.setString(5, comments);
-			pstmt.setInt(6,  getCurrentTimeStamp());
+			pstmt.setLong(6,  Utils.getCurrentTimeStamp());
 			pstmt.setString(7, id);
 			pstmt.execute();
 			if (pstmt.getUpdateCount() > 0) {
@@ -468,8 +476,8 @@ public class API extends ContextHandler
 			pstmt.setString(4, email);
 			pstmt.setString(5, website);
 			pstmt.setString(6, comments);
-			pstmt.setLong(7, getCurrentTimeStamp());
-			pstmt.setLong(8, getCurrentTimeStamp());
+			pstmt.setLong(7, Utils.getCurrentTimeStamp());
+			pstmt.setLong(8, Utils.getCurrentTimeStamp());
 			if (pstmt.executeUpdate() > 0) {
 				Log.log("Supplier ($id) CREATED by operator ($operator)");
 				successOut(response);
@@ -505,7 +513,7 @@ public class API extends ContextHandler
 			pstmt.setString(3, email);
 			pstmt.setString(4, website);
 			pstmt.setString(5, comments);
-			pstmt.setLong(6, getCurrentTimeStamp());
+			pstmt.setLong(6, Utils.getCurrentTimeStamp());
 			pstmt.setString(7, id);
 			if (pstmt.executeUpdate() > 0) {
 				Log.log("Supplier ($id) UPDATED by operator ($operator)");
@@ -528,35 +536,15 @@ public class API extends ContextHandler
 			errorOut(response, "missing fields");
 			return;
 		}
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try {
-			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT name, telephone, website, email, comments FROM " + Config.DATABASE_TABLE_PREFIX + "tblsuppliers WHERE id = ? LIMIT 1");
-			pstmt.setString(1, id);
-			rs = pstmt.executeQuery();
-			JSONObject jo = new JSONObject();
-			if (rs.next()) {
-				jo.put("name", rs.getString(1));
-				jo.put("telephone", rs.getString(2));
-				jo.put("website", rs.getString(3));
-				jo.put("email", rs.getString(4));
-				jo.put("comments", rs.getString(5));
-			}
-			JSONObject responseJSON = new JSONObject();
-			responseJSON.put("success", true);
-			responseJSON.put("supplier", jo);
-			response.getWriter().write(responseJSON.toJSONString());
+		JSONObject jo = Supplier.selectSupplier(id);
+		if (jo == null) {
+			errorOut(response);
 			return;
 		}
-		catch (Exception ex) {
-			Log.log(ex.toString());
-		}
-		finally {
-			DatabaseHandler.closeDBResources(null, pstmt, conn);
-		}
-		errorOut(response);
+		JSONObject responseJSON = new JSONObject();
+		responseJSON.put("success", true);
+		responseJSON.put("supplier", jo);
+		response.getWriter().write(responseJSON.toJSONString());
 	}
 	private void selectOperator(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		String id = baseRequest.getParameter("id");
@@ -564,35 +552,15 @@ public class API extends ContextHandler
 			errorOut(response, "missing fields");
 			return;
 		}
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try {
-			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT name, telephone, email, comments, code FROM " + Config.DATABASE_TABLE_PREFIX + "operators WHERE id = ? LIMIT 1");
-			pstmt.setString(1, id);
-			rs = pstmt.executeQuery();
-			JSONObject jo = new JSONObject();
-			if (rs.next()) {
-				jo.put("name", rs.getString(1));
-				jo.put("telephone", rs.getString(2));
-				jo.put("email", rs.getString(3));
-				jo.put("comments", rs.getString(4));
-				jo.put("code", rs.getString(5));
-			}
-			JSONObject responseJSON = new JSONObject();
-			responseJSON.put("success", true);
-			responseJSON.put("operator", jo);
-			response.getWriter().write(responseJSON.toJSONString());
+		JSONObject jo = Operators.getOperator(id);
+		if (jo == null) {
+			errorOut(response);
 			return;
 		}
-		catch (Exception ex) {
-			Log.log(ex.toString());
-		}
-		finally {
-			DatabaseHandler.closeDBResources(null, pstmt, conn);
-		}
-		errorOut(response);
+		JSONObject responseJSON = new JSONObject();
+		responseJSON.put("success", true);
+		responseJSON.put("operator", jo);
+		response.getWriter().write(responseJSON.toJSONString());
 	}
 	private void createOperator(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		String name = baseRequest.getParameter("name");
@@ -604,35 +572,12 @@ public class API extends ContextHandler
 			errorOut(response, "missing fields");
 			return;
 		}
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		try {
-			conn = DatabaseHandler.getDatabase();
-			String guid = GUID();
-			String code = GUID().split("-")[0];
-			pstmt = conn.prepareStatement("INSERT INTO " + Config.DATABASE_TABLE_PREFIX + "operators (id, code, name, passwordHash, telephone, email, comments, created, updated) VALUES (?,?,?,?,?,?,?,?,?)");
-			pstmt.setString(1, guid);
-			pstmt.setString(2, code);
-			pstmt.setString(3, name);
-			pstmt.setString(4, hashPassword(password, ""));
-			pstmt.setString(5, telephone);
-			pstmt.setString(6, email);
-			pstmt.setString(7, comments);
-			pstmt.setInt(8,  getCurrentTimeStamp());
-			pstmt.setInt(9,  getCurrentTimeStamp());
-			pstmt.execute();
-			if (pstmt.getUpdateCount() > 0) {
-				successOut(response);
-				return;
-			}
+		if (Operators.createOperator(name, password, email, telephone, comments)) {
+			successOut(response);
 		}
-		catch (Exception ex) {
-			Log.log(ex.toString());
+		else {
+			errorOut(response);
 		}
-		finally {
-			DatabaseHandler.closeDBResources(null, pstmt, conn);
-		}
-		errorOut(response);
 	}
 	private void selectDepartment(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		String id = baseRequest.getParameter("id");
@@ -717,8 +662,8 @@ public class API extends ContextHandler
 			pstmt.setString(3, shorthand);
 			pstmt.setString(4,  colour);
 			pstmt.setString(5,  comments);
-			pstmt.setInt(6,  getCurrentTimeStamp());
-			pstmt.setInt(7,  getCurrentTimeStamp());
+			pstmt.setLong(6,  Utils.getCurrentTimeStamp());
+			pstmt.setLong(7,  Utils.getCurrentTimeStamp());
 			pstmt.execute();
 			if (pstmt.getUpdateCount() > 0) {
 				successOut(response);
@@ -803,7 +748,7 @@ public class API extends ContextHandler
 		try {
 			conn = DatabaseHandler.getDatabase();
 			pstmt = conn.prepareStatement("UPDATE " + Config.DATABASE_TABLE_PREFIX + "tblproducts SET deleted = 1, updated=? WHERE id=?");
-			pstmt.setLong(1, getCurrentTimeStamp());
+			pstmt.setLong(1, Utils.getCurrentTimeStamp());
 			pstmt.setString(2, id);
 			if (pstmt.executeUpdate() > 0) {
 				Log.log("Product ($id) DELETED by operator ($operator)");
@@ -895,85 +840,39 @@ public class API extends ContextHandler
 		errorOut(response);
 	}
 	private void getAllDepartments(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
-		// TODO Auto-generated method stub
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try {
-			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id, " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.name FROM " + Config.DATABASE_TABLE_PREFIX + "tblcatagories WHERE " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.deleted = 0 ORDER BY " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.name");
-			rs = pstmt.executeQuery();
-			JSONObject departments = new JSONObject();
-			while (rs.next()) {
-				departments.put(rs.getString(1), rs.getString(2));
-			}
-			JSONObject responseJSON = new JSONObject();
-			responseJSON.put("success", true);
-			responseJSON.put("departments", departments);
-			response.getWriter().write(responseJSON.toJSONString());
+		JSONObject departments = new JSONObject();
+		if (departments == null) {
+			errorOut(response);
 			return;
 		}
-		catch (Exception ex) {
-			Log.log(ex.toString());
-		}
-		finally {
-			DatabaseHandler.closeDBResources(null, pstmt, conn);
-		}
+		JSONObject responseJSON = new JSONObject();
+		responseJSON.put("success", true);
+		responseJSON.put("departments", departments);
+		response.getWriter().write(responseJSON.toJSONString());
 		errorOut(response);
 	}
 	private void getAllOperators(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try {
-			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "operators.id, " + Config.DATABASE_TABLE_PREFIX + "operators.name FROM " + Config.DATABASE_TABLE_PREFIX + "operators WHERE " + Config.DATABASE_TABLE_PREFIX + "operators.deleted = 0 ORDER BY " + Config.DATABASE_TABLE_PREFIX + "operators.name");
-			rs = pstmt.executeQuery();
-			JSONObject jo = new JSONObject();
-			while (rs.next()) {
-				JSONObject product = new JSONObject();
-				product.put("name",  rs.getString(2));
-				jo.put(rs.getString(1), product);
-			}
-			JSONObject responseJSON = new JSONObject();
-			responseJSON.put("success", true);
-			responseJSON.put("operators", jo);
-			response.getWriter().write(responseJSON.toJSONString());
+		JSONObject jo = Operators.getOperators();
+		if (jo == null) {
+			errorOut(response);
 			return;
 		}
-		catch (Exception ex) {
-			Log.log(ex.toString());
-		}
-		finally {
-			DatabaseHandler.closeDBResources(null, pstmt, conn);
-		}
+		JSONObject responseJSON = new JSONObject();
+		responseJSON.put("success", true);
+		responseJSON.put("operators", jo);
+		response.getWriter().write(responseJSON.toJSONString());
 		errorOut(response);
 	}
 	private void getAllSuppliers(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try {
-			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblsuppliers.id, " + Config.DATABASE_TABLE_PREFIX + "tblsuppliers.name FROM " + Config.DATABASE_TABLE_PREFIX + "tblsuppliers WHERE " + Config.DATABASE_TABLE_PREFIX + "tblsuppliers.deleted = 0 ORDER BY " + Config.DATABASE_TABLE_PREFIX + "tblsuppliers.name");
-			rs = pstmt.executeQuery();
-			JSONObject jo = new JSONObject();
-			while (rs.next()) {
-				jo.put(rs.getString(1), rs.getString(2));
-			}
-			JSONObject responseJSON = new JSONObject();
-			responseJSON.put("success", true);
-			responseJSON.put("suppliers", jo);
-			response.getWriter().write(responseJSON.toJSONString());
+		JSONObject jo = Supplier.getSuppliers();
+		if (jo == null) {
+			errorOut(response);
 			return;
 		}
-		catch (Exception ex) {
-			Log.log(ex.toString());
-		}
-		finally {
-			DatabaseHandler.closeDBResources(null, pstmt, conn);
-		}
-		errorOut(response);
+		JSONObject responseJSON = new JSONObject();
+		responseJSON.put("success", true);
+		responseJSON.put("suppliers", jo);
+		response.getWriter().write(responseJSON.toJSONString());
 	}
 	private void sendMessage(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		String sender = baseRequest.getParameter("from");
@@ -992,8 +891,8 @@ public class API extends ContextHandler
 			pstmt.setString(2, sender);
 			pstmt.setString(3,  recipient);
 			pstmt.setString(4,  message);
-			pstmt.setInt(5,  getCurrentTimeStamp());
-			pstmt.setInt(6,  getCurrentTimeStamp());
+			pstmt.setLong(5,  Utils.getCurrentTimeStamp());
+			pstmt.setLong(6,  Utils.getCurrentTimeStamp());
 			pstmt.execute();
 			if (pstmt.getUpdateCount() > 0) {
 				successOut(response);
@@ -1034,43 +933,11 @@ public class API extends ContextHandler
 		}
 		errorOut(response);
 	}
-	private void getProductsLevels(Request baseRequest, HttpServletResponse response) {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try {
-			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblproducts.id, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.name, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.current_stock, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.max_stock, " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.colour, " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id FROM " + Config.DATABASE_TABLE_PREFIX + "tblproducts LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "tblcatagories ON " + Config.DATABASE_TABLE_PREFIX + "tblproducts.department = " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id WHERE " + Config.DATABASE_TABLE_PREFIX + "tblproducts.deleted = 0 ORDER BY " + Config.DATABASE_TABLE_PREFIX + "tblproducts.name");
-			rs = pstmt.executeQuery();
-			JSONObject jo = new JSONObject();
-			while (rs.next()) {
-				JSONObject department;
-				if (!jo.containsKey(rs.getString(6))) {
-					department = new JSONObject();
-					department.put("colour", rs.getString(5));
-					jo.put(rs.getString(6), department);
-				}
-				else {
-					department = (JSONObject) jo.get(rs.getString(6));
-				}
-				JSONObject product = new JSONObject();
-				product.put("id", rs.getString(1));
-				product.put("name",  rs.getString(2));
-				product.put("current_stock", rs.getString(3));
-				product.put("max_stock", rs.getString(4));
-				department.put(rs.getString(1), product);
-			}
-			JSONObject responseJSON = new JSONObject();
-			responseJSON.put("success", true);
-			responseJSON.put("products", jo);
-			response.getWriter().write(responseJSON.toJSONString());
-		}
-		catch (Exception ex) {
-			Log.log(ex.toString());
-		}
-		finally {
-			DatabaseHandler.closeDBResources(null, pstmt, conn);
-		}
+	private void getProductsLevels(Request baseRequest, HttpServletResponse response) throws IOException {
+		JSONObject responseJSON = new JSONObject();
+		responseJSON.put("success", true);
+		responseJSON.put("products", Inventory.get_product_levels());
+		response.getWriter().write(responseJSON.toJSONString());
 	}
 	private void setCurrentStockLevel(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		String id = baseRequest.getParameter("id");
@@ -1178,41 +1045,21 @@ public class API extends ContextHandler
 			errorOut(response, "missing parameters");
 			return;
 		}
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
+		Long start = 0L;
+		Long end = 0L;
 		try {
-			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT DATE(FROM_UNIXTIME(" + Config.DATABASE_TABLE_PREFIX + "transactions.ended)) AS \"date\", " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.department, SUM(" + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.price) AS \"amount\" FROM " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "transactions ON " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.transaction_id = " + Config.DATABASE_TABLE_PREFIX + "transactions.id WHERE (" + Config.DATABASE_TABLE_PREFIX + "transactions.started > ? AND " + Config.DATABASE_TABLE_PREFIX + "transactions.ended < ?) AND " + Config.DATABASE_TABLE_PREFIX + "transactions.cashier NOT IN (?) AND " + Config.DATABASE_TABLE_PREFIX + "transactions.type in (?) AND (" + Config.DATABASE_TABLE_PREFIX + "transactions.ended > 0) GROUP BY " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.department, DATE(FROM_UNIXTIME(" + Config.DATABASE_TABLE_PREFIX + "transactions.ended)) ORDER BY DATE(FROM_UNIXTIME(" + Config.DATABASE_TABLE_PREFIX + "transactions.ended)) DESC");
-			pstmt.setLong(1, Long.parseLong(startString));
-			pstmt.setLong(2, Long.parseLong(endString));
-			pstmt.setString(3, admin);
-			pstmt.setString(4, type);
-			rs = pstmt.executeQuery();
-			JSONObject allDates = new JSONObject();
-			while (rs.next()) {
-				if (allDates.containsKey(rs.getString(1))) {
-					JSONObject date = (JSONObject) allDates.get(rs.getString(1));
-					date.put(rs.getString(2), rs.getFloat(3));
-				}
-				else {
-					JSONObject date = new JSONObject();
-					date.put(rs.getString(2), rs.getFloat(3));
-					allDates.put(rs.getString(1), date);
-				}
-			}
-			JSONObject jo = new JSONObject();
-			jo.put("success", true);
-			jo.put("totals", allDates);
-			response.getWriter().write(jo.toJSONString());
+			start = Long.parseLong(startString);
+			end = Long.parseLong(endString);
+		}
+		catch (NumberFormatException e) {
+			errorOut(response, "Could not parse quantity");
 			return;
 		}
-		catch (Exception ex) {
-			Log.log(ex.toString());
-		}
-		finally {
-			DatabaseHandler.closeDBResources(rs, pstmt, conn);
-		}
+		JSONObject jo = Takings.getTakings(start, end, admin, type);
+		JSONObject responseJo = new JSONObject();
+		responseJo.put("success", true);
+		responseJo.put("totals", jo);
+		response.getWriter().write(jo.toJSONString());
 		errorOut(response);
 	}
 	@SuppressWarnings("unchecked")
@@ -1288,7 +1135,7 @@ public class API extends ContextHandler
 			pstmt.setString(3, department);
 			pstmt.setInt(4, currentStockInt);
 			pstmt.setInt(5, maxStockInt);
-			pstmt.setLong(6, getCurrentTimeStamp());
+			pstmt.setLong(6, Utils.getCurrentTimeStamp());
 			pstmt.setString(7, id);
 			if (pstmt.executeUpdate() > 0) {
 				Log.log("Product ($id) UPDATED by operator ($operator)");
@@ -1360,7 +1207,7 @@ public class API extends ContextHandler
 			}
 			conn = DatabaseHandler.getDatabase();
 			pstmt = conn.prepareStatement("UPDATE " + Config.DATABASE_TABLE_PREFIX + "transactions SET ended = ?, total = ?, cashback=?, money_given = ?, card = ?, type=?, payee=? WHERE id=? AND cashier=?");
-			pstmt.setLong(1, getCurrentTimeStamp());
+			pstmt.setLong(1, Utils.getCurrentTimeStamp());
 			pstmt.setFloat(2, total);
 			pstmt.setFloat(3, cashback);
 			pstmt.setFloat(4, money_given);
@@ -1445,7 +1292,7 @@ public class API extends ContextHandler
 		pstmt.setString(3, productId);
 		pstmt.setDouble(4, price);
 		pstmt.setString(5, departmentId == null ? noneCatagory : departmentId);
-		pstmt.setLong(6, getCurrentTimeStamp());
+		pstmt.setLong(6, Utils.getCurrentTimeStamp());
 		pstmt.execute();
 		if (pstmt.getUpdateCount() > 0) {
 			return true;
@@ -1472,10 +1319,7 @@ public class API extends ContextHandler
 		}
 		return false;
 	}
-	private int getCurrentTimeStamp() {
-		// TODO Auto-generated method stub
-		return Math.round(System.currentTimeMillis() / 1000);
-	}
+
 	private boolean transactionExists(String id) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -1663,77 +1507,32 @@ public class API extends ContextHandler
 	}
 	@SuppressWarnings("unchecked")
 	private void getTransactions(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
 		String startString = baseRequest.getParameter("start");
 		String endString = baseRequest.getParameter("end");
 		if (startString == null || endString == null) {
 			errorOut(response, "missing parameters");
 			return;
 		}
-		int start = 0; 
-		int end = 0;
+		Long start = 0L; 
+		Long end = 0L;
 		try {
-			start = Integer.parseInt(startString);
-			end = Integer.parseInt(endString);
+			start = Long.parseLong(startString);
+			end = Long.parseLong(endString);
 		}
 		catch (NumberFormatException ex) {
 			errorOut(response, "Could not parse start or end");
 			return;
 		}
-		try {
-			JSONArray jsonArr = new JSONArray();
-			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "transactions.id AS 'id', " + Config.DATABASE_TABLE_PREFIX + "operators.name AS cashier, (SELECT COUNT(*) FROM " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts WHERE " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.transaction_id = " + Config.DATABASE_TABLE_PREFIX + "transactions.id) AS '#Products', " + Config.DATABASE_TABLE_PREFIX + "transactions.card AS 'card', " + Config.DATABASE_TABLE_PREFIX + "transactions.ended AS 'ended', " + Config.DATABASE_TABLE_PREFIX + "transactions.cashback AS 'cashback', " + Config.DATABASE_TABLE_PREFIX + "transactions.money_given AS 'money_given', " + Config.DATABASE_TABLE_PREFIX + "transactions.payee AS 'payee', " + Config.DATABASE_TABLE_PREFIX + "transactions.type AS 'type', " + Config.DATABASE_TABLE_PREFIX + "transactions.total AS 'total' FROM " + Config.DATABASE_TABLE_PREFIX + "transactions LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "operators ON " + Config.DATABASE_TABLE_PREFIX + "transactions.cashier = " + Config.DATABASE_TABLE_PREFIX + "operators.id WHERE (" + Config.DATABASE_TABLE_PREFIX + "transactions.ended BETWEEN ? AND ?) AND " + Config.DATABASE_TABLE_PREFIX + "transactions.cashier NOT IN (?) ORDER BY " + Config.DATABASE_TABLE_PREFIX + "transactions.type DESC, " + Config.DATABASE_TABLE_PREFIX + "transactions.ended");
-			pstmt.setInt(1, start);
-			pstmt.setInt(2, end);
-			pstmt.setString(3, "a10f653a-6c20-11e7-b34e-426562cc935f"); // Admin
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-				JSONObject jsonObject = new JSONObject();
-				jsonObject.put("id", rs.getString(1));
-				jsonObject.put("cashier", rs.getString(2));
-				jsonObject.put("numProducts", rs.getInt(3));
-				jsonObject.put("card", rs.getFloat(4));
-				jsonObject.put("ended", rs.getInt(5));
-				jsonObject.put("cashback", rs.getFloat(6));
-				jsonObject.put("money_given", rs.getFloat(7));
-				jsonObject.put("payee", rs.getString(8));
-				jsonObject.put("type", rs.getString(9));
-				jsonObject.put("total", rs.getFloat(10));
-				jsonArr.add(jsonObject);
-			}
-			JSONObject responseJson = new JSONObject();
-			responseJson.put("success", true);
-			responseJson.put("transactions", jsonArr);
-			response.getWriter().write(responseJson.toJSONString());
+		JSONObject jo = Transaction.getTransactions(start, end);
+		if (jo == null) {
+			errorOut(response);
 			return;
 		}
-		catch (SQLException ex) {
-			Log.log(ex.toString());
-		}
-		finally {
-			DatabaseHandler.closeDBResources(rs, pstmt, conn);
-		}
+		JSONObject responseJson = new JSONObject();
+		responseJson.put("success", true);
+		responseJson.put("transactions", jo);
+		response.getWriter().write(responseJson.toJSONString());
 		errorOut(response);
-		/*$admin = "a10f653a-6c20-11e7-b34e-426562cc935f";
-		$start = get_param("start", null);
-		$end = get_param("end", null);
-		if ($start == null || ($end == null)) {
-			error_out("missing fields");
-		}
-		$db = get_pdo_connection();
-		$stmt = $db->prepare("SELECT " + Config.DATABASE_PREFIX + "transactions.id AS "id", " + Config.DATABASE_PREFIX + "operators.name AS cashier, (SELECT COUNT(*) FROM " + Config.DATABASE_PREFIX + "transactiontoproducts WHERE " + Config.DATABASE_PREFIX + "transactiontoproducts.transaction_id = " + Config.DATABASE_PREFIX + "transactions.id) AS "#Products", " + Config.DATABASE_PREFIX + "transactions.card AS "card", " + Config.DATABASE_PREFIX + "transactions.ended AS "ended", " + Config.DATABASE_PREFIX + "transactions.cashback AS "cashback", " + Config.DATABASE_PREFIX + "transactions.money_given AS "money_given", " + Config.DATABASE_PREFIX + "transactions.payee AS "payee", " + Config.DATABASE_PREFIX + "transactions.type AS "type", " + Config.DATABASE_PREFIX + "transactions.total AS "total" FROM " + Config.DATABASE_PREFIX + "transactions LEFT JOIN " + Config.DATABASE_PREFIX + "operators ON " + Config.DATABASE_PREFIX + "transactions.cashier = " + Config.DATABASE_PREFIX + "operators.id WHERE (" + Config.DATABASE_PREFIX + "transactions.ended BETWEEN ? AND ?) AND " + Config.DATABASE_PREFIX + "transactions.cashier NOT IN (?) ORDER BY " + Config.DATABASE_PREFIX + "transactions.type DESC, " + Config.DATABASE_PREFIX + "transactions.ended');
-		$stmt->bindValue(1, $start, PDO::PARAM_INT);
-		$stmt->bindValue(2, $end, PDO::PARAM_INT);
-		$stmt->bindValue(3, $admin, PDO::PARAM_STR);
-		$stmt->execute();
-		$arr = array();
-		while ($rs = $stmt->fetch(PDO::FETCH_ASSOC)) {
-			array_push($arr, $rs);
-		}
-		die (json_encode(array("success"=>true, "start"=>$start, "end"=>$end, "transactions"=>$arr)));	*/
 	}
 	private void getProductTransactions(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		// TODO Auto-generated method stub
@@ -1824,28 +1623,6 @@ public class API extends ContextHandler
 		baseRequest.getSession().removeAttribute("user");
 		successOut(response);
 	}
-	//TODO: This should be replaced with a stronger hashing function, try Apache commons Crypt
-	public String hashPassword(String passwordToHash, String salt){
-		//https://stackoverflow.com/questions/33085493/hash-a-password-with-sha-512-in-java	
-		String generatedPassword = null;
-		    try {
-		         MessageDigest md = MessageDigest.getInstance("SHA-512");
-		         md.update(salt.getBytes("UTF-8"));
-		         byte[] bytes = md.digest(passwordToHash.getBytes("UTF-8"));
-		         StringBuilder sb = new StringBuilder();
-		         for(int i=0; i< bytes.length ;i++){
-		            sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
-		         }
-		         generatedPassword = sb.toString();
-		        } 
-		       catch (NoSuchAlgorithmException e){
-		        e.printStackTrace();
-		       } catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		    return generatedPassword;
-		}
 	private void login(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		// TODO Auto-generated method stub
 		Connection conn = null;
@@ -1861,7 +1638,7 @@ public class API extends ContextHandler
 			conn = DatabaseHandler.getDatabase();
 			pstmt = conn.prepareStatement("SELECT id, name FROM " + Config.DATABASE_TABLE_PREFIX + "operators WHERE LCASE(email) = LCASE(?) AND passwordHash = ? LIMIT 1");
 			pstmt.setString(1, email);
-			pstmt.setString(2,  hashPassword(password, ""));
+			pstmt.setString(2,  Utils.hashPassword(password, ""));
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
 				Log.log("User (" + rs.getString(1) + ") " + rs.getString(2) + " logged in successfully");
@@ -1890,16 +1667,14 @@ public class API extends ContextHandler
 			conn = DatabaseHandler.getDatabase();
 			pstmt = conn.prepareStatement("INSERT INTO " + Config.DATABASE_TABLE_PREFIX + "transactions (id, started, cashier) VALUES (?, ?, ?)");
 			String guid = GUID();
-			long timestamp = new Timestamp(System.currentTimeMillis()).getTime();
 			pstmt.setString(1, guid);
-			pstmt.setLong(2, timestamp/1000);
+			pstmt.setLong(2, Utils.getCurrentTimeStamp());
 			pstmt.setString(3, operator);
 			if (pstmt.executeUpdate() > 0) {
 				Log.log("Transaction (" + guid + ") STARTED by operator (" + operator + ")");
 				JSONObject jsonObject = new JSONObject();
 				jsonObject.put("success", true);
 				jsonObject.put("id", guid);
-				jsonObject.put("timeStart", timestamp/1000);
 				response.getWriter().print(jsonObject);
 				return;
 			}
@@ -1911,6 +1686,7 @@ public class API extends ContextHandler
 		finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
+		errorOut(response);
 	}
 	private void getMessages(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		String operator = baseRequest.getParameter("operator");

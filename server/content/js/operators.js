@@ -50,24 +50,12 @@ function Operators() {
 			});
 		});
 	}
-	this.getOperators = function() {
-		$.ajax({
-			url:"api/kvs.php?function=GETALLOPERATORS",
-			success:function(data) {
-				if (!data.success) {
-					bootbox.alert("There has been an error");
-					return;
-				}
-				window.operators.populate_table({"name":"Name"}, data.operators);
-			}
-		});
-	}
 	this.init = function() {
 		$.ajaxSetup({
 			method:"POST",
 			dataType:"JSON"
 		});
-		window.operators.getOperators();
+		this.populate_table();
 		$("#update-operator").on("click", function() {
 			window.operators.saveOperator($("#operatorInfo").attr("data-id"));
 		});
@@ -127,7 +115,7 @@ function Operators() {
 	this.populate_table = function(columns, data) {
 		var holder = document.getElementById("operators-viewport");
 		$(holder).empty();
-		$.each(data, function(key, item) {
+		$.each(window.dashboard_data.operators, function(key, item) {
 			var row = el("section", {class:"row selectable", "data-id":key});
 			//Name
 			var col = el("section", {class:"col-lg-12 col-md-12 col-sm-12 col-xs-12"});

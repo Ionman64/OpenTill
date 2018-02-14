@@ -1,30 +1,7 @@
 window.departmentNames = {};
 function Takings(){
 	this.init = function() {
-		$.ajax({
-			url:"api/kvs.php?function=DEPARTMENTS",
-			dataType: "JSON",
-			success: function(data) {
-				$.each(data, function(key, item) {
-					window.departmentNames[key] = item;
-					var row = el("section", {class:"row table-box"});
-					var col = el("section", {class:"col-md-2", style:"padding-left:0;padding-right:0;"});
-					var p = el("b", {html:item.name});
-					col.appendChild(p);
-					row.appendChild(col);
-					for (var i=0;i<10;i++) {
-						var col = el("section", {class:"col-md-1", style:"padding-left:0;padding-right:0;"});
-						var p = el("b", {html:"hello"});
-						col.appendChild(p);
-						row.appendChild(col);
-					}
-					$("#takings-columns").append(row);
-				});
-				window.takings.get_takings();
-			}
-		});
-		//var calendar1 = new CalendarView("takings-date-start");
-		//var calendar2 = new CalendarView("takings-date-end");
+		window.takings.populate_table(window.dashboard_data.totals);
 		$("#takings-export-btn").click(function() {
 			$("#takings-date-start").val(moment().format("YYYY-MM-DD"));
 			$("#takings-date-end").val(moment().format("YYYY-MM-DD"));
@@ -72,6 +49,9 @@ function Takings(){
 					$("#takings-export-alt-download").attr("href", data.file);
 					window.open(data.file, 'Download');  
 				},
+				error: function() {
+					$("#inventory-export-failure").removeClass("hidden");
+				},
 				complete: function() {
 					$("#takings-export-progress").addClass("hidden");
 				}
@@ -117,23 +97,7 @@ function Takings(){
 			}
 		});
 	}
-	this.get_takings = function() {
-		var start = Math.floor(moment().subtract(5, "months").format("x")/1000);
-		var end = Math.floor(moment().format("x")/1000);
-		$.ajax({
-			url:"api/kvs.php?function=TOTALS",
-			data:{"start":start, "end":end, "type":"PURCHASE"},
-			dataType: "JSON",
-			method:"POST",
-			success: function(data) {
-				if (!data.success) {
-					alert("Error collecting totals");
-				}
-				window.takings.populate_table(data.totals);
-			}
-		});
-	}
-	this.populate_table = function(data) {
+	this.populate_table = function() {
 		var holder = document.getElementById("takings-viewport");
 		$(holder).empty();
 		var section = el("section");
@@ -145,10 +109,10 @@ function Takings(){
 		var th = el("th");
 		th.innerHTML = "Date";
 		tr.appendChild(th);
-		$.each(window.departmentNames, function(id, department) {
+		$.each(window.dashboard_data.departments, function(id, department) {
 			var th = el("th");
 			th.className = "head";
-			th.innerHTML = department.shorthand;
+			th.innerHTML = department;
 			tr.appendChild(th);
 		});
 		var th = el("th");
@@ -158,13 +122,13 @@ function Takings(){
 		thead.appendChild(tr);
 		table.appendChild(thead);
 		var tbody = el("tbody");
-		$.each(data, function(date, totals) {
+		$.each(window.dashboard_data.takings, function(date, totals) {
 			var total = 0.00;
 			var tr = el("tr", {"data-start":moment(date).unix(), "data-end":moment(date).add(1, "days").subtract(1, "seconds").unix()});
 			var td = el("td");
 			td.innerHTML = date;
 			tr.appendChild(td);
-			$.each(window.departmentNames, function(id, department) {
+			$.each(window.dashboard_data.departments, function(id, department) {
 				var td = el("td");
 				var amount = parseFloat(totals[id] ? totals[id] : "0.00");
 				total = total + amount;

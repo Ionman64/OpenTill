@@ -1,20 +1,4 @@
 function Inventory() {
-	this.inventoryLevelsByDepartment = {}
-	this.getInventoryLevels = function() {
-		$.ajax({
-			url:"api/kvs.php?function=GETPRODUCTSLEVELS",
-			success:function(data) {
-				if (!data.success) {
-					bootstrap.alert("There has been an error");
-					return;
-				}
-				$.each(data.products, function(key, product) {
-					window.inventory.inventoryLevelsByDepartment[key] = product;
-				});
-				window.inventory.refreshTable();
-			}
-		});
-	}
 	this.showProduct = function(id) {
 		alert(id);
 	}
@@ -23,7 +7,7 @@ function Inventory() {
 			method:"POST",
 			dataType:"JSON"
 		});
-		this.getInventoryLevels();
+		this.refreshTable();
 		$("#inventory-table").on("click", ".product-btn", function() {
 			showProduct(this.getAttribute("data-id"));
 		});
@@ -68,12 +52,15 @@ function Inventory() {
 				},
 				success: function(data) {
 					if (!data.success) {
-						alert("Error exporting inventory");
+						$("#inventory-export-failure").removeClass("hidden");
 						return;
 					}
 					$("#inventory-export-success").removeClass("hidden");
 					$("#inventory-export-alt-download").attr("href", data.file);
 					window.open(data.file, 'Download');  
+				},
+				error: function() {
+					$("#inventory-export-failure").removeClass("hidden");
 				},
 				complete: function() {
 					$("#inventory-export-progress").addClass("hidden");
@@ -83,9 +70,9 @@ function Inventory() {
 	}
 	this.refreshTable = function() {
 		$("#inventory-table").empty();
-		$.each(this.inventoryLevelsByDepartment, function(departmentKey, department) {
+		$.each(window.dashboard_data.inventory, function(departmentKey, department) {
 			var row = el("section", {class:"row selectable inventory-department", style:("border-left:15px solid " + department["colour"] + ";"), "data-id":departmentKey});
-			var h4 = el("h4", {class:"italic", html:window.departments.departmentsList[departmentKey]});
+			var h4 = el("h4", {class:"italic", html:window.dashboard_data.departments[departmentKey]});
 			var section = el("section", {class:"col-lg-12 col-md-12 col-sm-12 col-xs-12"});
 			section.appendChild(h4);
 			row.appendChild(section);

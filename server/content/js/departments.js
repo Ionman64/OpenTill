@@ -46,30 +46,12 @@ function Departments() {
 			});
 		});
 	}
-	this.getDepartments = function() {
-		$.ajax({
-			url:"api/kvs.php?function=GETALLDEPARTMENTS",
-			success:function(data) {
-				if (!data.success) {
-					bootbox.alert("There has been an error");
-					return;
-				}
-				$.each(data.departments, function(key, value) {
-					window.departments.departmentsList[key] = value;
-					var option = el("option", {value:key});
-					option.innerHTML = value;
-					$("#ProductDepartment").append(option);
-				});
-				window.departments.populate_table(data.departments);
-			}
-		});
-	}
 	this.init = function() {
 		$.ajaxSetup({
 			method:"POST",
 			dataType:"JSON"
 		});
-		this.getDepartments();
+		this.populate_table();
 		$("#update-department").on("click", function() {
 			window.departments.saveDepartment($("#departmentInfo").attr("data-id"));
 		});
@@ -124,16 +106,16 @@ function Departments() {
 			}
 		});
 	}
-	this.populate_table = function(data) {
+	this.populate_table = function() {
 		var holder = document.getElementById("departments-viewport");
 		$(holder).empty();
-		if (data.length == 0) {
+		if (Object.keys(window.dashboard_data.departments).length == 0) {
 			var h3 = el("h3");
 			h3.innerHTML = "No Departments";
 			holder.appendChild(h3);
 			return;
 		}
-		$.each(data, function(key, item) {
+		$.each(window.dashboard_data.departments, function(key, item) {
 			var row = el("section", {class:"row selectable", "data-id":key});
 			//Name
 			var col = el("section", {class:"col-lg-12 col-md-12 col-sm-12 col-xs-12"});

@@ -101,9 +101,7 @@ function Orders() {
 			dataType:"JSON"
 		});
 		this.orders = {};
-		this.setCurrentOrderId("alpha");
-		this.setCurrentOrder({"products":{}});
-		this.getOrders();
+		this.refreshTable();
 		$("#orders-table").on("click", ".selectable", function() {
 			$("#orderModal").attr("data-id", this.getAttribute("data-id"));
 			window.orders.getProductsInOrder();
@@ -134,13 +132,13 @@ function Orders() {
 	this.refreshTable = function() {
 		var holder = document.getElementById("orders-table");
 		$(holder).empty();
-		if (this.orders.length == 0) {
+		if (Object.keys(window.dashboard_data.orders).length == 0) {
 			var h3 = el("h3");
 			h3.innerHTML = "No Orders Yet";
 			holder.appendChild(h3);
 			return;
 		}
-		$.each(this.orders, function(key, item) {
+		$.each(window.dashboard_data.orders, function(key, item) {
 			var row = el("section", {class:"row selectable", "data-id":key});
 			//Date
 			var col = el("section", {class:"col-lg-11 col-md-11 col-sm-10 col-xs-10"});

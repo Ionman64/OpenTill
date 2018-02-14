@@ -269,42 +269,30 @@ $(document).ready(function() {
 	$("#menu-button").click(function() {
 		$("#menu").hasClass("hidden") ? $("#menu").removeClass("hidden") : $("#menu").addClass("hidden");
 	});
-	window.takings = new Takings();
-	window.takings.init();
-	window.transactions = new Transactions();
-	window.transactions.init();
-	window.operators = new Operators();
-	window.operators.init();
-	window.suppliers = new Suppliers();
-	window.suppliers.init();
-	window.inventory = new Inventory();
-	window.inventory.init();
-	window.departments = new Departments();
-	window.departments.init();
-	window.orders = new Orders();
-	window.orders.init();
+	$.ajax({
+		url:"api/kvs.php?function=DASHBOARD",
+		success:function(data) {
+			window.dashboard_data = data;
+			window.takings = new Takings();
+			window.takings.init();
+			window.transactions = new Transactions();
+			window.transactions.init();
+			window.operators = new Operators();
+			window.operators.init();
+			window.suppliers = new Suppliers();
+			window.suppliers.init();
+			window.inventory = new Inventory();
+			window.inventory.init();
+			window.departments = new Departments();
+			window.departments.init();
+			window.orders = new Orders();
+			window.orders.init();
+		}
+	});
 	$(window).resize(function() {
 		$('.viewport').height($(window).height() - 107);
 	});
 	$(window).trigger('resize');
-	$.ajax({
-		url:"api/kvs.php?function=GETPRODUCT",
-		data:{"id":"EBCDB3C0-E71F-4EFC-AB5F-EDBE1119E687"},
-		success:function(data) {
-			if (!data.success) {
-				alert("Could not find product");
-				return;
-			}
-			$("#product-name").html(data.product.name);	
-			if (data.product.updated == 0) {
-				$("#product-updated").html("Never");
-			}
-			else {
-				$("#product-updated").html(moment(data.product.updated*1000).format("YYYY-MM-DD"));
-			}
-			getSalesData(0, "EBCDB3C0-E71F-4EFC-AB5F-EDBE1119E687");
-		}	
-	});
 	setInterval(function() {
 		$("#timeline").empty();
 		var currentPercentage = percentage((moment().hour()*60)+moment().minute(), 24*60);

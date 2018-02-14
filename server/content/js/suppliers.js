@@ -48,27 +48,12 @@ function Suppliers() {
 			});
 		});
 	}
-	this.getSuppliers = function() {
-		$.ajax({
-			url:"api/kvs.php?function=GETALLSUPPLIERS",
-			success:function(data) {
-				if (!data.success) {
-					bootbox.alert("There has been an error");
-					return;
-				}
-				$.each(data.suppliers, function(key, value) {
-					window.suppliers.suppliers[key] = value;
-				});
-				window.suppliers.populate_table();
-			}
-		});
-	}
 	this.init = function() {
 		$.ajaxSetup({
 			method:"POST",
 			dataType:"JSON"
 		});
-		window.suppliers.getSuppliers();
+		this.populate_table();
 		$("#update-supplier").on("click", function() {
 			window.suppliers.saveSupplier($("#supplierInfo").attr("data-id"));
 		});
@@ -128,13 +113,13 @@ function Suppliers() {
 	this.populate_table = function() {
 		var holder = document.getElementById("suppliers-viewport");
 		$(holder).empty();
-		if (this.suppliers.length == 0) {
+		if (Object.keys(window.dashboard_data.suppliers).length == 0) {
 			var h3 = el("h3");
 			h3.innerHTML = "No Suppliers Yet";
 			holder.appendChild(h3);
 			return;
 		}
-		$.each(this.suppliers, function(key, item) {
+		$.each(window.dashboard_data.suppliers, function(key, item) {
 			var row = el("section", {class:"row selectable", "data-id":key});
 			//Date
 			var col = el("section", {class:"col-lg-12 col-md-12 col-sm-12 col-xs-12"});

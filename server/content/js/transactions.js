@@ -1,6 +1,6 @@
 function Transactions() {
 	this.init = function() {
-		this.get_transactions();
+		this.populate_table();
 		$("#transactions-viewport").on("click", ".row", function() {
 			if (!$(this).attr("data-id")) {
 				return;
@@ -14,37 +14,16 @@ function Transactions() {
 			window.open("https://www.goldstandardresearch.co.uk/kvs/product.php?id=" + $(this).attr("data-id"), '_blank');
 		});
 	}
-	this.get_transactions = function() {
-		var date = moment();
-		var start = moment(date.format("YYYY-MM-DD")).format("x")/1000;
-		var end = (moment(date.add(1, "days").format("YYYY-MM-DD")).format("x")/1000)-1;
-		$.ajax({
-			url:"api/kvs.php?function=GETTRANSACTIONS",
-			data:{"start":start, "end":end},
-			dataType: "JSON",
-			method:"POST",
-			success: function(data) {
-				if (!data.success) {
-					alert("Error collecting transactions");
-				}
-				$("#dateFrom").html(moment(data.start*1000).format("YYYY-MM-DD"));
-				$("#timeFrom").html(moment(data.start*1000).format("HH:mm:ss"));
-				$("#dateTo").html(moment(data.end*1000).format("YYYY-MM-DD"));
-				$("#timeTo").html(moment(data.end*1000).format("HH:mm:ss"));
-				window.transactions.populate_table(data.transactions);
-			}
-		});
-	}
-	this.populate_table = function(data) {
+	this.populate_table = function() {
 		var holder = document.getElementById("transactions-viewport");
 		$(holder).empty();
-		if (data.length == 0) {
+		if (Object.keys(window.dashboard_data.transactions).length == 0) {
 			var h3 = el("h3");
 			h3.innerHTML = "No Transactions Yet";
 			holder.appendChild(h3);
 			return;
 		}
-		$.each(data, function(key, item) {
+		$.each(window.dashboard_data.transactions, function(key, item) {
 			var className = "";
 			if (item.type) {
 				if (item.type == "PAYOUT") {
