@@ -29,10 +29,6 @@
 		                       <li><label for="chk7"><input name="chk7" id="chk7" type="checkbox">Seventh</label></li>
 						  </ul>
 				  </section>
-				  <section class="col-md-12">
-					<input id="new-sheet-for-each-department" type="checkbox"/>
-					<label for="new-sheet-for-each-department" checked>Use new sheet for each department</label>
-  				</section>
   				</section>
   				<section class="col-md-12">
   					<section class="panel panel-info hidden" id="inventory-export-progress">
