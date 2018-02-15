@@ -22,8 +22,8 @@ public class Main {
 			
 			//Updater.update();
 			
-			DatabaseMigration db = new DatabaseMigration(Config.CURRENT_VERSION);
-			db.up();
+			//DatabaseMigration db = new DatabaseMigration(Config.CURRENT_VERSION);
+			//db.up();
 			
 			
 			

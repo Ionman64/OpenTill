@@ -7,12 +7,12 @@ function Takings(){
 			$("#takings-date-end").val(moment().format("YYYY-MM-DD"));
 			var holder = document.getElementById("takings-departments-export");
 			$(holder).empty();
-			$.each(window.departmentNames, function(id, department) {
+			$.each(window.dashboard_data.departments, function(id, department) {
 				var li = el("li");
 				var label = el("label", {"for":"takings-checkbox-" + id});
-				var input = el("input", {"id":"takings-checkbox-" + id, type:"checkbox", checked:true, "data-id":department.id});
+				var input = el("input", {"id":"takings-checkbox-" + id, type:"checkbox", checked:true, "data-id":id});
 				label.appendChild(input);
-				label.appendChild(document.createTextNode(department.name));
+				label.appendChild(document.createTextNode(department));
 				li.appendChild(label);
 				holder.appendChild(li);
 			});
