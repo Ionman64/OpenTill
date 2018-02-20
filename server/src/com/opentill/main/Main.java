@@ -1,6 +1,5 @@
 package com.opentill.main;
 
-import com.opentill.database.DatabaseMigration;
 import com.opentill.httpServer.ServerHandler;
 import com.opentill.mail.MailHandler;
 
