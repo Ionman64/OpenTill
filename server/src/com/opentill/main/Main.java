@@ -1,6 +1,6 @@
 package com.opentill.main;
 
-import com.opentill.database.DatabaseMigration;
+import com.opentill.document.PDFHelper;
 import com.opentill.httpServer.ServerHandler;
 import com.opentill.mail.MailHandler;
 
@@ -19,6 +19,9 @@ public class Main {
 			};
 			thread2.setDaemon(true);
 			thread2.start();
+		
+			
+			PDFHelper.createPDF();
 			
 			//Updater.update();
 			
