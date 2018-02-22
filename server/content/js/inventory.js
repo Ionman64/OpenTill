@@ -86,13 +86,18 @@ function Inventory() {
 				section.appendChild(button);
 				row.appendChild(section);
 				//max stock
-				var section = el("section", {class:"col-lg-3 col-md-3 col-sm-2 col-xs-3"});
+				var section = el("section", {class:"col-lg-2 col-md-2 col-sm-2 col-xs-2"});
 				var p = el("h4", {class:"text-default clear-text", text:product.max_stock});
 				section.appendChild(p);
 				row.appendChild(section);
 				//in stock 
-				var section = el("section", {class:"col-lg-3 col-md-3 col-sm-2 col-xs-3"});
+				var section = el("section", {class:"col-lg-2 col-md-2 col-sm-2 col-xs-2"});
 				var p = el("h4", {class:"text-default clear-text", text:product.current_stock});
+				section.appendChild(p);
+				row.appendChild(section);
+				//order amount
+				var section = el("section", {class:"col-lg-2 col-md-2 col-sm-2 col-xs-2"});
+				var p = el("h4", {class:"text-default clear-text", text:(product.max_stock-product.current_stock)});
 				section.appendChild(p);
 				row.appendChild(section);
 				//Order

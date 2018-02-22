@@ -14,14 +14,17 @@
 </section>
 <section class="container-fluid">
 	<section class="row" style="border-bottom:2px solid #000">
-		<section class="col-lg-5 col-md-5 col-sm-8 col-xs-6">
+		<section class="col-lg-5 col-md-5 col-sm-6 col-xs-6">
 			<h4>Name</h4>
 		</section>
-		<section class="col-lg-3 col-md-3 col-sm-2 col-xs-3">
+		<section class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
 			<h4>Max Stock<span class="sub-text italic hidden-xs hidden-sm"> (inc. Display)</span></h4>
 		</section>
-		<section class="col-lg-3 col-md-3 col-sm-2 col-xs-3">
+		<section class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
 			<h4>In Stock<span class="sub-text italic hidden-xs hidden-sm"> (inc. Display)</span></h4>
+		</section>
+		<section class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+			<h4>Order Amount<span class="sub-text italic hidden-xs hidden-sm"></span></h4>
 		</section>
 		<section class="col-lg-1 col-md-1 hidden-sm hidden-xs">
 			
