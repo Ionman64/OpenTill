@@ -2,7 +2,7 @@
 	<section class="container-fluid">
 		<section class="row">
 			<section class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
-				<button id="create-order" class="btn btn-default navbar-btn">Create Order</button>
+				<button id="create-order" class="btn btn-default navbar-btn btn-lg">Create Order</button>
 			</section>
 			<section class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
 				<!--<a href="index.jsp"><button class="btn btn-default btn-lg pull-right" style="margin:10px">Register</button></a>-->

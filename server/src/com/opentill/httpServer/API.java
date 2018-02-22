@@ -23,10 +23,6 @@ import org.json.simple.parser.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,7 +34,6 @@ import com.opentill.logging.Log;
 import com.opentill.main.Config;
 import com.opentill.main.Utils;
 import com.opentill.products.Product;
-import com.google.gson.JsonObject;
 import com.opentill.database.DatabaseHandler;
 import com.opentill.document.ExcelHelper;
 import com.opentill.idata.Department;
@@ -55,7 +50,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.UUID;
@@ -690,7 +684,7 @@ public class API extends ContextHandler
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.id, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.name, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.current_stock, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.max_stock FROM " + Config.DATABASE_TABLE_PREFIX + "tblproducts LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "tblcatagories ON " + Config.DATABASE_TABLE_PREFIX + "tblproducts.department = " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id WHERE " + Config.DATABASE_TABLE_PREFIX + "tblproducts.deleted = 0 ORDER BY " + Config.DATABASE_TABLE_PREFIX + "tblproducts.name");
+			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.id, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.name, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.current_stock, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.max_stock FROM " + Config.DATABASE_TABLE_PREFIX + "tblproducts LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "tblcatagories ON " + Config.DATABASE_TABLE_PREFIX + "tblproducts.department = " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id WHERE " + Config.DATABASE_TABLE_PREFIX + "tblproducts.deleted = 0 ORDER BY " + Config.DATABASE_TABLE_PREFIX + "tblproducts.name DESC");
 			rs = pstmt.executeQuery();
 			HashMap<String, HashMap<String, Product>> inventory = new HashMap<String, HashMap<String, Product>>();
 			while (rs.next()) {

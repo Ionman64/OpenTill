@@ -95,6 +95,7 @@ CREATE TABLE IF NOT EXISTS `opentill_tblproducts` (
   `status` int(1) NOT NULL DEFAULT '1',
   `max_stock` int(4) NOT NULL DEFAULT '0',
   `current_stock` int(4) NOT NULL DEFAULT '0',
+  'version' int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `Barcode` (`barcode`),
   KEY `barcode_2` (`barcode`)
@@ -111,7 +112,7 @@ CREATE TABLE IF NOT EXISTS `opentill_tblsuppliers` (
   `updated` int(13) NOT NULL,
   `deleted` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 CREATE TABLE IF NOT EXISTS `opentill_tblunits` (
   `id` varchar(36) NOT NULL,
