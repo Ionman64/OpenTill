@@ -11,8 +11,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="thirdParty/jetty-distribution-9.4.8.v20171121/lib/annotations/asm-6.0.jar"/>
-	<classpathentry kind="lib" path="thirdParty/jetty-distribution-9.4.8.v20171121/lib/annotations/asm-commons-6.0.jar"/>
 	<classpathentry kind="lib" path="thirdParty/jetty-distribution-9.4.8.v20171121/lib/annotations/javax.annotation-api-1.2.jar"/>
 	<classpathentry kind="lib" path="thirdParty/jetty-distribution-9.4.8.v20171121/lib/apache-jsp/org.eclipse.jdt.ecj-3.12.3.jar"/>
 	<classpathentry kind="lib" path="thirdParty/jetty-distribution-9.4.8.v20171121/lib/apache-jsp/org.eclipse.jetty.apache-jsp-9.4.8.v20171121.jar"/>
@@ -23,7 +21,6 @@
 	<classpathentry kind="lib" path="thirdParty/jetty-distribution-9.4.8.v20171121/lib/fcgi/fcgi-client-9.4.8.v20171121.jar"/>
 	<classpathentry kind="lib" path="thirdParty/jetty-distribution-9.4.8.v20171121/lib/fcgi/fcgi-server-9.4.8.v20171121.jar"/>
 	<classpathentry kind="lib" path="thirdParty/jetty-distribution-9.4.8.v20171121/lib/http2/http2-common-9.4.8.v20171121.jar"/>
-	<classpathentry kind="lib" path="thirdParty/jetty-distribution-9.4.8.v20171121/lib/http2/http2-hpack-9.4.8.v20171121.jar"/>
 	<classpathentry kind="lib" path="thirdParty/jetty-distribution-9.4.8.v20171121/lib/http2/http2-server-9.4.8.v20171121.jar"/>
 	<classpathentry kind="lib" path="thirdParty/jetty-distribution-9.4.8.v20171121/lib/jaspi/javax.security.auth.message-1.0.0.v201108011116.jar"/>
 	<classpathentry kind="lib" path="thirdParty/jetty-distribution-9.4.8.v20171121/lib/mail/javax.mail.glassfish-1.4.1.v201005082020.jar"/>

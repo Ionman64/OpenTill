@@ -1,14 +1,11 @@
 package com.opentill.httpServer;
 
-import java.io.File;
-
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.webapp.WebAppContext;
 
@@ -19,7 +16,7 @@ public final class ServerHandler {
 	public static void run() {
 		// TODO Auto-generated method stub
         try {
-        	int port = 8080;
+        	int port = 8000;
         	QueuedThreadPool threadPool = new QueuedThreadPool();
             threadPool.setMaxThreads(500); //TODO: Set this in the database
         	Server server = new Server(threadPool);
@@ -46,6 +43,8 @@ public final class ServerHandler {
             http.setIdleTimeout(30000);
             server.addConnector(http);
            
+            String webDir = ServerHandler.class.getProtectionDomain()
+                    .getCodeSource().getLocation().toExternalForm();
             
             WebAppContext webAppContext = new WebAppContext();
             webAppContext.setContextPath(".");

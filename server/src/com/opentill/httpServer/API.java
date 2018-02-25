@@ -59,10 +59,9 @@ import org.eclipse.jetty.server.Request;
 public class API extends ContextHandler
 {
 	private SessionHandler sessionHandler;
-	public API (WebAppContext webAppContext, String context) {
+	public API (ContextHandler webAppContext, String context) {
 		super.setContextPath(context);
 		super.setAllowNullPathInfo(true); ///Allows Post
-		this.sessionHandler = webAppContext.getSessionHandler();
 	}
 	@Override
 	public void doHandle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {

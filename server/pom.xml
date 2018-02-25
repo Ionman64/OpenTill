@@ -27,10 +27,22 @@
   <groupId>com.google.code.gson</groupId>
   <artifactId>gson</artifactId>
 </dependency>
-   <dependency>
-    <groupId>org.apache.commons</groupId>
-    <artifactId>commons-collections4</artifactId>
+<dependency>
+    <groupId>org.ow2.asm</groupId>
+    <artifactId>asm</artifactId>
+    <version>6.0</version>
 </dependency>
+<dependency>
+    <groupId>org.ow2.asm</groupId>
+    <artifactId>asm-commons</artifactId>
+    <version>6.0</version>
+</dependency>
+<dependency>
+    <groupId>org.eclipse.jetty.http2</groupId>
+    <artifactId>http2-hpack</artifactId>
+    <version>9.4.8.v20171121</version>
+</dependency>
+
 <dependency>
     <groupId>org.apache.pdfbox</groupId>
     <artifactId>pdfbox</artifactId>
@@ -63,11 +75,7 @@
   			<artifactId>json-simple</artifactId>
   			<version>1.1.1</version>
   		</dependency>
-  		<dependency>
-  			<groupId>org.apache.commons</groupId>
-  			<artifactId>commons-collections4</artifactId>
-  			<version>4.0</version>
-  		</dependency>
+ 
   		<dependency>
   			<groupId>org.apache.commons</groupId>
   			<artifactId>commons-email</artifactId>
