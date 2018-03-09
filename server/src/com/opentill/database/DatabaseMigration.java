@@ -29,11 +29,12 @@ public class DatabaseMigration {
 		}
 		Connection conn = null;
 		Statement stmt = null;
+		BufferedReader bf = null;
 		try {
 			conn = DatabaseHandler.getMySqlConnection();
 			conn.setAutoCommit(false);
 			stmt = conn.createStatement();
-			BufferedReader bf = new BufferedReader(new FileReader(sqlFile));
+			bf = new BufferedReader(new FileReader(sqlFile));
             String line = null,old="";
             line = bf.readLine();
             while (line != null) {
@@ -53,6 +54,7 @@ public class DatabaseMigration {
 			return false;
 		}
 		finally {
+			bf.close();
 			DatabaseHandler.closeDBResources(null, stmt, conn);
 		}
 		return true;

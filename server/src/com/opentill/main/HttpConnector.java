@@ -4,7 +4,6 @@ package com.opentill.main;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -15,7 +14,7 @@ public class HttpConnector {
 	public final static String CONTENT_TYPE_JSON = "application/json";
 
 	// HTTP GET request
-	private String sendGet(String url) throws Exception {
+	/*private String sendGet(String url) throws Exception {
 
 		URL obj = new URL(url);
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -40,7 +39,7 @@ public class HttpConnector {
 		}
 		in.close();
 		return response.toString();
-	}
+	}*/
 
 	// HTTP POST request
 	public void sendPost(String url, String urlParameters, String contentType) throws Exception {

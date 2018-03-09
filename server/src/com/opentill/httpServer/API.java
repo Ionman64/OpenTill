@@ -28,8 +28,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.session.SessionHandler;
-import org.eclipse.jetty.webapp.WebAppContext;
-
 import com.opentill.logging.Log;
 import com.opentill.main.Config;
 import com.opentill.main.Utils;
@@ -58,7 +56,6 @@ import org.eclipse.jetty.server.Request;
 
 public class API extends ContextHandler
 {
-	private SessionHandler sessionHandler;
 	public API (ContextHandler webAppContext, String context) {
 		super.setContextPath(context);
 		super.setAllowNullPathInfo(true); ///Allows Post
@@ -88,7 +85,7 @@ public class API extends ContextHandler
 				getDashboard(baseRequest, response);
 				break;
 			case "LOGIN":
-				login(baseRequest, response);
+				login(request, baseRequest, response);
 				break;
 			case "LOGOUT":
 				logout(baseRequest, response);
@@ -1613,10 +1610,10 @@ public class API extends ContextHandler
 	}
 	private void logout(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		// TODO Auto-generated method stub
-		baseRequest.getSession().removeAttribute("user");
+		baseRequest.logout();
 		successOut(response);
 	}
-	private void login(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void login(HttpServletRequest request, Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		// TODO Auto-generated method stub
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -1635,6 +1632,7 @@ public class API extends ContextHandler
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
 				Log.log("User (" + rs.getString(1) + ") " + rs.getString(2) + " logged in successfully");
+				request.login(email, password);
 				successOut(response);
 				return;
 			}

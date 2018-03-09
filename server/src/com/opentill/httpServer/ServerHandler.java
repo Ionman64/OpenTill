@@ -1,11 +1,26 @@
 package com.opentill.httpServer;
 
+import java.util.Collections;
+
+import org.eclipse.jetty.security.Authenticator;
+import org.eclipse.jetty.security.ConstraintMapping;
+import org.eclipse.jetty.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.security.HashLoginService;
+import org.eclipse.jetty.security.LoginService;
+import org.eclipse.jetty.security.UserStore;
+import org.eclipse.jetty.security.authentication.BasicAuthenticator;
+import org.eclipse.jetty.security.authentication.FormAuthenticator;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.UserIdentity;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.util.security.Constraint;
+import org.eclipse.jetty.util.security.Credential;
+import org.eclipse.jetty.util.security.Password;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.webapp.WebAppContext;
 
@@ -33,6 +48,7 @@ public final class ServerHandler {
             
             ResourceHandler holderHome = new ResourceHandler();
             holderHome.setDirAllowed(false);
+            holderHome.setWelcomeFiles(new String[]{"index.jsp"});
             holderHome.setPathInfoOnly(true);
             holderHome.setResourceBase(Config.APP_HOME);
             
@@ -43,20 +59,48 @@ public final class ServerHandler {
             http.setIdleTimeout(30000);
             server.addConnector(http);
            
-            String webDir = ServerHandler.class.getProtectionDomain()
-                    .getCodeSource().getLocation().toExternalForm();
             
             WebAppContext webAppContext = new WebAppContext();
             webAppContext.setContextPath(".");
-            webAppContext.setWelcomeFiles(new String[]{"index.php"});
             webAppContext.setResourceBase("content");
             webAppContext.setInitParameter("dirAllowed", "false");
 			new JspStarter(webAppContext).doStart();
 			
-			HandlerCollection handlers = new HandlerCollection();
+			LoginService loginService = new HashLoginService();
+			
+			
+			
+            server.addBean(loginService);
+            
+            HandlerCollection handlers = new HandlerCollection();
 		    handlers.addHandler(new API(webAppContext, "/api/kvs.php"));
-		    handlers.addHandler(holderHome);
+		    
 		    handlers.addHandler(webAppContext);
+		    handlers.addHandler(holderHome);
+            
+            /*ConstraintSecurityHandler security = new ConstraintSecurityHandler();
+            
+            //security.setAuthMethod(authMethod);
+            security.setLoginService(getLoginService());
+            security.setAuthenticator(getAuthenticator());
+            security.setCheckWelcomeFiles(true);
+            security.setHandler(handlers);
+            security.setCheckWelcomeFiles(true);
+            
+            
+            Constraint constraint = new Constraint();
+            constraint.setName("user");
+            constraint.setAuthenticate(true);
+            constraint.setRoles(new String[] { "user", "admin" });
+            
+            ConstraintMapping mapping = new ConstraintMapping();
+            mapping.setPathSpec("/dashboard.jsp");
+            mapping.setConstraint(constraint);*/
+            
+            //security.setConstraintMappings(Collections.singletonList(mapping));
+            //security.setAuthenticator(new BasicAuthenticator());
+            //security.setLoginService(loginService);
+	            
 		    server.setHandler(handlers);
 		    server.start();
 		    Log.log("Server Started on PORT:" + port);
@@ -71,5 +115,20 @@ public final class ServerHandler {
 			e.printStackTrace();
 		}
      
+	}
+	
+	private static LoginService getLoginService(){
+	    // HASH LOGIN SERVICE
+	    HashLoginService loginService = new HashLoginService("admin");
+	    UserStore userStore = new UserStore();
+	    Credential cred = Credential.getCredential("password");
+	    userStore.addUser("peterpickerill2016@gmail.com", cred, new String[] {"user"});
+	    loginService.setUserStore(userStore);
+	    return loginService;
+	}
+
+	private static Authenticator getAuthenticator() {
+		// TODO Auto-generated method stub
+		return new FormAuthenticator("/login.jsp", "/login.jsp", false);
 	}
 }
