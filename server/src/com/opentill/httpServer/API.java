@@ -238,6 +238,7 @@ public class API extends ContextHandler
 	    // Inform jetty that this request has now been handled
 	    baseRequest.setHandled(true);
 	}
+	@SuppressWarnings("unchecked")
 	private void getDashboard(Request baseRequest, HttpServletResponse response) throws IOException {
 		JSONObject jo = new JSONObject();
 		jo.put("inventory", Inventory.get_product_levels());
@@ -246,7 +247,7 @@ public class API extends ContextHandler
 		jo.put("takings", Takings.getTakings(0L, Utils.getCurrentTimeStamp(), "a10f653a-6c20-11e7-b34e-426562cc935f", "PURCHASE"));
 		jo.put("suppliers", Supplier.getSuppliers());
 		jo.put("operators", Operators.getOperators());
-		jo.put("transactions", Transaction.getTransactions(Utils.getCurrentTimeStamp()-(3600*24), Utils.getCurrentTimeStamp()));
+		jo.put("transactions", Transaction.getTransactions((Utils.getCurrentTimeStamp()-(3600*24))/1000, Utils.getCurrentTimeStamp()/1000));
 		response.getWriter().write(jo.toJSONString());
 	}
 	private void completeOrder(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
@@ -1197,7 +1198,7 @@ public class API extends ContextHandler
 			}
 			conn = DatabaseHandler.getDatabase();
 			pstmt = conn.prepareStatement("UPDATE " + Config.DATABASE_TABLE_PREFIX + "transactions SET ended = ?, total = ?, cashback=?, money_given = ?, card = ?, type=?, payee=? WHERE id=? AND cashier=?");
-			pstmt.setLong(1, Utils.getCurrentTimeStamp());
+			pstmt.setLong(1, Utils.getCurrentTimeStamp()/1000);
 			pstmt.setFloat(2, total);
 			pstmt.setFloat(3, cashback);
 			pstmt.setFloat(4, money_given);
@@ -1282,7 +1283,7 @@ public class API extends ContextHandler
 		pstmt.setString(3, productId);
 		pstmt.setDouble(4, price);
 		pstmt.setString(5, departmentId == null ? noneCatagory : departmentId);
-		pstmt.setLong(6, Utils.getCurrentTimeStamp());
+		pstmt.setLong(6, Utils.getCurrentTimeStamp()/1000);
 		pstmt.execute();
 		if (pstmt.getUpdateCount() > 0) {
 			return true;
@@ -1646,38 +1647,21 @@ public class API extends ContextHandler
 		}
 	}
 	private void startTransaction(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
-		// TODO Auto-generated method stub
-		Connection conn = null;
-		PreparedStatement pstmt = null;
 		String operator = baseRequest.getParameter("cashier_id");
 		if (operator == null) {
 			errorOut(response, "missing fields");
 			return;
 		}
-		try {
-			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("INSERT INTO " + Config.DATABASE_TABLE_PREFIX + "transactions (id, started, cashier) VALUES (?, ?, ?)");
-			String guid = GUID();
-			pstmt.setString(1, guid);
-			pstmt.setLong(2, Utils.getCurrentTimeStamp());
-			pstmt.setString(3, operator);
-			if (pstmt.executeUpdate() > 0) {
-				Log.log("Transaction (" + guid + ") STARTED by operator (" + operator + ")");
-				JSONObject jsonObject = new JSONObject();
-				jsonObject.put("success", true);
-				jsonObject.put("id", guid);
-				response.getWriter().print(jsonObject);
-				return;
-			}
-			errorOut(response, null);
+		String guid = Transaction.startTransaction(operator);
+		if (guid == null) {
+			errorOut(response, "could not start transaction");
+			return;
 		}
-		catch (SQLException ex) {
-			Log.log(ex.toString());
-		}
-		finally {
-			DatabaseHandler.closeDBResources(null, pstmt, conn);
-		}
-		errorOut(response);
+		JSONObject responseJo = new JSONObject();
+		responseJo.put("success",  true);
+		responseJo.put("id",  guid);
+		response.getWriter().write(responseJo.toJSONString());
+		
 	}
 	private void getMessages(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		String operator = baseRequest.getParameter("operator");

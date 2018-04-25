@@ -10,6 +10,7 @@ import org.json.simple.JSONObject;
 import com.opentill.database.DatabaseHandler;
 import com.opentill.logging.Log;
 import com.opentill.main.Config;
+import com.opentill.main.Utils;
 
 public class Transaction {
 	public static JSONObject getTransactions(Long start, Long end) {
@@ -47,4 +48,30 @@ public class Transaction {
 		}
 		return null;
 	}
+	public static String startTransaction(String operator) {
+		// TODO Auto-generated method stub
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("INSERT INTO " + Config.DATABASE_TABLE_PREFIX + "transactions (id, started, cashier) VALUES (?, ?, ?)");
+			String guid = Utils.GUID();
+			pstmt.setString(1, guid);
+			pstmt.setLong(2, Utils.getCurrentTimeStamp()/1000);
+			pstmt.setString(3, operator);
+			if (pstmt.executeUpdate() > 0) {
+				Log.log("Transaction (" + guid + ") STARTED by operator (" + operator + ")");
+				return guid;
+			}
+			return null;
+		}
+		catch (SQLException ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
+		}
+		return null;
+	}
+	
 }

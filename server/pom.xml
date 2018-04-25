@@ -20,6 +20,21 @@
   </build>
   <dependencies>
   <dependency>
+    <groupId>org.apache.spark</groupId>
+    <artifactId>spark-core_2.11</artifactId>
+    <version>2.2.0</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.spark</groupId>
+    <artifactId>spark-sql_2.11</artifactId>
+    <version>2.2.0</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.spark</groupId>
+    <artifactId>spark-mllib_2.11</artifactId>
+    <version>2.2.0</version>
+</dependency>
+  <dependency>
     <groupId>commons-io</groupId>
     <artifactId>commons-io</artifactId>
 </dependency>
@@ -42,6 +57,7 @@
     <artifactId>http2-hpack</artifactId>
     <version>9.4.8.v20171121</version>
 </dependency>
+
 
 <dependency>
     <groupId>org.apache.pdfbox</groupId>
@@ -110,6 +126,11 @@
   			<groupId>commons-io</groupId>
   			<artifactId>commons-io</artifactId>
   			<version>2.6</version>
+  		</dependency>
+  		<dependency>
+  			<groupId>org.apache.spark</groupId>
+  			<artifactId>spark-core_2.11</artifactId>
+  			<version>2.3.0</version>
   		</dependency>
   	</dependencies>
   </dependencyManagement>

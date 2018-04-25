@@ -1,5 +1,7 @@
 package com.opentill.main;
 
+import org.opentill.spark.SparkTest;
+
 import com.opentill.document.PDFHelper;
 import com.opentill.httpServer.ServerHandler;
 import com.opentill.mail.MailHandler;
@@ -22,6 +24,8 @@ public class Main {
 		
 			
 			PDFHelper.createPDF();
+			
+			//new SparkTest();
 			
 			//Updater.update();
 			
