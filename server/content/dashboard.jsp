@@ -39,6 +39,7 @@
 	<script type="text/javascript" src="js/suppliers.js"></script>
 	<script type="text/javascript" src="js/inventory.js"></script>
 	<script type="text/javascript" src="js/departments.js"></script>
+	<script type="text/javascript" src="js/products.js"></script>
 	<script type="text/javascript" src="js/orders.js"></script>
 	<script type="text/javascript" src="js/dashboard.js"></script>
 	<link href="css/dashboard.css" rel="stylesheet" type="text/css"/>
@@ -93,10 +94,10 @@
 							<span>Suppliers</span>
 						</section>
 					</section>
-					<section class="menu-button btn-success text-center" id="">
-						<i class="fa fa-comments"></i>
+					<section class="menu-button btn-success text-center" data-page="pane-primary-products">
+						<i class="fa fa-box"></i>
 						<section class="footer">
-							<span>Chat</span>
+							<span>Products</span>
 						</section>
 					</section>
 					<section class="menu-button custom-btn-graphite text-center" id="logout">
@@ -146,7 +147,10 @@
 			<div class="tab hidden" id="pane-primary-inventory" data-page-name="Inventory">
 				<jsp:include page="views/inventory.jsp"></jsp:include>
 			</div>
-			<div class="tab hidden" id="pane-primary-departments" data-page-name="Departments">
+			<div class="tab hidden" id="pane-primary-products" data-page-name="Departments">
+				<jsp:include page="views/products.jsp"></jsp:include>
+			</div>
+			<div class="tab hidden" id="pane-primary-departments" data-page-name="Products">
 				<jsp:include page="views/departments.jsp"></jsp:include>
 			</div>
 			<div class="tab hidden" id="pane-primary-orders" data-page-name="Orders">

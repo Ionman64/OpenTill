@@ -254,6 +254,16 @@ canvas {
 	padding-bottom:5px;
 	cursor:pointer;
 }
+.selectable-inventory {
+	margin-top: 2px;
+	background: #eee;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	margin-left: 0px;
+	cursor: pointer;
+	padding: 10px;
+	width: 100%;
+}
 .selectable:hover {
 	background:#ccc;
 }
@@ -289,12 +299,18 @@ canvas {
 	overflow-y:auto;
 	overflow-x:hidden;
     position:absolute;
-    top:114px;
-    bottom:108px;
+}
+.scrollable {
+	height:calc(100vh-56.4px);
+	overflow-y:auto;
+	overflow-x:hidden;
 }
 .payin {
 	background:#66ff66;
 }
 .payout {
 	background:#ff6666;
+}
+.selectable-product {
+	cursor:pointer;
 }

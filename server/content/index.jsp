@@ -98,7 +98,7 @@
 		</section>
 	</section>
 	<section class="row">
-		<section class="col-md-3 col-xs-3 col-sm-3 col-lg-3" style="padding-top:10px">
+		<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4" style="padding-top:10px">
 			<form id="barcodeform" action="#">
 			<section class="input-group">
 				<input type="text" id="barcode" class="form-control input-lg" placeholder="Barcode/Search"/>
@@ -166,7 +166,7 @@
 		</section>
 		<section id="department"></section>
 		</section>
-		<section class="col-md-9 col-xs-9 col-sm-9 col-lg-9">
+		<section class="col-md-8 col-xs-8 col-sm-8 col-lg-8">
 		<section id="tableColumns" class="row shadow-bottom">
 			<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4 col-md-offset-1 col-xs-offset-1 col-sm-offset-1 col-lg-offset-1">
 				<label>Items <span id="total-items"></span></label>

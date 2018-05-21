@@ -25,10 +25,10 @@
 				</div>
 			</h3>
 			<h3 class="info">
-				<span class="currency">Â£</span>400<span class="change">.00</span>
+				<span class="currency">£</span>400<span class="change">.00</span>
 			</h3>
 			<h3 class="sub-title">
-				Last Week: Â£300.00 <span class="text-success">(+25%)</span>
+				Last Week: £300.00 <span class="text-success">(+25%)</span>
 			</h3>
 		</section>
 	</section>

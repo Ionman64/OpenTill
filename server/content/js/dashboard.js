@@ -277,6 +277,8 @@ $(document).ready(function() {
 			window.takings.init();
 			window.transactions = new Transactions();
 			window.transactions.init();
+			window.products = new Products();
+			window.products.init();
 			window.operators = new Operators();
 			window.operators.init();
 			window.suppliers = new Suppliers();
