@@ -23,11 +23,16 @@ import org.json.simple.parser.*;
 
 import java.io.File;
 import java.io.IOException;
+
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.server.session.SessionHandler;
 import com.opentill.logging.Log;
 import com.opentill.main.Config;
 import com.opentill.main.Utils;
@@ -52,194 +57,10 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.UUID;
 
-import org.eclipse.jetty.server.Request;
-
-public class API extends ContextHandler
+public class API extends AbstractHandler
 {
-	public API (ContextHandler webAppContext, String context) {
-		super.setContextPath(context);
-		super.setAllowNullPathInfo(true); ///Allows Post
-	}
-	@Override
-	public void doHandle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		// TODO Auto-generated method stub
-		response.setContentType("application/json; charset=utf-8");
-		response.setCharacterEncoding("UTF-8");
-		response.setStatus(HttpServletResponse.SC_OK);
-		if (baseRequest.getSessionHandler() == null) {
-			SessionHandler handler = new SessionHandler();
-			handler.setMaxInactiveInterval(3600);
-			baseRequest.setSessionHandler(handler);
-		}
-		switch (baseRequest.getParameter("function")) {
-			case "BARCODE":
-				barcode(baseRequest, response);
-				break;
-			case "TRANSACTION":
-				startTransaction(baseRequest, response);
-				break;
-			case "DEPARTMENTS":
-				getDepartments(response);
-				break;
-			case "DASHBOARD":
-				getDashboard(baseRequest, response);
-				break;
-			case "LOGIN":
-				login(request, baseRequest, response);
-				break;
-			case "LOGOUT":
-				logout(baseRequest, response);
-				break;
-			case "GETTRANSACTION":
-				getTransactionProducts(baseRequest, response);
-				break;
-			case "GETPRODUCTSALES":
-				getProductTransactions(baseRequest, response);
-				break;
-			case "GETTRANSACTIONS":
-				getTransactions(baseRequest, response);
-				break;
-			case "GETDAYTOTALS":
-				getDayTotals(baseRequest, response);
-				break;
-			case "COMPLETETRANSACTION":
-				completeTransaction(baseRequest, response);
-				break;
-			case "CLEARTRANSACTION":
-				cancelTransaction(baseRequest, response);
-				break;
-			case "UPDATEPRODUCT":
-				updateProduct(baseRequest, response);
-				break;
-			case "GETPRODUCT":
-				getProduct(baseRequest, response);
-				break;
-			case "PRINTLABEL":
-				printLabel(baseRequest, response);
-				break;
-			case "GETALLSUPPLIERS":
-				getAllSuppliers(baseRequest, response);
-				break;
-			case "GENERATETAKINGSREPORT":
-				generateTakingsReport(baseRequest, response);
-				break;
-			case "GENERATEINVENTORYREPORT":
-				generateInventoryReport(baseRequest, response);
-				break;
-			case "GETSUPPLIER":
-				selectSupplier(baseRequest, response);
-				break;
-			case "UPDATESUPPLIER":
-				updateSupplier(baseRequest, response);
-				break;
-			case "ADDSUPPLIER":
-				createSupplier(baseRequest, response);
-				break;
-			case "DELETESUPPLIER":
-				//deleteSupplier(baseRequest, response);
-				break;
-			case "GETALLOPERATORS":
-				getAllOperators(baseRequest, response);
-				break;
-			case "GETOPERATOR":
-				selectOperator(baseRequest, response);
-				break;
-			case "UPDATEOPERATOR":
-				updateOperator(baseRequest, response);
-				break;
-			case "ADDOPERATOR":
-				createOperator(baseRequest, response);
-				break;
-			case "DELETEOPERATOR":
-				//deleteOperator(baseRequest, response);
-				break;
-			case "GETALLDEPARTMENTS":
-				getAllDepartments(baseRequest, response);
-				break;
-			case "GETDEPARTMENT":
-				selectDepartment(baseRequest, response);
-				break;
-			case "UPDATEDEPARTMENT":
-				//updateDepartment(baseRequest, response);
-				break;
-			case "ADDDEPARTMENT":
-				createDepartment(baseRequest, response);
-				break;
-			case "DELETEDEPARTMENT":
-				deleteDepartment(baseRequest, response);
-				break;
-			case "DELETEPRODUCT":
-				deleteProduct(baseRequest, response);
-				break;
-			case "SEARCH":
-				search(baseRequest, response);
-				break;
-			case "TAKINGS":
-				getTakings(baseRequest, response);
-				break;
-			case "CLEARLABELS":
-				//clearLabels(baseRequest, response);
-				break;
-			case "OPERATORLOGON":
-				operatorLogin(baseRequest, response);
-				break;
-			case "TOTALS":
-				getTakings(baseRequest, response);
-				break;
-			case "SENDMESSAGE":
-				sendMessage(baseRequest, response);
-				break;
-			case "GETMESSAGES":
-				getMessages(baseRequest, response);
-				break;
-			case "SAVELABELSTYLE":
-				//saveLabel(baseRequest, response);
-				break;
-			case "GETLABELSTYLE":
-				//getLabelStyle(baseRequest, response);
-				break;
-			case "GETLABELSTYLES":
-				//getLabelStyles(baseRequest, response);
-				break;
-			case "ISLOGGEDIN":
-				//isLoggedIn(baseRequest, response);
-				break;
-			case "GETPRODUCTLEVELS":
-				//getProductLevels(baseRequest, response);
-				break;
-			case "GETPRODUCTSLEVELS":
-				getProductsLevels(baseRequest, response);
-				break;
-			case "CHANGEMAXSTOCKLEVEL":
-				setMaxStockLevel(baseRequest, response);
-				break;
-			case "CHANGECURRENTSTOCKLEVEL":
-				setCurrentStockLevel(baseRequest, response);
-				break;
-			case "CREATEORDER":
-				createOrder(baseRequest, response);
-				break;
-			case "COMPLETEORDER":
-				completeOrder(baseRequest, response);
-				break;
-			case "GETORDER":
-				getOrder(baseRequest, response);
-				break;
-			case "GETORDERS":
-				getOrders(baseRequest, response);
-				break;
-			case "ADDPRODUCTTOORDER":
-				addProductToOrder(baseRequest, response);
-				break;
-			default:
-				errorOut(response, "No such function");
-				break;
-		}
-	    // Inform jetty that this request has now been handled
-	    baseRequest.setHandled(true);
-	}
 	@SuppressWarnings("unchecked")
-	private void getDashboard(Request baseRequest, HttpServletResponse response) throws IOException {
+	private void getDashboard(ServletRequest baseRequest, ServletResponse response) throws IOException {
 		JSONObject jo = new JSONObject();
 		jo.put("inventory", Inventory.get_product_levels());
 		jo.put("orders", Order.getOrders());
@@ -250,7 +71,7 @@ public class API extends ContextHandler
 		jo.put("transactions", Transaction.getTransactions((Utils.getCurrentTimeStamp()-(3600*24))/1000, Utils.getCurrentTimeStamp()/1000));
 		response.getWriter().write(jo.toJSONString());
 	}
-	private void completeOrder(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void completeOrder(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String id = baseRequest.getParameter("id");
 		if (id == null) {
 			errorOut(response, "missing id");
@@ -277,7 +98,7 @@ public class API extends ContextHandler
 		}
 		errorOut(response);
 	}
-	private void addProductToOrder(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void addProductToOrder(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String order = baseRequest.getParameter("order");
 		String productId = baseRequest.getParameter("productId");
 		String productBarcode = baseRequest.getParameter("productBarcode");
@@ -334,7 +155,7 @@ public class API extends ContextHandler
 		}
 		errorOut(response);
 	}
-	private void getOrder(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void getOrder(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String id = baseRequest.getParameter("id");
 		if (id == null) {
 			errorOut(response, "missing fields");
@@ -369,7 +190,7 @@ public class API extends ContextHandler
 		}
 		errorOut(response);
 	}
-	private void getOrders(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void getOrders(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		JSONObject jo = Order.getOrders();
 		if (jo == null) {
 			errorOut(response);
@@ -380,7 +201,7 @@ public class API extends ContextHandler
 		responseJSON.put("orders", jo);
 		response.getWriter().write(responseJSON.toJSONString());
 	}
-	private void createOrder(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void createOrder(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String supplier = baseRequest.getParameter("supplier");
 		if (supplier == null) {
 			errorOut(response, "missing fields");
@@ -409,7 +230,7 @@ public class API extends ContextHandler
 		}
 		errorOut(response);
 	}
-	private void updateOperator(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void updateOperator(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String id = baseRequest.getParameter("id");
 		String name = baseRequest.getParameter("name");
 		String telephone = baseRequest.getParameter("telephone");
@@ -446,7 +267,7 @@ public class API extends ContextHandler
 		}
 		errorOut(response);
 	}
-	private void createSupplier(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void createSupplier(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String name = baseRequest.getParameter("name");
 		String telephone = baseRequest.getParameter("telephone");
 		String email = baseRequest.getParameter("email");
@@ -483,7 +304,7 @@ public class API extends ContextHandler
 		}
 		errorOut(response);
 	}
-	private void updateSupplier(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void updateSupplier(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String id = baseRequest.getParameter("id");
 		String name = baseRequest.getParameter("name");
 		String telephone = baseRequest.getParameter("telephone");
@@ -521,7 +342,7 @@ public class API extends ContextHandler
 		errorOut(response);
 		
 	}
-	private void selectSupplier(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void selectSupplier(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String id = baseRequest.getParameter("id");
 		if (id == null) {
 			errorOut(response, "missing fields");
@@ -537,7 +358,7 @@ public class API extends ContextHandler
 		responseJSON.put("supplier", jo);
 		response.getWriter().write(responseJSON.toJSONString());
 	}
-	private void selectOperator(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void selectOperator(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String id = baseRequest.getParameter("id");
 		if (id == null) {
 			errorOut(response, "missing fields");
@@ -553,7 +374,7 @@ public class API extends ContextHandler
 		responseJSON.put("operator", jo);
 		response.getWriter().write(responseJSON.toJSONString());
 	}
-	private void createOperator(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void createOperator(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String name = baseRequest.getParameter("name");
 		String telephone = baseRequest.getParameter("telephone");
 		String email = baseRequest.getParameter("email");
@@ -570,7 +391,7 @@ public class API extends ContextHandler
 			errorOut(response);
 		}
 	}
-	private void selectDepartment(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void selectDepartment(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String id = baseRequest.getParameter("id");
 		if (id == null) {
 			errorOut(response, "missing fields");
@@ -606,7 +427,7 @@ public class API extends ContextHandler
 		}
 		errorOut(response);
 	}
-	private void deleteDepartment(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void deleteDepartment(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String id = baseRequest.getParameter("id");
 		if (id == null) {
 			errorOut(response, "missing fields");
@@ -633,7 +454,7 @@ public class API extends ContextHandler
 		errorOut(response);
 		
 	}
-	private void createDepartment(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void createDepartment(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String name = baseRequest.getParameter("name");
 		String colour = baseRequest.getParameter("colour");
 		String shorthand = baseRequest.getParameter("shorthand");
@@ -669,7 +490,7 @@ public class API extends ContextHandler
 		}
 		errorOut(response);
 	}
-	private void generateInventoryReport(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void generateInventoryReport(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String exportType = baseRequest.getParameter("export-type");
 		String[] departments = baseRequest.getParameterValues("departments[]");
 		if (exportType == null || departments == null) {
@@ -728,7 +549,7 @@ public class API extends ContextHandler
 		}
 		errorOut(response);
 	}
-	private void deleteProduct(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void deleteProduct(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String id = baseRequest.getParameter("id");
 		if (id == null) {
 			errorOut(response, "missing params");
@@ -755,7 +576,7 @@ public class API extends ContextHandler
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
 	}
-	private void generateTakingsReport(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void generateTakingsReport(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		// TODO Auto-generated method stub
 		String exportType = baseRequest.getParameter("takings-export-type");
 		String startTimeString = baseRequest.getParameter("start");
@@ -830,7 +651,7 @@ public class API extends ContextHandler
 		}
 		errorOut(response);
 	}
-	private void getAllDepartments(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void getAllDepartments(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		JSONObject departments = new JSONObject();
 		if (departments == null) {
 			errorOut(response);
@@ -842,7 +663,7 @@ public class API extends ContextHandler
 		response.getWriter().write(responseJSON.toJSONString());
 		errorOut(response);
 	}
-	private void getAllOperators(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void getAllOperators(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		JSONObject jo = Operators.getOperators();
 		if (jo == null) {
 			errorOut(response);
@@ -854,7 +675,7 @@ public class API extends ContextHandler
 		response.getWriter().write(responseJSON.toJSONString());
 		errorOut(response);
 	}
-	private void getAllSuppliers(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void getAllSuppliers(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		JSONObject jo = Supplier.getSuppliers();
 		if (jo == null) {
 			errorOut(response);
@@ -865,7 +686,7 @@ public class API extends ContextHandler
 		responseJSON.put("suppliers", jo);
 		response.getWriter().write(responseJSON.toJSONString());
 	}
-	private void sendMessage(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void sendMessage(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String sender = baseRequest.getParameter("from");
 		String message = baseRequest.getParameter("message");
 		String recipient = baseRequest.getParameter("to");
@@ -898,7 +719,7 @@ public class API extends ContextHandler
 		}
 		errorOut(response);
 	}
-	private void printLabel(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void printLabel(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		// TODO Auto-generated method stub
 		String id = baseRequest.getParameter("id");
 		if (id == null) {
@@ -924,13 +745,13 @@ public class API extends ContextHandler
 		}
 		errorOut(response);
 	}
-	private void getProductsLevels(Request baseRequest, HttpServletResponse response) throws IOException {
+	private void getProductsLevels(ServletRequest baseRequest, ServletResponse response) throws IOException {
 		JSONObject responseJSON = new JSONObject();
 		responseJSON.put("success", true);
 		responseJSON.put("products", Inventory.get_product_levels());
 		response.getWriter().write(responseJSON.toJSONString());
 	}
-	private void setCurrentStockLevel(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void setCurrentStockLevel(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String id = baseRequest.getParameter("id");
 		String amountString = baseRequest.getParameter("amount");
 		if (id == null || amountString == null) {
@@ -959,7 +780,7 @@ public class API extends ContextHandler
 		}
 	}
 	
-	private void setMaxStockLevel(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void setMaxStockLevel(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		// TODO Auto-generated method stub
 		String id = baseRequest.getParameter("id");
 		String amountString = baseRequest.getParameter("amount");
@@ -988,7 +809,7 @@ public class API extends ContextHandler
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
 	}
-	private void getProduct(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void getProduct(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		// TODO Auto-generated method stub
 		String id = baseRequest.getParameter("id");
 		if (id == null) {
@@ -1027,7 +848,7 @@ public class API extends ContextHandler
 		}
 		errorOut(response);
 	}
-	private void getTakings(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void getTakings(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String admin = "a10f653a-6c20-11e7-b34e-426562cc935f";
 		String startString = baseRequest.getParameter("start");
 		String endString = baseRequest.getParameter("end");
@@ -1054,7 +875,7 @@ public class API extends ContextHandler
 		errorOut(response);
 	}
 	@SuppressWarnings("unchecked")
-	private void search(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void search(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String search = baseRequest.getParameter("search");
 		if (search.length() == 0) {
 			errorOut(response, "No search criteria");
@@ -1087,7 +908,7 @@ public class API extends ContextHandler
 		}
 		errorOut(response);
 	}
-	private void updateProduct(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void updateProduct(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		// TODO Auto-generated method stub
 		String id = baseRequest.getParameter("id");
 		if (id == null) {
@@ -1142,7 +963,7 @@ public class API extends ContextHandler
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
 	}
-	private void cancelTransaction(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void cancelTransaction(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		// TODO Auto-generated method stub
 		String id = baseRequest.getParameter("transaction_id");
 		if (!transactionExists(id)) {
@@ -1168,7 +989,7 @@ public class API extends ContextHandler
 		}
 		errorOut(response);
 	}
-	private void completeTransaction(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void completeTransaction(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		// TODO Auto-generated method stub
 		String id = baseRequest.getParameter("id");
 		float money_given = (float) (baseRequest.getParameter("money_given") == null ? 0.00 : Float.parseFloat(baseRequest.getParameter("money_given")));
@@ -1334,7 +1155,7 @@ public class API extends ContextHandler
 		return false;
 	}
 	@SuppressWarnings("unchecked")
-	private void getDayTotals(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void getDayTotals(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		// TODO Auto-generated method stub
 		JSONObject jo = new JSONObject();
 		jo.put("success", true);
@@ -1343,10 +1164,10 @@ public class API extends ContextHandler
 		jo.put("takings", takings(baseRequest, response));
 		jo.put("refunds", refunds(baseRequest, response));
 		jo.put("payouts", payouts(baseRequest, response));
-		response.getWriter().print(jo.toJSONString());
+		response.getWriter().write(jo.toJSONString());
 	}
 	
-	private float payouts(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private float payouts(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String admin = "a10f653a-6c20-11e7-b34e-426562cc935f";
 		String startString = baseRequest.getParameter("start");
 		String endString = baseRequest.getParameter("end");
@@ -1376,7 +1197,7 @@ public class API extends ContextHandler
 		}
 		return 0.00F;
 	}
-	private float refunds(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private float refunds(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String admin = "a10f653a-6c20-11e7-b34e-426562cc935f";
 		String startString = baseRequest.getParameter("start");
 		String endString = baseRequest.getParameter("end");
@@ -1406,7 +1227,7 @@ public class API extends ContextHandler
 		}
 		return 0.00F;
 	}
-	private float takings(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private float takings(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String admin = "a10f653a-6c20-11e7-b34e-426562cc935f";
 		String startString = baseRequest.getParameter("start");
 		String endString = baseRequest.getParameter("end");
@@ -1436,7 +1257,7 @@ public class API extends ContextHandler
 		}
 		return 0.00F;
 	}
-	private float cashback(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private float cashback(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String admin = "a10f653a-6c20-11e7-b34e-426562cc935f";
 		String startString = baseRequest.getParameter("start");
 		String endString = baseRequest.getParameter("end");
@@ -1466,7 +1287,7 @@ public class API extends ContextHandler
 		}
 		return 0.00F;
 	}
-	private float cardGiven(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private float cardGiven(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String admin = "a10f653a-6c20-11e7-b34e-426562cc935f";
 		String startString = baseRequest.getParameter("start");
 		String endString = baseRequest.getParameter("end");
@@ -1497,7 +1318,7 @@ public class API extends ContextHandler
 		return 0.00F;
 	}
 	@SuppressWarnings("unchecked")
-	private void getTransactions(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void getTransactions(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String startString = baseRequest.getParameter("start");
 		String endString = baseRequest.getParameter("end");
 		if (startString == null || endString == null) {
@@ -1525,7 +1346,7 @@ public class API extends ContextHandler
 		response.getWriter().write(responseJson.toJSONString());
 		errorOut(response);
 	}
-	private void getProductTransactions(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void getProductTransactions(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		// TODO Auto-generated method stub
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -1574,7 +1395,7 @@ public class API extends ContextHandler
 		}
 	}
 	@SuppressWarnings("unchecked")
-	private void getTransactionProducts(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void getTransactionProducts(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		// TODO Auto-generated method stub
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -1609,12 +1430,11 @@ public class API extends ContextHandler
 		}
 		errorOut(response);
 	}
-	private void logout(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void logout(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		// TODO Auto-generated method stub
-		baseRequest.logout();
 		successOut(response);
 	}
-	private void login(HttpServletRequest request, Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void login(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		// TODO Auto-generated method stub
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -1633,7 +1453,7 @@ public class API extends ContextHandler
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
 				Log.log("User (" + rs.getString(1) + ") " + rs.getString(2) + " logged in successfully");
-				request.login(email, password);
+				
 				successOut(response);
 				return;
 			}
@@ -1646,7 +1466,7 @@ public class API extends ContextHandler
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
 	}
-	private void startTransaction(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void startTransaction(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String operator = baseRequest.getParameter("cashier_id");
 		if (operator == null) {
 			errorOut(response, "missing fields");
@@ -1663,7 +1483,7 @@ public class API extends ContextHandler
 		response.getWriter().write(responseJo.toJSONString());
 		
 	}
-	private void getMessages(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	private void getMessages(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String operator = baseRequest.getParameter("operator");
 		String timeString = baseRequest.getParameter("time");
 		if (operator == null || timeString == null) {
@@ -1704,7 +1524,7 @@ public class API extends ContextHandler
 			JSONObject responseJson = new JSONObject();
 			responseJson.put("success", true);
 			responseJson.put("messages", messages);
-			response.getWriter().print(responseJson.toJSONString());
+			response.getWriter().write(responseJson.toJSONString());
 		}
 		catch (SQLException ex) {
 			Log.log(ex.toString());
@@ -1782,7 +1602,7 @@ public class API extends ContextHandler
 		}
 		return null;
 	}
-	public void operatorLogin(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	public void operatorLogin(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String code = baseRequest.getParameter("code");
 		JSONObject json = null;
 		Connection conn = null;
@@ -1803,7 +1623,7 @@ public class API extends ContextHandler
 				json.put("success", true);
 				json.put("id", rs.getString(1));
 				json.put("name", rs.getString(2));
-				response.getWriter().print(json);
+				response.getWriter().write(json.toJSONString());
 				Log.log("Operator " + rs.getString(2) + "(" + rs.getString(1) + ") logged in successfully");
 				return;
 			}
@@ -1817,7 +1637,7 @@ public class API extends ContextHandler
 		errorOut(response, null);
 	}
 	
-	public void barcode(Request baseRequest, HttpServletResponse response) throws IOException, ServletException {
+	public void barcode(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String barcode = baseRequest.getParameter("number");
 		baseRequest.getParameter("units");
 		JSONObject product = null;
@@ -1831,17 +1651,17 @@ public class API extends ContextHandler
 		}
 		product = getItemFromBarcode(barcode);
 		if (product != null) {
-			response.getWriter().print(product.toJSONString());
+			response.getWriter().write(product.toJSONString());
 			return;
 		}
 		insertProduct(barcode, "Unknown Product");
 		product = new JSONObject();
 		product = getItemFromBarcode(barcode);
 		product.put("isNew", true);
-		response.getWriter().print(product.toJSONString());
+		response.getWriter().write(product.toJSONString());
 	}
 	@SuppressWarnings("unchecked")
-	public void getDepartments(HttpServletResponse response) throws IOException, ServletException {
+	public void getDepartments(ServletResponse response) throws IOException, ServletException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -1859,7 +1679,7 @@ public class API extends ContextHandler
 				jsonObject.put("colour", rs.getString(4));
 				jsonArray.add(jsonObject);
 			}
-			response.getWriter().print(jsonArray.toJSONString());
+			response.getWriter().write(jsonArray.toJSONString());
 		}
 		catch (SQLException ex) {
 			Log.log(ex.toString());
@@ -1868,25 +1688,197 @@ public class API extends ContextHandler
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
 	}
-	public void errorOut(HttpServletResponse response) throws IOException, ServletException {
+	public void errorOut(ServletResponse response) throws IOException, ServletException {
 		errorOut(response, null);
 	}
 	@SuppressWarnings("unchecked")
-	public void errorOut(HttpServletResponse response, String reason) throws IOException, ServletException   {
+	public void errorOut(ServletResponse response, String reason) throws IOException, ServletException   {
 		JSONObject json = new JSONObject();
-		response.setStatus(200);
 		json.put("success", false);
 		if (reason != null) {
 			json.put("reason", reason);
 		}
-		response.getWriter().print(json.toJSONString());
+		response.getWriter().write(json.toJSONString());
 	}
 	@SuppressWarnings("unchecked")
-	public void successOut(HttpServletResponse response) throws IOException, ServletException   {
+	public void successOut(ServletResponse response) throws IOException, ServletException   {
 		JSONObject json = new JSONObject();
 		json.put("success", true);
-		response.setStatus(200);
-		response.getWriter().print(json.toJSONString());
+		response.getWriter().write(json.toJSONString());
+	}
+	@Override
+	public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		response.setContentType("application/json; charset=utf-8");
+		response.setCharacterEncoding("UTF-8");
+		if (request.getParameter("function") == null) {
+			errorOut(response, "No such function");
+		}
+		switch (request.getParameter("function")) {
+		case "BARCODE":
+			barcode(request, response);
+			break;
+		case "TRANSACTION":
+			startTransaction(request, response);
+			break;
+		case "DEPARTMENTS":
+			getDepartments(response);
+			break;
+		case "DASHBOARD":
+			getDashboard(request, response);
+			break;
+		case "LOGIN":
+			login(request, response);
+			break;
+		case "LOGOUT":
+			logout(request, response);
+			break;
+		case "GETTRANSACTION":
+			getTransactionProducts(request, response);
+			break;
+		case "GETPRODUCTSALES":
+			getProductTransactions(request, response);
+			break;
+		case "GETTRANSACTIONS":
+			getTransactions(request, response);
+			break;
+		case "GETDAYTOTALS":
+			getDayTotals(request, response);
+			break;
+		case "COMPLETETRANSACTION":
+			completeTransaction(request, response);
+			break;
+		case "CLEARTRANSACTION":
+			cancelTransaction(request, response);
+			break;
+		case "UPDATEPRODUCT":
+			updateProduct(request, response);
+			break;
+		case "GETPRODUCT":
+			getProduct(request, response);
+			break;
+		case "PRINTLABEL":
+			printLabel(request, response);
+			break;
+		case "GETALLSUPPLIERS":
+			getAllSuppliers(request, response);
+			break;
+		case "GENERATETAKINGSREPORT":
+			generateTakingsReport(request, response);
+			break;
+		case "GENERATEINVENTORYREPORT":
+			generateInventoryReport(request, response);
+			break;
+		case "GETSUPPLIER":
+			selectSupplier(request, response);
+			break;
+		case "UPDATESUPPLIER":
+			updateSupplier(request, response);
+			break;
+		case "ADDSUPPLIER":
+			createSupplier(request, response);
+			break;
+		case "DELETESUPPLIER":
+			//deleteSupplier(request, response);
+			break;
+		case "GETALLOPERATORS":
+			getAllOperators(request, response);
+			break;
+		case "GETOPERATOR":
+			selectOperator(request, response);
+			break;
+		case "UPDATEOPERATOR":
+			updateOperator(request, response);
+			break;
+		case "ADDOPERATOR":
+			createOperator(request, response);
+			break;
+		case "DELETEOPERATOR":
+			//deleteOperator(request, response);
+			break;
+		case "GETALLDEPARTMENTS":
+			getAllDepartments(request, response);
+			break;
+		case "GETDEPARTMENT":
+			selectDepartment(request, response);
+			break;
+		case "UPDATEDEPARTMENT":
+			//updateDepartment(request, response);
+			break;
+		case "ADDDEPARTMENT":
+			createDepartment(request, response);
+			break;
+		case "DELETEDEPARTMENT":
+			deleteDepartment(request, response);
+			break;
+		case "DELETEPRODUCT":
+			deleteProduct(request, response);
+			break;
+		case "SEARCH":
+			search(request, response);
+			break;
+		case "TAKINGS":
+			getTakings(request, response);
+			break;
+		case "CLEARLABELS":
+			//clearLabels(request, response);
+			break;
+		case "OPERATORLOGON":
+			operatorLogin(request, response);
+			break;
+		case "TOTALS":
+			getTakings(request, response);
+			break;
+		case "SENDMESSAGE":
+			sendMessage(request, response);
+			break;
+		case "GETMESSAGES":
+			getMessages(request, response);
+			break;
+		case "SAVELABELSTYLE":
+			//saveLabel(request, response);
+			break;
+		case "GETLABELSTYLE":
+			//getLabelStyle(request, response);
+			break;
+		case "GETLABELSTYLES":
+			//getLabelStyles(request, response);
+			break;
+		case "ISLOGGEDIN":
+			//isLoggedIn(request, response);
+			break;
+		case "GETPRODUCTLEVELS":
+			//getProductLevels(request, response);
+			break;
+		case "GETPRODUCTSLEVELS":
+			getProductsLevels(request, response);
+			break;
+		case "CHANGEMAXSTOCKLEVEL":
+			setMaxStockLevel(request, response);
+			break;
+		case "CHANGECURRENTSTOCKLEVEL":
+			setCurrentStockLevel(request, response);
+			break;
+		case "CREATEORDER":
+			createOrder(request, response);
+			break;
+		case "COMPLETEORDER":
+			completeOrder(request, response);
+			break;
+		case "GETORDER":
+			getOrder(request, response);
+			break;
+		case "GETORDERS":
+			getOrders(request, response);
+			break;
+		case "ADDPRODUCTTOORDER":
+			addProductToOrder(request, response);
+			break;
+		default:
+			errorOut(response, "No such function");
+			break;
+	}
+	response.getWriter().flush();
+	response.getWriter().close();
 		
 	}
 }

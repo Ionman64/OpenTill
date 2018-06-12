@@ -217,6 +217,9 @@ canvas {
 .dataTables_filter {
 	float:right;
 }
+.panel.custom-fixed-height-sm {
+	height:110px;
+}
 .panel h2 {
 	margin-top:0;
 }

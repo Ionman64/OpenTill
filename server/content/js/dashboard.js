@@ -194,6 +194,12 @@ function chartTest(id, data) {
 	var colorNames = Object.keys(chartColors);
 }
 $(document).ready(function() {
+	requirejs(["js/takings", "js/transactions", "js/operators", "js/suppliers", "js/inventory", "js/departments", "js/orders"], function() {
+		console.log("Loaded Scripts");
+	});
+	requirejs(["js/takings", "js/transactions", "js/operators", "js/suppliers", "js/inventory", "js/departments", "js/orders"], function() {
+		console.log("Loaded Scripts");
+	});
 	$.ajaxSetup({
 		method:"POST",
 		dataType:"JSON"
@@ -248,10 +254,10 @@ $(document).ready(function() {
 			});
 		});
 	});
-	var calendar = new CalendarView($("#takings-date-start")[0]);
-	calendar.init();
-	var calendar2 = new CalendarView($("#takings-date-end")[0]);
-	calendar2.init();
+	//var calendar = new CalendarView($("#takings-date-start")[0]);
+	//calendar.init();
+	//var calendar2 = new CalendarView($("#takings-date-end")[0]);
+	//calendar2.init();
 	$("#update-product").click(function() {
 		var barcode = $("#ProductBarcode").val();
 		$.ajax({
@@ -277,8 +283,6 @@ $(document).ready(function() {
 			window.takings.init();
 			window.transactions = new Transactions();
 			window.transactions.init();
-			window.products = new Products();
-			window.products.init();
 			window.operators = new Operators();
 			window.operators.init();
 			window.suppliers = new Suppliers();
@@ -308,6 +312,22 @@ $(document).ready(function() {
 		$("#timeline").append(div);
 	}, 1000);
 });
+
+function truncateOnWord(str, limit) {
+    var trimmable = '\u0009\u000A\u000B\u000C\u000D\u0020\u00A0\u1680\u180E\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u2028\u2029\u3000\uFEFF';
+    var reg = new RegExp('(?=[' + trimmable + '])');
+    var words = str.split(reg);
+    var count = 0;
+    var result = words.filter(function(word) {
+        count += word.length;
+        return count <= limit;
+    }).join('');
+    if (result == str) {
+    	return result;
+    }
+    return result + "...";
+}
+
 function percentage(value, total) {
 	return Math.floor(value/total*100);
 }

@@ -1,7 +1,7 @@
 window.departmentNames = {};
 function Takings(){
 	this.init = function() {
-		window.takings.populate_table(window.dashboard_data.totals);
+		window.takings.populate_table();
 		$("#takings-export-btn").click(function() {
 			$("#takings-date-start").val(moment().format("YYYY-MM-DD"));
 			$("#takings-date-end").val(moment().format("YYYY-MM-DD"));
@@ -98,7 +98,8 @@ function Takings(){
 		});
 	}
 	this.populate_table = function() {
-		var holder = document.getElementById("takings-viewport");
+		m.mount(document.getElementById("takings-viewport"), mithril_takings);
+		return;
 		$(holder).empty();
 		var section = el("section");
 		var table = el("table");
@@ -149,20 +150,6 @@ function Takings(){
 			}
 			window.takings.get_transactions($(this).attr("data-start"), $(this).attr("data-end"));
 		});
-		/*$(table).DataTable({
-			responsive: true,
-			dom: 'Bfrtip',
-			buttons: [
-				'copy', 'csv', 'excel', 
-				{
-					extend: 'pdfHtml5',
-					orientation: 'landscape',
-					pageSize: 'LEGAL'
-				},
-				'print'
-			],
-			"order": [[ 0, "desc" ]]
-		});*/
 	}
 }
 function formatMoney(amount) {
@@ -171,3 +158,37 @@ function formatMoney(amount) {
 	}
 	return accounting.formatMoney(amount, "");
 }
+var mithril_takings = {
+		dates:[],
+		ctrl: function() {
+			$.each(window.dashboard_data.takings, function(date, totals) {
+				totals["date"] = key;
+				this.dates.push(totals);
+			});
+			m.redraw();
+		},
+	    view: function() {
+	        return m("main", this.dates.map(function(item) {
+	        	return m("section", {class:"col-lg-2 col-md-3 col-sm-6 col-xs-12"}, [
+	        		m("section", {class:"panel panel-default"}, [
+	        			m("section", {class:"panel-body"}, [
+	        				m("section", {class:"row"}, [ 
+	        					m("section", {class:"col-lg-12 col-md-12 col-sm-12 col-xs-12"}, [
+	        						 m("h4", item.date)
+	        					]),
+	        					m("section", {class:"col-lg-6 col-md-6 col-sm-6 col-xs-6"}, 
+	        						(function(totals) {
+	        							var elems = [];
+	        							$.each(window.dashboard_data.departments, function(id, department) {
+	        								elems.push(m("h4", department));
+	        								elems.push(m("h4", {class:"pull-right"}, formatMoney(item.price)));
+	        							});
+	        						})(item)
+	        					)
+	        				])
+	        			])
+	        		])
+	        	]);
+	        }))
+	    }
+	};

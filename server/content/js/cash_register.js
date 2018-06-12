@@ -527,7 +527,7 @@ $(document).ready( function() {
 		logout();
 	});
 	$("#change .money-given-button").on("click", function() {
-		getTransaction().moneyGiven += parseFloat($(this).attr("moneyvalue"));
+		getTransaction().moneyGiven += parseFloat($(this).attr("data-moneyvalue"));
 		$("#moneyText").val(formatMoney(getTransaction().moneyGiven));
 		var change = ((getTransaction().totalCostValue() - getTransaction().moneyGiven)*-1);
 		$("#changeText").val(formatMoney(change));

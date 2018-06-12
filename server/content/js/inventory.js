@@ -1,131 +1,98 @@
 function Inventory() {
-	this.showProduct = function(id) {
-		alert(id);
-	}
+	this.selectedId = null;
 	this.init = function() {
-		$.ajaxSetup({
-			method:"POST",
-			dataType:"JSON"
+		this.populate_table();
+		$("#product-filter").on("keyup", function() {
+			var searchTerm = this.value;
+			if (searchTerm.length == 0) {
+				$("#product-items .selectable-product").removeClass("hidden");
+			}
+			$("#product-items .selectable-product").each(function() {
+				if (this.getAttribute("data-name").toUpperCase().indexOf(searchTerm.toUpperCase()) > -1) {
+					$(this).removeClass("hidden");
+				}
+				else {
+					$(this).addClass("hidden");
+				}
+			});
 		});
-		this.refreshTable();
-		$("#inventory-table").on("click", ".product-btn", function() {
+		m.mount(document.getElementById("product-items"), Hello);
+		$("#product-items").on("click", ".selectable-product", function() {
 			showProduct(this.getAttribute("data-id"));
 		});
-		$("#inventory-table").on("click", ".order", function() {
-			window.orders.orderproduct(this.getAttribute("data-id"));
+	};
+	this.populate_table = function(columns, data) {
+		var holder = document.getElementById("product-departments");
+		$(holder).empty();
+		$.each(window.dashboard_data.departments, function(key, item) {
+			var option = el("option", {value:key});
+			option.appendChild(document.createTextNode(item));
+			holder.appendChild(option);
 		});
-		$("#inventory-export-btn").click(function() {
-			var holder = document.getElementById("inventory-departments-export");
-			$(holder).empty();
-			$.each(window.dashboard_data.departments, function(id, department) {
-				var li = el("li");
-				var label = el("label", {"for":"inventory-checkbox-" + id});
-				var input = el("input", {"id":"inventory-checkbox-" + id, type:"checkbox", checked:true, "data-id":id});
-				label.appendChild(input);
-				label.appendChild(document.createTextNode(department));
-				li.appendChild(label);
-				holder.appendChild(li);
-			});
-			$("#inventory-export-success").addClass("hidden");
-			$("#inventory-export-failure").addClass("hidden");
-			$("#export-inventory").modal("show");
-		});
-		$("#inventory-departments-export").on("change", "input[type=checkbox]", function() {
-			if ($("#inventory-departments-export input[type=checkbox]:checked").length == 0) {
-				$("#inventory-export").attr("disabled", true);
-			}
-			else {
-				$("#inventory-export").attr("disabled", false);
-			}
-		});
-		$("#inventory-export").click(function() {
-			var selectedDepartments = [];
-			$("#inventory-departments-export input[type=checkbox]:checked").each(function() {
-				selectedDepartments.push(this.getAttribute("data-id"));
-			});
-			$.ajax({
-				url:"api/kvs.php?function=GENERATEINVENTORYREPORT",
-				dataType: "JSON",
-				data:{"export-type":$("#inventory-export-type").val(), "departments":selectedDepartments},
-				beforeSend: function() {
-					$("#inventory-export-progress").removeClass("hidden");
-				},
-				success: function(data) {
-					if (!data.success) {
-						$("#inventory-export-failure").removeClass("hidden");
-						return;
-					}
-					$("#inventory-export-success").removeClass("hidden");
-					$("#inventory-export-alt-download").attr("href", data.file);
-					window.open(data.file, 'Download');  
-				},
-				error: function() {
-					$("#inventory-export-failure").removeClass("hidden");
-				},
-				complete: function() {
-					$("#inventory-export-progress").addClass("hidden");
-				}
-			});
-		});
-	}
-	this.refreshTable = function() {
-		$("#inventory-table").empty();
-		$.each(window.dashboard_data.inventory, function(departmentKey, department) {
-			var row = el("section", {class:"row selectable inventory-department", style:("border-left:15px solid " + department["colour"] + ";"), "data-id":departmentKey});
-			var h4 = el("h4", {class:"italic", html:window.dashboard_data.departments[departmentKey]});
-			var section = el("section", {class:"col-lg-12 col-md-12 col-sm-12 col-xs-12"});
-			section.appendChild(h4);
-			row.appendChild(section);
-			delete department["colour"];
-			$("#inventory-table").append(row);
-			$.each(department, function(productKey, product) {
-				var row = el("section", {class:"row product hidden", "data-id":departmentKey});
-				//name
-				var section = el("section", {class:"col-lg-5 col-md-5 col-sm-8 col-xs-6"});
-				var button = el("button", {class:"btn btn-default btn-lg product-btn", text:product.name, "data-id":productKey});
-				section.appendChild(button);
-				row.appendChild(section);
-				//max stock
-				var section = el("section", {class:"col-lg-2 col-md-2 col-sm-2 col-xs-2"});
-				var p = el("h4", {class:"text-default clear-text", text:product.max_stock});
-				section.appendChild(p);
-				row.appendChild(section);
-				//in stock 
-				var section = el("section", {class:"col-lg-2 col-md-2 col-sm-2 col-xs-2"});
-				var p = el("h4", {class:"text-default clear-text", text:product.current_stock});
-				section.appendChild(p);
-				row.appendChild(section);
-				//order amount
-				var section = el("section", {class:"col-lg-2 col-md-2 col-sm-2 col-xs-2"});
-				var p = el("h4", {class:"text-default clear-text", text:(product.max_stock-product.current_stock)});
-				section.appendChild(p);
-				row.appendChild(section);
-				//Order
-				var section = el("section", {class:"col-lg-1 col-md-1 hidden-sm hidden-xs"});
-				var button = el("button", {class:"btn btn-info btn-lg order-btn", text:"Order", "data-id":productKey});
-				section.appendChild(button);
-				row.appendChild(section);
-				$("#inventory-table").append(row);
-			});
-			$("#inventory-table").animate({
-			    height : $("#inventory-table")[0].scrollHeight
-			},500);
-		});
-		$("#inventory-table").on("click", ".inventory-department", function() {
-			$(".product[data-id='" + $(this).attr("data-id") + "']").toggleClass("hidden");
-		});
-		$("#inventory-table").on("click", ".order-btn", function() {
-			$.ajax({
-				url:"api/kvs.php?function=ADDPRODUCTTOORDER",
-				data:{id:this.getAttribute("data-id")},
-				dataType: "JSON",
-				success: function(data) {
-					if (!data.success) {
-						alert("Error adding product to order");
-						return;
-					}
-				}
-			});
-		});
+		Hello.setId(window.dashboard_data.departments[0] !== undefined ? window.dashboard_data.departments[0] : null);
+		$(holder).on("change", function(e) {
+			$("#product-filter").val("");
+			Hello.setId(this.value);
+			e.stopPropagation()
+		})
 	}
 }
+var Hello = {
+	items:[],
+	id:null,
+	setId: function(newId) {
+		if (newId == this.id) {
+			return;
+		}
+		this.items = [];
+		this.id = newId;
+		$.each(window.dashboard_data.inventory[this.id], function(key, item) {
+			item["id"] = key;
+			Hello.items.push(item);
+		});
+		this.items.sort(function(a, b) {
+			if (a.name > b.name) {
+				return 1;
+			}
+			if (a.name == b.name) {
+				return 0;
+			}
+			return -1;
+		});
+		m.redraw();
+	},
+    view: function() {
+        return m("main", this.items.map(function(item) {
+        	var percentage_val = -1;
+			if ((item.current_stock && item.max_stock) && (item.current_stock > 0 && item.max_stock > 0)) {
+				percentage_val = Math.min(100, Math.abs((item.current_stock / item.max_stock) * 100));
+			}
+        	return m("section", {class:"col-lg-3 col-md-4 col-sm-6 col-xs-12 selectable-product", "data-name":item.name, "data-id":item.id}, [
+        		m("section.custom-fixed-height-sm", {class:"panel panel-default"}, [
+        			m("section", {class:"panel-body"}, [
+        				m("section", {class:"row"}, [ 
+        					m("section", {class:"col-lg-6 col-md-6 col-sm-6 col-xs-6"}, [
+        						 m("h4", truncateOnWord(item.name, 30))
+        					]),
+        					m("section", {class:"col-lg-6 col-md-6 col-sm-6 col-xs-6"}, [
+        						m("h4", {class:"pull-right"}, formatMoney(item.price))
+        					]),
+        					m("section", {class:"col-lg-12 col-md-12 col-sm-12 col-xs-12"}, [
+    							(function(item, percentage_val) {
+    								if (percentage_val == -1) {
+    									return m("h6", {class:"text-danger"}, "No Stock Set Yet");
+    								}
+    								else {
+    									return m("section", {class:"progress"}, [
+    										m("section", {class:(percentage_val >= 50 ? "progress-bar progress-bar-success" : "progress-bar progress-bar-danger"), style:"width:" + percentage_val + "%;", title:(item.current_stock + "/" + item.max_stock)}, (item.current_stock + "/" + item.max_stock))
+    									]);
+    								}
+								})(item, percentage_val)
+        					])
+        				])
+        			])
+        		])
+        	]);
+        }))
+    }
+};

@@ -5,4 +5,5 @@ public class Product {
 	public String name = null;
 	public int current_stock = 0;
 	public int max_stock = 0;
+	public float price = 0.0F;
 }

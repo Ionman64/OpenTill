@@ -1,15 +1,9 @@
-<% 
-	//if(session == null || session.getAttribute("user") == null) {
-	//	response.sendRedirect("login.jsp");
-	//	return;
-	//}
-%>
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8"/>
 	<link rel="shortcut icon" href="img/site/icon.ico">
-	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline'"/>
+	<!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline'"/> -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1"/>
 	<meta name="robots" content="noindex, nofollow"/>
@@ -32,16 +26,8 @@
 	<!--CalendarView-->
 	<script src="thirdParty/CalendarView/js/calendar.js"></script>
 	<link rel="stylesheet" href="thirdParty/CalendarView/css/calendar.css"/>
-	<!--custom-->
-	<script type="text/javascript" src="js/takings.js"></script>
-	<script type="text/javascript" src="js/transactions.js"></script>
-	<script type="text/javascript" src="js/operators.js"></script>
-	<script type="text/javascript" src="js/suppliers.js"></script>
-	<script type="text/javascript" src="js/inventory.js"></script>
-	<script type="text/javascript" src="js/departments.js"></script>
-	<script type="text/javascript" src="js/products.js"></script>
-	<script type="text/javascript" src="js/orders.js"></script>
-	<script type="text/javascript" src="js/dashboard.js"></script>
+	<script src="js/dashboard.js"></script>
+	<script src="thirdParty/requirejs/require.js"></script>
 	<link href="css/dashboard.css" rel="stylesheet" type="text/css"/>
 	<title>KVS-Dashboard</title>
 </head>
