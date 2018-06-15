@@ -24,5 +24,5 @@
 		</section>
 	</section>
 </section>
-<jsp:include page="/modals/supplierInfo.php"></jsp:include>
-<jsp:include page="/modals/createSupplier.php"></jsp:include>
+<section class="import-modal"  page="modals/supplierInfo.jsp"></section>
+<section class="import-modal"  page="modals/createSupplier.jsp"></section>

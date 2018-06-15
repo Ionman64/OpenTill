@@ -34,7 +34,7 @@ function Takings(){
 				selectedDepartments.push(this.getAttribute("data-id"));
 			});
 			$.ajax({
-				url:"api/kvs.php?function=GENERATETAKINGSREPORT",
+				url:"api/kvs.jsp?function=GENERATETAKINGSREPORT",
 				dataType: "JSON",
 				data:{"takings-export-type":$("#takings-export-type").val(), "start":moment($("#takings-date-start").val(), "YYYY-MM-DD").format("x"), "end":moment($("#takings-date-end").val(),  "YYYY-MM-DD").format("x"), "departments":selectedDepartments},
 				beforeSend: function() {
@@ -69,7 +69,7 @@ function Takings(){
 	}
 	this.get_transactions = function(start, end) {
 		$.ajax({
-			url:"api/kvs.php?function=GETDAYTOTALS",
+			url:"api/kvs.jsp?function=GETDAYTOTALS",
 			data:{"start":start, "end":end},
 			dataType: "JSON",
 			method:"POST",

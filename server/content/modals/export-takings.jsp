@@ -19,13 +19,13 @@
 				<section class="col-md-6">
 					<section class="form-group">
 				      <label>To Date</label>
-				       <input type="text" id="takings-date-start" class="span2 form-control input-lg" placeholder="Search for...">
+				       <input type="date" id="takings-date-start" class="span2 form-control input-lg" placeholder="Search for...">
 					</section>
 				</section>
 				<section class="col-md-6">
 					<section class="form-group">
 				      <label>From Date</label>
-				      <input type="text" id="takings-date-end" class="span2 form-control input-lg" placeholder="Search for...">
+				      <input type="date" id="takings-date-end" class="span2 form-control input-lg" placeholder="Search for...">
 					</section>
 				</section>
 				<section class="col-md-12">

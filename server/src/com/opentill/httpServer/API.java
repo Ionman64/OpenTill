@@ -12,7 +12,7 @@ package com.opentill.httpServer;
 //  http://www.eclipse.org/legal/epl-v10.html
 //
 //  The Apache License v2.0 is available at
-//  http://www.opensource.org/licenses/apache2.0.php
+//  http://www.opensource.org/licenses/apache2.0.jsp
 //
 //You may elect to redistribute this code under either of these licenses.
 //========================================================================
@@ -27,6 +27,7 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -59,6 +60,10 @@ import java.util.UUID;
 
 public class API extends AbstractHandler
 {
+	private CustomSessionHandler sessionHandler;
+	public API() {
+		sessionHandler = new CustomSessionHandler();
+	}
 	@SuppressWarnings("unchecked")
 	private void getDashboard(ServletRequest baseRequest, ServletResponse response) throws IOException {
 		JSONObject jo = new JSONObject();
@@ -941,14 +946,13 @@ public class API extends AbstractHandler
 		PreparedStatement pstmt = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("UPDATE " + Config.DATABASE_TABLE_PREFIX + "tblproducts SET name = ?, price = ?, department=?, current_stock=?, max_stock=?, updated = ? WHERE id=?");
+			pstmt = conn.prepareStatement("UPDATE " + Config.DATABASE_TABLE_PREFIX + "tblproducts SET name = ?, price = ?, department=?, current_stock=?, max_stock=?, updated = UNIX_TIMESTAMP() WHERE id=?");
 			pstmt.setString(1, name);
 			pstmt.setFloat(2, price);
 			pstmt.setString(3, department);
 			pstmt.setInt(4, currentStockInt);
 			pstmt.setInt(5, maxStockInt);
-			pstmt.setLong(6, Utils.getCurrentTimeStamp());
-			pstmt.setString(7, id);
+			pstmt.setString(6, id);
 			if (pstmt.executeUpdate() > 0) {
 				Log.log("Product ($id) UPDATED by operator ($operator)");
 				successOut(response);
@@ -1432,6 +1436,12 @@ public class API extends AbstractHandler
 	}
 	private void logout(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		// TODO Auto-generated method stub
+		String session = baseRequest.getParameter("session");
+		if (session == null) {
+			errorOut(response, "missing parameters");
+			return;
+		}
+		sessionHandler.destroySession(session);
 		successOut(response);
 	}
 	private void login(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
@@ -1452,8 +1462,8 @@ public class API extends AbstractHandler
 			pstmt.setString(2,  Utils.hashPassword(password, ""));
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				Log.log("User (" + rs.getString(1) + ") " + rs.getString(2) + " logged in successfully");
-				
+				Log.log("User (" + rs.getString(2) + ") logged in successfully");
+				sessionHandler.createUserSession(rs.getString(1));
 				successOut(response);
 				return;
 			}
@@ -1636,7 +1646,31 @@ public class API extends AbstractHandler
 		}
 		errorOut(response, null);
 	}
-	
+	private void getTopProductSales(HttpServletRequest baseRequest, HttpServletResponse response) throws IOException {
+		JSONArray json = new JSONArray();;
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.product_id, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.name,  COUNT(" + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.product_id) AS \"Sales\" FROM " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts INNER JOIN " + Config.DATABASE_TABLE_PREFIX + "tblproducts ON " + Config.DATABASE_TABLE_PREFIX + "tblproducts.id = " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.product_id WHERE " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.created BETWEEN UNIX_TIMESTAMP()-(3600*24*1) AND UNIX_TIMESTAMP() group by " + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.product_id ORDER BY COUNT(" + Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.product_id) DESC LIMIT 20");
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				JSONObject tempJo = new JSONObject();
+				tempJo.put("id", rs.getString(1));
+				tempJo.put("name", rs.getString(2));
+				tempJo.put("sales", rs.getInt(3));
+				json.add(tempJo);
+			}
+			response.getWriter().write(json.toJSONString());
+		}
+		catch (SQLException ex) {
+			Log.log(ex.toString());
+		}
+		finally {
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
+		}
+	}
 	public void barcode(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String barcode = baseRequest.getParameter("number");
 		baseRequest.getParameter("units");
@@ -1872,6 +1906,9 @@ public class API extends AbstractHandler
 			break;
 		case "ADDPRODUCTTOORDER":
 			addProductToOrder(request, response);
+			break;
+		case "GETTOP20":
+			getTopProductSales(request, response);
 			break;
 		default:
 			errorOut(response, "No such function");

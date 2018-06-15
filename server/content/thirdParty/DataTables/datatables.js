@@ -88356,7 +88356,7 @@ window.pdfMake = window.pdfMake || {}; window.pdfMake.vfs = {"LICENSE.txt":"DQog
 		 *    $(document).ready( function () {
 		 *      $('#example').dataTable( {
 		 *        "serverSide": true,
-		 *        "ajax": "xhr.php"
+		 *        "ajax": "xhr.jsp"
 		 *      } );
 		 *    } );
 		 */
@@ -88990,7 +88990,7 @@ window.pdfMake = window.pdfMake || {}; window.pdfMake.vfs = {"LICENSE.txt":"DQog
 		 *    $(document).ready( function() {
 		 *      $('#example').dataTable( {
 		 *        "serverSide": true,
-		 *        "ajax": "scripts/server_processing.php",
+		 *        "ajax": "scripts/server_processing.jsp",
 		 *        "deferLoading": 57
 		 *      } );
 		 *    } );
@@ -89000,7 +89000,7 @@ window.pdfMake = window.pdfMake || {}; window.pdfMake.vfs = {"LICENSE.txt":"DQog
 		 *    $(document).ready( function() {
 		 *      $('#example').dataTable( {
 		 *        "serverSide": true,
-		 *        "ajax": "scripts/server_processing.php",
+		 *        "ajax": "scripts/server_processing.jsp",
 		 *        "deferLoading": [ 57, 100 ],
 		 *        "search": {
 		 *          "search": "my_filter"

@@ -35,7 +35,7 @@ function Product() {
 	}
 	this.update = function(barcode, cost, price) {
 		$.ajax({
-			url: "api/product.php",
+			url: "api/product.jsp",
 			data : {"number" : barcode, "Name" : this.name, "Cost" : cost, "price" : price},
 			success: function(data) {
 				if (data.success) {

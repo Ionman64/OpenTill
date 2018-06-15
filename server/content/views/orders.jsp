@@ -24,4 +24,4 @@
 		</section>
 	</section>
 </section>
-<jsp:include page="/modals/orderModal.php"></jsp:include>
+<section class="import-modal"  page="modals/orderModal.jsp"></section>

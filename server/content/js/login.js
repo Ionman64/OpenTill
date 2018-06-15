@@ -4,7 +4,7 @@ $(document).ready(function() {
         method:"POST"
     });
     $.ajax({
-        url:"api/kvs.php?function=ISLOGGEDIN",
+        url:"api/kvs.jsp?function=ISLOGGEDIN",
         data:{},
         success:function(data){
             if (data.success) {
@@ -20,7 +20,7 @@ $(document).ready(function() {
 });
 function login() {
     $.ajax({
-        url:"api/kvs.php?function=LOGIN",
+        url:"api/kvs.jsp?function=LOGIN",
         data:{"email":$("#inputEmail").val(), "password":$("#inputPassword").val()},
         success:function(data){
             if (data.success) {

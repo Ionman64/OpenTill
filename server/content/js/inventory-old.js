@@ -44,7 +44,7 @@ function Inventory() {
 				selectedDepartments.push(this.getAttribute("data-id"));
 			});
 			$.ajax({
-				url:"api/kvs.php?function=GENERATEINVENTORYREPORT",
+				url:"api/kvs.jsp?function=GENERATEINVENTORYREPORT",
 				dataType: "JSON",
 				data:{"export-type":$("#inventory-export-type").val(), "departments":selectedDepartments},
 				beforeSend: function() {
@@ -116,7 +116,7 @@ function Inventory() {
 		});
 		$("#inventory-table").on("click", ".order-btn", function() {
 			$.ajax({
-				url:"api/kvs.php?function=ADDPRODUCTTOORDER",
+				url:"api/kvs.jsp?function=ADDPRODUCTTOORDER",
 				data:{id:this.getAttribute("data-id")},
 				dataType: "JSON",
 				success: function(data) {

@@ -119,34 +119,34 @@
 				</section>
 			</section>
 			<div class="tab" id="pane-primary-takings" data-page-name="Takings">
-				<jsp:include page="views/takings.jsp"></jsp:include>
+				<section class="import-modal" page="./views/takings.jsp"></section>
 			</div>
 			<div class="tab hidden" id="pane-primary-transactions" data-page-name="Transactions">
-				<jsp:include page="views/transactions.jsp"></jsp:include>
+				<section class="import-modal" page="./views/transactions.jsp"></section>
 			</div>
 			<div class="tab hidden" id="pane-primary-operators" data-page-name="Operators">
-				<jsp:include page="views/operators.jsp"></jsp:include>
+				<section class="import-modal" page="./views/operators.jsp"></section>
 			</div>
 			<div class="tab hidden" id="pane-primary-suppliers" data-page-name="Suppliers">
-				<jsp:include page="views/suppliers.jsp"></jsp:include>
+				<section class="import-modal" page="./views/suppliers.jsp"></section>
 			</div>
 			<div class="tab hidden" id="pane-primary-inventory" data-page-name="Inventory">
-				<jsp:include page="views/inventory.jsp"></jsp:include>
+				<section class="import-modal" page="./views/inventory.jsp"></section>
 			</div>
 			<div class="tab hidden" id="pane-primary-products" data-page-name="Departments">
-				<jsp:include page="views/products.jsp"></jsp:include>
+				<section class="import-modal" page="./views/products.jsp"></section>
 			</div>
 			<div class="tab hidden" id="pane-primary-departments" data-page-name="Products">
-				<jsp:include page="views/departments.jsp"></jsp:include>
+				<section class="import-modal" page="./views/departments.jsp"></section>
 			</div>
 			<div class="tab hidden" id="pane-primary-orders" data-page-name="Orders">
-				<jsp:include page="views/orders.jsp"></jsp:include>
+				<section class="import-modal" page="./views/orders.jsp"></section>
 			</div>
 		</section>
         </section>
     </section>
-    <jsp:include page="modals/transactionProducts.php"></jsp:include>
-    <jsp:include page="modals/productModal.php"></jsp:include>
-    <jsp:include page="modals/supplierModal.php"></jsp:include>
+    <section class="import-modal" page="modals/transactionProducts.jsp"></section>
+    <section class="import-modal" page="modals/productModal.jsp"></section>
+    <section class="import-modal" page="modals/supplierModal.jsp"></section>
 </body>
 </html>

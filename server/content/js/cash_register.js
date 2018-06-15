@@ -284,7 +284,7 @@ function showProduct(brcode) {
 	}
 	else {
 		$.ajax({
-			url: CONTEXT + "kvs.php?function=BARCODE",
+			url: CONTEXT + "kvs.jsp?function=BARCODE",
 			data : {number : brcode},
 			dataType: "JSON",
 			success: function(product) {
@@ -343,7 +343,7 @@ function isOperatorLoggingIn(code) {
 	$("#barcode").val("");
 	$("#item-search").addClass("hidden");
 	$.ajax({
-		url: CONTEXT + "kvs.php?function=OPERATORLOGON",
+		url: CONTEXT + "kvs.jsp?function=OPERATORLOGON",
 		data : {code : code},
 		success: function(data) {
 			if (!data.success) {
@@ -408,7 +408,7 @@ function clearChange() {
 }
 function loadContacts() {
 	$.ajax({
-		url:CONTEXT + "kvs.php?function=GETALLOPERATORS",
+		url:CONTEXT + "kvs.jsp?function=GETALLOPERATORS",
 		success:function(data) {
 			if (!data.success) {
 				bootbox.alert("Error loading contacts");
@@ -430,7 +430,7 @@ function sendMessage(message, to) {
 	var message = message || null;
 	var to = to || null;
 	$.ajax({
-		url:CONTEXT + "kvs.php?function=SENDMESSAGE",
+		url:CONTEXT + "kvs.jsp?function=SENDMESSAGE",
 		data: {"from":getOperator(), "to":to, "message":message},
 		success:function(data) {
 			if (!data.success) {
@@ -445,7 +445,7 @@ function getMessage() {
 		return;
 	};
 	$.ajax({
-		url:CONTEXT + "kvs.php?function=GETMESSAGES",
+		url:CONTEXT + "kvs.jsp?function=GETMESSAGES",
 		data: {"operator":getOperator(), "time":LAST_MESSAGE_UPDATE},
 		success:function(data) {
 			if (!data.success) {
@@ -490,11 +490,26 @@ function getMessage() {
 		}
 	});
 }
+function loadModals() {
+	window.modals = $("modal").length;
+	$("modal").each(function(key, el) {
+		$.get(this.getAttribute("data-page"), function(data) {
+			$("body").append(data);
+			if (--window.modals == 0) {
+				loadRegister();
+			}
+		});
+		this.parentNode.removeChild(this);
+	});
+}
 $(document).ready( function() {
+	loadModals();
 	$.ajaxSetup({
 		method:"POST",
 		dataType:"json"
 	});
+});
+function loadRegister() {
 	$("#printReceipt").click(function() {
 		if (window.shouldPrintReciept) {
 			$(this).addClass("btn-danger").removeClass("btn-default");
@@ -545,7 +560,7 @@ $(document).ready( function() {
 				return;
 			}
 			$.ajax({
-				url:CONTEXT + "kvs.php?function=DELETEPRODUCT",
+				url:CONTEXT + "kvs.jsp?function=DELETEPRODUCT",
 				data:{"id":id},
 				success: function(data) {
 					if (!data.success) {
@@ -667,7 +682,7 @@ $(document).ready( function() {
 		clearTransactionCheck();
 	});
 	$.ajax({
-		url: CONTEXT + "kvs.php?function=GETALLSUPPLIERS",
+		url: CONTEXT + "kvs.jsp?function=GETALLSUPPLIERS",
 		success: function(data) {
 			if (!data.success) {
 				bootbox.alert("There was an error getting the suppliers");
@@ -728,7 +743,7 @@ $(document).ready( function() {
 			return;
 		}
 		$.ajax({
-			url: CONTEXT + "kvs.php?function=SEARCH",
+			url: CONTEXT + "kvs.jsp?function=SEARCH",
 			data : {"search" : searchString},
 			success : function(data) {
 				var holder = $("#item-search-list")[0];
@@ -790,7 +805,7 @@ $(document).ready( function() {
 			}
 		}
 		$.ajax({
-			url: CONTEXT + "kvs.php?function=BARCODE",
+			url: CONTEXT + "kvs.jsp?function=BARCODE",
 			data : {number : brcode},
 			success : function(data) {
 				window.cache[data.barcode.toString()] = data;
@@ -832,7 +847,7 @@ $(document).ready( function() {
 		var barcode = $("#ProductBarcode").val();
 		delete window.cache[barcode];
 		$.ajax({
-			url: CONTEXT + "kvs.php?function=UPDATEPRODUCT",
+			url: CONTEXT + "kvs.jsp?function=UPDATEPRODUCT",
 			data : {"id":$("#product-modal").attr("product-id"), "cashier":"", "barcode":barcode, "current_stock":$("#currentLevel").val(),"max_stock":$("#maxStockLevel").val(), "department":$("#ProductDepartment").val(), "name" : $("#ProductName").val(), "cost" : 0.00, "price" : $("#ProductPrice").val()},
 			success: function(data) {
 				if (!data.success) {
@@ -851,7 +866,7 @@ $(document).ready( function() {
 	});
 	$("#newProductSave").click(function() {
 		$.ajax({
-			url: CONTEXT + "kvs.php?function=UPDATEPRODUCT",
+			url: CONTEXT + "kvs.jsp?function=UPDATEPRODUCT",
 			data : {"id":$("#newProduct").attr("product-id"), "name" : $("#newName").val(), "cashier":getOperator(), "department": $("#newProductDepartment").val(), "cost" : $("#newCost").val(), "price" : $("#newCost").val()},
 			success: function(data) {
 				if (!data.success) {
@@ -879,7 +894,7 @@ $(document).ready( function() {
 	});
 	$("#PrintLabel").click(function() {
 		$.ajax({
-			url: CONTEXT + "kvs.php?function=PRINTLABEL",
+			url: CONTEXT + "kvs.jsp?function=PRINTLABEL",
 			data : {"id":$("#product-modal").attr("product-id")},
 			success: function(data) {
 				if (data.success) {
@@ -895,7 +910,7 @@ $(document).ready( function() {
 	});
 	$("#department").html("");
 	$.ajax({
-		url : CONTEXT + "kvs.php?function=DEPARTMENTS",
+		url : CONTEXT + "kvs.jsp?function=DEPARTMENTS",
 		success : function(data) {
 			var holder = document.getElementById("department");
 			$(holder).empty();
@@ -922,7 +937,8 @@ $(document).ready( function() {
 			$("#barcode").focus();
 		}
 	},200);
-});
+}
+
 function OfflineStorage() {
 	var transactionsKey = "transStorageKey";
 	this.put = function(key, value) {

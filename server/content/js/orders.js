@@ -19,7 +19,7 @@ function Orders() {
 	}
 	this.getOrders = function() {
 		$.ajax({
-			url:"api/kvs.php?function=GETORDERS",
+			url:"api/kvs.jsp?function=GETORDERS",
 			success:function(data) {
 				if (!data.success) {
 					bootstrap.alert("There has been an error getting the orders");
@@ -46,7 +46,7 @@ function Orders() {
 			return;
 		}
 		$.ajax({
-			url:"api/kvs.php?function=CREATEORDER",
+			url:"api/kvs.jsp?function=CREATEORDER",
 			data:{"supplier":supplier},
 			success:function(data) {
 				if (!data.success) {
@@ -63,7 +63,7 @@ function Orders() {
 	}
 	this.getProductsInOrder = function() {
 		$.ajax({
-			url:"api/kvs.php?function=GETORDER",
+			url:"api/kvs.jsp?function=GETORDER",
 			data:{"id":$("#orderModal").attr("data-id")},
 			dataType: "JSON",
 			method:"POST",
@@ -115,7 +115,7 @@ function Orders() {
 		$("#product-modal-barcode-form").on("submit", function(e) {
 			e.preventDefault();
 			$.ajax({
-				url:"api/kvs.php?function=ADDPRODUCTTOORDER",
+				url:"api/kvs.jsp?function=ADDPRODUCTTOORDER",
 				data:{order:$("#orderModal").attr("data-id"), "productBarcode":$("#product-modal-barcode").val()},
 				dataType: "JSON",
 				success: function(data) {
@@ -156,7 +156,7 @@ function Orders() {
 		$(".order-complete").on("click", function(e) {
 			e.stopPropagation();
 			$.ajax({
-				url:"api/kvs.php?function=COMPLETEORDER",
+				url:"api/kvs.jsp?function=COMPLETEORDER",
 				data:{"id":this.getAttribute("data-id")},
 				dataType: "JSON",
 				method:"POST",

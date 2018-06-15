@@ -136,7 +136,7 @@
 		<div class="container-fluid">
 			<section class="row">
 				<section class="col-md-2">
-					<a href="index.php"><button class="navbar-btn btn btn-lg btn-default">Back to till</button></a>
+					<a href="index.jsp"><button class="navbar-btn btn btn-lg btn-default">Back to till</button></a>
 				</section>
 			</section>
 		</div>

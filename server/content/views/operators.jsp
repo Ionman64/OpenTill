@@ -24,5 +24,5 @@
 		</section>
 	</section>
 </section>
-<jsp:include page="/modals/operatorInfo.php"></jsp:include>
-<jsp:include page="/modals/createOperator.php"></jsp:include>
+<section class="import-modal"  page="modals/operatorInfo.jsp"></section>
+<section class="import-modal"  page="modals/createOperator.jsp"></section>

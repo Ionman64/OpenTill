@@ -27,5 +27,5 @@
 		</section>
 	</section>
 </section>
-<jsp:include page="/modals/departmentInfo.php"></jsp:include>
-<jsp:include page="/modals/createDepartment.php"></jsp:include>
+<section class="import-modal"  page="modals/departmentInfo.jsp"></section>
+<section class="import-modal"  page="modals/createDepartment.jsp"></section>

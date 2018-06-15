@@ -2,7 +2,7 @@ function Departments() {
 	this.departmentsList = {};
 	this.showDepartment = function(id) {
 		$.ajax({
-			url:"api/kvs.php?function=GETDEPARTMENT",
+			url:"api/kvs.jsp?function=GETDEPARTMENT",
 			data:{"id":id},
 			success:function(data) {
 				if (!data.success) {
@@ -32,7 +32,7 @@ function Departments() {
 				return;
 			}
 			$.ajax({
-				url:"api/kvs.php?function=DELETEDEPARTMENT", 
+				url:"api/kvs.jsp?function=DELETEDEPARTMENT", 
 				data: {id:$("#departmentInfo").attr("data-id")},
 				success:function(data) {
 					if (!data.success) {
@@ -78,7 +78,7 @@ function Departments() {
 		var comments = $("#new-department-comments").val();
 		if (id == null) {
 			$.ajax({
-				url:"api/kvs.php?function=ADDDEPARTMENT",
+				url:"api/kvs.jsp?function=ADDDEPARTMENT",
 				data:{"name":name, "shorthand":shorthand, "comments":comments, "colour":colour},
 				success:function(data) {
 					if (!data.success) {
@@ -95,7 +95,7 @@ function Departments() {
 		var colour = $("#department-colour").val();
 		var comments = $("#department-comments").val();
 		$.ajax({
-			url:"api/kvs.php?function=UPDATEDEPARTMENT",
+			url:"api/kvs.jsp?function=UPDATEDEPARTMENT",
 			data:{"id":id, "name":name, "shorthand":shorthand, "comments":comments, "colour":colour},
 			success:function(data) {
 				if (!data.success) {

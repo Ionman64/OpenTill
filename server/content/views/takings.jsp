@@ -17,5 +17,5 @@
 		</section>
 	</section>
 </section>
-<jsp:include page="/modals/takings.jsp"></jsp:include>
-<jsp:include page="/modals/export-takings.jsp"></jsp:include>
+<section class="import-modal"  page="modals/takings.jsp"></section>
+<section class="import-modal"  page="modals/export-takings.jsp"></section>

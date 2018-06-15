@@ -2,7 +2,7 @@ function Suppliers() {
 	this.suppliers = {};
 	this.showSupplier = function(id) {
 		$.ajax({
-			url:"api/kvs.php?function=GETSUPPLIER",
+			url:"api/kvs.jsp?function=GETSUPPLIER",
 			data:{"id":id},
 			success:function(data) {
 				if (!data.success) {
@@ -34,7 +34,7 @@ function Suppliers() {
 				return;
 			}
 			$.ajax({
-				url:"api/kvs.php?function=DELETESUPPLIER", 
+				url:"api/kvs.jsp?function=DELETESUPPLIER", 
 				data: {id:$("#supplierInfo").attr("data-id")},
 				success:function(data) {
 					if (!data.success) {
@@ -81,7 +81,7 @@ function Suppliers() {
 			var website = $("#new-supplier-website").val();
 			var comments = $("#new-supplier-comments").val();
 			$.ajax({
-				url:"api/kvs.php?function=ADDSUPPLIER",
+				url:"api/kvs.jsp?function=ADDSUPPLIER",
 				data:{"name":name, "telephone":telephone, "email":email, "website":website, "comments":comments},
 				success:function(data) {
 					if (!data.success) {
@@ -99,7 +99,7 @@ function Suppliers() {
 		var website = $("#supplier-website").val();
 		var comments = $("#supplier-comments").val();
 		$.ajax({
-			url:"api/kvs.php?function=UPDATESUPPLIER",
+			url:"api/kvs.jsp?function=UPDATESUPPLIER",
 			data:{"id":id, "name":name, "telephone":telephone, "email":email, "website":website, "comments":comments},
 			success:function(data) {
 				if (!data.success) {

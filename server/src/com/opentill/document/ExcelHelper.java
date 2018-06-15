@@ -58,7 +58,7 @@ public class ExcelHelper {
 	    int columnId = 1;
 	    
 	    DataFormat datafrmt = wb.createDataFormat();
-	    Map<String, XSSFCellStyle> styles = new HashMap<>();
+	    Map<String, XSSFCellStyle> styles = new HashMap<String, XSSFCellStyle>();
 	    XSSFCellStyle style3 = wb.createCellStyle();
 	    style3.setAlignment(XSSFCellStyle.ALIGN_RIGHT);  // THIS LINE HERE!
 	    style3.setDataFormat(datafrmt.getFormat("£#,##0.00_);[Red](£#,##0.00)")); //Change for international

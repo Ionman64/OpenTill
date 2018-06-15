@@ -38,4 +38,4 @@
 		</section>
 	</section>
 </section>
-<jsp:include page="/modals/export-inventory.jsp"></jsp:include>
+<section class="import-modal"  page="modals/export-inventory.jsp"></section>

@@ -18,7 +18,7 @@ Thank you once again for download from Free Favicon! If you like your favicon we
 
 We also encourage you to check out Backblaze online backup. We use Backblaze to backup our computers and keep our data safe. They offer a free 15 day trial and are the easiest online backup service we have used.
 
-Use this link http://www.freefavicon.com/blog/outgoing/backblaze.php to try Backblaze for Free!
+Use this link http://www.freefavicon.com/blog/outgoing/backblaze.jsp to try Backblaze for Free!
 
 By signing up for Backblaze you help keep Free Favicon free!
 

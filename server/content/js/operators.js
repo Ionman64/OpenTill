@@ -4,7 +4,7 @@ function Operators() {
 	}
 	this.showOperator = function(id) {
 		$.ajax({
-			url:"api/kvs.php?function=GETOPERATOR",
+			url:"api/kvs.jsp?function=GETOPERATOR",
 			data:{"id":id},
 			success:function(data) {
 				if (!data.success) {
@@ -36,7 +36,7 @@ function Operators() {
 				return;
 			}
 			$.ajax({
-				url:"api/kvs.php?function=DELETEOPERATOR", 
+				url:"api/kvs.jsp?function=DELETEOPERATOR", 
 				data: {id:$("#operatorInfo").attr("data-id")},
 				success:function(data) {
 					if (!data.success) {
@@ -83,7 +83,7 @@ function Operators() {
 			var email = $("#new-operator-email").val();
 			var comments = $("#new-operator-comments").val();
 			$.ajax({
-				url:"api/kvs.php?function=ADDOPERATOR",
+				url:"api/kvs.jsp?function=ADDOPERATOR",
 				data:{"name":name, "password":pass, "telephone":telephone, "email":email, "comments":comments},
 				success:function(data) {
 					if (!data.success) {
@@ -101,7 +101,7 @@ function Operators() {
 		var email = $("#operator-email").val();
 		var comments = $("#operator-comments").val();
 		$.ajax({
-			url:"api/kvs.php?function=UPDATEOPERATOR",
+			url:"api/kvs.jsp?function=UPDATEOPERATOR",
 			data:{"id":id, "name":name, "password":pass, "telephone":telephone, "email":email, "comments":comments},
 			success:function(data) {
 				if (!data.success) {

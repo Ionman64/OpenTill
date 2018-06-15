@@ -27,18 +27,18 @@ function el(tagName, options) {
 }
 function logout() {
 	$.ajax({
-		url:"api/kvs.php?function=LOGOUT",
+		url:"api/kvs.jsp?function=LOGOUT",
 		dataType: "JSON",
 		success: function(data) {
 			if (data.success) {
-				window.location = "login.php";
+				window.location = "login.jsp";
 			}
 		}
 	});
 }
 function showProduct(id) {
 	$.ajax({
-		url: "api/kvs.php?function=GETPRODUCT",
+		url: "api/kvs.jsp?function=GETPRODUCT",
 		data : {"id":id},
 		dataType: "JSON",
 		success: function(data) {
@@ -69,7 +69,7 @@ function showProduct(id) {
 function chartTest(id, data) {
 	if (!data) {
 		$.ajax({
-			url:"api/kvs.php?function=GETPRODUCTSALES",
+			url:"api/kvs.jsp?function=GETPRODUCTSALES",
 			data: {"id":id, "end":moment(moment().format("YYYY-MM-DD")).unix(), "start":moment(moment().subtract(1, "months").format("YYYY-MM-DD")).unix()},
 			success:function(data) {
 				if (!data.success) {
@@ -79,7 +79,7 @@ function chartTest(id, data) {
 			}
 		});
 		$.ajax({
-			url:"api/kvs.php?function=GETPRODUCTLEVELS",
+			url:"api/kvs.jsp?function=GETPRODUCTLEVELS",
 			data: {"id":id},
 			success: function(data) {
 				if (!data.success) {
@@ -193,16 +193,33 @@ function chartTest(id, data) {
 	window.myLine = new Chart(ctx, config);
 	var colorNames = Object.keys(chartColors);
 }
-$(document).ready(function() {
-	requirejs(["js/takings", "js/transactions", "js/operators", "js/suppliers", "js/inventory", "js/departments", "js/orders"], function() {
-		console.log("Loaded Scripts");
+function loadModals() {
+	window.modals = $(".import-modal").length;
+	if (window.modals == 0) {
+		loadDashboard();
+	}
+	$(".import-modal").each(function(key, el) {
+		$(el).load(this.getAttribute("page"), function() {
+			$(el).replaceWith(function() { return $(this).contents(); });
+			if (--window.modals == 0) {
+				loadModals();
+			}
+		});
 	});
-	requirejs(["js/takings", "js/transactions", "js/operators", "js/suppliers", "js/inventory", "js/departments", "js/orders"], function() {
-		console.log("Loaded Scripts");
-	});
+}
+$(document).ready( function() {
 	$.ajaxSetup({
 		method:"POST",
-		dataType:"JSON"
+		dataType:"json"
+	});
+	loadModals();
+});
+function loadDashboard() {
+	requirejs(["js/takings", "js/transactions", "js/operators", "js/suppliers", "js/inventory", "js/departments", "js/orders"], function() {
+		console.log("Loaded Scripts");
+	});
+	requirejs(["js/takings", "js/transactions", "js/operators", "js/suppliers", "js/inventory", "js/departments", "js/orders"], function() {
+		console.log("Loaded Scripts");
 	});
 	$("#logout").click(function() {
 		logout();
@@ -241,7 +258,7 @@ $(document).ready(function() {
 				return;
 			}
 			$.ajax({
-				url:"api/kvs.php?function=DELETEPRODUCT",
+				url:"api/kvs.jsp?function=DELETEPRODUCT",
 				data:{"id":id},
 				success: function(data) {
 					if (!data.success) {
@@ -261,7 +278,7 @@ $(document).ready(function() {
 	$("#update-product").click(function() {
 		var barcode = $("#ProductBarcode").val();
 		$.ajax({
-			url: "api/kvs.php?function=UPDATEPRODUCT",
+			url: "api/kvs.jsp?function=UPDATEPRODUCT",
 			data : {"id":$("#product-modal").attr("product-id"), "cashier":"", "barcode":barcode, "current_stock":$("#currentLevel").val(),"max_stock":$("#maxStockLevel").val(), "department":$("#ProductDepartment").val(), "name" : $("#ProductName").val(), "cost" : 0.00, "price" : $("#ProductPrice").val()},
 			success: function(data) {
 				if (!data.success) {
@@ -276,7 +293,7 @@ $(document).ready(function() {
 		$("#menu").hasClass("hidden") ? $("#menu").removeClass("hidden") : $("#menu").addClass("hidden");
 	});
 	$.ajax({
-		url:"api/kvs.php?function=DASHBOARD",
+		url:"api/kvs.jsp?function=DASHBOARD",
 		success:function(data) {
 			window.dashboard_data = data;
 			window.takings = new Takings();
@@ -311,7 +328,7 @@ $(document).ready(function() {
 		div.appendChild(span);
 		$("#timeline").append(div);
 	}, 1000);
-});
+}
 
 function truncateOnWord(str, limit) {
     var trimmable = '\u0009\u000A\u000B\u000C\u000D\u0020\u00A0\u1680\u180E\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u2028\u2029\u3000\uFEFF';
@@ -333,7 +350,7 @@ function percentage(value, total) {
 }
 function getSalesData(daysToLookBack, id) {
 		$.ajax({
-			url:"api/kvs.php?function=GETPRODUCTSALES",
+			url:"api/kvs.jsp?function=GETPRODUCTSALES",
 			data:{"start":(moment(moment().subtract(daysToLookBack-1, "days").format("YYYY-MM-DD")).format("x")/1000), "end":(moment(moment().add(1, "days").format("YYYY-MM-DD")).format("x")/1000)-1, "id":id},
 			success:function(data) {
 				if (!data.success) {

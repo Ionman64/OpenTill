@@ -79,7 +79,7 @@
 					return;
 				}
 				$.ajax({
-					url: "api/kvs.php?function=SEARCH",
+					url: "api/kvs.jsp?function=SEARCH",
 					data : {"search" : searchString},
 					success : function(data) {
 						var holder = $("#item-search-list")[0];
@@ -128,12 +128,12 @@
 					if (!getTransaction()) {
 						createTransaction()
 					}*/
-					location.href = "https://www.goldstandardresearch.co.uk/kvs/product.php?id=" + $(this).attr("product-data");
+					location.href = "https://www.goldstandardresearch.co.uk/kvs/product.jsp?id=" + $(this).attr("product-data");
 					$("#item-search").addClass("hidden");
 					$("#search-for-product").val("");
 				});
 				$.ajax({
-					url:"api/kvs.php?function=GETPRODUCT",
+					url:"api/kvs.jsp?function=GETPRODUCT",
 					data:{"id":getParam("id")},
 					success:function(data) {
 						if (!data.success) {
@@ -153,7 +153,7 @@
 			});
 			function getSalesData(daysToLookBack, id) {
 				$.ajax({
-					url:"api/kvs.php?function=GETPRODUCTSALES",
+					url:"api/kvs.jsp?function=GETPRODUCTSALES",
 					data:{"start":(moment(moment().subtract(daysToLookBack-1, "days").format("YYYY-MM-DD")).format("x")/1000), "end":(moment(moment().add(1, "days").format("YYYY-MM-DD")).format("x")/1000)-1, "id":id},
 					success:function(data) {
 						if (!data.success) {
@@ -226,7 +226,7 @@
 			<div class="container-fluid">
 				<section class="row">
 					<section class="col-md-2 col-lg-2 col-sm-2 col-xs-2">
-						<a href="index.php"><button class="navbar-btn btn btn-lg btn-default">Back to till</button></a>
+						<a href="index.jsp"><button class="navbar-btn btn btn-lg btn-default">Back to till</button></a>
 					</section>
 					<section class="col-md-3 col-lg-3 col-sm-3 col-xs-3 col-md-offset-7 col-lg-offset-7 col-sm-offset-7 col-xs-offset-7">
 						<form class="navbar-form navbar-right">

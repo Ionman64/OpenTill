@@ -57,7 +57,7 @@ function Transaction() {
 			return false;
 		}
 		$.ajax({
-			url: CONTEXT + "kvs.php?function=TRANSACTION",
+			url: CONTEXT + "kvs.jsp?function=TRANSACTION",
 			data : {"cashier_id" : this.cashier},
 			success : function(data) {
 				if (!data.success) {
@@ -112,7 +112,7 @@ function Transaction() {
 		var transactionJSON = {"id":this.id, "cashier":this.cashier, "json":this.getProductsJSON(), "money_given":this.moneyGiven, "cashback":this.getCashback(), "card_given":this.cardGiven, "total":this.totalCostValue(), "type":this.type, "payee":this.payee};
 		window.offlineStorage.putTransaction(transactionJSON);
 		$.ajax({
-			url: CONTEXT + "kvs.php?function=COMPLETETRANSACTION",
+			url: CONTEXT + "kvs.jsp?function=COMPLETETRANSACTION",
 			data : transactionJSON,
 			success : function(data) {
 				if (!data.success) {
@@ -128,7 +128,7 @@ function Transaction() {
 	}
 	this.clearTransaction = function() {
 		$.ajax({
-			url: CONTEXT + "kvs.php?function=CLEARTRANSACTION",
+			url: CONTEXT + "kvs.jsp?function=CLEARTRANSACTION",
 			data : {"transaction_id":this.id},
 			success : function(data) {
 				if (!data.success) {

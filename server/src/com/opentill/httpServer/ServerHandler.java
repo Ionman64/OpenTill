@@ -1,11 +1,19 @@
 package com.opentill.httpServer;
 
+import java.io.File;
+
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
+import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
 import com.opentill.logging.Log;
+import com.opentill.main.Config;
 
 public final class ServerHandler {
 	public static void run() {
@@ -22,74 +30,46 @@ public final class ServerHandler {
         	}
     	    server.setStopAtShutdown(true);
 
-    	    
-    	    
-            ResourceHandler holderHome = new ResourceHandler();
-            holderHome.setDirAllowed(false);
-            holderHome.setWelcomeFiles(new String[]{"index.jsp"});
-            holderHome.setPathInfoOnly(true);
-            holderHome.setResourceBase("content");
- 
-            
-//            HttpConfiguration http_config = new HttpConfiguration();
-//            http_config.setSecureScheme("https");
-//            http_config.setSendServerVersion(true);
-//    	    ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(http_config));
-//    	    http.setHost("localhost");
-//            http.setPort(port);
-//            http.setIdleTimeout(30000);
-//            server.addConnector(http);
-            
-            //ServletContext api = new ServletContextHandler(ServletContextHandler.SESSIONS);
-            //api.setContextPath("/");
-            //server.setHandler(context);
-            //api.addServlet(new ServletHolder(new API()),"/api/*");
+            ServerConnector connector = new ServerConnector(server);
+            connector.setPort(port);
+            server.addConnector(connector);
            
+            ContextHandler resourceContext = new ContextHandler();
+            ResourceHandler resourceHandler = new ResourceHandler();
+            resourceHandler.setDirectoriesListed(false);
+            resourceHandler.setWelcomeFiles(new String[]{ "index.jsp" });
+            resourceHandler.setResourceBase("content");
+            resourceContext.setHandler(resourceHandler);
+            resourceContext.setContextPath("*");
             
-//            WebAppContext webAppContext = new WebAppContext();
-//            webAppContext.setContextPath(".");
-//            webAppContext.setResourceBase("content");
-//            webAppContext.setInitParameter("dirAllowed", "false");
-            
-            HandlerCollection handlers = new HandlerCollection();
-            handlers.addHandler(holderHome);
-		    //handlers.addHandler(api);
-		    
-		    //handlers.addHandler(webAppContext);
-		    
-            
-            /*ConstraintSecurityHandler security = new ConstraintSecurityHandler();
-            
-            //security.setAuthMethod(authMethod);
-            security.setLoginService(getLoginService());
-            security.setAuthenticator(getAuthenticator());
-            security.setCheckWelcomeFiles(true);
-            security.setHandler(handlers);
-            security.setCheckWelcomeFiles(true);
+            ContextHandler staticFileContext = new ContextHandler();
+            ResourceHandler	staticFileHandler = new ResourceHandler();
+            staticFileHandler.setDirectoriesListed(false);
+            //resourceHandler.setWelcomeFiles(new String[]{ "index.jsp" });
+            staticFileHandler.setResourceBase(Config.APP_HOME + File.separatorChar);
+            staticFileContext.setHandler(staticFileHandler);
+            staticFileContext.setContextPath("/temp/*");
             
             
-            Constraint constraint = new Constraint();
-            constraint.setName("user");
-            constraint.setAuthenticate(true);
-            constraint.setRoles(new String[] { "user", "admin" });
             
-            ConstraintMapping mapping = new ConstraintMapping();
-            mapping.setPathSpec("/dashboard.jsp");
-            mapping.setConstraint(constraint);*/
+            ContextHandler apiContext = new ContextHandler();
+            apiContext.setContextPath("/api");
+            apiContext.setClassLoader(Thread.currentThread().getContextClassLoader());
+            apiContext.setHandler(new API());
+     
+            HandlerList handlers = new HandlerList();
+            handlers.setHandlers(new Handler[] { apiContext, staticFileContext, resourceContext, new DefaultHandler() });
+            server.setHandler(handlers);
+     
+            server.start();
+            server.join();
             
-            //security.setConstraintMappings(Collections.singletonList(mapping));
-            //security.setAuthenticator(new BasicAuthenticator());
-            //security.setLoginService(loginService);
-	            
-		    server.setHandler(handlers);
-		    server.start();
 		    Log.log("Server Started on PORT:" + port);
 		    /*Email email = new SimpleEmail();
 			email.setSubject("OpenTill Server Started");
 			email.setMsg("Your OpenTill server instance has started at " + new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
 			email.addTo("peterpickerill2014@gmail.com");
 			MailHandler.emails.add(email);*/
-		    server.join();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

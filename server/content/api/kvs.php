@@ -471,7 +471,7 @@
 		die (json_encode($arr));
 	}
 	function GUID() {
-		//http://php.net/manual/en/function.com-create-guid.php
+		//http://php.net/manual/en/function.com-create-guid.jsp
 		if (function_exists('com_create_guid') === true)
 		    return trim(com_create_guid(), '{}');
 		$data = openssl_random_pseudo_bytes(16);

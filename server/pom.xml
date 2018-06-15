@@ -48,15 +48,20 @@
     <artifactId>http2-hpack</artifactId>
     <version>9.4.8.v20171121</version>
 </dependency>
-<dependency>
-    <groupId>org.eclipse.jetty</groupId>
-    <artifactId>jetty-servlet</artifactId>
-    <version>9.4.11.v20180605</version>
-</dependency>
 <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-server -->
 <dependency>
     <groupId>org.eclipse.jetty</groupId>
     <artifactId>jetty-server</artifactId>
+    <version>9.4.11.v20180605</version>
+</dependency>
+<dependency>
+    <groupId>org.eclipse.jetty</groupId>
+    <artifactId>jetty-jsp</artifactId>
+    <version>9.3.0.M1</version>
+</dependency>
+<dependency>
+    <groupId>org.eclipse.jetty</groupId>
+    <artifactId>jetty-servlet</artifactId>
     <version>9.4.11.v20180605</version>
 </dependency>
 <dependency>
@@ -83,6 +88,11 @@
   <groupId>mysql</groupId>
   <artifactId>mysql-connector-java</artifactId>
 </dependency>
+  	<dependency>
+  		<groupId>org.eclipse.jetty.aggregate</groupId>
+  		<artifactId>jetty-all-server</artifactId>
+  		<version>8.2.0.v20160908</version>
+  	</dependency>
   </dependencies>
   <dependencyManagement>
   	<dependencies>

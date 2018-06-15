@@ -224,19 +224,19 @@
 		</div>
 	</section>
 	
-	<jsp:include page="modals/productMenuModal.php"></jsp:include>
-	<jsp:include page="modals/cashOut.php"></jsp:include>
-	<jsp:include page="modals/caseModal.php"></jsp:include>
-	<jsp:include page="modals/chat.php"></jsp:include>
-	<jsp:include page="modals/departmentInfo.php"></jsp:include>
-	<jsp:include page="modals/newProduct.php"></jsp:include>
-	<jsp:include page="modals/operatorInfo.php"></jsp:include>
-	<jsp:include page="modals/orderModal.php"></jsp:include>
-	<jsp:include page="modals/priceOverrideModal.php"></jsp:include>
-	<jsp:include page="modals/productModal.php"></jsp:include>
-	<jsp:include page="modals/supplierInfo.php"></jsp:include>
-	<jsp:include page="modals/supplierModal.php"></jsp:include>
-	<jsp:include page="modals/takings.jsp"></jsp:include>
-	<jsp:include page="modals/transactionProducts.php"></jsp:include>
+	<modal data-page="modals/productMenuModal.jsp"></modal>
+	<modal data-page="modals/cashOut.jsp"></modal>
+	<modal data-page="modals/caseModal.jsp"></modal>
+	<modal data-page="modals/chat.jsp"></modal>
+	<modal data-page="modals/departmentInfo.jsp"></modal>
+	<modal data-page="modals/newProduct.jsp"></modal>
+	<modal data-page="modals/operatorInfo.jsp"></modal>
+	<modal data-page="modals/orderModal.jsp"></modal>
+	<modal data-page="modals/priceOverrideModal.jsp"></modal>
+	<modal data-page="modals/productModal.jsp"></modal>
+	<modal data-page="modals/supplierInfo.jsp"></modal>
+	<modal data-page="modals/supplierModal.jsp"></modal>
+	<modal data-page="modals/takings.jsp"></modal>
+	<modal data-page="modals/transactionProducts.jsp"></modal>
 </body>
 </html>

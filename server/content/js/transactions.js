@@ -11,7 +11,7 @@ function Transactions() {
 			if ($(this).attr("data-id") == "") {
 				return;
 			}
-			window.open("https://www.goldstandardresearch.co.uk/kvs/product.php?id=" + $(this).attr("data-id"), '_blank');
+			window.open("https://www.goldstandardresearch.co.uk/kvs/product.jsp?id=" + $(this).attr("data-id"), '_blank');
 		});
 	}
 	this.populate_table = function() {
@@ -91,7 +91,7 @@ function Transactions() {
 	}
 	this.showTransaction = function(id) {
 		$.ajax({
-			url:"api/kvs.php?function=GETTRANSACTION",
+			url:"api/kvs.jsp?function=GETTRANSACTION",
 			data:{"id":id},
 			dataType: "JSON",
 			method:"POST",

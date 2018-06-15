@@ -7,7 +7,7 @@ function clear_labels() {
 function clear_labels_ajax() {
 	var CONTEXT = "https://www.goldstandardresearch.co.uk/kvs/api/";
 	$.ajax({
-		url:CONTEXT + "kvs.php?function=CLEARLABELS",
+		url:CONTEXT + "kvs.jsp?function=CLEARLABELS",
 		method:"POST",
 		dataType:"JSON",
 		success:function(data) {
@@ -91,7 +91,7 @@ function print_document() {
 }
 function exportAsPdf() {
 	$.ajax({
-		url:"export_pdf.php",
+		url:"export_pdf.jsp",
 		method:"POST",
 		dataType:"JSON",
 		data: {html:$("#viewport").html()},
@@ -112,7 +112,7 @@ function download(file_path) {
 	document.body.removeChild(a);
 }
 function back_to_till() {
-	window.location = "index.php";
+	window.location = "index.jsp";
 }
 function el(tagName, options) {
 	var options = options || {};
@@ -132,7 +132,7 @@ function el(tagName, options) {
 }
 function populate_style() {
 	$.ajax({
-		url:"api/kvs.php?function=GETLABELSTYLES",
+		url:"api/kvs.jsp?function=GETLABELSTYLES",
 		success:function(data) {
 			console.log(data);
 			if (!data.success) {
@@ -164,7 +164,7 @@ function truncate(m, length) {
 }
 function save_new_label() {
 	$.ajax({
-		url:"api/kvs.php?function=SAVELABELSTYLE",
+		url:"api/kvs.jsp?function=SAVELABELSTYLE",
 		data:{"json":JSON.stringify(getCurrentStyle()), "name":getCurrentStyleName()},
 		success:function(data) {
 			if (!data.success) {
@@ -176,7 +176,7 @@ function save_new_label() {
 }
 function save_label() {
 	$.ajax({
-		url:"api/kvs.php?function=SAVELABELSTYLE",
+		url:"api/kvs.jsp?function=SAVELABELSTYLE",
 		data:{"id":getStyleId(), "json":JSON.stringify(getCurrentStyle()), "name":getCurrentStyleName()},
 		success:function(data) {
 			if (!data.success) {
@@ -188,7 +188,7 @@ function save_label() {
 }
 function load_style(id) {
 	$.ajax({
-		url:"api/kvs.php?function=GETLABELSTYLE",
+		url:"api/kvs.jsp?function=GETLABELSTYLE",
 		data:{"id":id},
 		success:function(data) {
 			if (!data.success) {
@@ -316,7 +316,7 @@ function render_style(style) {
 }
 function get_labels(style) {
 	$.ajax({
-		url:"api/temp/labels.php",
+		url:"api/temp/labels.jsp",
 		data:{"json":JSON.stringify({"departments":style.page.departments})},
 		success:function(data) {
 			$("#viewport").empty();
