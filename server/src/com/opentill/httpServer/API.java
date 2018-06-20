@@ -33,7 +33,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
-import org.eclipse.jetty.server.handler.ContextHandler;
 import com.opentill.logging.Log;
 import com.opentill.main.Config;
 import com.opentill.main.Utils;
@@ -61,8 +60,8 @@ import java.util.UUID;
 public class API extends AbstractHandler
 {
 	private CustomSessionHandler sessionHandler;
-	public API() {
-		sessionHandler = new CustomSessionHandler();
+	public API(CustomSessionHandler sessionHandler) {
+		this.sessionHandler = sessionHandler;
 	}
 	@SuppressWarnings("unchecked")
 	private void getDashboard(ServletRequest baseRequest, ServletResponse response) throws IOException {
@@ -657,11 +656,7 @@ public class API extends AbstractHandler
 		errorOut(response);
 	}
 	private void getAllDepartments(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
-		JSONObject departments = new JSONObject();
-		if (departments == null) {
-			errorOut(response);
-			return;
-		}
+		JSONObject departments = Department.getDepartments();
 		JSONObject responseJSON = new JSONObject();
 		responseJSON.put("success", true);
 		responseJSON.put("departments", departments);
@@ -1444,7 +1439,7 @@ public class API extends AbstractHandler
 		sessionHandler.destroySession(session);
 		successOut(response);
 	}
-	private void login(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
+	private void login(Request baseRequest, ServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		// TODO Auto-generated method stub
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -1463,7 +1458,9 @@ public class API extends AbstractHandler
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
 				Log.log("User (" + rs.getString(2) + ") logged in successfully");
-				sessionHandler.createUserSession(rs.getString(1));
+				Cookie cookie = new Cookie("auth", sessionHandler.createUserSession(rs.getString(1)));
+				cookie.setPath("/");
+				response.addCookie(cookie);
 				successOut(response);
 				return;
 			}
@@ -1761,7 +1758,7 @@ public class API extends AbstractHandler
 			getDashboard(request, response);
 			break;
 		case "LOGIN":
-			login(request, response);
+			login(baseRequest, request, response);
 			break;
 		case "LOGOUT":
 			logout(request, response);

@@ -1,19 +1,15 @@
 package com.opentill.httpServer;
 
-import java.io.File;
-
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.DefaultHandler;
-import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
 import com.opentill.logging.Log;
-import com.opentill.main.Config;
 
 public final class ServerHandler {
 	public static void run() {
@@ -33,6 +29,13 @@ public final class ServerHandler {
             ServerConnector connector = new ServerConnector(server);
             connector.setPort(port);
             server.addConnector(connector);
+            
+            CustomSessionHandler sessionHandler = new CustomSessionHandler();
+            
+            ContextHandler authContext = new ContextHandler();
+            AuthHandler authHandler = new AuthHandler(sessionHandler, new String[] {"/index.jsp", "/login.jsp", "/thirdParty/", "/api/", "/js/", "/css/"});
+            authContext.setHandler(authHandler);
+            authContext.setContextPath("*");
            
             ContextHandler resourceContext = new ContextHandler();
             ResourceHandler resourceHandler = new ResourceHandler();
@@ -42,23 +45,23 @@ public final class ServerHandler {
             resourceContext.setHandler(resourceHandler);
             resourceContext.setContextPath("*");
             
-            ContextHandler staticFileContext = new ContextHandler();
+            /*ContextHandler staticFileContext = new ContextHandler();
             ResourceHandler	staticFileHandler = new ResourceHandler();
             staticFileHandler.setDirectoriesListed(false);
             //resourceHandler.setWelcomeFiles(new String[]{ "index.jsp" });
             staticFileHandler.setResourceBase(Config.APP_HOME + File.separatorChar);
             staticFileContext.setHandler(staticFileHandler);
-            staticFileContext.setContextPath("/temp/*");
+            staticFileContext.setContextPath("/temp/*");*/
             
             
             
             ContextHandler apiContext = new ContextHandler();
             apiContext.setContextPath("/api");
             apiContext.setClassLoader(Thread.currentThread().getContextClassLoader());
-            apiContext.setHandler(new API());
+            apiContext.setHandler(new API(sessionHandler));
      
             HandlerList handlers = new HandlerList();
-            handlers.setHandlers(new Handler[] { apiContext, staticFileContext, resourceContext, new DefaultHandler() });
+            handlers.setHandlers(new Handler[] {authContext, resourceContext, apiContext, new DefaultHandler()});
             server.setHandler(handlers);
      
             server.start();

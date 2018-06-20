@@ -224,6 +224,7 @@ function loadDashboard() {
 	$("#logout").click(function() {
 		logout();
 	});
+	
 	$(".menu-buttons").on("click", ".menu-button", function() {
 		$("#menu").addClass("hidden");
 		if (!$(this).attr("data-page")) {

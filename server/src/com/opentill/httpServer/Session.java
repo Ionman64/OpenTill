@@ -12,11 +12,12 @@ public class Session {
 	public Session(String id, String value) {
 		this.id = id;
 		this.expiryTimeStamp = Utils.getCurrentTimeStamp() + DEFAULTEXPIRYTIME; 
-		if (expiryTimeStamp == -1L) {
-			this.expires = false;
-		}
+		this.expires = false;
 		this.state = SessionState.ACTIVE;
 		this.value = value;
+	}
+	public void setExpires(boolean expires) {
+		this.expires = expires;
 	}
 	public String getId() {
 		return this.getId();
@@ -31,7 +32,7 @@ public class Session {
 		this.value = value;
 	}
 	public boolean updateSession() {
-		if ((this.expires) && (this.expiryTimeStamp > Utils.getCurrentTimeStamp())) {
+		if ((this.expires) && (this.expiryTimeStamp < Utils.getCurrentTimeStamp())) {
 			this.state = SessionState.EXPIRED;
 			return false;
 		}
@@ -40,7 +41,7 @@ public class Session {
 	public String getValue() {
 		this.updateSession();
 		if (this.state == SessionState.EXPIRED) {
-			System.out.print("Warning: Expired Session Being Read");
+			System.out.println("Warning: Expired Session Being Read");
 		}
 		return this.value;
 	}
