@@ -12,12 +12,17 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 
 public class AuthHandler extends AbstractHandler {
 	CustomSessionHandler sessionHandler = null;
+	String authPage = null;
 	String[] allowedDomains = null;
 	String authContext;
 	
 	public AuthHandler(CustomSessionHandler sessionHandler, String[] allowedDomains) {
 		this.sessionHandler = sessionHandler;
 		this.allowedDomains = allowedDomains;
+	}
+	
+	public void setAuthPage(String authPage) {
+		this.authPage = authPage;
 	}
 
 	@Override
@@ -41,7 +46,7 @@ public class AuthHandler extends AbstractHandler {
 			}
 		}
 		if ((sessionId == null) || (sessionHandler.getSessionValue(sessionId) == null)) {
-			response.sendRedirect("login.jsp");
+			response.sendRedirect(this.authPage);
 			baseRequest.setHandled(true);
 		}
 		else {

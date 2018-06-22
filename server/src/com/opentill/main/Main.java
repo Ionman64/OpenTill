@@ -1,6 +1,8 @@
 package com.opentill.main;
 
 
+import org.apache.log4j.BasicConfigurator;
+
 import com.opentill.document.PDFHelper;
 import com.opentill.httpServer.ServerHandler;
 import com.opentill.mail.MailHandler;
@@ -9,6 +11,7 @@ import com.opentill.main.Config;
 public class Main {
 		public static void main(String[] args) throws Exception
 	    {	
+			BasicConfigurator.configure();
 			if (!Config.setup()) {
 				System.out.println("System cannot setup configuration properly");
 				return;
