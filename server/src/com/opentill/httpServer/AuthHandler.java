@@ -15,25 +15,25 @@ public class AuthHandler extends AbstractHandler {
 	String authPage = null;
 	String[] allowedDomains = null;
 	String authContext;
-	
+
 	public AuthHandler(CustomSessionHandler sessionHandler, String[] allowedDomains) {
 		this.sessionHandler = sessionHandler;
 		this.allowedDomains = allowedDomains;
 	}
-	
+
 	public void setAuthPage(String authPage) {
 		this.authPage = authPage;
 	}
 
 	@Override
-	public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+	public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException {
 		String sessionId = null;
 		for (String domain : allowedDomains) {
 			if (domain.endsWith("/") && target.startsWith(domain)) {
 				baseRequest.setHandled(false);
 				return;
-			}
-			else if (target.equals(domain)) {
+			} else if (target.equals(domain)) {
 				baseRequest.setHandled(false);
 				return;
 			}
@@ -48,8 +48,7 @@ public class AuthHandler extends AbstractHandler {
 		if ((sessionId == null) || (sessionHandler.getSessionValue(sessionId) == null)) {
 			response.sendRedirect(this.authPage);
 			baseRequest.setHandled(true);
-		}
-		else {
+		} else {
 			baseRequest.setHandled(false);
 		}
 	}

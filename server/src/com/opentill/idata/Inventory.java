@@ -17,7 +17,15 @@ public class Inventory {
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblproducts.id, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.name, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.price, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.current_stock, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.max_stock, " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id FROM " + Config.DATABASE_TABLE_PREFIX + "tblproducts LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "tblcatagories ON " + Config.DATABASE_TABLE_PREFIX + "tblproducts.department = " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id WHERE " + Config.DATABASE_TABLE_PREFIX + "tblproducts.deleted = 0 ORDER BY " + Config.DATABASE_TABLE_PREFIX + "tblproducts.name");
+			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblproducts.id, "
+					+ Config.DATABASE_TABLE_PREFIX + "tblproducts.name, " + Config.DATABASE_TABLE_PREFIX
+					+ "tblproducts.price, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.current_stock, "
+					+ Config.DATABASE_TABLE_PREFIX + "tblproducts.max_stock, " + Config.DATABASE_TABLE_PREFIX
+					+ "tblcatagories.id FROM " + Config.DATABASE_TABLE_PREFIX + "tblproducts LEFT JOIN "
+					+ Config.DATABASE_TABLE_PREFIX + "tblcatagories ON " + Config.DATABASE_TABLE_PREFIX
+					+ "tblproducts.department = " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id WHERE "
+					+ Config.DATABASE_TABLE_PREFIX + "tblproducts.deleted = 0 ORDER BY " + Config.DATABASE_TABLE_PREFIX
+					+ "tblproducts.name");
 			rs = pstmt.executeQuery();
 			JSONObject jo = new JSONObject();
 			while (rs.next()) {
@@ -25,24 +33,21 @@ public class Inventory {
 				if (!jo.containsKey(rs.getString(6))) {
 					department = new JSONObject();
 					jo.put(rs.getString(6), department);
-				}
-				else {
+				} else {
 					department = (JSONObject) jo.get(rs.getString(6));
 				}
 				JSONObject product = new JSONObject();
 				product.put("id", rs.getString(1));
-				product.put("name",  rs.getString(2));
+				product.put("name", rs.getString(2));
 				product.put("price", rs.getFloat(3));
 				product.put("current_stock", rs.getString(4));
 				product.put("max_stock", rs.getString(5));
 				department.put(rs.getString(1), product);
 			}
 			return jo;
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			Log.log(ex.toString());
-		}
-		finally {
+		} finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
 		return null;

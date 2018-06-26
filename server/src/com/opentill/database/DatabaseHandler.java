@@ -12,39 +12,52 @@ import com.opentill.main.Config;
 
 public class DatabaseHandler {
 	private static String dbms = "mysql";
+
 	public static Connection getDatabase() throws SQLException {
-	    Connection conn = null;
-	    Properties connectionProps = new Properties();
-	    connectionProps.put("user", Config.databaseProperties.getProperty("database_user"));
-	    connectionProps.put("password", Config.databaseProperties.getProperty("database_password"));
-	    conn = DriverManager.getConnection("jdbc:" + DatabaseHandler.dbms + "://" + Config.databaseProperties.getProperty("database_url") + ":" + Config.databaseProperties.getProperty("database_port") + "/" + Config.databaseProperties.getProperty("database_name"), connectionProps);
-	    if (conn == null) {
-	    	throw new SQLException("Cannot connect to database - Please check configuration");
-	    }
-	    return conn;
+		Connection conn = null;
+		Properties connectionProps = new Properties();
+		connectionProps.put("user", Config.databaseProperties.getProperty("database_user"));
+		connectionProps.put("password", Config.databaseProperties.getProperty("database_password"));
+		conn = DriverManager.getConnection(
+				"jdbc:" + DatabaseHandler.dbms + "://" + Config.databaseProperties.getProperty("database_url") + ":"
+						+ Config.databaseProperties.getProperty("database_port") + "/"
+						+ Config.databaseProperties.getProperty("database_name"),
+				connectionProps);
+		if (conn == null) {
+			throw new SQLException("Cannot connect to database - Please check configuration");
+		}
+		return conn;
 	}
-	public static Connection getDatabase(String url, int port, String user, String password, String databaseName) throws SQLException {
-	    java.sql.Connection conn = null;
-	    Properties connectionProps = new Properties();
-	    connectionProps.put("user", user);
-	    connectionProps.put("password", password);
-	    conn = DriverManager.getConnection("jdbc:" + DatabaseHandler.dbms + "://" + url + ":" + port + "/" + databaseName, connectionProps);
-	    if (conn == null) {
-	    	throw new SQLException("Cannot connect to database - Please check configuration");
-	    }
-	    return conn;
+
+	public static Connection getDatabase(String url, int port, String user, String password, String databaseName)
+			throws SQLException {
+		java.sql.Connection conn = null;
+		Properties connectionProps = new Properties();
+		connectionProps.put("user", user);
+		connectionProps.put("password", password);
+		conn = DriverManager.getConnection(
+				"jdbc:" + DatabaseHandler.dbms + "://" + url + ":" + port + "/" + databaseName, connectionProps);
+		if (conn == null) {
+			throw new SQLException("Cannot connect to database - Please check configuration");
+		}
+		return conn;
 	}
+
 	public static Connection getMySqlConnection() throws SQLException {
 		Connection conn = null;
-	    Properties connectionProps = new Properties();
-	    connectionProps.put("user", Config.databaseProperties.getProperty("database_user"));
-	    connectionProps.put("password", Config.databaseProperties.getProperty("database_password"));
-	    conn = DriverManager.getConnection("jdbc:" + DatabaseHandler.dbms + "://" + Config.databaseProperties.getProperty("database_url") + ":" + Config.databaseProperties.getProperty("database_port"), connectionProps);
-	    if (conn == null) {
-	    	throw new SQLException("Cannot connect to database - Please check configuration");
-	    }
-	    return conn;
+		Properties connectionProps = new Properties();
+		connectionProps.put("user", Config.databaseProperties.getProperty("database_user"));
+		connectionProps.put("password", Config.databaseProperties.getProperty("database_password"));
+		conn = DriverManager.getConnection(
+				"jdbc:" + DatabaseHandler.dbms + "://" + Config.databaseProperties.getProperty("database_url") + ":"
+						+ Config.databaseProperties.getProperty("database_port"),
+				connectionProps);
+		if (conn == null) {
+			throw new SQLException("Cannot connect to database - Please check configuration");
+		}
+		return conn;
 	}
+
 	public static void closeDBResources(ResultSet rs, PreparedStatement pstmt, Connection conn) {
 		try {
 			if (rs != null && !rs.isClosed()) {
@@ -61,6 +74,7 @@ public class DatabaseHandler {
 			e.printStackTrace();
 		}
 	}
+
 	public static void closeDBResources(ResultSet rs, Statement stmt, Connection conn) {
 		try {
 			if (rs != null && !rs.isClosed()) {

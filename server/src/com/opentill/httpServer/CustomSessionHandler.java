@@ -9,25 +9,29 @@ public class CustomSessionHandler {
 	private HashMap<String, Session> active = null;
 	private int SESSIONTIMEOUT = -1;
 	public Long nextCleanUp = Utils.getCurrentTimeStamp();
+
 	public CustomSessionHandler() {
 		this.active = new HashMap<String, Session>();
 	}
+
 	public String getSessionValue(String sessionGuid) {
-		//Check session key exists, if it does, check the timeout, then return
+		// Check session key exists, if it does, check the timeout, then return
 		if (!active.containsKey(sessionGuid)) {
 			return null;
 		}
 		Session session = active.get(sessionGuid);
 		return session.getValue();
- 	}
+	}
+
 	public String createUserSession(String userId) {
 		String newSessionGuid = Utils.GUID();
 		Session newSession = new Session(newSessionGuid, userId);
 		this.active.put(newSessionGuid, newSession);
 		return newSessionGuid;
 	}
+
 	public void updateSessions() {
-		//Remove Expired Sessions
+		// Remove Expired Sessions
 		Iterator<Session> sessions = active.values().iterator();
 		while (sessions.hasNext()) {
 			Session session = sessions.next();
@@ -36,6 +40,7 @@ public class CustomSessionHandler {
 			}
 		}
 	}
+
 	public boolean destroySession(String sessionGuid) {
 		if (!active.containsKey(sessionGuid)) {
 			return false;
@@ -43,6 +48,7 @@ public class CustomSessionHandler {
 		active.remove(sessionGuid);
 		return true;
 	}
+
 	public int numberOfActiveSessions() {
 		return active.size();
 	}

@@ -9,6 +9,7 @@ import java.util.Properties;
 import com.opentill.logging.Log;
 
 public final class Config {
+	public static int PORT = 8080;
 	public static String CURRENT_VERSION = "0.01";
 	public static String DATABASE_TABLE_PREFIX = "kvs_";
 	public static String OPEN_TILL_URL = "http://localhost:8080/temp/";
@@ -16,12 +17,13 @@ public final class Config {
 	public static String APP_HOME = Config.USER_HOME + File.separatorChar + ".opentill";
 	public final static Properties databaseProperties = Config.readDatabasePropertiesFile();
 	public final static Properties emailProperties = Config.getEmailProperties();
+
 	public static boolean setup() {
-		if (! createRootFolderIfNotExists()) {
+		if (!createRootFolderIfNotExists()) {
 			return false;
 		}
-		String[] folders = new String[] {"logs", "temp"};
-		for (String folder: folders) {
+		String[] folders = new String[] { "logs", "temp" };
+		for (String folder : folders) {
 			if (!createFolderIfNotExists(folder)) {
 				return false;
 			}
@@ -34,8 +36,10 @@ public final class Config {
 		}
 		return true;
 	}
+
 	private static boolean createEmailPropertiesFileIfNotExists() {
-		String props_path = Config.USER_HOME + File.separatorChar + ".opentill" + File.separatorChar + "email.properties";
+		String props_path = Config.USER_HOME + File.separatorChar + ".opentill" + File.separatorChar
+				+ "email.properties";
 		File props_file = new File(props_path);
 		if (!props_file.exists()) {
 			try {
@@ -50,17 +54,18 @@ public final class Config {
 				return true;
 			} catch (IOException e) {
 				Log.log("Cannot write default props file");
-				System.exit(1); //Indicates a terminal fault
+				System.exit(1); // Indicates a terminal fault
 			}
-		}
-		else {
+		} else {
 			return true;
 		}
 		return false;
 	}
+
 	private static Properties getEmailProperties() {
-		//TODO: Get from Database 
-		String props_path = Config.USER_HOME + File.separatorChar + ".opentill" + File.separatorChar + "email.properties";
+		// TODO: Get from Database
+		String props_path = Config.USER_HOME + File.separatorChar + ".opentill" + File.separatorChar
+				+ "email.properties";
 		File props_file = new File(props_path);
 		if (props_file.exists()) {
 			try {
@@ -71,16 +76,17 @@ public final class Config {
 				return props;
 			} catch (IOException e) {
 				Log.log("Cannot read default props file");
-				System.exit(1); //Indicates a terminal fault
+				System.exit(1); // Indicates a terminal fault
 			}
-		}
-		else {
+		} else {
 			return null;
 		}
 		return null;
 	}
+
 	private static Properties readDatabasePropertiesFile() {
-		String props_path = Config.USER_HOME + File.separatorChar + ".opentill" + File.separatorChar + "database.properties";
+		String props_path = Config.USER_HOME + File.separatorChar + ".opentill" + File.separatorChar
+				+ "database.properties";
 		File props_file = new File(props_path);
 		if (props_file.exists()) {
 			try {
@@ -91,35 +97,36 @@ public final class Config {
 				return props;
 			} catch (IOException e) {
 				Log.log("Cannot read default props file");
-				System.exit(1); //Indicates a terminal fault
+				System.exit(1); // Indicates a terminal fault
 			}
-		}
-		else {
+		} else {
 			return null;
 		}
 		return null;
 	}
+
 	public static boolean createRootFolderIfNotExists() {
 		File env_directory = new File(Config.APP_HOME);
 		if (!env_directory.exists()) {
 			return env_directory.mkdirs();
-		}
-		else {
+		} else {
 			return true;
 		}
 	}
+
 	public static boolean createFolderIfNotExists(String foldername) {
 		String env_path = Config.APP_HOME + File.separatorChar + foldername;
 		File env_directory = new File(env_path);
 		if (!env_directory.exists()) {
 			return env_directory.mkdirs();
-		}
-		else {
+		} else {
 			return true;
 		}
 	}
+
 	public static boolean createDatabasePropertiesFileIfNotExists() {
-		String props_path = Config.USER_HOME + File.separatorChar + ".opentill" + File.separatorChar + "database.properties";
+		String props_path = Config.USER_HOME + File.separatorChar + ".opentill" + File.separatorChar
+				+ "database.properties";
 		File props_file = new File(props_path);
 		if (!props_file.exists()) {
 			try {
@@ -135,10 +142,9 @@ public final class Config {
 				return true;
 			} catch (IOException e) {
 				Log.log("Cannot write default props file");
-				System.exit(1); //Indicates a terminal fault
+				System.exit(1); // Indicates a terminal fault
 			}
-		}
-		else {
+		} else {
 			return true;
 		}
 		return false;

@@ -17,18 +17,19 @@ public class Department {
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id, " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.name FROM " + Config.DATABASE_TABLE_PREFIX + "tblcatagories WHERE " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.deleted = 0 ORDER BY " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.name");
+			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id, "
+					+ Config.DATABASE_TABLE_PREFIX + "tblcatagories.name FROM " + Config.DATABASE_TABLE_PREFIX
+					+ "tblcatagories WHERE " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.deleted = 0 ORDER BY "
+					+ Config.DATABASE_TABLE_PREFIX + "tblcatagories.name");
 			rs = pstmt.executeQuery();
 			JSONObject departments = new JSONObject();
 			while (rs.next()) {
 				departments.put(rs.getString(1), rs.getString(2));
 			}
 			return departments;
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			Log.log(ex.toString());
-		}
-		finally {
+		} finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
 		return null;

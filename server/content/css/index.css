@@ -238,6 +238,7 @@ ul.navigation-list>li span {
 .keypad button {
 	width:100%;
 	height:50px;
+	font-weight:bold;
 }
 #department button {
 	width:100%;
