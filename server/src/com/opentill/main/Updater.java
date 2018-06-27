@@ -16,7 +16,7 @@ public class Updater {
 					Config.APP_HOME + File.pathSeparator + "temp" + File.pathSeparator + "new_version.jar");
 			FileUtils.copyURLToFile(website, file);
 		} catch (IOException e) {
-			Log.log("Could not download update file:" + e.getMessage());
+			Log.info("Could not download update file:" + e.getMessage());
 		}
 	}
 

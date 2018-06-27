@@ -56,7 +56,7 @@ public class Transaction {
 			}
 			return jo;
 		} catch (SQLException ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
@@ -76,12 +76,12 @@ public class Transaction {
 			pstmt.setLong(2, Utils.getCurrentTimeStamp() / 1000);
 			pstmt.setString(3, operator);
 			if (pstmt.executeUpdate() > 0) {
-				Log.log("Transaction (" + guid + ") STARTED by operator (" + operator + ")");
+				Log.info("Transaction (" + guid + ") STARTED by operator (" + operator + ")");
 				return guid;
 			}
 			return null;
 		} catch (SQLException ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}

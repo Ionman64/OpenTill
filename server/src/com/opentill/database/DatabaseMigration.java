@@ -63,27 +63,27 @@ public class DatabaseMigration {
 	public void up() throws IOException, SQLException {
 		File file = Paths.get(Config.APP_HOME, "migrations", this.version, "up.sql").toFile();
 		if (!file.exists()) {
-			Log.log("Cannot Find Migration File:" + file.getAbsolutePath());
+			Log.info("Cannot Find Migration File:" + file.getAbsolutePath());
 			return;
 		}
 		if (this.runSQLfile(file)) {
-			Log.log("Database upgraded successfully to version " + this.version);
+			Log.info("Database upgraded successfully to version " + this.version);
 			return;
 		}
-		Log.log("Database could not be upgraded to version " + this.version);
+		Log.info("Database could not be upgraded to version " + this.version);
 
 	}
 
 	public void down() throws IOException, SQLException {
 		File file = Paths.get("migrations", this.version, "down.sql").toFile();
 		if (!file.exists()) {
-			Log.log("Cannot Find Migration File:" + file.getAbsolutePath());
+			Log.info("Cannot Find Migration File:" + file.getAbsolutePath());
 			return;
 		}
 		if (this.runSQLfile(file)) {
-			Log.log("Database reverted successfully from version " + this.version);
+			Log.info("Database reverted successfully from version " + this.version);
 			return;
 		}
-		Log.log("Database could not be reverted from version " + this.version);
+		Log.info("Database could not be reverted from version " + this.version);
 	}
 }

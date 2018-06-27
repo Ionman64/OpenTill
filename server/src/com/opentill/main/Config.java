@@ -9,10 +9,12 @@ import java.util.Properties;
 import com.opentill.logging.Log;
 
 public final class Config {
+	public static boolean HTTPS = false;
 	public static int PORT = 8080;
 	public static String CURRENT_VERSION = "0.01";
+	public static String SERVER_ADDR = "localhost";
 	public static String DATABASE_TABLE_PREFIX = "kvs_";
-	public static String OPEN_TILL_URL = "http://localhost:8080/temp/";
+	public static String OPEN_TILL_URL = Config.getServerUrl();
 	public static String USER_HOME = System.getProperty("user.home");
 	public static String APP_HOME = Config.USER_HOME + File.separatorChar + ".opentill";
 	public final static Properties databaseProperties = Config.readDatabasePropertiesFile();
@@ -36,6 +38,15 @@ public final class Config {
 		}
 		return true;
 	}
+	
+	public static String getServerUrl() {
+		if (Config.HTTPS) {
+			return String.format("https://%s:%s", Config.SERVER_ADDR, Config.PORT);
+		}
+		else {
+			return String.format("http://%s:%s", Config.SERVER_ADDR, Config.PORT);
+		}
+	}
 
 	private static boolean createEmailPropertiesFileIfNotExists() {
 		String props_path = Config.USER_HOME + File.separatorChar + ".opentill" + File.separatorChar
@@ -53,7 +64,7 @@ public final class Config {
 				fileO.close();
 				return true;
 			} catch (IOException e) {
-				Log.log("Cannot write default props file");
+				Log.info("Cannot write default props file");
 				System.exit(1); // Indicates a terminal fault
 			}
 		} else {
@@ -75,7 +86,7 @@ public final class Config {
 				fileO.close();
 				return props;
 			} catch (IOException e) {
-				Log.log("Cannot read default props file");
+				Log.info("Cannot read default props file");
 				System.exit(1); // Indicates a terminal fault
 			}
 		} else {
@@ -96,7 +107,7 @@ public final class Config {
 				fileO.close();
 				return props;
 			} catch (IOException e) {
-				Log.log("Cannot read default props file");
+				Log.info("Cannot read default props file");
 				System.exit(1); // Indicates a terminal fault
 			}
 		} else {
@@ -141,7 +152,7 @@ public final class Config {
 				fileO.close();
 				return true;
 			} catch (IOException e) {
-				Log.log("Cannot write default props file");
+				Log.info("Cannot write default props file");
 				System.exit(1); // Indicates a terminal fault
 			}
 		} else {

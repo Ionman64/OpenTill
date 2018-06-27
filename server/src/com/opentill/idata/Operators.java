@@ -36,7 +36,7 @@ public class Operators {
 				return true;
 			}
 		} catch (Exception ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
@@ -63,7 +63,7 @@ public class Operators {
 			}
 			return jo;
 		} catch (Exception ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
@@ -89,7 +89,7 @@ public class Operators {
 			}
 			return jo;
 		} catch (Exception ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}

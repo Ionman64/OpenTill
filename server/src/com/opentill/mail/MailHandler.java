@@ -14,7 +14,7 @@ public class MailHandler {
 	public static boolean running = false;
 
 	public static void run() {
-		Log.log("Mail Handler Started");
+		Log.info("Started: Mail Handler");
 		while (true) {
 			while (MailHandler.emails.size() > 0) {
 				try {
@@ -28,7 +28,7 @@ public class MailHandler {
 					email.send();
 					MailHandler.emails.remove(0);
 				} catch (EmailException e) {
-					Log.log("Could not send email");
+					Log.info("Could not send email");
 					e.printStackTrace();
 				} catch (Exception e) {
 					break;
@@ -37,11 +37,11 @@ public class MailHandler {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException ex) {
-				Log.log(ex.toString());
+				Log.info(ex.toString());
 				break;
 			}
 		}
-		Log.log("Mail Handler has died");
+		Log.info("Mail Handler has died");
 	};
 
 	public static void add(Email email) {

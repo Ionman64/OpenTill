@@ -1,5 +1,6 @@
 package com.opentill.httpServer;
 
+import java.io.File;
 import java.net.BindException;
 import java.net.URI;
 import java.net.URL;
@@ -47,14 +48,7 @@ public final class ServerHandler {
 			ResourceHandler resourceHandler = new ResourceHandler();
 			resourceHandler.setDirectoriesListed(false);
 			resourceHandler.setWelcomeFiles(new String[] { "index.jsp" });
-			ClassLoader cl = ServerHandler.class.getClassLoader();
-			URL f = cl.getResource("content/index.jsp");
-		    if (f == null)
-		    {
-		        throw new RuntimeException("Unable to find resource directory");
-		    }
-		    URI webRootUri = f.toURI().resolve("./").normalize();
-			resourceHandler.setBaseResource(Resource.newResource(webRootUri));
+			resourceHandler.setBaseResource(Resource.newResource(Config.APP_HOME + File.separatorChar + "content"));
 			resourceContext.setHandler(resourceHandler);
 			resourceContext.setContextPath("*");
 
@@ -78,9 +72,10 @@ public final class ServerHandler {
 			server.setHandler(handlers);
 
 			server.start();
+			Log.info("Started: Server Handler");
+			Log.log("Server can be accessed from " + Config.getServerUrl());
 			server.join();
-
-			Log.log("Server Started on PORT:" + Config.PORT);
+			
 			/*
 			 * Email email = new SimpleEmail(); email.setSubject("OpenTill Server Started");
 			 * email.setMsg("Your OpenTill server instance has started at " + new

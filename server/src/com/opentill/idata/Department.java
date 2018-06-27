@@ -28,7 +28,7 @@ public class Department {
 			}
 			return departments;
 		} catch (Exception ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}

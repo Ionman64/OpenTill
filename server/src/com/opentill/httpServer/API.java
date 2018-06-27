@@ -96,12 +96,12 @@ public class API extends AbstractHandler {
 			pstmt.setLong(1, Utils.getCurrentTimeStamp());
 			pstmt.setString(2, id);
 			if (pstmt.executeUpdate() > 0) {
-				Log.log("Order ($id) COMPLETED by operator ($operator)");
+				Log.info("Order ($id) COMPLETED by operator ($operator)");
 				successOut(response);
 				return;
 			}
 		} catch (Exception ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
@@ -156,7 +156,7 @@ public class API extends AbstractHandler {
 				return;
 			}
 		} catch (Exception ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
@@ -196,7 +196,7 @@ public class API extends AbstractHandler {
 			response.getWriter().write(responseJSON.toJSONString());
 			return;
 		} catch (Exception ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
@@ -238,7 +238,7 @@ public class API extends AbstractHandler {
 				return;
 			}
 		} catch (Exception ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
@@ -276,7 +276,7 @@ public class API extends AbstractHandler {
 				return;
 			}
 		} catch (Exception ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
@@ -309,12 +309,12 @@ public class API extends AbstractHandler {
 			pstmt.setLong(7, Utils.getCurrentTimeStamp());
 			pstmt.setLong(8, Utils.getCurrentTimeStamp());
 			if (pstmt.executeUpdate() > 0) {
-				Log.log("Supplier ($id) CREATED by operator ($operator)");
+				Log.info("Supplier ($id) CREATED by operator ($operator)");
 				successOut(response);
 				return;
 			}
 		} catch (Exception ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
@@ -347,12 +347,12 @@ public class API extends AbstractHandler {
 			pstmt.setLong(6, Utils.getCurrentTimeStamp());
 			pstmt.setString(7, id);
 			if (pstmt.executeUpdate() > 0) {
-				Log.log("Supplier ($id) UPDATED by operator ($operator)");
+				Log.info("Supplier ($id) UPDATED by operator ($operator)");
 				successOut(response);
 				return;
 			}
 		} catch (Exception ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
@@ -444,7 +444,7 @@ public class API extends AbstractHandler {
 			response.getWriter().write(responseJSON.toJSONString());
 			return;
 		} catch (Exception ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
@@ -471,7 +471,7 @@ public class API extends AbstractHandler {
 				return;
 			}
 		} catch (Exception ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
@@ -509,7 +509,7 @@ public class API extends AbstractHandler {
 				return;
 			}
 		} catch (Exception ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
@@ -577,7 +577,7 @@ public class API extends AbstractHandler {
 			response.getWriter().write(responseJo.toJSONString());
 			return;
 		} catch (Exception ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
@@ -600,13 +600,13 @@ public class API extends AbstractHandler {
 			pstmt.setLong(1, Utils.getCurrentTimeStamp());
 			pstmt.setString(2, id);
 			if (pstmt.executeUpdate() > 0) {
-				Log.log("Product ($id) DELETED by operator ($operator)");
+				Log.info("Product ($id) DELETED by operator ($operator)");
 				successOut(response);
 				return;
 			}
 			errorOut(response);
 		} catch (Exception ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
@@ -694,7 +694,7 @@ public class API extends AbstractHandler {
 			response.getWriter().write(responseJo.toJSONString());
 			return;
 		} catch (Exception ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
@@ -765,7 +765,7 @@ public class API extends AbstractHandler {
 				return;
 			}
 		} catch (Exception ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
@@ -791,7 +791,7 @@ public class API extends AbstractHandler {
 				return;
 			}
 		} catch (Exception ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
@@ -828,7 +828,7 @@ public class API extends AbstractHandler {
 			}
 			errorOut(response);
 		} catch (Exception ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
@@ -858,7 +858,7 @@ public class API extends AbstractHandler {
 			}
 			errorOut(response);
 		} catch (Exception ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
@@ -899,7 +899,7 @@ public class API extends AbstractHandler {
 			response.getWriter().write(jo.toJSONString());
 			return;
 		} catch (Exception ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
@@ -962,7 +962,7 @@ public class API extends AbstractHandler {
 			response.getWriter().write(responseJson.toJSONString());
 			return;
 		} catch (Exception ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
@@ -994,7 +994,7 @@ public class API extends AbstractHandler {
 			currentStockInt = Integer.parseInt(currentStockString);
 			maxStockInt = Integer.parseInt(maxStockString);
 		} catch (NumberFormatException ex) {
-			Log.log(ex.getMessage());
+			Log.info(ex.getMessage());
 			errorOut(response, "Could not interpret numeric field");
 			return;
 		}
@@ -1011,13 +1011,13 @@ public class API extends AbstractHandler {
 			pstmt.setInt(5, maxStockInt);
 			pstmt.setString(6, id);
 			if (pstmt.executeUpdate() > 0) {
-				Log.log("Product ($id) UPDATED by operator ($operator)");
+				Log.info("Product ($id) UPDATED by operator ($operator)");
 				successOut(response);
 				return;
 			}
 			errorOut(response);
 		} catch (Exception ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
@@ -1043,7 +1043,7 @@ public class API extends AbstractHandler {
 				return;
 			}
 		} catch (Exception ex) {
-			Log.log(ex.getMessage());
+			Log.info(ex.getMessage());
 		} finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
@@ -1079,7 +1079,7 @@ public class API extends AbstractHandler {
 		ResultSet rs = null;
 		try {
 			if (!writeTransactionFileToDatabase(id, json, type)) {
-				Log.log("Failed to write transaction(" + id + ") to database, rolling back");
+				Log.info("Failed to write transaction(" + id + ") to database, rolling back");
 				errorOut(response);
 				return;
 			}
@@ -1097,12 +1097,12 @@ public class API extends AbstractHandler {
 			pstmt.setString(9, cashier_id);
 			pstmt.execute();
 			if (pstmt.getUpdateCount() > 0) {
-				Log.log("Transaction " + id + " COMPLETED by operator (" + cashier_id + ")");
+				Log.info("Transaction " + id + " COMPLETED by operator (" + cashier_id + ")");
 				successOut(response);
 				return;
 			}
 		} catch (SQLException ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
@@ -1119,7 +1119,7 @@ public class API extends AbstractHandler {
 			JSONParser parser = new JSONParser();
 			jo = (JSONObject) parser.parse(json);
 		} catch (ParseException ex) {
-			Log.log(ex.getMessage());
+			Log.info(ex.getMessage());
 			return false;
 		}
 		Connection conn = null;
@@ -1131,7 +1131,7 @@ public class API extends AbstractHandler {
 				JSONObject joProduct = (JSONObject) products.get(i);
 				Long productQuantity = (Long) joProduct.get("quantity");
 				if (productQuantity == 0L) {
-					Log.log("Error, transaction (" + id + ") tried to buy 0 products (" + joProduct.get("id") + ")");
+					Log.info("Error, transaction (" + id + ") tried to buy 0 products (" + joProduct.get("id") + ")");
 					continue;
 				}
 				switch (type) {
@@ -1155,7 +1155,7 @@ public class API extends AbstractHandler {
 			return true;
 		} catch (Exception ex) {
 			conn.rollback();
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 			return false;
 		} finally {
 			DatabaseHandler.closeDBResources(null, null, conn);
@@ -1219,7 +1219,7 @@ public class API extends AbstractHandler {
 				return true;
 			}
 		} catch (Exception ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
@@ -1267,7 +1267,7 @@ public class API extends AbstractHandler {
 				return rs.getFloat(1);
 			}
 		} catch (Exception ex) {
-			Log.log(ex.getMessage());
+			Log.info(ex.getMessage());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
@@ -1305,7 +1305,7 @@ public class API extends AbstractHandler {
 				return rs.getFloat(1);
 			}
 		} catch (Exception ex) {
-			Log.log(ex.getMessage());
+			Log.info(ex.getMessage());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
@@ -1339,7 +1339,7 @@ public class API extends AbstractHandler {
 				return rs.getFloat(1);
 			}
 		} catch (Exception ex) {
-			Log.log(ex.getMessage());
+			Log.info(ex.getMessage());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
@@ -1373,7 +1373,7 @@ public class API extends AbstractHandler {
 				return rs.getFloat(1);
 			}
 		} catch (Exception ex) {
-			Log.log(ex.getMessage());
+			Log.info(ex.getMessage());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
@@ -1407,7 +1407,7 @@ public class API extends AbstractHandler {
 				return rs.getFloat(1);
 			}
 		} catch (Exception ex) {
-			Log.log(ex.getMessage());
+			Log.info(ex.getMessage());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
@@ -1486,7 +1486,7 @@ public class API extends AbstractHandler {
 			}
 			response.getWriter().write(jsonArr.toJSONString());
 		} catch (SQLException ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
@@ -1534,7 +1534,7 @@ public class API extends AbstractHandler {
 			}
 			response.getWriter().write(jsonArr.toJSONString());
 		} catch (SQLException ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
@@ -1572,7 +1572,7 @@ public class API extends AbstractHandler {
 			pstmt.setString(2, Utils.hashPassword(password, ""));
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				Log.log("User (" + rs.getString(2) + ") logged in successfully");
+				Log.info("User (" + rs.getString(2) + ") logged in successfully");
 				Cookie cookie = new Cookie("auth", sessionHandler.createUserSession(rs.getString(1)));
 				cookie.setPath("/");
 				response.addCookie(cookie);
@@ -1581,7 +1581,7 @@ public class API extends AbstractHandler {
 			}
 			errorOut(response, "Incorrect Email/Password combination");
 		} catch (SQLException ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
@@ -1618,7 +1618,7 @@ public class API extends AbstractHandler {
 		try {
 			time = Integer.parseInt(timeString);
 		} catch (NumberFormatException e) {
-			Log.log(e.toString());
+			Log.info(e.toString());
 			errorOut(response, "time not formatted correctly");
 			return;
 		}
@@ -1660,7 +1660,7 @@ public class API extends AbstractHandler {
 			responseJson.put("messages", messages);
 			response.getWriter().write(responseJson.toJSONString());
 		} catch (SQLException ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
@@ -1707,7 +1707,7 @@ public class API extends AbstractHandler {
 				return jsonObject;
 			}
 		} catch (SQLException ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
@@ -1735,7 +1735,7 @@ public class API extends AbstractHandler {
 			}
 			return null;
 		} catch (SQLException ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
@@ -1753,7 +1753,7 @@ public class API extends AbstractHandler {
 			errorOut(response, "missing fields");
 			return;
 		}
-		Log.log(code + "attemping to login");
+		Log.info(code + "attemping to login");
 		try {
 			conn = DatabaseHandler.getDatabase();
 			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "operators.id, "
@@ -1767,11 +1767,11 @@ public class API extends AbstractHandler {
 				json.put("id", rs.getString(1));
 				json.put("name", rs.getString(2));
 				response.getWriter().write(json.toJSONString());
-				Log.log("Operator " + rs.getString(2) + "(" + rs.getString(1) + ") logged in successfully");
+				Log.info("Operator " + rs.getString(2) + "(" + rs.getString(1) + ") logged in successfully");
 				return;
 			}
 		} catch (SQLException ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
@@ -1806,7 +1806,7 @@ public class API extends AbstractHandler {
 			}
 			response.getWriter().write(json.toJSONString());
 		} catch (SQLException ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
@@ -1860,7 +1860,7 @@ public class API extends AbstractHandler {
 			}
 			response.getWriter().write(jsonArray.toJSONString());
 		} catch (SQLException ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}

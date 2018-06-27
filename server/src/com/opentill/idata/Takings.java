@@ -49,7 +49,7 @@ public class Takings {
 			}
 			return allDates;
 		} catch (Exception ex) {
-			Log.log(ex.toString());
+			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
