@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS `opentill_operators` (
   `id` varchar(36) NOT NULL,
   `code` varchar(8) NOT NULL,
   `passwordHash` varchar(128) NOT NULL,
+  `type` int(1) NOT NULL DEFAULT '0',
   `name` varchar(50) NOT NULL,
   `telephone` varchar(20) DEFAULT NULL,
   `email` varchar(100) DEFAULT NULL,

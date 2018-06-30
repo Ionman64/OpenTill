@@ -17,6 +17,7 @@
 	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; img-src 'self' http://localhost:8888/drawer http://127.0.0.1:8888/drawer http://localhost:8888/receipt http://127.0.0.1:8888/receipt; style-src 'self' 'unsafe-inline'">
 	<meta name="robots" content="noindex, nofollow">
 	<meta name="viewport" content="width=device-width, user-scalable=no">
+	<link rel="stylesheet" href="thirdParty/animate/css/animate.css"/>
 	<!--jQuery-->
 	<script type="text/javascript" src="thirdParty/jQuery/js/jquery.min.js"></script>
 	<!--bootstrap-->
@@ -45,6 +46,10 @@
 	<link rel="stylesheet" href="css/index.css"/>
 </head>
 <body class="no-select">
+	<section id="operator-total-box" class="notify custom-btn-black hidden">
+		<label><span id="operator-total-box-name">Peter</span>'s Total: <span id="operator-total-box-total">£40.00</span></label><br>
+		<i>Click for more info</i>
+	</section>
 	<section class="offline-banner hidden">
 		<p>Offline mode-Transactions are being saved locally and will be uploaded when connection is restored</p>
 	</section>

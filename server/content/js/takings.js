@@ -98,6 +98,17 @@ function Takings(){
 		});
 	}
 	this.populate_table = function() {
+		$.ajax({
+			url:"api/kvs.jsp?function=GETTAKINGSCHART",
+			data:{"start":0, "end":0},
+			dataType: "JSON",
+			method:"POST",
+			success: function(data) {
+				var ctx = document.getElementById("takings-canvas").getContext("2d");
+				window.myBar = new Chart(ctx, data);
+			}
+		});
+		return;
 		m.mount(document.getElementById("takings-viewport"), mithril_takings);
 		return;
 		$(holder).empty();

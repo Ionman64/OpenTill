@@ -3,6 +3,7 @@ package com.opentill.httpServer;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import com.opentill.idata.CustomUser;
 import com.opentill.main.Utils;
 
 public class CustomSessionHandler {
@@ -14,8 +15,11 @@ public class CustomSessionHandler {
 		this.active = new HashMap<String, Session>();
 	}
 
-	public String getSessionValue(String sessionGuid) {
+	public CustomUser getSessionValue(String sessionGuid) {
 		// Check session key exists, if it does, check the timeout, then return
+		if (sessionGuid == null) {
+			return null;
+		}
 		if (!active.containsKey(sessionGuid)) {
 			return null;
 		}
@@ -23,9 +27,9 @@ public class CustomSessionHandler {
 		return session.getValue();
 	}
 
-	public String createUserSession(String userId) {
+	public String createUserSession(CustomUser user) {
 		String newSessionGuid = Utils.GUID();
-		Session newSession = new Session(newSessionGuid, userId);
+		Session newSession = new Session(newSessionGuid, user);
 		this.active.put(newSessionGuid, newSession);
 		return newSessionGuid;
 	}

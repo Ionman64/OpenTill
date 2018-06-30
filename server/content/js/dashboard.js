@@ -215,6 +215,17 @@ $(document).ready( function() {
 	loadModals();
 });
 function loadDashboard() {
+	$(".custom-navigation").removeClass("hidden").addClass("animated fadeInDown");
+	$("#main-navigation li:not(:first-child)").click(function() {
+		$("#main-navigation li").removeClass("active");
+		$(this).addClass("active");
+		if (!$(this).attr("data-page")) {
+			return;
+		}
+		$(".tab").addClass("hidden");
+		$("#" + $(this).attr("data-page")).removeClass("hidden");
+		$("#page-name").html($("#" + $(this).attr("data-page")).attr("data-page-name"));
+	});
 	requirejs(["js/takings", "js/transactions", "js/operators", "js/suppliers", "js/inventory", "js/departments", "js/orders"], function() {
 		console.log("Loaded Scripts");
 	});
@@ -224,7 +235,14 @@ function loadDashboard() {
 	$("#logout").click(function() {
 		logout();
 	});
-	
+	$.ajax({
+		url:"api/kvs.jsp?function=GETUSERINFO",
+		success: function(data) {
+			$("#user-name").html(data.name);
+			$("#user-role").html(data.type);
+			
+		}
+	});
 	$(".menu-buttons").on("click", ".menu-button", function() {
 		$("#menu").addClass("hidden");
 		if (!$(this).attr("data-page")) {
@@ -299,8 +317,8 @@ function loadDashboard() {
 			window.dashboard_data = data;
 			window.takings = new Takings();
 			window.takings.init();
-			window.transactions = new Transactions();
-			window.transactions.init();
+//			window.transactions = new Transactions();
+//			window.transactions.init();
 			window.operators = new Operators();
 			window.operators.init();
 			window.suppliers = new Suppliers();

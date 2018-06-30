@@ -45,7 +45,9 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import com.opentill.database.DatabaseHandler;
+import com.opentill.document.ChartHelper;
 import com.opentill.document.ExcelHelper;
+import com.opentill.idata.CustomUser;
 import com.opentill.idata.Department;
 import com.opentill.idata.Inventory;
 import com.opentill.idata.Operators;
@@ -53,6 +55,7 @@ import com.opentill.idata.Order;
 import com.opentill.idata.Supplier;
 import com.opentill.idata.Takings;
 import com.opentill.idata.Transaction;
+import com.opentill.idata.UserType;
 import com.opentill.logging.Log;
 import com.opentill.main.Config;
 import com.opentill.main.Utils;
@@ -495,21 +498,19 @@ public class API extends AbstractHandler {
 			conn = DatabaseHandler.getDatabase();
 			String guid = GUID();
 			pstmt = conn.prepareStatement("INSERT INTO " + Config.DATABASE_TABLE_PREFIX
-					+ "tblcatagories (id, name, shorthand, colour, comments, created, updated) VALUES (?,?,?,?,?,?,?)");
+					+ "tblcatagories (id, name, shorthand, colour, comments, orderNum, created, updated) VALUES (?,?,?,?,?,99,UNIX_TIMESTAMP(),UNIX_TIMESTAMP())");
 			pstmt.setString(1, guid);
 			pstmt.setString(2, name);
 			pstmt.setString(3, shorthand);
 			pstmt.setString(4, colour);
 			pstmt.setString(5, comments);
-			pstmt.setLong(6, Utils.getCurrentTimeStamp());
-			pstmt.setLong(7, Utils.getCurrentTimeStamp());
 			pstmt.execute();
 			if (pstmt.getUpdateCount() > 0) {
 				successOut(response);
 				return;
 			}
 		} catch (Exception ex) {
-			Log.info(ex.toString());
+			Log.error(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
@@ -690,7 +691,7 @@ public class API extends AbstractHandler {
 			}
 			JSONObject responseJo = new JSONObject();
 			responseJo.put("success", true);
-			responseJo.put("file", Config.OPEN_TILL_URL + file.getName());
+			responseJo.put("file", String.format("%s/temp/%s", Config.OPEN_TILL_URL, file.getName()));
 			response.getWriter().write(responseJo.toJSONString());
 			return;
 		} catch (Exception ex) {
@@ -1541,9 +1542,8 @@ public class API extends AbstractHandler {
 		errorOut(response);
 	}
 
-	private void logout(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
-		// TODO Auto-generated method stub
-		String session = baseRequest.getParameter("session");
+	private void logout(HttpServletRequest request, ServletResponse response) throws IOException, ServletException {
+		String session = this.getAuthCookieValue(request);
 		if (session == null) {
 			errorOut(response, "missing parameters");
 			return;
@@ -1566,14 +1566,20 @@ public class API extends AbstractHandler {
 		}
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT id, name FROM " + Config.DATABASE_TABLE_PREFIX
+			pstmt = conn.prepareStatement("SELECT id, name, type, email, telephone FROM " + Config.DATABASE_TABLE_PREFIX
 					+ "operators WHERE LCASE(email) = LCASE(?) AND passwordHash = ? LIMIT 1");
 			pstmt.setString(1, email);
 			pstmt.setString(2, Utils.hashPassword(password, ""));
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				Log.info("User (" + rs.getString(2) + ") logged in successfully");
-				Cookie cookie = new Cookie("auth", sessionHandler.createUserSession(rs.getString(1)));
+				CustomUser user = new CustomUser();
+				user.setId(rs.getString(1));
+				user.setName(rs.getString(2));
+				user.setType(rs.getInt(3));
+				user.setEmail(rs.getString(4));
+				user.setTelephone(rs.getString(5));
+				Log.info("User (" + user.getName() + ") logged in successfully");
+				Cookie cookie = new Cookie("auth", sessionHandler.createUserSession(user));
 				cookie.setPath("/");
 				response.addCookie(cookie);
 				successOut(response);
@@ -1838,32 +1844,7 @@ public class API extends AbstractHandler {
 
 	@SuppressWarnings("unchecked")
 	public void getDepartments(ServletResponse response) throws IOException, ServletException {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		JSONArray jsonArray = new JSONArray();
-		try {
-			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id, "
-					+ Config.DATABASE_TABLE_PREFIX + "tblcatagories.name, " + Config.DATABASE_TABLE_PREFIX
-					+ "tblcatagories.shorthand, " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.colour FROM "
-					+ Config.DATABASE_TABLE_PREFIX + "tblcatagories WHERE deleted = 0 ORDER BY orderNum ASC");
-			rs = pstmt.executeQuery();
-			JSONObject jsonObject = null;
-			while (rs.next()) {
-				jsonObject = new JSONObject();
-				jsonObject.put("id", rs.getString(1));
-				jsonObject.put("name", rs.getString(2));
-				jsonObject.put("shorthand", rs.getString(3));
-				jsonObject.put("colour", rs.getString(4));
-				jsonArray.add(jsonObject);
-			}
-			response.getWriter().write(jsonArray.toJSONString());
-		} catch (SQLException ex) {
-			Log.info(ex.toString());
-		} finally {
-			DatabaseHandler.closeDBResources(rs, pstmt, conn);
-		}
+		response.getWriter().write(Department.getDepartmentsWithInfo().toJSONString());
 	}
 
 	public void errorOut(ServletResponse response) throws IOException, ServletException {
@@ -1885,6 +1866,22 @@ public class API extends AbstractHandler {
 		JSONObject json = new JSONObject();
 		json.put("success", true);
 		response.getWriter().write(json.toJSONString());
+	}
+	
+	public String getCookieValue(HttpServletRequest request, String cookieName) {
+		String value = null;
+		if ((request.getCookies() != null) && (20 > request.getCookies().length) && (request.getCookies().length > 0)) {
+			for (Cookie cookie : request.getCookies()) {
+				if (cookie.getName().equals(cookieName)) {
+					value = cookie.getValue();
+				}
+			}
+		}
+		return value;
+	}
+	
+	public String getAuthCookieValue(HttpServletRequest request) {
+		return getCookieValue(request, "auth");
 	}
 
 	@Override
@@ -2058,6 +2055,12 @@ public class API extends AbstractHandler {
 		case "GETTOP20":
 			getTopProductSales(request, response);
 			break;
+		case "GETTAKINGSCHART":
+			getTakingsChart(request, response);
+			break;
+		case "GETUSERINFO":
+			getUserInfo(request, response);
+			break;
 		default:
 			errorOut(response, "No such function");
 			break;
@@ -2065,5 +2068,43 @@ public class API extends AbstractHandler {
 		response.getWriter().flush();
 		response.getWriter().close();
 
+	}
+
+	private void getUserInfo(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		String sessionId = getAuthCookieValue(request);
+		if (sessionId == null) {
+			errorOut(response, "Not Logged In");
+			return;
+		}
+		CustomUser user = this.sessionHandler.getSessionValue(getAuthCookieValue(request));
+		if (user == null) {
+			errorOut(response, "Unkown User");
+			return;
+		}
+		JSONObject jo = new JSONObject();
+		jo.put("id", user.getId());
+		jo.put("name", user.getName());
+		switch (user.getType()) {
+			case 0:
+				jo.put("type", "Unknown");
+				break;
+			case 1:
+				jo.put("type", "Operator");
+				break;
+			case 2:
+				jo.put("type", "Manager");
+				break;
+			case 3:
+				jo.put("type", "Administrator");
+				break;
+		}
+		jo.put("email", user.getEmail());
+		jo.put("telephone", user.getTelephone());
+		response.getWriter().write(jo.toJSONString());
+	}
+
+	private void getTakingsChart(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		
+		response.getWriter().write(ChartHelper.generateTakingsChart());
 	}
 }

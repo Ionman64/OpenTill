@@ -40,15 +40,23 @@ public final class ServerHandler {
 
 			ContextHandler authContext = new ContextHandler();
 			AuthHandler authHandler = new AuthHandler(sessionHandler,
-					new String[] { "/content/", "/index.jsp", "/login.jsp", "/thirdParty/", "/api/", "/js/", "/css/", "/modals/", "/img/"});
+					new String[] { "/content/", "/index.jsp", "/login.jsp", "/thirdParty/", "/api/", "/js/", "/css/", "/views/", "/modals/", "/img/", "/dashboard2.jsp"});
 			authHandler.setAuthPage("login.jsp");
 			authContext.setHandler(authHandler);
+			
+			ContextHandler documentContext = new ContextHandler();
+			ResourceHandler documentHandler = new ResourceHandler();
+			documentHandler.setDirectoriesListed(false);
+			documentHandler.setWelcomeFiles(new String[] { "index.jsp" });
+			documentHandler.setBaseResource(Resource.newResource(Config.APP_HOME + File.separatorChar + "temp"));
+			documentContext.setHandler(documentHandler);
+			documentContext.setContextPath("/temp/*");
 
 			ContextHandler resourceContext = new ContextHandler();
 			ResourceHandler resourceHandler = new ResourceHandler();
 			resourceHandler.setDirectoriesListed(false);
 			resourceHandler.setWelcomeFiles(new String[] { "index.jsp" });
-			resourceHandler.setBaseResource(Resource.newResource(Config.APP_HOME + File.separatorChar + "content"));
+			resourceHandler.setResourceBase("content");
 			resourceContext.setHandler(resourceHandler);
 			resourceContext.setContextPath("*");
 
@@ -68,7 +76,7 @@ public final class ServerHandler {
 			apiContext.setHandler(new API(sessionHandler));
 
 			HandlerList handlers = new HandlerList();
-			handlers.setHandlers(new Handler[] { authContext, resourceContext, apiContext, new DefaultHandler() });
+			handlers.setHandlers(new Handler[] { authContext, documentContext, resourceContext, apiContext, new DefaultHandler() });
 			server.setHandler(handlers);
 
 			server.start();

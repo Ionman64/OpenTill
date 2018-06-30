@@ -69,6 +69,16 @@ body {
 .message-footer label {
 	padding:3px;
 }
+.operator-total-box {
+	position:absolute;
+	height:3em;
+	width:6em;
+	background:#444;
+	z-index:99999;
+	margin-top:10px;
+	margin:0 auto;
+	border-radius:10%;
+}
 .wordwrap{
 	white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
 	white-space: -pre-wrap;      /* Opera 4-6 */

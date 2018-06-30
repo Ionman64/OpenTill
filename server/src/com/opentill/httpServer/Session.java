@@ -1,5 +1,6 @@
 package com.opentill.httpServer;
 
+import com.opentill.idata.CustomUser;
 import com.opentill.main.Utils;
 
 public class Session {
@@ -8,14 +9,14 @@ public class Session {
 	public Long expiryTimeStamp = -1L;
 	private boolean expires = true;
 	private Long DEFAULTEXPIRYTIME = 3600L; // One Hour
-	private String value = new String();
+	private CustomUser user = new CustomUser();
 
-	public Session(String id, String value) {
+	public Session(String id, CustomUser user) {
 		this.id = id;
 		this.expiryTimeStamp = Utils.getCurrentTimeStamp() + DEFAULTEXPIRYTIME;
 		this.expires = false;
 		this.state = SessionState.ACTIVE;
-		this.value = value;
+		this.user = user;
 	}
 
 	public void setExpires(boolean expires) {
@@ -26,14 +27,14 @@ public class Session {
 		return this.getId();
 	}
 
-	public Session(String id, String value, Long expiryTimeStamp) {
+	public Session(String id, CustomUser user, Long expiryTimeStamp) {
 		this.id = id;
 		this.expiryTimeStamp = expiryTimeStamp;
 		if (expiryTimeStamp == -1L) {
 			this.expires = false;
 		}
 		this.state = SessionState.ACTIVE;
-		this.value = value;
+		this.user = user;
 	}
 
 	public boolean updateSession() {
@@ -44,11 +45,11 @@ public class Session {
 		return true;
 	}
 
-	public String getValue() {
+	public CustomUser getValue() {
 		this.updateSession();
 		if (this.state == SessionState.EXPIRED) {
 			System.out.println("Warning: Expired Session Being Read");
 		}
-		return this.value;
+		return this.user;
 	}
 }

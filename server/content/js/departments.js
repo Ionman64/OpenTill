@@ -115,14 +115,24 @@ function Departments() {
 			holder.appendChild(h3);
 			return;
 		}
+		var row = el("section", {class:"row"});
 		$.each(window.dashboard_data.departments, function(key, item) {
-			var row = el("section", {class:"row selectable", "data-id":key});
 			//Name
-			var col = el("section", {class:"col-lg-12 col-md-12 col-sm-12 col-xs-12"});
-			var label = el("h4", {text:item});
-			col.appendChild(label);
+			var col = el("section", {class:"col-lg-3 col-md-4 col-sm-6 col-xs-12", "data-id":key});
+			var department = el("section", {class:"department"});
+			
+			var label = el("h3", {text:item.name});
+			department.appendChild(label);
+			
+			var label = el("h4", {text:item.shortHand});
+			department.appendChild(label);
+			
+			var label = el("h4", {text:item.numberOfProducts});
+			department.appendChild(label);
+			
+			col.appendChild(department);
 			row.appendChild(col);
-			holder.appendChild(row);
 		});	
+		holder.appendChild(row);
 	}
 }
