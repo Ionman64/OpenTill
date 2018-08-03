@@ -1,0 +1,1 @@
+ALTER TABLE kvs_operators ADD COLUMN 'type' VARCHAR(36) DEFAULT 1;

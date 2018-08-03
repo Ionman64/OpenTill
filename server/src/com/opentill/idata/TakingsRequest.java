@@ -19,7 +19,7 @@ public class TakingsRequest {
 	private Long end = null;
 	private HashMap<String, Long> takings = new HashMap<String, Long>();
 	public TakingsRequest(Long startTime, Long endTime, String[] departments) {
-		this.start = start;
+		/*this.start = start;
 		this.end = end;
 		String admin = "a10f653a-6c20-11e7-b34e-426562cc935f";
 		Connection conn = null;
@@ -81,7 +81,7 @@ public class TakingsRequest {
 			responseJo.put("success", true);
 			responseJo.put("file", String.format("%s/temp/%s", Config.OPEN_TILL_URL, file.getName()));
 			response.getWriter().write(responseJo.toJSONString());
-			return;
+			return;*/
 	}
 	
 }

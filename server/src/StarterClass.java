@@ -38,6 +38,7 @@ public class StarterClass {
 		thread2.start();
 		
 		PDFHelper.createPDF();
+		return;
 
 		// new SparkTest();
 
@@ -46,7 +47,7 @@ public class StarterClass {
 		// DatabaseMigration db = new DatabaseMigration(Config.CURRENT_VERSION);
 		// db.up();
 
-		ServerHandler.run();
+		//ServerHandler.run();
 	}
 	
 }

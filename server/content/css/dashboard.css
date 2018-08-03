@@ -1,6 +1,5 @@
 body {
 	 overflow:hidden;
-	 padding-top:1em;
 }
 .no-select {
 	-webkit-touch-callout: none; /* iOS Safari */
@@ -30,7 +29,7 @@ body {
 .custom-navigation {
 	padding:0;
 	margin:0;
-	height:calc(100vh-7em);
+	height:100vh;
 	width:100%;
 	list-style:none;
 	background:#fff;
@@ -41,7 +40,6 @@ body {
 	height:7em;
 	padding:1em;
 	color:#fff;
-	border-radius:5px 5px 0px 0px;
 }
 .custom-navigation li {
 	width:100%;
@@ -60,7 +58,7 @@ body {
 }
 .custom-navigation li:last-child {
 	padding-bottom:0;
-	border-radius:0px 0px 5px 5px;
+	border-radius:0px 0px 5px 0px;
 }
 .custom-navigation li:last-child {
 	padding-bottom:0;
@@ -134,6 +132,12 @@ body {
 }
 .no-padding {
 	padding:0;
+}
+.no-padding-left {
+	padding-left:0;
+}
+.no-padding-right {
+	padding-right:0;
 }
 .padding-right {
 	padding-right:40px;

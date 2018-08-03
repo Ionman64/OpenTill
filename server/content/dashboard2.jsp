@@ -36,9 +36,9 @@
 	<title>KVS-Dashboard</title>
 </head>
 <body class="no-select">
-	<section class="container-fluid">
+	<section class="container-fluid no-padding">
 		<section class="row">
-			<aside class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
+			<aside class="col-lg-2 col-md-3 col-sm-3 col-xs-4 no-padding-right">
 				<ul id="main-navigation" class="custom-navigation hidden">
 					<li class="user-details-box">
 						<h3 id="user-name"></h3>
@@ -55,7 +55,7 @@
 					<li data-page="pane-primary-settings"><i class="fa fa-cogs"></i>Settings</li>
 				</ul>
 			</aside>
-		<article class="col-lg-10 col-md-9 col-sm-9 col-xs-8">
+		<article class="col-lg-10 col-md-9 col-sm-9 col-xs-8 no-padding-left">
 			<div class="tab" id="pane-primary-takings" data-page-name="Takings">
 				<section class="import-modal" page="./views/takings.jsp"></section>
 			</div>

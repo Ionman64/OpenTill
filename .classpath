@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="src" path="server/src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="target/classes" path="server/src">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="server/thirdParty/jetty-distribution-9.4.8.v20171121/demo-base/lib/ext/test-mock-resources-9.4.8.v20171121.jar"/>
 	<classpathentry kind="lib" path="server/thirdParty/jetty-distribution-9.4.8.v20171121/lib/alpn-api-1.1.3.v20160715.jar"/>
 	<classpathentry kind="lib" path="server/thirdParty/jetty-distribution-9.4.8.v20171121/lib/annotations/asm-6.0.jar"/>
@@ -70,5 +79,17 @@
 	<classpathentry kind="lib" path="server/thirdParty/jetty-distribution-9.4.8.v20171121/start.jar"/>
 	<classpathentry kind="lib" path="server/thirdParty/json-simple-1.1.1.jar"/>
 	<classpathentry kind="lib" path="server/thirdParty/mysql-connector-java-5.1.45/mysql-connector-java-5.1.45-bin.jar"/>
-	<classpathentry kind="output" path="server/bin"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="test" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>
