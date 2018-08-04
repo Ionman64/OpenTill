@@ -1786,7 +1786,6 @@ public class API extends AbstractHandler {
 
 	private void getTopProductSales(HttpServletRequest baseRequest, HttpServletResponse response) throws IOException {
 		JSONArray json = new JSONArray();
-		;
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -1998,6 +1997,9 @@ public class API extends AbstractHandler {
 		case "TAKINGS":
 			getTakings(request, response);
 			break;
+		case "GETLABELS":
+			getLabels(request, response);
+			break;
 		case "CLEARLABELS":
 			// clearLabels(request, response);
 			break;
@@ -2068,6 +2070,14 @@ public class API extends AbstractHandler {
 		response.getWriter().flush();
 		response.getWriter().close();
 
+	}
+
+	private void getLabels(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		notImplementedOut(response);
+	}
+
+	private void notImplementedOut(HttpServletResponse response) throws IOException, ServletException {
+		errorOut(response, "Not Implemented");
 	}
 
 	private void getUserInfo(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {

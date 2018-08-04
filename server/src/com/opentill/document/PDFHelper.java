@@ -2,24 +2,49 @@ package com.opentill.document;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDCIDFontType0;
-import org.apache.pdfbox.pdmodel.font.PDCIDFontType2;
 import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.font.PDTrueTypeFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.apache.pdfbox.pdmodel.font.PDType3Font;
-import org.apache.poi.ss.usermodel.Color;
-
+import com.opentill.database.DatabaseHandler;
 import com.opentill.logging.Log;
 import com.opentill.main.Config;
 import com.opentill.products.LabelStyle;
+import com.opentill.products.Product;
 
 public class PDFHelper {
+	public static ArrayList<Product> getLabels() {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		ArrayList<Product> products = new ArrayList<Product>();
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement("SELECT name, price, barcode FROM " + Config.DATABASE_TABLE_PREFIX + "tblproducts WHERE labelPrinted = 1");
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				Product product = new Product();
+				product.name = rs.getString(1);
+				product.price = rs.getFloat(2);
+				product.barcode = rs.getString(3);
+				products.add(product);
+			}
+		} catch (SQLException ex) {
+			Log.info(ex.toString());
+		} finally {
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
+		}
+		return products;
+	}
 	public static void drawLabels(PDDocument doc, float margin) throws IOException {
 		//Float currentY = 675f;//page.getMediaBox().getHeight() - margin; // (2 * margin);
 		LabelStyle labelStyle = new LabelStyle();
@@ -36,8 +61,9 @@ public class PDFHelper {
 		PDPageContentStream contentStream = null;
 		
 		boolean newPageNeeded = true;
-
-		for (int i=0;i<50;i++) {
+		Iterator<Product> iter = getLabels().iterator();
+		while (iter.hasNext()) {
+			Product tempProduct = iter.next();
 			if ((newPageNeeded) || (currentY - (labelStyle.getHeight() + margin) < 0)) {
 				if (contentStream != null) {
 					contentStream.close();
@@ -61,7 +87,7 @@ public class PDFHelper {
 			}
 			
 			contentStream.moveTo(currentX, currentY);
-			PDFHelper.writeLabelInner(doc, page, contentStream, currentX+labelStyle.getPadding(), currentY - labelStyle.getPadding()*2, "Product Name For make Glorious Nation of Kazakstan","£" + i + ".00", labelStyle);
+			PDFHelper.writeLabelInner(doc, page, contentStream, currentX+labelStyle.getPadding(), currentY - labelStyle.getPadding()*2, tempProduct.name,"£" + tempProduct.price, labelStyle);
 			contentStream.addRect(currentX, currentY - labelStyle.getHeight(), labelStyle.getWidth(), labelStyle.getHeight());
 			contentStream.setStrokingColor(labelStyle.getColorRed(), labelStyle.getColorGreen(), labelStyle.getColorBlue());
 			contentStream.stroke();
@@ -200,5 +226,16 @@ public class PDFHelper {
 		}
 	}
 	
-	
+	public float pt2mmForWeb72dpi(float pt) {
+	   return pt2mm(pt,72);
+	}
+	public float pt2mmForPrint300dpi(float pt) {
+	   return pt2mm(pt,300);
+	}
+	public float pt2mmForPrint600dpi(float pt) {
+	   return pt2mm(pt,600);
+	}
+	public float pt2mm(float pt, float dpi) {
+	   return pt * 25.4f / dpi;
+	}
 }
