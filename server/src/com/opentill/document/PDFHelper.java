@@ -2,6 +2,7 @@ package com.opentill.document;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,18 +19,35 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import com.opentill.database.DatabaseHandler;
 import com.opentill.logging.Log;
 import com.opentill.main.Config;
+import com.opentill.main.Utils;
 import com.opentill.products.LabelStyle;
 import com.opentill.products.Product;
 
 public class PDFHelper {
-	public static ArrayList<Product> getLabels() {
+	public static String repeat(int count, String with) {
+		String newString = new String(new char[count]).replace("\0", with);
+		return newString.substring(0, newString.length()-1);
+	}
+	public static ArrayList<Product> getLabels(String[] ids, boolean includeLabelled) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		ArrayList<Product> products = new ArrayList<Product>();
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT name, price, barcode FROM " + Config.DATABASE_TABLE_PREFIX + "tblproducts WHERE labelPrinted = 1");
+			String sql;
+			if (!includeLabelled) {
+				sql = "SELECT name, price, barcode FROM " + Config.DATABASE_TABLE_PREFIX + "tblproducts WHERE id IN (:?:) GROUP BY id";
+			}
+			else {
+				sql = "SELECT name, price, barcode FROM " + Config.DATABASE_TABLE_PREFIX + "tblproducts WHERE labelPrinted = 1 OR id IN (:?:) GROUP BY id";
+			}
+			sql = sql.replace(":?:",  repeat(ids.length, "?,"));
+			pstmt = conn.prepareStatement(sql);
+			int i = 1;
+			for (String id : ids) {
+				pstmt.setString(i++, id);
+			}
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				Product product = new Product();
@@ -39,13 +57,14 @@ public class PDFHelper {
 				products.add(product);
 			}
 		} catch (SQLException ex) {
-			Log.info(ex.toString());
+			Log.error(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
 		return products;
 	}
-	public static void drawLabels(PDDocument doc, float margin) throws IOException {
+	
+	public static void drawLabels(PDDocument doc, float margin, String[] products, boolean includeLabelled) throws IOException {
 		//Float currentY = 675f;//page.getMediaBox().getHeight() - margin; // (2 * margin);
 		LabelStyle labelStyle = new LabelStyle();
 		
@@ -53,7 +72,7 @@ public class PDFHelper {
 		
 		float pageXLimit = 0F; 
 		float pageYLimit = 0F;
-		
+
 		float currentX = 0F;
 		float currentY = 0F;
 		
@@ -61,7 +80,23 @@ public class PDFHelper {
 		PDPageContentStream contentStream = null;
 		
 		boolean newPageNeeded = true;
-		Iterator<Product> iter = getLabels().iterator();
+		Iterator<Product> iter = getLabels(products, includeLabelled).iterator();
+		if (!iter.hasNext()) {
+			page = new PDPage();
+			doc.addPage(page);
+			currentX = page.getCropBox().getLowerLeftX() + margin;
+			currentY = page.getCropBox().getUpperRightY() - margin;
+			contentStream = new PDPageContentStream(doc, page);
+			contentStream.moveTo(currentX, currentY);
+			PDFont helvetica = PDType1Font.HELVETICA;
+			int fontSize = 46;
+			contentStream.setFont(helvetica, fontSize);
+			contentStream.beginText();
+			contentStream.showText("No Labels");
+			contentStream.endText();
+			contentStream.close();
+			return;
+		}
 		while (iter.hasNext()) {
 			Product tempProduct = iter.next();
 			if ((newPageNeeded) || (currentY - (labelStyle.getHeight() + margin) < 0)) {
@@ -78,7 +113,7 @@ public class PDFHelper {
 
 				currentX = page.getCropBox().getLowerLeftX() + margin;
 				currentY = page.getCropBox().getUpperRightY() - margin;
-				
+
 				pageXLimit = page.getCropBox().getWidth();
 				pageYLimit = page.getCropBox().getHeight();
 				
@@ -87,7 +122,7 @@ public class PDFHelper {
 			}
 			
 			contentStream.moveTo(currentX, currentY);
-			PDFHelper.writeLabelInner(doc, page, contentStream, currentX+labelStyle.getPadding(), currentY - labelStyle.getPadding()*2, tempProduct.name,"£" + tempProduct.price, labelStyle);
+			PDFHelper.writeLabelInner(doc, page, contentStream, currentX+labelStyle.getPadding(), currentY - labelStyle.getPadding()*2, tempProduct.name,tempProduct.price, labelStyle);
 			contentStream.addRect(currentX, currentY - labelStyle.getHeight(), labelStyle.getWidth(), labelStyle.getHeight());
 			contentStream.setStrokingColor(labelStyle.getColorRed(), labelStyle.getColorGreen(), labelStyle.getColorBlue());
 			contentStream.stroke();
@@ -153,7 +188,7 @@ public class PDFHelper {
 	}
 	
 	public static void writeLabelInner(PDDocument doc, PDPage page, PDPageContentStream contentStream, float x, float y, String title,
-			String subtitle, LabelStyle labelStyle) throws IOException {
+			float price, LabelStyle labelStyle) throws IOException {
 		PDFont helvetica = PDType1Font.HELVETICA;
 		int fontSize = 16;
 		float titleWidth = helvetica.getStringWidth(title) / 1000 * fontSize;
@@ -163,7 +198,6 @@ public class PDFHelper {
 		String strippedString = title;
 		while ((helvetica.getStringWidth(strippedString) / 1000 * fontSize) > labelStyle.width) {
 			strippedString = strippedString.substring(0, strippedString.length()-1);
-			Log.log("Stripping");
 		}
 		if (!strippedString.equals(title)) {
 			strippedString = strippedString.substring(0, strippedString.length()-3).concat("...");
@@ -173,17 +207,18 @@ public class PDFHelper {
 		contentStream.endText();
 		
 		//Price
-		File fontFile = new File("/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-M.ttf");
+		String stringPrice = Utils.formatMoney(price);
+		File fontFile = new File("/usr/share/fonts/truetype/ubuntu/Ubuntu-M.ttf");
 		PDFont font =  PDType0Font.load(doc, fontFile);
 		int fontSize2 = 60;
 		float width = 0F;
-		while ((width = font.getStringWidth(subtitle) / 1000 * fontSize2) > labelStyle.width) {
+		while ((width = font.getStringWidth(stringPrice) / 1000 * fontSize2) > labelStyle.width) {
 			fontSize2--;
 		}
 		contentStream.setFont(font, fontSize2);
 		contentStream.beginText();
 		contentStream.newLineAtOffset(x + ((labelStyle.getWidth() - width) / 2) - labelStyle.getPadding(), y-50);
-		contentStream.showText(subtitle);
+		contentStream.showText(stringPrice);
 		contentStream.endText();
 
 	}
@@ -202,6 +237,22 @@ public class PDFHelper {
 		contentStream.endText();
 
 	}
+	
+	public static String createLabelsPDF(String[] products, boolean includeLabelled) {
+		final float page_margin = 25;
+		PDDocument doc = new PDDocument();
+		String guid = Utils.GUID();
+		String filename = Config.APP_HOME + File.separatorChar + "temp" + File.separatorChar + guid + ".pdf";
+		try {
+			PDFHelper.drawLabels(doc, page_margin, products, includeLabelled);
+			doc.save(filename);
+			doc.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return "temp" + File.separatorChar + guid + ".pdf";
+	}
+	
 	public static void createPDF() {
 		final float page_margin = 25;
 		PDDocument doc = new PDDocument();
@@ -217,7 +268,7 @@ public class PDFHelper {
 					{ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" },
 					{ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" },
 					{ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" } };
-			PDFHelper.drawLabels(doc, page_margin);
+			//PDFHelper.drawLabels(doc, page_margin);
 			
 			doc.save(filename);
 			doc.close();

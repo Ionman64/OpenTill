@@ -47,6 +47,7 @@ import org.json.simple.parser.ParseException;
 import com.opentill.database.DatabaseHandler;
 import com.opentill.document.ChartHelper;
 import com.opentill.document.ExcelHelper;
+import com.opentill.document.PDFHelper;
 import com.opentill.idata.CustomUser;
 import com.opentill.idata.Department;
 import com.opentill.idata.Inventory;
@@ -615,7 +616,7 @@ public class API extends AbstractHandler {
 
 	private void generateTakingsReport(ServletRequest baseRequest, ServletResponse response)
 			throws IOException, ServletException {
-		// TODO Auto-generated method stub
+		
 		String exportType = baseRequest.getParameter("takings-export-type");
 		String startTimeString = baseRequest.getParameter("start");
 		String endTimeString = baseRequest.getParameter("end");
@@ -774,7 +775,7 @@ public class API extends AbstractHandler {
 	}
 
 	private void printLabel(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
-		// TODO Auto-generated method stub
+		
 		String id = baseRequest.getParameter("id");
 		if (id == null) {
 			errorOut(response, "missing parameters");
@@ -837,7 +838,7 @@ public class API extends AbstractHandler {
 
 	private void setMaxStockLevel(ServletRequest baseRequest, ServletResponse response)
 			throws IOException, ServletException {
-		// TODO Auto-generated method stub
+		
 		String id = baseRequest.getParameter("id");
 		String amountString = baseRequest.getParameter("amount");
 		if (id == null || amountString == null) {
@@ -866,7 +867,7 @@ public class API extends AbstractHandler {
 	}
 
 	private void getProduct(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
-		// TODO Auto-generated method stub
+		
 		String id = baseRequest.getParameter("id");
 		if (id == null) {
 			errorOut(response, "missing fields");
@@ -972,7 +973,7 @@ public class API extends AbstractHandler {
 
 	private void updateProduct(ServletRequest baseRequest, ServletResponse response)
 			throws IOException, ServletException {
-		// TODO Auto-generated method stub
+		
 		String id = baseRequest.getParameter("id");
 		if (id == null) {
 			errorOut(response, "missing id");
@@ -1026,7 +1027,7 @@ public class API extends AbstractHandler {
 
 	private void cancelTransaction(ServletRequest baseRequest, ServletResponse response)
 			throws IOException, ServletException {
-		// TODO Auto-generated method stub
+		
 		String id = baseRequest.getParameter("transaction_id");
 		if (!transactionExists(id)) {
 			errorOut(response, "transaction does not exist");
@@ -1053,7 +1054,7 @@ public class API extends AbstractHandler {
 
 	private void completeTransaction(ServletRequest baseRequest, ServletResponse response)
 			throws IOException, ServletException {
-		// TODO Auto-generated method stub
+		
 		String id = baseRequest.getParameter("id");
 		float money_given = (float) (baseRequest.getParameter("money_given") == null ? 0.00
 				: Float.parseFloat(baseRequest.getParameter("money_given")));
@@ -1111,7 +1112,7 @@ public class API extends AbstractHandler {
 	}
 
 	private boolean writeTransactionFileToDatabase(String id, String json, String type) throws SQLException {
-		// TODO Auto-generated method stub
+		
 		if (json == null) {
 			return false;
 		}
@@ -1182,7 +1183,7 @@ public class API extends AbstractHandler {
 	}
 
 	private boolean incrementProductLevel(Connection conn, String productId, Long productQuantity) throws SQLException {
-		// TODO Auto-generated method stub
+		
 		PreparedStatement pstmt = conn.prepareStatement("UPDATE " + Config.DATABASE_TABLE_PREFIX
 				+ "tblproducts SET current_stock=current_stock+? WHERE id = ?");
 		pstmt.setLong(1, productQuantity);
@@ -1194,7 +1195,7 @@ public class API extends AbstractHandler {
 	}
 
 	private boolean decrementProductLevel(Connection conn, String productId, Long productQuantity) throws SQLException {
-		// TODO Auto-generated method stub
+		
 		PreparedStatement pstmt = conn.prepareStatement("UPDATE " + Config.DATABASE_TABLE_PREFIX
 				+ "tblproducts SET current_stock=current_stock-? WHERE id = ? AND current_stock > 0");
 		pstmt.setLong(1, productQuantity);
@@ -1209,7 +1210,7 @@ public class API extends AbstractHandler {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		// TODO Auto-generated method stub
+		
 		try {
 			conn = DatabaseHandler.getDatabase();
 			pstmt = conn.prepareStatement("SELECT 1 FROM " + Config.DATABASE_TABLE_PREFIX
@@ -1230,7 +1231,7 @@ public class API extends AbstractHandler {
 	@SuppressWarnings("unchecked")
 	private void getDayTotals(ServletRequest baseRequest, ServletResponse response)
 			throws IOException, ServletException {
-		// TODO Auto-generated method stub
+		
 		JSONObject jo = new JSONObject();
 		jo.put("success", true);
 		jo.put("card", cardGiven(baseRequest, response));
@@ -1447,7 +1448,7 @@ public class API extends AbstractHandler {
 
 	private void getProductTransactions(ServletRequest baseRequest, ServletResponse response)
 			throws IOException, ServletException {
-		// TODO Auto-generated method stub
+		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -1496,7 +1497,7 @@ public class API extends AbstractHandler {
 	@SuppressWarnings("unchecked")
 	private void getTransactionProducts(ServletRequest baseRequest, ServletResponse response)
 			throws IOException, ServletException {
-		// TODO Auto-generated method stub
+		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -1554,7 +1555,7 @@ public class API extends AbstractHandler {
 
 	private void login(Request baseRequest, ServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
-		// TODO Auto-generated method stub
+		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -2063,6 +2064,9 @@ public class API extends AbstractHandler {
 		case "GETUSERINFO":
 			getUserInfo(request, response);
 			break;
+		case "GENERATELABELSPDF":
+			generateLabelsPDF(request, response);
+			break;
 		default:
 			errorOut(response, "No such function");
 			break;
@@ -2070,6 +2074,25 @@ public class API extends AbstractHandler {
 		response.getWriter().flush();
 		response.getWriter().close();
 
+	}
+
+	private void generateLabelsPDF(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		String includeLabelledString = request.getParameter("includeLabelled") == null ? "true" : request.getParameter("includeLabelled");
+		boolean includeLabelled = true;
+		if (includeLabelledString.equals("false")) {
+			includeLabelled = false;
+		}
+		String[] products = request.getParameterValues("products[]");
+		if (products == null) {
+			errorOut(response, "missing parameters");
+			return;
+		}
+		Log.info(products.toString());
+		String filename = PDFHelper.createLabelsPDF(products, includeLabelled);
+		JSONObject jo = new JSONObject();
+		jo.put("success", true);
+		jo.put("file", filename);
+		response.getWriter().write(jo.toJSONString());
 	}
 
 	private void getLabels(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {

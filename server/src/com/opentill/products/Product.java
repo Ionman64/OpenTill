@@ -6,5 +6,5 @@ public class Product {
 	public String barcode = null;
 	public int current_stock = 0;
 	public int max_stock = 0;
-	public float price = 0.0F;
+	public Float price = 0.0F;
 }

@@ -3,7 +3,11 @@ package com.opentill.main;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.UUID;
+
+import com.opentill.logging.Log;
 
 public class Utils {
 	public static String GUID() {
@@ -33,5 +37,13 @@ public class Utils {
 	public static Long getCurrentTimeStamp() {
 		// TODO Auto-generated method stub
 		return System.currentTimeMillis();
+	}
+
+	public static String formatMoney(Float number) {
+		if (number.isNaN()) {
+			return null;
+		}	
+		NumberFormat format = NumberFormat.getCurrencyInstance(java.util.Locale.UK);
+		return format.format(number.doubleValue());
 	}
 }

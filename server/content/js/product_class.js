@@ -12,11 +12,11 @@ function Product() {
 	this.updated = 0;
 	this.maxStock = 0;
 	this.currentStock = 0;
+	this.updated = 0; //Product Update Timestamp
 	this.comment = ""; //Is the product on sale, or has missing data?
 	this.overridePrice = function(newCost) {
 		this.priceOverride = true;
 		this.priceOverrideNewCost = newCost;
-		getTransaction().refreshTable();
 	}
 	this.setCost = function(cost) {
 		this.cost = cost;
@@ -33,21 +33,4 @@ function Product() {
 		}
 		return this.priceOverrideNewCost;
 	}
-	this.update = function(barcode, cost, price) {
-		$.ajax({
-			url: "api/product.jsp",
-			data : {"number" : barcode, "Name" : this.name, "Cost" : cost, "price" : price},
-			success: function(data) {
-				if (data.success) {
-					this.barcode = Barcode;
-					this.Cost = price;
-					refreshTable();
-				}
-				else {
-					bootbox.alert("Product Not Updated");
-				}
-			}
-		});
-	}
-	this.updated = 0; //Product Update Timestamp
 }
