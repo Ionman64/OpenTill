@@ -1,3 +1,8 @@
+const TAKINGS_INTERVAL_HOUR = "HOUR";
+const TAKINGS_INTERVAL_DAY = "DAY";
+const TAKINGS_INTERVAL_WEEK = "WEEK";
+const TAKINGS_INTERVAL_MONTH = "MONTH";
+
 function el(tagName, options) {
 	if (tagName.length == 0) {
 		return;
@@ -33,6 +38,17 @@ function logout() {
 			if (data.success) {
 				window.location = "login.jsp";
 			}
+		}
+	});
+}
+function getTakingsChart(takings_interval) {
+	$.ajax({
+		url:"api/kvs.jsp?function=GENERATETAKINGSGRAPH",
+		data:{"time_interval":takings_interval, "end":moment(moment().subtract(1, "months").format("YYYY-MM-DD")).unix(), "start":moment(moment().subtract(1, "months").subtract(1, "days").format("YYYY-MM-DD")).unix()},
+		dataType: "JSON",
+		success: function(data) {
+			var ctx = document.getElementById("takings-graph").getContext("2d");
+			new Chart(ctx, data);
 		}
 	});
 }
@@ -215,6 +231,29 @@ $(document).ready( function() {
 	loadModals();
 });
 function loadDashboard() {
+	$("#takings-interval button").on("click", function() {
+		$("#takings-interval button").removeClass("active");
+		$(this).addClass("active");
+		var takings_interval = $(this).attr("data-id");
+		switch (takings_interval) {
+			case "day":
+				getTakingsChart(TAKINGS_INTERVAL_HOUR);
+				break;
+			case "week":
+				getTakingsChart(TAKINGS_INTERVAL_DAY);
+				break;
+			case "month":
+				getTakingsChart(TAKINGS_INTERVAL_WEEK);
+				break;
+			case "year":
+				getTakingsChart(TAKINGS_INTERVAL_MONTH);
+				break;
+			default:
+				getTakingsChart(TAKINGS_INTERVAL_HOUR);
+				break;
+		}
+	});
+	getTakingsChart(TAKINGS_INTERVAL_HOUR);
 	$(".custom-navigation").removeClass("hidden").addClass("animated fadeInDown");
 	$("#main-navigation li:not(:first-child)").click(function() {
 		$("#main-navigation li").removeClass("active");

@@ -9,6 +9,7 @@ import org.json.simple.JSONObject;
 import com.opentill.database.DatabaseHandler;
 import com.opentill.logging.Log;
 import com.opentill.main.Config;
+import com.opentill.main.Utils;
 
 public class Takings {
 	public static JSONObject getTakings(Long start, Long end, String admin, String type) {
@@ -17,20 +18,13 @@ public class Takings {
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT DATE(FROM_UNIXTIME(" + Config.DATABASE_TABLE_PREFIX
-					+ "transactions.ended)) AS \"date\", " + Config.DATABASE_TABLE_PREFIX
-					+ "transactiontoproducts.department, SUM(" + Config.DATABASE_TABLE_PREFIX
-					+ "transactiontoproducts.price) AS \"amount\" FROM " + Config.DATABASE_TABLE_PREFIX
-					+ "transactiontoproducts LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "transactions ON "
-					+ Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.transaction_id = "
-					+ Config.DATABASE_TABLE_PREFIX + "transactions.id WHERE (" + Config.DATABASE_TABLE_PREFIX
-					+ "transactions.started > ? AND " + Config.DATABASE_TABLE_PREFIX + "transactions.ended < ?) AND "
-					+ Config.DATABASE_TABLE_PREFIX + "transactions.cashier NOT IN (?) AND "
-					+ Config.DATABASE_TABLE_PREFIX + "transactions.type in (?) AND (" + Config.DATABASE_TABLE_PREFIX
-					+ "transactions.ended > 0) GROUP BY " + Config.DATABASE_TABLE_PREFIX
-					+ "transactiontoproducts.department, DATE(FROM_UNIXTIME(" + Config.DATABASE_TABLE_PREFIX
-					+ "transactions.ended)) ORDER BY DATE(FROM_UNIXTIME(" + Config.DATABASE_TABLE_PREFIX
-					+ "transactions.ended)) DESC");
+			String sql = Utils.addTablePrefix("SELECT DATE(FROM_UNIXTIME(:prefix:transactions.ended)) AS \"date\", "
+					+ ":prefix:transactiontoproducts.department, SUM(:prefix:transactiontoproducts.price) AS \"amount\" "
+					+ "FROM :prefix:transactiontoproducts LEFT JOIN :prefix:transactions ON :prefix:transactiontoproducts.transaction_id = :prefix:transactions.id "
+					+ "WHERE (:prefix:transactions.started > ? AND :prefix:transactions.ended < ?) AND :prefix:transactions.cashier NOT IN (?) AND :prefix:transactions.type "
+					+ "in (?) AND (:prefix:transactions.ended > 0) GROUP BY :prefix:transactiontoproducts.department, DATE(FROM_UNIXTIME(:prefix:transactions.ended)) "
+					+ "ORDER BY DATE(FROM_UNIXTIME(:prefix:transactions.ended)) DESC");
+			pstmt = conn.prepareStatement(sql);
 			pstmt.setLong(1, start);
 			pstmt.setLong(2, end);
 			pstmt.setString(3, admin);

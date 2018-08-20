@@ -1,6 +1,6 @@
-CREATE DATABASE IF NOT EXISTS opentill;
-USE opentill;
-CREATE TABLE IF NOT EXISTS `opentill_labels` (
+CREATE DATABASE IF NOT EXISTS :database_name:;
+USE :database_name:;
+CREATE TABLE IF NOT EXISTS `:prefix:labels` (
   `id` varchar(36) COLLATE utf8_bin NOT NULL,
   `name` varchar(100) COLLATE utf8_bin NOT NULL,
   `json` blob NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS `opentill_labels` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-CREATE TABLE IF NOT EXISTS `opentill_operators` (
+CREATE TABLE IF NOT EXISTS `:prefix:operators` (
   `id` varchar(36) NOT NULL,
   `code` varchar(8) NOT NULL,
   `passwordHash` varchar(128) NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `opentill_operators` (
   UNIQUE KEY `code` (`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-CREATE TABLE IF NOT EXISTS `opentill_tblcases` (
+CREATE TABLE IF NOT EXISTS `:prefix:tblcases` (
   `id` varchar(36) NOT NULL,
   `product` varchar(36) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `quantity` int(6) NOT NULL,
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `opentill_tblcases` (
   UNIQUE KEY `Barcode` (`barcode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-CREATE TABLE IF NOT EXISTS `opentill_tblcatagories` (
+CREATE TABLE IF NOT EXISTS `:prefix:tblcatagories` (
   `id` varchar(36) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `name` varchar(30) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `shorthand` varchar(15) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `opentill_tblcatagories` (
   UNIQUE KEY `Name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-CREATE TABLE IF NOT EXISTS `opentill_tblchat` (
+CREATE TABLE IF NOT EXISTS `:prefix:tblchat` (
   `id` varchar(36) COLLATE utf8_bin NOT NULL,
   `sender` varchar(36) COLLATE utf8_bin DEFAULT NULL,
   `recipient` varchar(36) COLLATE utf8_bin DEFAULT NULL,
@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `opentill_tblchat` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-CREATE TABLE IF NOT EXISTS `opentill_tblorders_to_products` (
+CREATE TABLE IF NOT EXISTS `:prefix:tblorders_to_products` (
   `orderId` varchar(36) COLLATE utf8_bin NOT NULL,
   `productId` varchar(36) NOT NULL,
   `quantity` int(13) NOT NULL,
@@ -70,7 +70,9 @@ CREATE TABLE IF NOT EXISTS `opentill_tblorders_to_products` (
   PRIMARY KEY (`productId`, `orderId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-CREATE TABLE IF NOT EXISTS `opentill_tblorders` (
+CREATE TABLE IF NOT EXISTS `:preALTER TABLE :prefix:operators ADD COLUMN 'user_type' VARCHAR(36) DEFAULT 1;
+ALTER TABLE :prefix:tblproducts ADD COLUMN 'added_tax' DECIMAL(10,2) DEFAULT 0.00;
+fix:tblorders` (
   `id` varchar(36) COLLATE utf8_bin NOT NULL,
   `supplier` varchar(36) COLLATE utf8_bin NOT NULL,
   `created` int(13) NOT NULL,
@@ -80,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `opentill_tblorders` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-CREATE TABLE IF NOT EXISTS `opentill_tblproducts` (
+CREATE TABLE IF NOT EXISTS `:prefix:tblproducts` (
   `id` varchar(36) COLLATE utf8_bin NOT NULL,
   `name` varchar(100) COLLATE utf8_bin NOT NULL,
   `price` decimal(10,2) NOT NULL DEFAULT '0.00',
@@ -102,7 +104,7 @@ CREATE TABLE IF NOT EXISTS `opentill_tblproducts` (
   KEY `barcode_2` (`barcode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-CREATE TABLE IF NOT EXISTS `opentill_tblsuppliers` (
+CREATE TABLE IF NOT EXISTS `:prefix:tblsuppliers` (
   `id` varchar(36) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `name` varchar(35) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `telephone` varchar(20) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
@@ -115,7 +117,7 @@ CREATE TABLE IF NOT EXISTS `opentill_tblsuppliers` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-CREATE TABLE IF NOT EXISTS `opentill_tblunits` (
+CREATE TABLE IF NOT EXISTS `:prefix:tblunits` (
   `id` varchar(36) NOT NULL,
   `unit` varchar(20) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `updated` int(13) NOT NULL,
@@ -124,7 +126,7 @@ CREATE TABLE IF NOT EXISTS `opentill_tblunits` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-CREATE TABLE IF NOT EXISTS `opentill_transactions` (
+CREATE TABLE IF NOT EXISTS `:prefix:transactions` (
   `id` varchar(36) CHARACTER SET latin1 NOT NULL,
   `started` int(20) DEFAULT '0',
   `ended` int(20) DEFAULT '0',
@@ -140,7 +142,7 @@ CREATE TABLE IF NOT EXISTS `opentill_transactions` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-CREATE TABLE IF NOT EXISTS `opentill_transactiontoproducts` (
+CREATE TABLE IF NOT EXISTS `:prefix:transactiontoproducts` (
   `id` varchar(36) COLLATE utf8_bin NOT NULL,
   `transaction_id` varchar(36) COLLATE utf8_bin NOT NULL,
   `product_id` varchar(36) COLLATE utf8_bin DEFAULT NULL,
@@ -152,7 +154,7 @@ CREATE TABLE IF NOT EXISTS `opentill_transactiontoproducts` (
   KEY `department` (`department`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-CREATE TABLE IF NOT EXISTS `opentill_usertypes` (
+CREATE TABLE IF NOT EXISTS `:prefix:usertypes` (
   `id` varchar(36) COLLATE utf8_bin NOT NULL,
   `type` varchar(40) COLLATE utf8_bin NOT NULL,
   `updated` int(13) NOT NULL,

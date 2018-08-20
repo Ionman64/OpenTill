@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.BindException;
 import java.net.URI;
 import java.net.URL;
+import java.time.LocalDateTime;
 
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
@@ -80,8 +81,8 @@ public final class ServerHandler {
 			server.setHandler(handlers);
 
 			server.start();
-			Log.info("Started: Server Handler");
-			Log.log("Server can be accessed from " + Config.getServerUrl());
+			Log.info("Started: Server Handler @ " + LocalDateTime.now());
+			Log.info("Server can be accessed from " + Config.getServerUrl());
 			server.join();
 			
 			/*
@@ -91,12 +92,11 @@ public final class ServerHandler {
 			 * ; email.addTo("peterpickerill2014@gmail.com"); MailHandler.emails.add(email);
 			 */
 		} catch (BindException e) {
-			System.out.println("Could not connect to port, perhaps it is taken");
-			System.exit(0);
+			Log.critical("Could not connect to port, perhaps it is taken");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		Log.info("Server Terminated at " + LocalDateTime.now());
 	}
 }

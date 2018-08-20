@@ -23,6 +23,9 @@
 	<!--bootstrap-->
 	<link rel="stylesheet" href="thirdParty/bootstrap/css/bootstrap.min.css"/>
 	<script src="thirdParty/bootstrap/js/bootstrap.min.js"></script>
+	<!-- Bootstrap Toggle -->
+	<link href="thirdParty/bootstrap-toggle/css/bootstrap-toggle.min.css" rel="stylesheet">
+	<script src="thirdParty/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
 	<!--Bootbox-->
 	<script src="thirdParty/bootbox/js/bootbox.min.js"></script>
 	<!--moment-->
@@ -44,6 +47,8 @@
 	<script type="application/javascript" src="js/transaction_class.js"></script>
 	<script type="application/javascript" src="js/cash_register.js"></script>
 	<link rel="stylesheet" href="css/index.css"/>
+	
+
 </head>
 <body class="no-select">
 	<section id="operator-total-box" class="notify custom-btn-black hidden">
@@ -103,7 +108,7 @@
 		</section>
 	</section>
 	<section class="row">
-		<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4" style="padding-top:10px">
+		<section class="col-md-4 col-xs-4 col-sm-4 col-lg-3" style="padding-top:10px">
 			<form id="barcodeform" action="#">
 			<section class="input-group">
 				<input type="text" id="barcode" class="form-control input-lg" placeholder="Barcode/Search"/>
@@ -171,7 +176,7 @@
 		</section>
 		<section id="department"></section>
 		</section>
-		<section class="col-md-8 col-xs-8 col-sm-8 col-lg-8">
+		<section class="col-md-8 col-xs-8 col-sm-8 col-lg-9">
 		<section id="tableColumns" class="row shadow-bottom">
 			<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4 col-md-offset-1 col-xs-offset-1 col-sm-offset-1 col-lg-offset-1">
 				<label>Items <span id="total-items"></span></label>

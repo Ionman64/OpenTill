@@ -11,18 +11,18 @@ import java.sql.Statement;
 
 import com.opentill.logging.Log;
 import com.opentill.main.Config;
+import com.opentill.main.Utils;
 
 /**
  * Class to handle a single Database Migration
  */
 public class DatabaseMigration {
-	private String version = null;
-
-	public DatabaseMigration(String version) throws Exception {
+	private Float targetVersion = 0.00F;
+	public DatabaseMigration(Float version) throws Exception {
 		if (version == null) {
 			throw new Exception("Version cannot be null");
 		}
-		this.version = version.replace('.', '-');
+		this.targetVersion = version;
 	}
 
 	private boolean runSQLfile(File sqlFile) throws IOException, SQLException {
@@ -33,21 +33,22 @@ public class DatabaseMigration {
 		Statement stmt = null;
 		BufferedReader bf = null;
 		try {
-			conn = DatabaseHandler.getMySqlConnection();
+			conn = DatabaseHandler.getDatabase();
 			conn.setAutoCommit(false);
 			stmt = conn.createStatement();
 			bf = new BufferedReader(new FileReader(sqlFile));
 			String line = null, old = "";
 			line = bf.readLine();
 			while (line != null) {
-				// q = q + line + "\n";
 				if (line.endsWith(";")) {
-					stmt.executeUpdate(old + line);
+					String prefixedSQL = Utils.addTablePrefix(old + line);
+					stmt.executeUpdate(prefixedSQL);
 					old = "";
 				} else
 					old = old + "\n" + line;
 				line = bf.readLine();
 			}
+			conn.commit();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -61,29 +62,37 @@ public class DatabaseMigration {
 	}
 
 	public void up() throws IOException, SQLException {
-		File file = Paths.get(Config.APP_HOME, "migrations", this.version, "up.sql").toFile();
+		if (this.targetVersion >= Config.CURRENT_LOCAL_VERSION) {
+			Log.info("Database up to date");
+			return;
+		}
+		File file = Paths.get(Config.APP_HOME, "migrations", String.valueOf(this.targetVersion).replace(".",  "-").concat("-up.sql")).toFile();
 		if (!file.exists()) {
-			Log.info("Cannot Find Migration File:" + file.getAbsolutePath());
+			Log.critical("Cannot Find Migration File:" + file.getAbsolutePath());
 			return;
 		}
 		if (this.runSQLfile(file)) {
-			Log.info("Database upgraded successfully to version " + this.version);
+			Log.info("Database upgraded successfully to version " + this.targetVersion);
 			return;
 		}
-		Log.info("Database could not be upgraded to version " + this.version);
+		Log.info("Database could not be upgraded to version " + this.targetVersion);
 
 	}
 
 	public void down() throws IOException, SQLException {
-		File file = Paths.get("migrations", this.version, "down.sql").toFile();
+		if (this.targetVersion < Config.CURRENT_LOCAL_VERSION) {
+			Log.info("Current database at same version as target version for downgrade");
+			return;
+		}
+		File file = Paths.get(Config.APP_HOME, "migrations", String.valueOf(this.targetVersion).replace(".",  "-").concat("-down.sql")).toFile();
 		if (!file.exists()) {
-			Log.info("Cannot Find Migration File:" + file.getAbsolutePath());
+			Log.critical("Cannot Find Migration File:" + file.getAbsolutePath());
 			return;
 		}
 		if (this.runSQLfile(file)) {
-			Log.info("Database reverted successfully from version " + this.version);
+			Log.info("Database reverted successfully from version " + this.targetVersion);
 			return;
 		}
-		Log.info("Database could not be reverted from version " + this.version);
+		Log.info("Database could not be reverted from version " + this.targetVersion);
 	}
 }

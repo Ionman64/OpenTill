@@ -45,7 +45,8 @@
 						<h5 class="italic" id="user-role"></h5>
 						<button id="user-logout" title="Logout" class="btn btn-danger"><i class="fa fa-sign-out"></i></button>
 					</li>
-					<li class="active" data-page="pane-primary-takings"><i class="fa fa-bar-chart" ></i>Takings</li>
+					<li class="active" data-page="pane-primary-overview"><i class="fa fa-eye" ></i>Overview</li>
+					<li data-page="pane-primary-takings"><i class="fa fa-bar-chart" ></i>Takings</li>
 					<li data-page="pane-primary-transactions"><i class="fa fa-tasks" ></i>Transactions</li>
 					<li data-page="pane-primary-departments"><i class="fa fa-table" ></i>Departments</li>
 					<li data-page="pane-primary-orders"><i class="fa fa-tags"></i>Orders</li>
@@ -56,6 +57,9 @@
 				</ul>
 			</aside>
 		<article class="col-lg-10 col-md-9 col-sm-9 col-xs-8 no-padding-left">
+			<div class="tab" id="pane-primary-overview" data-page-name="Overview">
+				<section class="import-modal" page="./views/overview.jsp"></section>
+			</div>
 			<div class="tab" id="pane-primary-takings" data-page-name="Takings">
 				<section class="import-modal" page="./views/takings.jsp"></section>
 			</div>

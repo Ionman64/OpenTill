@@ -13,6 +13,9 @@ body {
 .mui-tabs__pane {
 	padding-top:10px;
 }
+#takings-graph {
+	height:30em;
+}
 #user-name {
 	margin-top:0;
 	font-family:roboto, sans-serif;

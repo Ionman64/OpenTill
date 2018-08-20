@@ -19,7 +19,7 @@ public class Department {
 		try {
 			conn = DatabaseHandler.getDatabase();
 			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id, "
-					+ Config.DATABASE_TABLE_PREFIX + "tblcatagories.name, "+ Config.DATABASE_TABLE_PREFIX + "tblcatagories.shortHand, SUM("+ Config.DATABASE_TABLE_PREFIX + "tbl FROM " + Config.DATABASE_TABLE_PREFIX
+					+ Config.DATABASE_TABLE_PREFIX + "tblcatagories.name, " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.shortHand, " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.shortHand, SUM("+ Config.DATABASE_TABLE_PREFIX + "tbl FROM " + Config.DATABASE_TABLE_PREFIX
 					+ "tblcatagories WHERE " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.deleted = 0 ORDER BY "
 					+ Config.DATABASE_TABLE_PREFIX + "tblcatagories.name");
 			rs = pstmt.executeQuery();
@@ -41,16 +41,17 @@ public class Department {
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblproducts.department AS \"departmentId\", " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.name AS \"departmentName\", " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.colour AS \"colour\", COUNT(" + Config.DATABASE_TABLE_PREFIX + "tblproducts.id) AS \"numOfProducts\" FROM " + Config.DATABASE_TABLE_PREFIX + "tblproducts LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "tblcatagories ON " + Config.DATABASE_TABLE_PREFIX + "tblproducts.department = " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id GROUP BY " + Config.DATABASE_TABLE_PREFIX + "tblproducts.department");
+			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblproducts.department AS \"departmentId\", " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.shortHand, " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.name AS \"departmentName\", " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.colour AS \"colour\", COUNT(" + Config.DATABASE_TABLE_PREFIX + "tblproducts.id) AS \"numOfProducts\" FROM " + Config.DATABASE_TABLE_PREFIX + "tblproducts LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "tblcatagories ON " + Config.DATABASE_TABLE_PREFIX + "tblproducts.department = " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id GROUP BY " + Config.DATABASE_TABLE_PREFIX + "tblproducts.department ORDER BY " + Config.DATABASE_TABLE_PREFIX + "tblproducts.name");
 			
 			rs = pstmt.executeQuery();
 			JSONArray departments = new JSONArray();
 			while (rs.next()) {
 				JSONObject jo = new JSONObject();
 				jo.put("id", rs.getString(1));
-				jo.put("name", rs.getString(2));
-				jo.put("colour", rs.getString(3));
-				jo.put("n_products", rs.getInt(4));
+				jo.put("shorthand", rs.getString(2));
+				jo.put("name", rs.getString(3));
+				jo.put("colour", rs.getString(4));
+				jo.put("n_products", rs.getInt(5));
 				departments.add(jo);
 			}
 			return departments;

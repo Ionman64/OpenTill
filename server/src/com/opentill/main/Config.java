@@ -11,7 +11,7 @@ import com.opentill.logging.Log;
 public final class Config {
 	public static boolean HTTPS = false;
 	public static int PORT = 8080;
-	public static String CURRENT_VERSION = "0.01";
+	public static Float CURRENT_LOCAL_VERSION = 0.02F;
 	public static String SERVER_ADDR = "localhost";
 	public static String DATABASE_TABLE_PREFIX = "kvs_";
 	public static String OPEN_TILL_URL = Config.getServerUrl();
@@ -24,7 +24,7 @@ public final class Config {
 		if (!createRootFolderIfNotExists()) {
 			return false;
 		}
-		String[] folders = new String[] { "logs", "temp" };
+		String[] folders = new String[] {"logs", "temp", "migrations"};
 		for (String folder : folders) {
 			if (!createFolderIfNotExists(folder)) {
 				return false;

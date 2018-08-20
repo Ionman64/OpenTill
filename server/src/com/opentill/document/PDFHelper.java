@@ -16,11 +16,15 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+
 import com.opentill.database.DatabaseHandler;
 import com.opentill.logging.Log;
 import com.opentill.main.Config;
 import com.opentill.main.Utils;
 import com.opentill.products.LabelStyle;
+import com.opentill.products.OrderProduct;
 import com.opentill.products.Product;
 
 public class PDFHelper {
@@ -144,10 +148,12 @@ public class PDFHelper {
 			String[][] content) throws IOException {
 		final int rows = content.length;
 		final int cols = content[0].length;
-		final float rowHeight = 20f;
+		PDFont font = PDType1Font.HELVETICA_BOLD;
+		contentStream.setFont(font, 16);
+		final float rowHeight = 30f;
 		final float tableWidth = page.getMediaBox().getWidth() - (2 * margin);
 		final float tableHeight = rowHeight * rows;
-		final float colWidth = tableWidth / cols;
+		final float colWidth = tableWidth / 5F;
 		final float cellMargin = 5f;
 
 		// draw the rows
@@ -165,14 +171,16 @@ public class PDFHelper {
 			contentStream.moveTo(nextx, y);
 			contentStream.lineTo(nextx, y - tableHeight);
 			contentStream.stroke();
-			nextx += colWidth;
+			if (i == 0) {
+				nextx += colWidth;
+			}
+			else {
+				nextx += colWidth*4;
+			}
 		}
 
-		// now add the text
-		contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
-
 		float textx = margin + cellMargin;
-		float texty = y - 15;
+		float texty = y - rowHeight/2 - 5F;
 		for (int i = 0; i < content.length; i++) {
 			for (int j = 0; j < content[i].length; j++) {
 				String text = content[i][j];
@@ -180,7 +188,12 @@ public class PDFHelper {
 				contentStream.newLineAtOffset(textx, texty);
 				contentStream.showText(text);
 				contentStream.endText();
-				textx += colWidth;
+				if (j == 0) {
+					textx += colWidth;
+				}
+				else {
+					textx += colWidth*4;
+				}
 			}
 			texty -= rowHeight;
 			textx = margin + cellMargin;
@@ -223,16 +236,21 @@ public class PDFHelper {
 
 	}
 
-	public static void writeReportHeader(PDPage page, PDPageContentStream contentStream, float x, float y, String title,
+	public static void writeReportHeader(PDPage page, PDPageContentStream contentStream, float margin, String title,
 			String subtitle, String document_number) throws IOException {
-		contentStream.setFont(PDType1Font.HELVETICA_BOLD, 16);
+		
+		float currentY = page.getMediaBox().getUpperRightY() - margin - 20;
+		float currentX = page.getMediaBox().getLowerLeftX() + margin;
+		PDFont font = PDType1Font.HELVETICA_BOLD;
+		contentStream.setFont(font, 24);
 		contentStream.beginText();
-		contentStream.moveTo(x, y);
+		contentStream.newLineAtOffset(currentX, currentY);
 		contentStream.showText(title);
 		contentStream.endText();
-		contentStream.setFont(PDType1Font.HELVETICA_BOLD, 14);
+		
+		contentStream.setFont(font, 14);
 		contentStream.beginText();
-		contentStream.moveTo(x, y - 75);
+		contentStream.newLineAtOffset(currentX, currentY-30);
 		contentStream.showText(subtitle);
 		contentStream.endText();
 
@@ -253,21 +271,51 @@ public class PDFHelper {
 		return "temp" + File.separatorChar + guid + ".pdf";
 	}
 	
+	public static String createOrderSheet(String orderId, String supplierName, ArrayList<OrderProduct> products) {
+		final float page_margin = 15;
+		int pageNum = 1;
+		String guid = Utils.GUID();
+		String filename = Config.APP_HOME + File.separatorChar + "temp" + File.separatorChar + guid + ".pdf";
+		PDDocument doc = new PDDocument();
+		PDPage page = new PDPage();
+		doc.addPage(page);
+		String[][] array = new String[products.size()+1][2];
+		array[0][0] = "Quantity";
+		array[0][1] = "Product";
+		Iterator<OrderProduct> iter = products.iterator();
+		int i = 1;
+		while (iter.hasNext()) {
+			OrderProduct orderProduct = iter.next();
+			array[i][0] = Integer.toString(orderProduct.order_stock);
+			array[i++][1] = orderProduct.name;
+		}
+		try {
+			PDPageContentStream contentStream = new PDPageContentStream(doc, page);
+			contentStream.setLineWidth(2.0F);
+			PDFHelper.writeReportHeader(page, contentStream, page_margin, String.format("%s Order", supplierName), String.format("%s | %s | %s", "Knutton Village Store", Utils.getCurrentDate(), "Page " + pageNum), "1");
+			PDImageXObject pdImage = PDImageXObject.createFromFileByContent(Utils.generateBarcode(String.format("[Order:%s]", orderId)), doc);
+
+			PDFHelper.drawTable(page, contentStream, page_margin, page.getMediaBox().getUpperRightY()-100, array);
+			float imageHeight = 50;
+			float imageWidth = 300;
+			
+			contentStream.drawImage(pdImage, page.getMediaBox().getUpperRightX() - page_margin - imageWidth, page.getMediaBox().getUpperRightY() - page_margin - imageHeight, imageWidth, imageHeight);
+			contentStream.close();
+			doc.save(filename);
+			doc.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return "temp" + File.separatorChar + guid + ".pdf";
+	}
+	
 	public static void createPDF() {
 		final float page_margin = 25;
 		PDDocument doc = new PDDocument();
 		String filename = Config.APP_HOME + File.separatorChar + "example.pdf";
 		try {
-			
-
 			//PDFHelper.writeReportHeader(page, contentStream, page_margin, 750F, "Report Header","Example Report Header", "");
-
-			String[][] content = {
-					{ "Staff", "Something", "Off", "Ken", "Bob", "Cheese", "Barberra", "ben", "Korn", "Bacon" },
-					{ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" },
-					{ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" },
-					{ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" },
-					{ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" } };
+			
 			//PDFHelper.drawLabels(doc, page_margin);
 			
 			doc.save(filename);

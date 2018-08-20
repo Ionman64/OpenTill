@@ -6,8 +6,7 @@
 	}
 }
 body {
-	overflow-x:hidden;	
-	overflow-y:hidden;	
+	overflow-x:hidden;		
 	height:100%;
 	width:100%;	
 	padding:2em;
@@ -44,4 +43,8 @@ body {
 }
 #table {
 	max-height:500px;
+}
+#print-label-products {
+	padding:5px;
+	font-weight:bold;
 }

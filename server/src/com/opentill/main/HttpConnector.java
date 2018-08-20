@@ -7,6 +7,8 @@ import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import com.opentill.logging.Log;
+
 public class HttpConnector {
 
 	private final String USER_AGENT = "Mozilla/5.0";
@@ -36,7 +38,7 @@ public class HttpConnector {
 	 */
 
 	// HTTP POST request
-	public void sendPost(String url, String urlParameters, String contentType) throws Exception {
+	public String sendPost(String url, String urlParameters, String contentType) throws Exception {
 		URL obj = new URL(url);
 		HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
 
@@ -47,16 +49,18 @@ public class HttpConnector {
 		con.setRequestProperty("Content-type", contentType);
 
 		// Send post request
-		con.setDoOutput(true);
-		DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-		wr.writeBytes(urlParameters);
-		wr.flush();
-		wr.close();
+		if (urlParameters != null) {
+			con.setDoOutput(true);
+			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+			wr.writeBytes(urlParameters);
+			wr.flush();
+			wr.close();
+		}
 
-		int responseCode = con.getResponseCode();
-		System.out.println("\nSending 'POST' request to URL : " + url);
-		System.out.println("Post parameters : " + urlParameters);
-		System.out.println("Response Code : " + responseCode);
+		if (con.getResponseCode() != 200) {
+			Log.warn("Update Server returned non-200 status code");
+			return null;
+		}
 
 		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 		String inputLine;
@@ -67,9 +71,7 @@ public class HttpConnector {
 		}
 		in.close();
 
-		// print result
-		System.out.println(response.toString());
-
+		return (response.toString());
 	}
 
 }

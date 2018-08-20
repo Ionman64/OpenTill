@@ -7,4 +7,11 @@ public class Product {
 	public int current_stock = 0;
 	public int max_stock = 0;
 	public Float price = 0.0F;
+	public boolean autoPricing = false;
+	public Float supplierPrice = 0.0F;
+	public int unitsInCase = 0;
+	public boolean includesVAT = false;
+	public Float VATamount = 0.0F;
+	public boolean targetPercentage = false;
+	public Float targetProfitMargin = 0.0F;
 }

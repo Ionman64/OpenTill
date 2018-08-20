@@ -27,6 +27,11 @@
   <groupId>com.google.code.gson</groupId>
   <artifactId>gson</artifactId>
 </dependency>
+<dependency>
+    <groupId>uk.org.okapibarcode</groupId>
+    <artifactId>okapibarcode</artifactId>
+    <version>0.1.7</version>
+</dependency>
 
 <dependency>
     <groupId>org.eclipse.jetty</groupId>

@@ -22,23 +22,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
-//
-//========================================================================
-//Copyright (c) 1995-2017 Mort Bay Consulting Pty. Ltd.
-//------------------------------------------------------------------------
-//All rights reserved. This program and the accompanying materials
-//are made available under the terms of the Eclipse Public License v1.0
-//and Apache License v2.0 which accompanies this distribution.
-//
-//  The Eclipse Public License is available at
-//  http://www.eclipse.org/legal/epl-v10.html
-//
-//  The Apache License v2.0 is available at
-//  http://www.opensource.org/licenses/apache2.0.jsp
-//
-//You may elect to redistribute this code under either of these licenses.
-//========================================================================
-//
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -56,11 +39,20 @@ import com.opentill.idata.Order;
 import com.opentill.idata.Supplier;
 import com.opentill.idata.Takings;
 import com.opentill.idata.Transaction;
-import com.opentill.idata.UserType;
 import com.opentill.logging.Log;
 import com.opentill.main.Config;
 import com.opentill.main.Utils;
 import com.opentill.products.Product;
+
+import be.ceau.chart.BarChart;
+import be.ceau.chart.LineChart;
+import be.ceau.chart.color.Color;
+import be.ceau.chart.data.BarData;
+import be.ceau.chart.data.LineData;
+import be.ceau.chart.dataset.BarDataset;
+import be.ceau.chart.dataset.LineDataset;
+import be.ceau.chart.options.BarOptions;
+import be.ceau.chart.options.LineOptions;
 
 public class API extends AbstractHandler {
 	private CustomSessionHandler sessionHandler;
@@ -75,7 +67,7 @@ public class API extends AbstractHandler {
 		jo.put("inventory", Inventory.get_product_levels());
 		jo.put("orders", Order.getOrders());
 		jo.put("departments", Department.getDepartments());
-		jo.put("takings", Takings.getTakings(0L, Utils.getCurrentTimeStamp(), "a10f653a-6c20-11e7-b34e-426562cc935f",
+		jo.put("takings", Takings.getTakings(Utils.getCurrentTimeStamp() - Utils.SECONDS_IN_A_DAY, Utils.getCurrentTimeStamp(), "a10f653a-6c20-11e7-b34e-426562cc935f",
 				"PURCHASE"));
 		jo.put("suppliers", Supplier.getSuppliers());
 		jo.put("operators", Operators.getOperators());
@@ -95,8 +87,7 @@ public class API extends AbstractHandler {
 		PreparedStatement pstmt = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement(
-					"UPDATE " + Config.DATABASE_TABLE_PREFIX + "tblorders SET ended = ? WHERE id = ?");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("UPDATE :prefix:tblorders SET ended = ? WHERE id = ?"));
 			pstmt.setLong(1, Utils.getCurrentTimeStamp());
 			pstmt.setString(2, id);
 			if (pstmt.executeUpdate() > 0) {
@@ -137,8 +128,7 @@ public class API extends AbstractHandler {
 		PreparedStatement pstmt = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("INSERT INTO " + Config.DATABASE_TABLE_PREFIX
-					+ "tblorders_to_products (productId, orderId, quantity, created, updated) VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE quantity = quantity + 1");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("INSERT INTO :prefix:tblorders_to_products (productId, orderId, quantity, created, updated) VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE quantity = quantity + 1"));
 			JSONObject productJson;
 			if (productBarcode != null) {
 				productJson = getItemFromBarcode(productBarcode);
@@ -178,13 +168,11 @@ public class API extends AbstractHandler {
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblproducts.name, "
-					+ Config.DATABASE_TABLE_PREFIX + "tblorders_to_products.productId, " + Config.DATABASE_TABLE_PREFIX
-					+ "tblorders_to_products.quantity FROM   " + Config.DATABASE_TABLE_PREFIX
-					+ "tblorders_to_products LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "tblproducts ON "
-					+ Config.DATABASE_TABLE_PREFIX + "tblproducts.id = " + Config.DATABASE_TABLE_PREFIX
-					+ "tblorders_to_products.productId WHERE " + Config.DATABASE_TABLE_PREFIX
-					+ "tblorders_to_products.orderId = ?");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT :prefix:tblproducts.name, "
+					+ ":prefix:tblorders_to_products.productId, :prefix:tblorders_to_products.quantity FROM " 
+					+ ":prefix:tblorders_to_products LEFT JOIN :prefix:tblproducts ON "
+					+ ":prefix:tblproducts.id = :prefix:tblorders_to_products.productId WHERE " 
+					+ ":prefix:tblorders_to_products.orderId = ?"));
 			pstmt.setString(1, id);
 			rs = pstmt.executeQuery();
 			JSONObject jo = new JSONObject();
@@ -230,8 +218,7 @@ public class API extends AbstractHandler {
 		PreparedStatement pstmt = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("INSERT INTO " + Config.DATABASE_TABLE_PREFIX
-					+ "tblorders (id, supplier, created, updated, ended) VALUES (?, ?, ?, ?, 0)");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("INSERT INTO :prefix:tblorders (id, supplier, created, updated, ended) VALUES (?, ?, ?, ?, 0)"));
 			pstmt.setString(1, GUID());
 			pstmt.setString(2, supplier);
 			pstmt.setLong(3, Utils.getCurrentTimeStamp());
@@ -265,8 +252,7 @@ public class API extends AbstractHandler {
 		PreparedStatement pstmt = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("INSERT INTO " + Config.DATABASE_TABLE_PREFIX
-					+ "operators SET name=?, passwordHash=?, telephone=?, email=?, comments=?, updated=?) WHERE id=?");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("INSERT INTO :prefix:operators SET name=?, passwordHash=?, telephone=?, email=?, comments=?, updated=?) WHERE id=?"));
 			pstmt.setString(1, name);
 			pstmt.setString(2, Utils.hashPassword(password, ""));
 			pstmt.setString(3, telephone);
@@ -302,8 +288,7 @@ public class API extends AbstractHandler {
 		PreparedStatement pstmt = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("UPDATE " + Config.DATABASE_TABLE_PREFIX
-					+ "tblsuppliers (id, name, telephone, email, website, comments, created, updated) VALUES (?,?,?,?,?,?,?,?)");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("UPDATE :prefix:tblsuppliers (id, name, telephone, email, website, comments, created, updated) VALUES (?,?,?,?,?,?,?,?)"));
 			pstmt.setString(1, GUID());
 			pstmt.setString(2, name);
 			pstmt.setString(3, telephone);
@@ -341,8 +326,7 @@ public class API extends AbstractHandler {
 		PreparedStatement pstmt = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("UPDATE " + Config.DATABASE_TABLE_PREFIX
-					+ "tblsuppliers SET name = ?, telephone = ?, email = ?, website = ?, comments = ?, updated = ? WHERE id = ? LIMIT 1");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("UPDATE :prefix:tblsuppliers SET name = ?, telephone = ?, email = ?, website = ?, comments = ?, updated = ? WHERE id = ? LIMIT 1"));
 			pstmt.setString(1, name);
 			pstmt.setString(2, telephone);
 			pstmt.setString(3, email);
@@ -430,8 +414,8 @@ public class API extends AbstractHandler {
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT id, name, shorthand, comments, colour FROM "
-					+ Config.DATABASE_TABLE_PREFIX + "tblcatagories WHERE id = ? LIMIT 1");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT id, name, shorthand, comments, colour FROM "
+					+ ":prefix:tblcatagories WHERE id = ? LIMIT 1"));
 			pstmt.setString(1, id);
 			rs = pstmt.executeQuery();
 			JSONObject jo = new JSONObject();
@@ -466,8 +450,7 @@ public class API extends AbstractHandler {
 		PreparedStatement pstmt = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement(
-					"UPDATE " + Config.DATABASE_TABLE_PREFIX + "tblcatagories SET deleted = 1 WHERE id = ? LIMIT 1");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("UPDATE :prefix:tblcatagories SET deleted = 1 WHERE id = ? LIMIT 1"));
 			pstmt.setString(1, id);
 			pstmt.execute();
 			if (pstmt.getUpdateCount() > 0) {
@@ -498,8 +481,7 @@ public class API extends AbstractHandler {
 		try {
 			conn = DatabaseHandler.getDatabase();
 			String guid = GUID();
-			pstmt = conn.prepareStatement("INSERT INTO " + Config.DATABASE_TABLE_PREFIX
-					+ "tblcatagories (id, name, shorthand, colour, comments, orderNum, created, updated) VALUES (?,?,?,?,?,99,UNIX_TIMESTAMP(),UNIX_TIMESTAMP())");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("INSERT INTO :prefix:tblcatagories (id, name, shorthand, colour, comments, orderNum, created, updated) VALUES (?,?,?,?,?,99,UNIX_TIMESTAMP(),UNIX_TIMESTAMP())"));
 			pstmt.setString(1, guid);
 			pstmt.setString(2, name);
 			pstmt.setString(3, shorthand);
@@ -531,14 +513,12 @@ public class API extends AbstractHandler {
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id, "
-					+ Config.DATABASE_TABLE_PREFIX + "tblproducts.id, " + Config.DATABASE_TABLE_PREFIX
-					+ "tblproducts.name, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.current_stock, "
-					+ Config.DATABASE_TABLE_PREFIX + "tblproducts.max_stock FROM " + Config.DATABASE_TABLE_PREFIX
-					+ "tblproducts LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "tblcatagories ON "
-					+ Config.DATABASE_TABLE_PREFIX + "tblproducts.department = " + Config.DATABASE_TABLE_PREFIX
-					+ "tblcatagories.id WHERE " + Config.DATABASE_TABLE_PREFIX + "tblproducts.deleted = 0 ORDER BY "
-					+ Config.DATABASE_TABLE_PREFIX + "tblproducts.name DESC");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT :prefix:tblcatagories.id, "
+					+ ":prefix:tblproducts.id, :prefix:tblproducts.name, "
+					+ ":prefix:tblproducts.current_stock, :prefix:tblproducts.max_stock "
+					+ "FROM :prefix:tblproducts LEFT JOIN :prefix:tblcatagories ON "
+					+ ":prefix:tblproducts.department = :prefix:tblcatagories.id WHERE "
+					+ ":prefix:tblproducts.deleted = 0 ORDER BY :prefix:tblproducts.name DESC"));
 			rs = pstmt.executeQuery();
 			HashMap<String, HashMap<String, Product>> inventory = new HashMap<String, HashMap<String, Product>>();
 			while (rs.next()) {
@@ -559,10 +539,9 @@ public class API extends AbstractHandler {
 				}
 			}
 			DatabaseHandler.closeDBResources(rs, pstmt, null);
-			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id, "
-					+ Config.DATABASE_TABLE_PREFIX + "tblcatagories.name FROM " + Config.DATABASE_TABLE_PREFIX
-					+ "tblcatagories WHERE " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.deleted = 0 ORDER BY "
-					+ Config.DATABASE_TABLE_PREFIX + "tblcatagories.name");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT :prefix:tblcatagories.id, "
+					+ ":prefix:tblcatagories.name FROM :prefix:tblcatagories WHERE "
+					+ ":prefix:tblcatagories.deleted = 0 ORDER BY :prefix:tblcatagories.name"));
 			rs = pstmt.executeQuery();
 			HashMap<String, String> departmentsToNames = new HashMap<String, String>();
 			while (rs.next()) {
@@ -598,7 +577,7 @@ public class API extends AbstractHandler {
 		try {
 			conn = DatabaseHandler.getDatabase();
 			pstmt = conn.prepareStatement(
-					"UPDATE " + Config.DATABASE_TABLE_PREFIX + "tblproducts SET deleted = 1, updated=? WHERE id=?");
+					"UPDATE :prefix:tblproducts SET deleted = 1, updated=? WHERE id=?");
 			pstmt.setLong(1, Utils.getCurrentTimeStamp());
 			pstmt.setString(2, id);
 			if (pstmt.executeUpdate() > 0) {
@@ -640,20 +619,13 @@ public class API extends AbstractHandler {
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT DATE(FROM_UNIXTIME(" + Config.DATABASE_TABLE_PREFIX
-					+ "transactions.ended)) AS \"date\", " + Config.DATABASE_TABLE_PREFIX
-					+ "transactiontoproducts.department, SUM(" + Config.DATABASE_TABLE_PREFIX
-					+ "transactiontoproducts.price) AS \"amount\" FROM " + Config.DATABASE_TABLE_PREFIX
-					+ "transactiontoproducts LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "transactions ON "
-					+ Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.transaction_id = "
-					+ Config.DATABASE_TABLE_PREFIX + "transactions.id WHERE (" + Config.DATABASE_TABLE_PREFIX
-					+ "transactions.started > ? AND " + Config.DATABASE_TABLE_PREFIX + "transactions.ended < ?) AND "
-					+ Config.DATABASE_TABLE_PREFIX + "transactions.cashier NOT IN (?) AND "
-					+ Config.DATABASE_TABLE_PREFIX + "transactions.type in (?) AND (" + Config.DATABASE_TABLE_PREFIX
-					+ "transactions.ended > 0) GROUP BY " + Config.DATABASE_TABLE_PREFIX
-					+ "transactiontoproducts.department, DATE(FROM_UNIXTIME(" + Config.DATABASE_TABLE_PREFIX
-					+ "transactions.ended)) ORDER BY DATE(FROM_UNIXTIME(" + Config.DATABASE_TABLE_PREFIX
-					+ "transactions.ended)) DESC");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT DATE(FROM_UNIXTIME(:prefix:transactions.ended)) AS \"date\", "
+					+ ":prefix:transactiontoproducts.department, SUM(:prefix:transactiontoproducts.price) AS \"amount\" FROM " 
+					+ ":prefix:transactiontoproducts LEFT JOIN :prefix:transactions ON :prefix:transactiontoproducts.transaction_id = "
+					+ ":prefix:transactions.id WHERE (:prefix:transactions.started > ? AND :prefix:transactions.ended < ?) AND "
+					+ ":prefix:transactions.cashier NOT IN (?) AND :prefix:transactions.type in (?) AND ("
+					+ ":prefix:transactions.ended > 0) GROUP BY :prefix:transactiontoproducts.department, DATE(FROM_UNIXTIME(" 
+					+ ":prefix:transactions.ended)) ORDER BY DATE(FROM_UNIXTIME(prefix:transactions.ended)) DESC"));
 			pstmt.setLong(1, startTime);
 			pstmt.setLong(2, endTime);
 			pstmt.setString(3, admin);
@@ -674,10 +646,9 @@ public class API extends AbstractHandler {
 			}
 			pstmt.close();
 			rs.close();
-			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id, "
-					+ Config.DATABASE_TABLE_PREFIX + "tblcatagories.name FROM " + Config.DATABASE_TABLE_PREFIX
-					+ "tblcatagories WHERE " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.deleted = 0 ORDER BY "
-					+ Config.DATABASE_TABLE_PREFIX + "tblcatagories.name");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT :prefix:tblcatagories.id, "
+					+ ":prefix:tblcatagories.name FROM :prefix:tblcatagories WHERE "
+					+ ":prefix:tblcatagories.deleted = 0 ORDER BY :prefix:tblcatagories.name"));
 			rs = pstmt.executeQuery();
 			HashMap<String, String> departmentsToNames = new HashMap<String, String>();
 			while (rs.next()) {
@@ -753,8 +724,7 @@ public class API extends AbstractHandler {
 		PreparedStatement pstmt = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("INSERT " + Config.DATABASE_TABLE_PREFIX
-					+ "tblchat (id, sender, recipient, message, updated, created) VALUES (?, ?, ?, ?, ?, ?)");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("INSERT :prefix:tblchat (id, sender, recipient, message, updated, created) VALUES (?, ?, ?, ?, ?, ?)"));
 			pstmt.setString(1, GUID());
 			pstmt.setString(2, sender);
 			pstmt.setString(3, recipient);
@@ -784,8 +754,7 @@ public class API extends AbstractHandler {
 		PreparedStatement pstmt = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement(
-					"UPDATE " + Config.DATABASE_TABLE_PREFIX + "tblproducts SET labelprinted = 1 WHERE id = ?");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("UPDATE :prefix:tblproducts SET labelprinted = 1 WHERE id = ?"));
 			pstmt.setString(1, id);
 			pstmt.execute();
 			if (pstmt.getUpdateCount() > 0) {
@@ -820,7 +789,7 @@ public class API extends AbstractHandler {
 		try {
 			conn = DatabaseHandler.getDatabase();
 			pstmt = conn.prepareStatement(
-					"UPDATE " + Config.DATABASE_TABLE_PREFIX + "tblproducts SET current_stock=? WHERE id = ?");
+					"UPDATE :prefix:tblproducts SET current_stock=? WHERE id = ?");
 			pstmt.setString(1, id);
 			pstmt.setInt(1, amount);
 			pstmt.execute();
@@ -850,7 +819,7 @@ public class API extends AbstractHandler {
 		try {
 			conn = DatabaseHandler.getDatabase();
 			pstmt = conn.prepareStatement(
-					"UPDATE " + Config.DATABASE_TABLE_PREFIX + "tblproducts SET max_stock=? WHERE id = ?");
+					"UPDATE :prefix:tblproducts SET max_stock=? WHERE id = ?");
 			pstmt.setString(1, id);
 			pstmt.setInt(1, amount);
 			pstmt.execute();
@@ -877,12 +846,10 @@ public class API extends AbstractHandler {
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblproducts.id, "
-					+ Config.DATABASE_TABLE_PREFIX + "tblproducts.name, " + Config.DATABASE_TABLE_PREFIX
-					+ "tblproducts.price, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.barcode," + " "
-					+ Config.DATABASE_TABLE_PREFIX + "tblproducts.department, " + Config.DATABASE_TABLE_PREFIX
-					+ "tblproducts.max_stock, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.current_stock FROM "
-					+ Config.DATABASE_TABLE_PREFIX + "tblproducts WHERE id = ? LIMIT 1");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT :prefix:tblproducts.id, "
+					+ ":prefix:tblproducts.name, :prefix:tblproducts.price, :prefix:tblproducts.barcode, "
+					+ ":prefix:tblproducts.department, :prefix:tblproducts.max_stock, :prefix:tblproducts.current_stock "
+					+ "FROM :prefix:tblproducts WHERE id = ? LIMIT 1"));
 			pstmt.setString(1, id);
 			rs = pstmt.executeQuery();
 			JSONObject product = new JSONObject();
@@ -946,11 +913,9 @@ public class API extends AbstractHandler {
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement(
-					"SELECT " + Config.DATABASE_TABLE_PREFIX + "tblproducts.id, " + Config.DATABASE_TABLE_PREFIX
-							+ "tblproducts.name, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.barcode, "
-							+ Config.DATABASE_TABLE_PREFIX + "tblproducts.price FROM " + Config.DATABASE_TABLE_PREFIX
-							+ "tblproducts WHERE LOWER(name) LIKE LOWER(?) AND deleted = 0 ORDER BY name LIMIT 20");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT :prefix:tblproducts.id, :prefix:tblproducts.name, :prefix:tblproducts.barcode, "
+							+ ":prefix:tblproducts.price FROM :prefix:tblproducts WHERE "
+							+ "LOWER(name) LIKE LOWER(?) AND deleted = 0 ORDER BY name LIMIT 20"));
 			pstmt.setString(1, "%" + search + "%");
 			rs = pstmt.executeQuery();
 			JSONObject responseJson = new JSONObject();
@@ -984,6 +949,13 @@ public class API extends AbstractHandler {
 		String department = baseRequest.getParameter("department");
 		String currentStockString = baseRequest.getParameter("current_stock");
 		String maxStockString = baseRequest.getParameter("max_stock");
+		boolean autoPricing = baseRequest.getParameter("autoPricing") == "true" ? true : false;
+		String supplierPriceString = baseRequest.getParameter("supplierPrice");
+		String unitsInCaseString = baseRequest.getParameter("unitsInCase");
+		boolean includesVAT = baseRequest.getParameter("includesVAT") == "true" ? true : false;
+		String VATamountString = baseRequest.getParameter("VATamount");
+		boolean targetPercentage = baseRequest.getParameter("targetPercentage") == "true" ? true : false;;
+		String targetProfitMarginString = baseRequest.getParameter("targetProfitMargin");
 		if (name == null || priceText == null || department == null) {
 			errorOut(response, "missing fields");
 			return;
@@ -991,10 +963,18 @@ public class API extends AbstractHandler {
 		float price;
 		int currentStockInt = 0;
 		int maxStockInt = 0;
+		float supplierPrice = 0.0F;
+		int unitsInCase = 0;
+		float VATamount = 0.0F;
+		float targetProfitMargin = 0.0F;
 		try {
 			price = Float.parseFloat(priceText);
 			currentStockInt = Integer.parseInt(currentStockString);
 			maxStockInt = Integer.parseInt(maxStockString);
+			supplierPrice = Float.parseFloat(supplierPriceString);
+			unitsInCase = Integer.parseInt(unitsInCaseString);
+			VATamount = Float.parseFloat(VATamountString);
+			targetProfitMargin = Float.parseFloat(targetProfitMarginString);
 		} catch (NumberFormatException ex) {
 			Log.info(ex.getMessage());
 			errorOut(response, "Could not interpret numeric field");
@@ -1004,14 +984,17 @@ public class API extends AbstractHandler {
 		PreparedStatement pstmt = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("UPDATE " + Config.DATABASE_TABLE_PREFIX
-					+ "tblproducts SET name = ?, price = ?, department=?, current_stock=?, max_stock=?, updated = UNIX_TIMESTAMP() WHERE id=?");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("UPDATE :prefix:tblproducts SET name = ?, price = ?, department=?, current_stock=?, max_stock=?, supplierPrice = ?, unitsInCase = ?, VATamount=?,  targetProfitMargin = ?, updated = UNIX_TIMESTAMP() WHERE id=?"));
 			pstmt.setString(1, name);
 			pstmt.setFloat(2, price);
 			pstmt.setString(3, department);
 			pstmt.setInt(4, currentStockInt);
 			pstmt.setInt(5, maxStockInt);
-			pstmt.setString(6, id);
+			pstmt.setFloat(6, supplierPrice);
+			pstmt.setInt(7, unitsInCase);
+			pstmt.setFloat(8, VATamount);
+			pstmt.setFloat(9, targetProfitMargin);
+			pstmt.setString(10, id);
 			if (pstmt.executeUpdate() > 0) {
 				Log.info("Product ($id) UPDATED by operator ($operator)");
 				successOut(response);
@@ -1037,8 +1020,7 @@ public class API extends AbstractHandler {
 		PreparedStatement pstmt = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("DELETE FROM " + Config.DATABASE_TABLE_PREFIX
-					+ "transactions WHERE (id = ? AND ended = 0) LIMIT 1");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("DELETE FROM :prefix:transactions WHERE (id = ? AND ended = 0) LIMIT 1"));
 			pstmt.setString(1, id);
 			if (pstmt.executeUpdate() > 0) {
 				successOut(response);
@@ -1086,8 +1068,7 @@ public class API extends AbstractHandler {
 				return;
 			}
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("UPDATE " + Config.DATABASE_TABLE_PREFIX
-					+ "transactions SET ended = ?, total = ?, cashback=?, money_given = ?, card = ?, type=?, payee=? WHERE id=? AND cashier=?");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("UPDATE :prefix:transactions SET ended = ?, total = ?, cashback=?, money_given = ?, card = ?, type=?, payee=? WHERE id=? AND cashier=?"));
 			pstmt.setLong(1, Utils.getCurrentTimeStamp() / 1000);
 			pstmt.setFloat(2, total);
 			pstmt.setFloat(3, cashback);
@@ -1167,8 +1148,7 @@ public class API extends AbstractHandler {
 	private boolean insertTransactionProduct(Connection conn, String transactionId, String productId, double price,
 			String departmentId) throws SQLException {
 		String noneCatagory = "5b82f89a-7b71-11e7-b34e-426562cc935f";
-		PreparedStatement pstmt = conn.prepareStatement("INSERT INTO " + Config.DATABASE_TABLE_PREFIX
-				+ "transactiontoproducts (id, transaction_id, product_id, price, department, created) VALUES (?, ?, ?, ?, ?, ?)");
+		PreparedStatement pstmt = conn.prepareStatement(Utils.addTablePrefix("INSERT INTO :prefix:transactiontoproducts (id, transaction_id, product_id, price, department, created) VALUES (?, ?, ?, ?, ?, ?)"));
 		pstmt.setString(1, GUID());
 		pstmt.setString(2, transactionId);
 		pstmt.setString(3, productId);
@@ -1184,8 +1164,7 @@ public class API extends AbstractHandler {
 
 	private boolean incrementProductLevel(Connection conn, String productId, Long productQuantity) throws SQLException {
 		
-		PreparedStatement pstmt = conn.prepareStatement("UPDATE " + Config.DATABASE_TABLE_PREFIX
-				+ "tblproducts SET current_stock=current_stock+? WHERE id = ?");
+		PreparedStatement pstmt = conn.prepareStatement(Utils.addTablePrefix("UPDATE :prefix:tblproducts SET current_stock=current_stock+? WHERE id = ?"));
 		pstmt.setLong(1, productQuantity);
 		pstmt.setString(2, productId);
 		if (pstmt.executeUpdate() > 0) {
@@ -1196,8 +1175,7 @@ public class API extends AbstractHandler {
 
 	private boolean decrementProductLevel(Connection conn, String productId, Long productQuantity) throws SQLException {
 		
-		PreparedStatement pstmt = conn.prepareStatement("UPDATE " + Config.DATABASE_TABLE_PREFIX
-				+ "tblproducts SET current_stock=current_stock-? WHERE id = ? AND current_stock > 0");
+		PreparedStatement pstmt = conn.prepareStatement(Utils.addTablePrefix("UPDATE :prefix:tblproducts SET current_stock=current_stock-? WHERE id = ? AND current_stock > 0"));
 		pstmt.setLong(1, productQuantity);
 		pstmt.setString(2, productId);
 		if (pstmt.executeUpdate() > 0) {
@@ -1213,8 +1191,7 @@ public class API extends AbstractHandler {
 		
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT 1 FROM " + Config.DATABASE_TABLE_PREFIX
-					+ "transactions WHERE (id = ? AND ended = 0) LIMIT 1");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT 1 FROM :prefix:transactions WHERE (id = ? AND ended = 0) LIMIT 1"));
 			pstmt.setString(1, id);
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
@@ -1254,12 +1231,11 @@ public class API extends AbstractHandler {
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT IFNULL(SUM(" + Config.DATABASE_TABLE_PREFIX
-					+ "transactions.total), 0.00) AS \"amount\" FROM " + Config.DATABASE_TABLE_PREFIX
-					+ "transactions WHERE (" + Config.DATABASE_TABLE_PREFIX + "transactions.started > ? AND "
-					+ Config.DATABASE_TABLE_PREFIX + "transactions.ended < ?) AND " + Config.DATABASE_TABLE_PREFIX
-					+ "transactions.cashier NOT IN (?) AND " + Config.DATABASE_TABLE_PREFIX
-					+ "transactions.type in (?) AND (" + Config.DATABASE_TABLE_PREFIX + "transactions.ended > 0)");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT IFNULL(SUM("				
+					+ ":prefix:transactions.total), 0.00) AS \"amount\" FROM "
+					+ ":prefix:transactions WHERE (:prefix:transactions.started > ? AND "
+					+ ":prefix:transactions.ended < ?) AND :prefix:transactions.cashier NOT IN (?) AND "
+					+ ":prefix:transactions.type in (?) AND (:prefix:transactions.ended > 0)"));
 			pstmt.setFloat(1, Float.parseFloat(startString));
 			pstmt.setFloat(2, Float.parseFloat(endString));
 			pstmt.setString(3, admin);
@@ -1288,16 +1264,13 @@ public class API extends AbstractHandler {
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT SUM(" + Config.DATABASE_TABLE_PREFIX
-					+ "transactiontoproducts.price) AS \"amount\" FROM " + Config.DATABASE_TABLE_PREFIX
-					+ "transactiontoproducts LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "transactions ON "
-					+ Config.DATABASE_TABLE_PREFIX + "transactions.id = " + Config.DATABASE_TABLE_PREFIX
-					+ "transactiontoproducts.transaction_id WHERE (" + Config.DATABASE_TABLE_PREFIX
-					+ "transactions.started > ? AND " + Config.DATABASE_TABLE_PREFIX + "transactions.ended < ?) AND "
-					+ Config.DATABASE_TABLE_PREFIX + "transactions.cashier NOT IN (?) AND "
-					+ Config.DATABASE_TABLE_PREFIX + "transactions.type in (?) AND (" + Config.DATABASE_TABLE_PREFIX
-					+ "transactions.ended > 0) GROUP BY " + Config.DATABASE_TABLE_PREFIX
-					+ "transactiontoproducts.department");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT SUM(:prefix:transactiontoproducts.price) AS \"amount\" FROM " 
+					+ ":prefix:transactiontoproducts LEFT JOIN :prefix:transactions ON "
+					+ ":prefix:transactions.id = :prefix:transactiontoproducts.transaction_id WHERE ("
+					+ ":prefix:transactions.started > ? AND :prefix:transactions.ended < ?) AND "
+					+ ":prefix:transactions.cashier NOT IN (?) AND "
+					+ ":prefix:transactions.type in (?) AND ("
+					+ ":prefix:transactions.ended > 0) GROUP BY :prefix:transactiontoproducts.department"));
 			pstmt.setFloat(1, Float.parseFloat(startString));
 			pstmt.setFloat(2, Float.parseFloat(endString));
 			pstmt.setString(3, admin);
@@ -1326,12 +1299,9 @@ public class API extends AbstractHandler {
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT SUM(" + Config.DATABASE_TABLE_PREFIX
-					+ "transactions.total) AS \"amount\" FROM " + Config.DATABASE_TABLE_PREFIX + "transactions WHERE ("
-					+ Config.DATABASE_TABLE_PREFIX + "transactions.started > ? AND " + Config.DATABASE_TABLE_PREFIX
-					+ "transactions.ended < ?) AND " + Config.DATABASE_TABLE_PREFIX
-					+ "transactions.cashier NOT IN (?) AND " + Config.DATABASE_TABLE_PREFIX
-					+ "transactions.type in (?) AND (" + Config.DATABASE_TABLE_PREFIX + "transactions.ended > 0)");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT SUM(:prefix:transactions.total) AS \"amount\" FROM :prefix:transactions WHERE ("
+					+ ":prefix:transactions.started > ? AND :prefix:transactions.ended < ?) AND :prefix:transactions.cashier NOT IN (?) AND " 
+					+ ":prefix:transactions.type in (?) AND (:prefix:transactions.ended > 0)"));
 			pstmt.setFloat(1, Float.parseFloat(startString));
 			pstmt.setFloat(2, Float.parseFloat(endString));
 			pstmt.setString(3, admin);
@@ -1360,12 +1330,8 @@ public class API extends AbstractHandler {
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT SUM(" + Config.DATABASE_TABLE_PREFIX
-					+ "transactions.cashback) AS \"amount\" FROM " + Config.DATABASE_TABLE_PREFIX
-					+ "transactions WHERE (" + Config.DATABASE_TABLE_PREFIX + "transactions.started > ? AND "
-					+ Config.DATABASE_TABLE_PREFIX + "transactions.ended < ?) AND " + Config.DATABASE_TABLE_PREFIX
-					+ "transactions.cashier NOT IN (?) AND " + Config.DATABASE_TABLE_PREFIX
-					+ "transactions.type in (?) AND (" + Config.DATABASE_TABLE_PREFIX + "transactions.ended > 0)");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT SUM(:prefix:transactions.cashback) AS \"amount\" FROM :prefix:transactions WHERE (:prefix:transactions.started > ? AND "
+					+ ":prefix:transactions.ended < ?) AND :prefix:transactions.cashier NOT IN (?) AND :prefix:transactions.type in (?) AND (:prefix:transactions.ended > 0)"));
 			pstmt.setFloat(1, Float.parseFloat(startString));
 			pstmt.setFloat(2, Float.parseFloat(endString));
 			pstmt.setString(3, admin);
@@ -1394,12 +1360,9 @@ public class API extends AbstractHandler {
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT SUM(" + Config.DATABASE_TABLE_PREFIX
-					+ "transactions.card) AS \"amount\" FROM " + Config.DATABASE_TABLE_PREFIX + "transactions WHERE ("
-					+ Config.DATABASE_TABLE_PREFIX + "transactions.started > ? AND " + Config.DATABASE_TABLE_PREFIX
-					+ "transactions.ended < ?) AND " + Config.DATABASE_TABLE_PREFIX
-					+ "transactions.cashier NOT IN (?) AND " + Config.DATABASE_TABLE_PREFIX
-					+ "transactions.type in (?) AND (" + Config.DATABASE_TABLE_PREFIX + "transactions.ended > 0)");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT SUM(:prefix:transactions.card) AS \"amount\" FROM :prefix:transactions WHERE ("
+					+ ":prefix:transactions.started > ? AND :prefix:transactions.ended < ?) AND :prefix:transactions.cashier NOT IN (?) "
+					+ "AND :prefix:transactions.type in (?) AND (:prefix:transactions.ended > 0)"));
 			pstmt.setFloat(1, Float.parseFloat(startString));
 			pstmt.setFloat(2, Float.parseFloat(endString));
 			pstmt.setString(3, admin);
@@ -1471,8 +1434,7 @@ public class API extends AbstractHandler {
 		try {
 			JSONArray jsonArr = new JSONArray();
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT * FROM `" + Config.DATABASE_TABLE_PREFIX
-					+ "transactiontoproducts` WHERE product_id = ? AND created BETWEEN ? AND ?");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT * FROM :prefix:transactiontoproducts` WHERE product_id = ? AND created BETWEEN ? AND ?"));
 			pstmt.setString(1, id);
 			pstmt.setLong(2, start);
 			pstmt.setLong(3, end);
@@ -1509,20 +1471,11 @@ public class API extends AbstractHandler {
 		try {
 			JSONArray jsonArr = new JSONArray();
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX
-					+ "transactiontoproducts.product_id, COUNT(*) AS \"quantity\", " + Config.DATABASE_TABLE_PREFIX
-					+ "transactiontoproducts.price, IFNULL((SELECT name FROM " + Config.DATABASE_TABLE_PREFIX
-					+ "tblproducts WHERE id = " + Config.DATABASE_TABLE_PREFIX
-					+ "transactiontoproducts.product_id LIMIT 1), " + Config.DATABASE_TABLE_PREFIX
-					+ "tblcatagories.name) AS \"name\" FROM " + Config.DATABASE_TABLE_PREFIX
-					+ "transactiontoproducts LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "tblproducts ON "
-					+ Config.DATABASE_TABLE_PREFIX + "tblproducts.id = " + Config.DATABASE_TABLE_PREFIX
-					+ "transactiontoproducts.product_id LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "tblcatagories ON "
-					+ Config.DATABASE_TABLE_PREFIX + "tblcatagories.id = " + Config.DATABASE_TABLE_PREFIX
-					+ "transactiontoproducts.department WHERE " + Config.DATABASE_TABLE_PREFIX
-					+ "transactiontoproducts.transaction_id = ? GROUP BY " + Config.DATABASE_TABLE_PREFIX
-					+ "transactiontoproducts.product_id, " + Config.DATABASE_TABLE_PREFIX
-					+ "transactiontoproducts.price, " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.name");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT :prefix:transactiontoproducts.product_id, COUNT(*) AS \"quantity\", :prefix:transactiontoproducts.price, IFNULL((SELECT name FROM "
+					+ ":prefix:tblproducts WHERE id = :prefix:transactiontoproducts.product_id LIMIT 1), :prefix:tblcatagories.name) AS \"name\" FROM "
+					+ ":prefix:transactiontoproducts LEFT JOIN :prefix:tblproducts ON :prefix:tblproducts.id = :prefix:transactiontoproducts.product_id LEFT JOIN :prefix:tblcatagories ON "
+					+ ":prefix:tblcatagories.id = :prefix:transactiontoproducts.department WHERE :prefix:transactiontoproducts.transaction_id = ? GROUP BY "
+					+ ":prefix:transactiontoproducts.product_id, :prefix:transactiontoproducts.price, :prefix:tblcatagories.name"));
 			pstmt.setString(1, id);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
@@ -1567,8 +1520,7 @@ public class API extends AbstractHandler {
 		}
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT id, name, type, email, telephone FROM " + Config.DATABASE_TABLE_PREFIX
-					+ "operators WHERE LCASE(email) = LCASE(?) AND passwordHash = ? LIMIT 1");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT id, name, type, email, telephone FROM :prefix:operators WHERE LCASE(email) = LCASE(?) AND passwordHash = ? LIMIT 1"));
 			pstmt.setString(1, email);
 			pstmt.setString(2, Utils.hashPassword(password, ""));
 			rs = pstmt.executeQuery();
@@ -1634,18 +1586,10 @@ public class API extends AbstractHandler {
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("(SELECT " + Config.DATABASE_TABLE_PREFIX + "tblchat.id,  "
-					+ Config.DATABASE_TABLE_PREFIX + "tblchat.sender AS \"senderId\", " + Config.DATABASE_TABLE_PREFIX
-					+ "tblchat.recipient as \"recipientId\", a.name AS \"senderName\", IFNULL(b.name, \"All\") AS recipientName, "
-					+ Config.DATABASE_TABLE_PREFIX + "tblchat.message, " + Config.DATABASE_TABLE_PREFIX
-					+ "tblchat.created FROM " + Config.DATABASE_TABLE_PREFIX + "tblchat LEFT JOIN "
-					+ Config.DATABASE_TABLE_PREFIX + "operators a ON a.id = " + Config.DATABASE_TABLE_PREFIX
-					+ "tblchat.sender LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "operators b ON b.id = "
-					+ Config.DATABASE_TABLE_PREFIX + "tblchat.recipient WHERE (" + Config.DATABASE_TABLE_PREFIX
-					+ "tblchat.recipient = ? OR " + Config.DATABASE_TABLE_PREFIX + "tblchat.sender = ? OR "
-					+ Config.DATABASE_TABLE_PREFIX + "tblchat.recipient = \"All\") AND " + Config.DATABASE_TABLE_PREFIX
-					+ "tblchat.created > ? ORDER BY " + Config.DATABASE_TABLE_PREFIX
-					+ "tblchat.created DESC LIMIT 20) ORDER BY created ASC");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT :prefix:tblchat.id, :prefix:tblchat.sender AS \"senderId\", :prefix:tblchat.recipient as \"recipientId\", a.name AS \"senderName\", IFNULL(b.name, \"All\") AS recipientName, "
+					+ ":prefix:tblchat.message, :prefix:tblchat.created FROM :prefix:tblchat LEFT JOIN :prefix:operators a ON a.id = :prefix:tblchat.sender LEFT JOIN :prefix:operators b ON b.id = "
+					+ ":prefix:tblchat.recipient WHERE (:prefix:tblchat.recipient = ? OR :prefix:tblchat.sender = ? OR :prefix:tblchat.recipient = \"All\") AND "
+					+ ":prefix:tblchat.created > ? ORDER BY :prefix:tblchat.created DESC LIMIT 20) ORDER BY created ASC"));
 			pstmt.setString(1, operator);
 			pstmt.setString(2, operator);
 			pstmt.setInt(3, time);
@@ -1680,18 +1624,12 @@ public class API extends AbstractHandler {
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblproducts.id, "
-					+ Config.DATABASE_TABLE_PREFIX + "tblproducts.name, " + Config.DATABASE_TABLE_PREFIX
-					+ "tblproducts.price, " + "" + Config.DATABASE_TABLE_PREFIX + "tblproducts.barcode, "
-					+ Config.DATABASE_TABLE_PREFIX + "tblproducts.department, " + Config.DATABASE_TABLE_PREFIX
-					+ "tblproducts.labelPrinted, " + "" + Config.DATABASE_TABLE_PREFIX + "tblproducts.isCase, "
-					+ Config.DATABASE_TABLE_PREFIX + "tblproducts.units, " + Config.DATABASE_TABLE_PREFIX
-					+ "tblproducts.unitType, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.updated, " + ""
-					+ Config.DATABASE_TABLE_PREFIX + "tblproducts.created, " + Config.DATABASE_TABLE_PREFIX
-					+ "tblproducts.deleted, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.status, "
-					+ Config.DATABASE_TABLE_PREFIX + "tblproducts.max_stock, " + "" + Config.DATABASE_TABLE_PREFIX
-					+ "tblproducts.current_stock FROM " + Config.DATABASE_TABLE_PREFIX
-					+ "tblproducts WHERE barcode = ? LIMIT 1");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT :prefix:tblproducts.id, :prefix:tblproducts.name, :prefix:tblproducts.price, " 
+					+ ":prefix:tblproducts.barcode, :prefix:tblproducts.department, :prefix:tblproducts.labelPrinted, "
+					+ ":prefix:tblproducts.isCase, :prefix:tblproducts.units, "
+					+ ":prefix:tblproducts.unitType, :prefix:tblproducts.updated, "
+					+ ":prefix:tblproducts.created, :prefix:tblproducts.deleted, :prefix:tblproducts.status, :prefix:tblproducts.max_stock,  "
+					+ ":prefix:tblproducts.current_stock FROM :prefix:tblproducts WHERE barcode = ? LIMIT 1"));
 			pstmt.setString(1, barcode);
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
@@ -1731,8 +1669,7 @@ public class API extends AbstractHandler {
 		PreparedStatement pstmt = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("INSERT IGNORE INTO " + Config.DATABASE_TABLE_PREFIX
-					+ "tblproducts (id, barcode, name, created) VALUES (?, ?, ?, ?)");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("INSERT IGNORE INTO :prefix:tblproducts (id, barcode, name, created) VALUES (?, ?, ?, ?)"));
 			pstmt.setString(1, guid);
 			pstmt.setString(2, barcode);
 			pstmt.setString(3, name);
@@ -1763,9 +1700,7 @@ public class API extends AbstractHandler {
 		Log.info(code + "attemping to login");
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "operators.id, "
-					+ Config.DATABASE_TABLE_PREFIX + "operators.name FROM " + Config.DATABASE_TABLE_PREFIX
-					+ "operators WHERE code = ? AND deleted = 0 LIMIT 1");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT :prefix:operators.id, :prefix:operators.name FROM :prefix:operators WHERE code = ? AND deleted = 0 LIMIT 1"));
 			pstmt.setString(1, code);
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
@@ -1792,16 +1727,11 @@ public class API extends AbstractHandler {
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX
-					+ "transactiontoproducts.product_id, " + Config.DATABASE_TABLE_PREFIX + "tblproducts.name,  COUNT("
-					+ Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.product_id) AS \"Sales\" FROM "
-					+ Config.DATABASE_TABLE_PREFIX + "transactiontoproducts INNER JOIN " + Config.DATABASE_TABLE_PREFIX
-					+ "tblproducts ON " + Config.DATABASE_TABLE_PREFIX + "tblproducts.id = "
-					+ Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.product_id WHERE "
-					+ Config.DATABASE_TABLE_PREFIX
-					+ "transactiontoproducts.created BETWEEN UNIX_TIMESTAMP()-(3600*24*1) AND UNIX_TIMESTAMP() group by "
-					+ Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.product_id ORDER BY COUNT("
-					+ Config.DATABASE_TABLE_PREFIX + "transactiontoproducts.product_id) DESC LIMIT 20");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT :prefix:transactiontoproducts.product_id, :prefix:tblproducts.name,  "
+					+ "COUNT(:prefix:transactiontoproducts.product_id) AS \"Sales\" FROM :prefix:transactiontoproducts INNER JOIN "
+					+ ":prefix:tblproducts ON :prefix:tblproducts.id = :prefix:transactiontoproducts.product_id WHERE "
+					+ ":prefix:transactiontoproducts.created BETWEEN UNIX_TIMESTAMP()-(3600*24*1) AND UNIX_TIMESTAMP() GROUP BY "
+					+ ":prefix:transactiontoproducts.product_id ORDER BY COUNT(:prefix:transactiontoproducts.product_id) DESC LIMIT 20"));
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				JSONObject tempJo = new JSONObject();
@@ -1914,7 +1844,7 @@ public class API extends AbstractHandler {
 		case "GETTRANSACTION":
 			getTransactionProducts(request, response);
 			break;
-		case "GETPRODUCTSALES":
+		case "GETPRODUCnameTSALES":
 			getProductTransactions(request, response);
 			break;
 		case "GETTRANSACTIONS":
@@ -2067,6 +1997,9 @@ public class API extends AbstractHandler {
 		case "GENERATELABELSPDF":
 			generateLabelsPDF(request, response);
 			break;
+		case "GENERATETAKINGSGRAPH":
+			generateTakingsGraph(request, response);
+			break;
 		default:
 			errorOut(response, "No such function");
 			break;
@@ -2074,6 +2007,93 @@ public class API extends AbstractHandler {
 		response.getWriter().flush();
 		response.getWriter().close();
 
+	}
+
+	private void generateTakingsGraph(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		String time_interval = request.getParameter("time_interval") != null ? request.getParameter("time_interval") : "HOUR";
+		String startTimeString = request.getParameter("start");
+		String endTimeString = request.getParameter("end");
+		if (startTimeString == null || endTimeString == null) {
+			errorOut(response, "missing parameters");
+			return;
+		}
+		Long startTime = 0L;
+		Long endTime = 0L;
+		try {
+			startTime = Long.parseLong(startTimeString);
+			endTime = Long.parseLong(endTimeString);
+		} catch (NumberFormatException e) {
+			errorOut(response, "Could not parse time");
+			return;
+		}
+		Double[] values = null;
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			String sql = null;
+			switch (time_interval) {
+				case "HOUR":
+					sql = "SELECT HOUR(FROM_UNIXTIME(ended)) AS hour, SUM(total) AS total FROM :prefix:transactions WHERE ended BETWEEN ? AND ? GROUP BY hour ORDER BY hour";
+					values = new Double[24];
+					break;
+				case "DAY":
+					sql = "SELECT DAY(FROM_UNIXTIME(ended)) AS day, SUM(total) AS total FROM :prefix:transactions WHERE ended BETWEEN ? AND ? GROUP BY day ORDER BY day";
+					values = new Double[31];
+					break;
+				case "WEEK":
+					sql = "SELECT WEEK(FROM_UNIXTIME(ended)) AS week, SUM(total) AS total FROM :prefix:transactions WHERE ended BETWEEN ? AND ? GROUP BY week ORDER BY week";
+					values = new Double[5];
+					break;
+				case "MONTH":
+					sql = "SELECT MONTH(FROM_UNIXTIME(ended)) AS month, SUM(total) AS total FROM :prefix:transactions WHERE ended BETWEEN ? AND ? GROUP BY month ORDER BY month";
+					values = new Double[12];
+					break;
+				default:
+					sql = "SELECT HOUR(FROM_UNIXTIME(ended)) AS hour, SUM(total) AS total FROM :prefix:transactions WHERE ended BETWEEN ? AND ? GROUP BY hour ORDER BY hour";
+					values = new Double[24];
+					break;
+			}
+			Arrays.fill(values, 0.0);
+			pstmt = conn.prepareStatement(Utils.addTablePrefix(sql));
+			
+			pstmt.setLong(1, startTime);
+			pstmt.setLong(2, endTime);
+			rs = pstmt.executeQuery();
+			if (!rs.isBeforeFirst()) {
+				errorOut(response, "No data");
+				return;
+			}
+			Double runningTotal = 0.0;
+			while (rs.next()) {
+				values[rs.getInt(1)] = rs.getDouble(2);
+			}
+		} catch (SQLException ex) {
+			Log.info(ex.getMessage());
+		} finally {
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
+		}
+		
+		BarDataset dataset = new BarDataset().setBorderColor(Color.BLUE).setBorderWidth(1);
+		for (Double value : values) {
+			dataset.addData(value);
+		}
+		dataset.setLabel("Takings");
+		
+		BarOptions options = new BarOptions();
+		options.setResponsive(true);
+		options.setMaintainAspectRatio(false);
+		options.setTitle(null);
+		int valuesLen = values.length;
+		String[] labels = new String[valuesLen];
+		for (int i=0;i<valuesLen;i++) {
+			labels[i] = String.format("%s:00", Integer.toString(i));
+		}
+		BarData data = new BarData().addLabels(labels).addDataset(dataset);
+
+		response.getWriter().write(new BarChart(data, options).toJson());
 	}
 
 	private void generateLabelsPDF(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -2087,7 +2107,6 @@ public class API extends AbstractHandler {
 			errorOut(response, "missing parameters");
 			return;
 		}
-		Log.info(products.toString());
 		String filename = PDFHelper.createLabelsPDF(products, includeLabelled);
 		JSONObject jo = new JSONObject();
 		jo.put("success", true);
@@ -2134,6 +2153,14 @@ public class API extends AbstractHandler {
 		jo.put("email", user.getEmail());
 		jo.put("telephone", user.getTelephone());
 		response.getWriter().write(jo.toJSONString());
+	}
+	
+	private void getOrderForSupplier(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		String supplier = request.getParameter("supplier");
+		if (supplier == null) {
+			errorOut(response, "missing feilds");
+		}
+		Order.getOrderForSupplier(supplier);
 	}
 
 	private void getTakingsChart(HttpServletRequest request, HttpServletResponse response) throws IOException {

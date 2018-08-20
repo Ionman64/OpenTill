@@ -31,19 +31,16 @@
 	<script src="thirdParty/requirejs/require.js"></script>
 	<script src="js/labels.js"></script>
 	
-	<link href="thirdParty/bootstrap-toggle/css/bootstrap-toggle.min.css" rel="stylesheet">
-	<script src="thirdParty/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
-	
 	<script type="application/javascript" src="js/product_class.js"></script>
 	
-	<link href="css/labels.css" rel="stylesheet" type="text/css"/>
+	<link href="css/offers.css" rel="stylesheet" type="text/css"/>
 	<style>
 	.col-md-* {
 		margin:0;
 		padding:0;
 	}
 	</style>
-	<title>KVS-Dashboard</title>
+	<title>KVS Offers</title>
 </head>
 <body class="no-select">
 	<section class="container-fluid no-padding">
@@ -55,7 +52,7 @@
 			            <ul class="nav nav-pills nav-justified thumbnail setup-panel">
 			                <li class="active"><a data-id="step-1">
 			                    <h4 class="list-group-item-heading">Step 1</h4>
-			                    <p class="list-group-item-text">Select Products</p>
+			                    <p class="list-group-item-text">Select Offers</p>
 			                </a></li>
 			                <!--  <li class="disabled"><a href="#step-2">
 			                    <h4 class="list-group-item-heading">Step 2</h4>
@@ -69,47 +66,47 @@
 			        </div>
 				</div>
 			    <div class="row setup-content well" id="step-1">
-			            <section class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
-			                <h1>Select Products</h1>
-			                <form id="barcodeform" action="#" onsubmit="getProductFromServer()">
-								<section class="input-group">
-									<input type="text" id="barcode" class="form-control input-lg" placeholder="Barcode/Search" autofocus/>
-									<section class="input-group-btn">
-										<input type="submit" value="Enter" id="go" class="btn btn-default btn-lg"/>
-									</section>
-								</section>
-							</form>
-						</section>
-						<section class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-							<section class="pull-left" id="print-label-products">
-								<input data-toggle="toggle" type="checkbox" id="include-labelled-products" checked="checked"></input>
-								<span>Include Products That Have Been Requested Elsewhere Using "Print Label"</span>
-							</section>
-						</section>
-						<section class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-			                <section class="offline-banner hidden">
-								<p>Product Already Added</p>
-							</section>
-						</section>
-						<section class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-			                <section class="row" id="no-goods">
-								<section class="col-lg-12 col-md-12 col-sm-12 col-xs-12 col-xs-12 col-sm-12 col-lg-12 text-center">
-									<h1>No items, scan an item to begin</h1>
-								</section>
-							</section>
-						</section>
-						<section class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-							<section class="row hidden" id="table-holder">
-								<section id="table" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 col-xs-12 col-sm-12 col-lg-12">
-									
-								</section>
-							</section>
-						</section>
-						<section class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-			                <button id="activate-step-3" data-id="step-3" class="btn btn-primary btn-lg pull-right">Next Step</button>
-			            </section>
-			            </div>
-			        </div>
+			   		<h1>Create Offers</h1>
+			    	<section class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+		               <section class="offers-drag-and-drop-container">
+		               		<section class="block condition">
+		               			IF
+		               		</section>
+	               			<section class="block parenthesis">
+		               			(
+		               		</section>
+		               		<section class="block target" data-id="d071b11a-6bd2-11e7-b34e-426562cc935f">
+		               			Coca Cola (1.75ltr)
+		               		</section>
+		               		<section class="block bitwise-op">
+		               			AND
+		               		</section>
+		               		<section class="block target" data-id="d071b11a-6bd2-11e7-b34e-426562cc935f">
+		               			Coca Cola (1.75ltr)
+		               		</section>
+		               		<section class="block parenthesis">
+		               			)
+		               		</section>
+		               		<section class="block condition">
+		               			THEN
+		               		</section>
+		               		<section class="block transaction">
+		               			Cost
+		               		</section>
+		               		<section class="block assignment">
+		               			=
+		               		</section>
+		               		<section class="block value">
+		               			3.30
+		               		</section>
+		               </section>
+					</section>
+		            <section class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
+		               <textarea id="offers" class="form-control">
+		               		
+		               </textarea>
+					</section>
+	            </div>
 			    <div class="row setup-content hidden" id="step-2">
 			        <div class="col-xs-12">
 			            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 well">

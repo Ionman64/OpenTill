@@ -14,7 +14,15 @@
 	</section>
 </section>
 <section class="container-fluid">
-	
+	<section class="row">
+		<section class="col-md-12">
+			 <div class="btn-group">
+			  <button type="button" class="btn btn-primary active">Week</button>
+			  <button type="button" class="btn btn-primary">Month</button>
+			  <button type="button" class="btn btn-primary">Year</button>
+			</div> 
+		</section>
+	</section>
 	<section class="custom-chart-medium">
 		<canvas id="takings-canvas">
 
