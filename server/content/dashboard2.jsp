@@ -20,6 +20,9 @@
 	<!--bootstrap-->
 	<link rel="stylesheet" href="thirdParty/animate/css/animate.css"/>
 	<script src="thirdParty/bootstrap/js/bootstrap.min.js"></script>
+	<!-- Bootstrap Toggle -->
+	<link href="thirdParty/bootstrap-toggle/css/bootstrap-toggle.min.css" rel="stylesheet">
+	<script src="thirdParty/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
 	<!--Bootbox-->
 	<script src="thirdParty/bootbox/js/bootbox.min.js"></script>
 	<!--Mithril-->

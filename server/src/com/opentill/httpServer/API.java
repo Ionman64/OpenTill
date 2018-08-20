@@ -2,6 +2,7 @@ package com.opentill.httpServer;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,7 +10,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.ServletException;
@@ -46,13 +49,19 @@ import com.opentill.products.Product;
 
 import be.ceau.chart.BarChart;
 import be.ceau.chart.LineChart;
+import be.ceau.chart.PieChart;
 import be.ceau.chart.color.Color;
 import be.ceau.chart.data.BarData;
 import be.ceau.chart.data.LineData;
+import be.ceau.chart.data.PieData;
 import be.ceau.chart.dataset.BarDataset;
 import be.ceau.chart.dataset.LineDataset;
+import be.ceau.chart.dataset.PieDataset;
 import be.ceau.chart.options.BarOptions;
+import be.ceau.chart.options.Legend;
+import be.ceau.chart.options.Legend.Position;
 import be.ceau.chart.options.LineOptions;
+import be.ceau.chart.options.PieOptions;
 
 public class API extends AbstractHandler {
 	private CustomSessionHandler sessionHandler;
@@ -1219,7 +1228,7 @@ public class API extends AbstractHandler {
 		response.getWriter().write(jo.toJSONString());
 	}
 
-	private float payouts(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
+	private BigDecimal payouts(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String admin = "a10f653a-6c20-11e7-b34e-426562cc935f";
 		String startString = baseRequest.getParameter("start");
 		String endString = baseRequest.getParameter("end");
@@ -1242,17 +1251,17 @@ public class API extends AbstractHandler {
 			pstmt.setString(4, "PAYOUT");
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				return rs.getFloat(1);
+				return rs.getBigDecimal(1);
 			}
 		} catch (Exception ex) {
 			Log.info(ex.getMessage());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
-		return 0.00F;
+		return new BigDecimal(0.00);
 	}
 
-	private float refunds(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
+	private BigDecimal refunds(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String admin = "a10f653a-6c20-11e7-b34e-426562cc935f";
 		String startString = baseRequest.getParameter("start");
 		String endString = baseRequest.getParameter("end");
@@ -1277,17 +1286,17 @@ public class API extends AbstractHandler {
 			pstmt.setString(4, "REFUND");
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				return rs.getFloat(1);
+				return rs.getBigDecimal(1);
 			}
 		} catch (Exception ex) {
 			Log.info(ex.getMessage());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
-		return 0.00F;
+		return new BigDecimal(0.00);
 	}
 
-	private float takings(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
+	private BigDecimal takings(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String admin = "a10f653a-6c20-11e7-b34e-426562cc935f";
 		String startString = baseRequest.getParameter("start");
 		String endString = baseRequest.getParameter("end");
@@ -1308,17 +1317,17 @@ public class API extends AbstractHandler {
 			pstmt.setString(4, "PURCHASE");
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				return rs.getFloat(1);
+				return rs.getBigDecimal(1);
 			}
 		} catch (Exception ex) {
 			Log.info(ex.getMessage());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
-		return 0.00F;
+		return new BigDecimal(0.00);
 	}
 
-	private float cashback(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
+	private BigDecimal cashback(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String admin = "a10f653a-6c20-11e7-b34e-426562cc935f";
 		String startString = baseRequest.getParameter("start");
 		String endString = baseRequest.getParameter("end");
@@ -1338,17 +1347,17 @@ public class API extends AbstractHandler {
 			pstmt.setString(4, "PURCHASE");
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				return rs.getFloat(1);
+				return rs.getBigDecimal(1);
 			}
 		} catch (Exception ex) {
 			Log.info(ex.getMessage());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
-		return 0.00F;
+		return new BigDecimal(0.00);
 	}
 
-	private float cardGiven(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
+	private BigDecimal cardGiven(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String admin = "a10f653a-6c20-11e7-b34e-426562cc935f";
 		String startString = baseRequest.getParameter("start");
 		String endString = baseRequest.getParameter("end");
@@ -1369,14 +1378,14 @@ public class API extends AbstractHandler {
 			pstmt.setString(4, "PURCHASE");
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				return rs.getFloat(1);
+				return rs.getBigDecimal(1);
 			}
 		} catch (Exception ex) {
 			Log.info(ex.getMessage());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
-		return 0.00F;
+		return new BigDecimal(0.00);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1720,8 +1729,24 @@ public class API extends AbstractHandler {
 		errorOut(response, null);
 	}
 
-	private void getTopProductSales(HttpServletRequest baseRequest, HttpServletResponse response) throws IOException {
+	private void getTopProductSales(HttpServletRequest baseRequest, HttpServletResponse response) throws IOException, ServletException {
 		JSONArray json = new JSONArray();
+		String time_interval = baseRequest.getParameter("time_interval") != null ? baseRequest.getParameter("time_interval") : "HOUR";
+		String startTimeString = baseRequest.getParameter("start");
+		String endTimeString = baseRequest.getParameter("end");
+		if (startTimeString == null || endTimeString == null) {
+			errorOut(response, "missing parameters");
+			return;
+		}
+		Long startTime = 0L;
+		Long endTime = 0L;
+		try {
+			startTime = Long.parseLong(startTimeString);
+			endTime = Long.parseLong(endTimeString);
+		} catch (NumberFormatException e) {
+			errorOut(response, "Could not parse time");
+			return;
+		}
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -1730,14 +1755,16 @@ public class API extends AbstractHandler {
 			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT :prefix:transactiontoproducts.product_id, :prefix:tblproducts.name,  "
 					+ "COUNT(:prefix:transactiontoproducts.product_id) AS \"Sales\" FROM :prefix:transactiontoproducts INNER JOIN "
 					+ ":prefix:tblproducts ON :prefix:tblproducts.id = :prefix:transactiontoproducts.product_id WHERE "
-					+ ":prefix:transactiontoproducts.created BETWEEN UNIX_TIMESTAMP()-(3600*24*1) AND UNIX_TIMESTAMP() GROUP BY "
-					+ ":prefix:transactiontoproducts.product_id ORDER BY COUNT(:prefix:transactiontoproducts.product_id) DESC LIMIT 20"));
+					+ ":prefix:transactiontoproducts.created BETWEEN ? AND ? GROUP BY "
+					+ ":prefix:transactiontoproducts.product_id ORDER BY COUNT(:prefix:transactiontoproducts.product_id) DESC LIMIT 10"));
+			pstmt.setLong(1, startTime);
+			pstmt.setLong(2, endTime);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				JSONObject tempJo = new JSONObject();
 				tempJo.put("id", rs.getString(1));
 				tempJo.put("name", rs.getString(2));
-				tempJo.put("sales", rs.getInt(3));
+				tempJo.put("value", rs.getInt(3));
 				json.add(tempJo);
 			}
 			response.getWriter().write(json.toJSONString());
@@ -1985,7 +2012,7 @@ public class API extends AbstractHandler {
 		case "ADDPRODUCTTOORDER":
 			addProductToOrder(request, response);
 			break;
-		case "GETTOP20":
+		case "TOPPRODUCTSALES":
 			getTopProductSales(request, response);
 			break;
 		case "GETTAKINGSCHART":
@@ -2000,6 +2027,15 @@ public class API extends AbstractHandler {
 		case "GENERATETAKINGSGRAPH":
 			generateTakingsGraph(request, response);
 			break;
+		case "GETOPERATORTOTALS":
+			getOperatorTotals(request, response);
+			break;
+		case "GETTAKINGSBYDEPARTMENT":
+			getTakingsByDepartment(request, response);
+			break;
+		case "GETOVERVIEWTOTALS":
+			getOverviewTotals(request, response);
+			break;
 		default:
 			errorOut(response, "No such function");
 			break;
@@ -2007,6 +2043,191 @@ public class API extends AbstractHandler {
 		response.getWriter().flush();
 		response.getWriter().close();
 
+	}
+
+	private void getOverviewTotals(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		String time_interval = request.getParameter("time_interval") != null ? request.getParameter("time_interval") : "HOUR";
+		String startTimeString = request.getParameter("start");
+		String endTimeString = request.getParameter("end");
+		if (startTimeString == null || endTimeString == null) {
+			errorOut(response, "missing parameters");
+			return;
+		}
+		Long startTime = 0L;
+		Long endTime = 0L;
+		try {
+			startTime = Long.parseLong(startTimeString);
+			endTime = Long.parseLong(endTimeString);
+		} catch (NumberFormatException e) {
+			errorOut(response, "Could not parse time");
+			return;
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT SUM(kvs_transactions.total) AS 'revenue', COUNT(kvs_transactions.id) AS 'number' "
+					+ "FROM kvs_transactions WHERE kvs_transactions.ended BETWEEN ? AND ?"));
+			pstmt.setLong(1, startTime);
+			pstmt.setLong(2, endTime);
+			rs = pstmt.executeQuery();
+			
+			if (!rs.next()) {
+				errorOut(response, "No data");
+				return;
+			}
+			else {
+				JSONObject jo = new JSONObject();
+				BigDecimal card = cardGiven(request, response);
+				BigDecimal cashback = cashback(request, response);
+				BigDecimal refunds = refunds(request, response);
+				BigDecimal payouts = payouts(request, response);
+				jo.put("revenue", rs.getBigDecimal(1));
+				jo.put("number", rs.getInt(2));
+				jo.put("payouts", payouts);
+				jo.put("card", card);
+				jo.put("refunds", refunds);
+				BigDecimal cashInDrawer = rs.getBigDecimal(1);
+				cashInDrawer = cashInDrawer.subtract(payouts);
+				cashInDrawer = cashInDrawer.subtract(card);
+				cashInDrawer = cashInDrawer.subtract(refunds);
+				cashInDrawer = cashInDrawer.subtract(cashback.multiply(new BigDecimal(2)));
+				jo.put("cashInDrawer", cashInDrawer);
+				response.getWriter().write(jo.toJSONString());
+			}
+		} catch (SQLException ex) {
+			Log.info(ex.getMessage());
+		} finally {
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
+		}
+	}
+	private void getTakingsByDepartment(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		boolean dataOnly = request.getParameter("data-only").equals("false") ? false : true;
+		String time_interval = request.getParameter("time_interval") != null ? request.getParameter("time_interval") : "HOUR";
+		String startTimeString = request.getParameter("start");
+		String endTimeString = request.getParameter("end");
+		if (startTimeString == null || endTimeString == null) {
+			errorOut(response, "missing parameters");
+			return;
+		}
+		Long startTime = 0L;
+		Long endTime = 0L;
+		try {
+			startTime = Long.parseLong(startTimeString);
+			endTime = Long.parseLong(endTimeString);
+		} catch (NumberFormatException e) {
+			errorOut(response, "Could not parse time");
+			return;
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		JSONArray joArray = new JSONArray();
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT :prefix:tblcatagories.name, SUM(:prefix:transactiontoproducts.price) AS 'value', :prefix:tblcatagories.colour "
+					+ "FROM :prefix:tblcatagories LEFT JOIN :prefix:transactiontoproducts ON :prefix:tblcatagories.id = :prefix:transactiontoproducts.department "
+					+ "WHERE :prefix:transactiontoproducts.created BETWEEN ? AND ? GROUP BY :prefix:tblcatagories.id ORDER BY value DESC"));
+			pstmt.setLong(1, startTime);
+			pstmt.setLong(2, endTime);
+			rs = pstmt.executeQuery();
+			if (!rs.isBeforeFirst()) {
+				errorOut(response, "No data");
+				return;
+			}
+			
+			while (rs.next()) {
+				JSONObject jo = new JSONObject();
+				jo.put("name", rs.getString(1));
+				jo.put("value", rs.getDouble(2));
+				jo.put("colour", rs.getString(3));
+				joArray.add(jo);
+			}
+		} catch (SQLException ex) {
+			Log.info(ex.getMessage());
+		} finally {
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
+		}
+		if (dataOnly) {
+			response.getWriter().write(joArray.toJSONString());
+			return;
+		}
+		String[] labels = new String[joArray.size()];
+		PieDataset dataset = new PieDataset().setBorderColor(Color.BLUE).setBorderWidth(1);
+		int i = 0;
+		Iterator<JSONObject> iter = joArray.iterator();
+		while (iter.hasNext()) {
+			JSONObject jo = iter.next();
+			labels[i++] = (String) jo.get("name");
+			dataset.addData((Double) jo.get("value"));
+			dataset.addBackgroundColor(Color.random());
+		}
+
+		dataset.setLabel("Takings by department");
+		
+		Legend legend = new Legend();
+		legend.setPosition(Position.RIGHT);
+		legend.setDisplay(true);
+		
+		PieOptions options = new PieOptions();
+		options.setResponsive(true);
+		options.setMaintainAspectRatio(false);
+		options.setTitle(null);
+		options.setLegend(legend);
+
+		PieData data = new PieData().addLabels(labels).addDataset(dataset);
+
+		response.getWriter().write(new PieChart(data, options).toJson());
+	}
+
+	private void getOperatorTotals(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		String time_interval = request.getParameter("time_interval") != null ? request.getParameter("time_interval") : "HOUR";
+		String startTimeString = request.getParameter("start");
+		String endTimeString = request.getParameter("end");
+		if (startTimeString == null || endTimeString == null) {
+			errorOut(response, "missing parameters");
+			return;
+		}
+		Long startTime = 0L;
+		Long endTime = 0L;
+		try {
+			startTime = Long.parseLong(startTimeString);
+			endTime = Long.parseLong(endTimeString);
+		} catch (NumberFormatException e) {
+			errorOut(response, "Could not parse time");
+			return;
+		}
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT :prefix:operators.name, SUM(:prefix:transactions.total) AS 'value' FROM :prefix:operators "
+					+ "RIGHT JOIN :prefix:transactions ON :prefix:operators.id = :prefix:transactions.cashier WHERE :prefix:transactions.ended BETWEEN ? AND ? "
+					+ "GROUP BY :prefix:operators.id ORDER BY value DESC"));
+			pstmt.setLong(1, startTime);
+			pstmt.setLong(2, endTime);
+			rs = pstmt.executeQuery();
+			if (!rs.isBeforeFirst()) {
+				errorOut(response, "No data");
+				return;
+			}
+			JSONArray resp = new JSONArray();
+			while (rs.next()) {
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("name", rs.getString(1));
+				jsonObject.put("value", rs.getFloat(2));
+				resp.add(jsonObject);
+			}
+			response.getWriter().write(resp.toJSONString());
+			return;
+		} catch (SQLException ex) {
+			Log.info(ex.getMessage());
+		} finally {
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
+		}
+		errorOut(response);
 	}
 
 	private void generateTakingsGraph(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -2027,6 +2248,7 @@ public class API extends AbstractHandler {
 			return;
 		}
 		Double[] values = null;
+		int[] transactionCounts = null;
 		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -2036,27 +2258,33 @@ public class API extends AbstractHandler {
 			String sql = null;
 			switch (time_interval) {
 				case "HOUR":
-					sql = "SELECT HOUR(FROM_UNIXTIME(ended)) AS hour, SUM(total) AS total FROM :prefix:transactions WHERE ended BETWEEN ? AND ? GROUP BY hour ORDER BY hour";
+					sql = "SELECT HOUR(FROM_UNIXTIME(ended)) AS hour, SUM(total) AS total, COUNT(id) AS count FROM :prefix:transactions WHERE ended BETWEEN ? AND ? GROUP BY hour ORDER BY hour";
 					values = new Double[24];
+					transactionCounts = new int[24];
 					break;
 				case "DAY":
-					sql = "SELECT DAY(FROM_UNIXTIME(ended)) AS day, SUM(total) AS total FROM :prefix:transactions WHERE ended BETWEEN ? AND ? GROUP BY day ORDER BY day";
+					sql = "SELECT DAY(FROM_UNIXTIME(ended)) AS day, SUM(total) AS total, COUNT(id) AS count FROM :prefix:transactions WHERE ended BETWEEN ? AND ? GROUP BY day ORDER BY day";
 					values = new Double[31];
+					transactionCounts = new int[31];
 					break;
 				case "WEEK":
-					sql = "SELECT WEEK(FROM_UNIXTIME(ended)) AS week, SUM(total) AS total FROM :prefix:transactions WHERE ended BETWEEN ? AND ? GROUP BY week ORDER BY week";
+					sql = "SELECT WEEK(FROM_UNIXTIME(ended)) AS week, SUM(total) AS total, COUNT(id) AS count FROM :prefix:transactions WHERE ended BETWEEN ? AND ? GROUP BY week ORDER BY week";
 					values = new Double[5];
+					transactionCounts = new int[5];
 					break;
 				case "MONTH":
-					sql = "SELECT MONTH(FROM_UNIXTIME(ended)) AS month, SUM(total) AS total FROM :prefix:transactions WHERE ended BETWEEN ? AND ? GROUP BY month ORDER BY month";
+					sql = "SELECT MONTH(FROM_UNIXTIME(ended)) AS month, SUM(total) AS total, COUNT(id) AS count FROM :prefix:transactions WHERE ended BETWEEN ? AND ? GROUP BY month ORDER BY month";
 					values = new Double[12];
+					transactionCounts = new int[12];
 					break;
 				default:
-					sql = "SELECT HOUR(FROM_UNIXTIME(ended)) AS hour, SUM(total) AS total FROM :prefix:transactions WHERE ended BETWEEN ? AND ? GROUP BY hour ORDER BY hour";
+					sql = "SELECT HOUR(FROM_UNIXTIME(ended)) AS hour, SUM(total) AS total, COUNT(id) AS count FROM :prefix:transactions WHERE ended BETWEEN ? AND ? GROUP BY hour ORDER BY hour";
 					values = new Double[24];
+					transactionCounts = new int[24];
 					break;
 			}
 			Arrays.fill(values, 0.0);
+			Arrays.fill(transactionCounts, 0);
 			pstmt = conn.prepareStatement(Utils.addTablePrefix(sql));
 			
 			pstmt.setLong(1, startTime);
@@ -2066,9 +2294,10 @@ public class API extends AbstractHandler {
 				errorOut(response, "No data");
 				return;
 			}
-			Double runningTotal = 0.0;
+			
 			while (rs.next()) {
 				values[rs.getInt(1)] = rs.getDouble(2);
+				transactionCounts[rs.getInt(1)] = rs.getInt(3);
 			}
 		} catch (SQLException ex) {
 			Log.info(ex.getMessage());
@@ -2076,11 +2305,17 @@ public class API extends AbstractHandler {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
 		
-		BarDataset dataset = new BarDataset().setBorderColor(Color.BLUE).setBorderWidth(1);
+		BarDataset totals = new BarDataset().setBorderColor(Color.GREEN).setBorderWidth(1);
 		for (Double value : values) {
-			dataset.addData(value);
+			totals.addData(value);
 		}
-		dataset.setLabel("Takings");
+		totals.setLabel("Takings");
+		
+		BarDataset transactions = new BarDataset().setBorderColor(Color.BLUE).setBorderWidth(1);
+		for (int value : transactionCounts) {
+			transactions.addData(value);
+		}
+		transactions.setLabel("Transactions");
 		
 		BarOptions options = new BarOptions();
 		options.setResponsive(true);
@@ -2091,7 +2326,7 @@ public class API extends AbstractHandler {
 		for (int i=0;i<valuesLen;i++) {
 			labels[i] = String.format("%s:00", Integer.toString(i));
 		}
-		BarData data = new BarData().addLabels(labels).addDataset(dataset);
+		BarData data = new BarData().addLabels(labels).addDataset(transactions).addDataset(totals);
 
 		response.getWriter().write(new BarChart(data, options).toJson());
 	}

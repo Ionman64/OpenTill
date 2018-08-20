@@ -1,5 +1,8 @@
 body {
-	 overflow:hidden;
+	 overflow-x:hidden;
+}
+.bold {
+	font-weight:bold;
 }
 .no-select {
 	-webkit-touch-callout: none; /* iOS Safari */
@@ -16,9 +19,18 @@ body {
 #takings-graph {
 	height:30em;
 }
+#operators-totals {
+	font-size:24px;
+}
+.auto-update-container {
+	padding:20px;
+}
 #user-name {
 	margin-top:0;
 	font-family:roboto, sans-serif;
+}
+.border-left {
+	border-left:1px solid #aaa;
 }
 #user-logout {
 	position: absolute;

@@ -3,6 +3,10 @@ const TAKINGS_INTERVAL_DAY = "DAY";
 const TAKINGS_INTERVAL_WEEK = "WEEK";
 const TAKINGS_INTERVAL_MONTH = "MONTH";
 
+var CHARTS = [];
+var TAKINGS_CHART = 0;
+var TAKINGS_BY_DEPARTMENT_CHART = 1;
+
 function el(tagName, options) {
 	if (tagName.length == 0) {
 		return;
@@ -47,8 +51,11 @@ function getTakingsChart(takings_interval) {
 		data:{"time_interval":takings_interval, "end":moment(moment().subtract(1, "months").format("YYYY-MM-DD")).unix(), "start":moment(moment().subtract(1, "months").subtract(1, "days").format("YYYY-MM-DD")).unix()},
 		dataType: "JSON",
 		success: function(data) {
+			if (CHARTS[TAKINGS_CHART] != undefined) {
+				CHARTS[TAKINGS_CHART].destroy();
+			}
 			var ctx = document.getElementById("takings-graph").getContext("2d");
-			new Chart(ctx, data);
+			CHARTS[TAKINGS_CHART] = new Chart(ctx, data);
 		}
 	});
 }
@@ -82,132 +89,105 @@ function showProduct(id) {
 		}
 	});
 }
-function chartTest(id, data) {
-	if (!data) {
-		$.ajax({
-			url:"api/kvs.jsp?function=GETPRODUCTSALES",
-			data: {"id":id, "end":moment(moment().format("YYYY-MM-DD")).unix(), "start":moment(moment().subtract(1, "months").format("YYYY-MM-DD")).unix()},
-			success:function(data) {
-				if (!data.success) {
-					return;
-				}
-				console.log(data);
-			}
-		});
-		$.ajax({
-			url:"api/kvs.jsp?function=GETPRODUCTLEVELS",
-			data: {"id":id},
-			success: function(data) {
-				if (!data.success) {
-					return;
-				}
-				$("#currentLevel").val((parseInt(data.product.current_stock)+parseInt(data.product.current_display)));
-				$("#graphReorderLevel").val(data.product.lowest_reorder);
-				$("#graphMaxLevel").val(data.product.max_stock);
-				$("#graphDisplayLevel").val(data.product.current_display);
-				chartTest(id, data.product);
-			}
-		});	
-		return;
-	}
-	var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-	var chartColors = {
-		red: 'rgb(255, 99, 132)',
-		orange: 'rgb(255, 159, 64)',
-		yellow: 'rgb(255, 205, 86)',
-		green: 'rgb(75, 192, 192)',
-		blue: 'rgb(54, 162, 235)',
-		purple: 'rgb(153, 102, 255)',
-		grey: 'rgb(201, 203, 207)'
-	};
-	var product = getTransaction().products[$("#product-modal").attr("product-id")];
-	var intervals = [];
-	var dataPoints = [];
-	var maxStock = [];
-	var reorderLevel = []; //re-order level
-	var onDisplay = [];
-	var date = moment();
-	var currentMonth = date.month();
-	date.subtract(date.date()-1, "days");
-	while (currentMonth==date.month()) {
-		intervals.push(date.format("DD"));
-		date.add(1, "days");
-	}
-	console.log(data);
-	for (var i=0;i<intervals.length;i++) {
-		dataPoints.push(0);
-		onDisplay.push(data.max_display);
-		reorderLevel.push(data.lowest_reorder);
-		maxStock.push(data.max_stock);
-	}
-	var config = {
-		type: 'line',
-		data: {
-		    labels: intervals,
-		    datasets: [{
-		        label: "Re-order level",
-		        backgroundColor: chartColors.red,
-		        borderColor: chartColors.red,
-		        data: reorderLevel,
-		        fill: false,
-		    },
-		    {
-		        label: "To Display",
-		        fill: false,
-		        backgroundColor: chartColors.grey,
-		        borderColor: chartColors.grey,
-		        data: onDisplay,
-		    },
-		    {
-		        label: "Max Volume",
-		        fill: false,
-		        backgroundColor: chartColors.blue,
-		        borderColor: chartColors.blue,
-		        data: maxStock,
-		    },
-		    {
-		        label: "Estimated Stock",
-		        fill: false,
-		        backgroundColor: chartColors.blue,
-		        borderColor: chartColors.blue,
-		        data: dataPoints,
-		    }]
-		},
-		options: {
-		    responsive: true,
-		    title:{
-		        display:false,
-		        text:('Estimated Stock for ' + product.name)
-		    },
-		    tooltips: {
-		        mode: 'index',
-		        intersect: false,
-		    },
-		    hover: {
-		        mode: 'nearest',
-		        intersect: true
-		    },
-		    scales: {
-		        xAxes: [{
-		            display: true,
-		            scaleLabel: {
-		                display: true,
-		                labelString: moment().format("MMMM")
-		            }
-		        }],
-		        yAxes: [{
-		            display: true,
-		            scaleLabel: {
-		                display: true,
-		                labelString: '# of stock'
-		            }
-		        }]
-		    }
+function getBestSellingProducts() {
+	var takings_interval = "HOUR";
+	$.ajax({
+		url: "api/kvs.jsp?function=TOPPRODUCTSALES",
+		data:{"time_interval":takings_interval, "end":moment(moment().subtract(1, "months").format("YYYY-MM-DD")).unix(), "start":moment(moment().subtract(1, "months").subtract(1, "days").format("YYYY-MM-DD")).unix()},
+		dataType: "JSON",
+		success: function(data) {
+			var table = $("#best-selling-products")[0];
+			$(table).empty();
+			$.each(data, function(key, item) {
+				var tr = el("tr");
+				var td = el("td", {class:"bold", html:key+1});
+				tr.appendChild(td);
+				
+				var td = el("td");
+				var btn = el("button", {class:"btn btn default", html:"item.name", "data-id":item.id});
+				td.appendChild(btn);
+				tr.appendChild(td);
+				
+				var td = el("td", {html:item.value});
+				tr.appendChild(td);
+				table.appendChild(tr);
+			});
 		}
-	};
-	var ctx = document.getElementById("canvas").getContext("2d");
-	window.myLine = new Chart(ctx, config);
-	var colorNames = Object.keys(chartColors);
+	});
+}
+function getDashboardTotals() {
+	var takings_interval = "HOUR";
+	$.ajax({
+		url:"api/kvs.jsp?function=GETOVERVIEWTOTALS",
+		data:{"time_interval":takings_interval, "end":moment(moment().subtract(1, "months").format("YYYY-MM-DD")).unix(), "start":moment(moment().subtract(1, "months").subtract(1, "days").format("YYYY-MM-DD")).unix()},
+		dataType: "JSON",
+		success: function(data) {
+			if (data.success == false) {
+				return;
+			}
+			$("#revenue-total").html(formatMoney(data.revenue));
+			$("#transactions-count").html(data.number);
+			$("#payouts-total").html(formatMoney(data.payouts));
+			$("#cash-in-drawer").html(formatMoney(data.cashInDrawer));
+			$("#date-of-overview").html(moment().subtract(1, "months").format("YYYY-MM-DD"));
+		}
+	});
+}
+function getTakingsByDepartments() {
+	var takings_interval = "HOUR";
+	$.ajax({
+		url:"api/kvs.jsp?function=GETTAKINGSBYDEPARTMENT",
+		data:{"data-only":false, "time_interval":takings_interval, "end":moment(moment().subtract(1, "months").format("YYYY-MM-DD")).unix(), "start":moment(moment().subtract(1, "months").subtract(1, "days").format("YYYY-MM-DD")).unix()},
+		dataType: "JSON",
+		success: function(data) {
+			if (CHARTS[TAKINGS_BY_DEPARTMENT_CHART] != undefined) {
+				CHARTS[TAKINGS_BY_DEPARTMENT_CHART].destroy();
+			}
+			var ctx = document.getElementById("departments-takings-graph").getContext("2d");
+			CHARTS[TAKINGS_BY_DEPARTMENT_CHART] = new Chart(ctx, data);
+		}
+	});
+	$.ajax({
+		url:"api/kvs.jsp?function=GETTAKINGSBYDEPARTMENT",
+		data:{"data-only":true, "time_interval":takings_interval, "end":moment(moment().subtract(1, "months").format("YYYY-MM-DD")).unix(), "start":moment(moment().subtract(1, "months").subtract(1, "days").format("YYYY-MM-DD")).unix()},
+		dataType: "JSON",
+		success: function(data) {
+			var table = $("#department-totals")[0];
+			$(table).empty();
+			$.each(data, function(key, item) {
+				var tr = el("tr");
+				
+				var td = el("td", {html:item.name});
+				tr.appendChild(td);
+				
+				var td = el("td", {html:formatMoney(item.value)});
+				tr.appendChild(td);
+				table.appendChild(tr);
+			});
+		}
+	});
+}
+function getOperatorTakingsTotal() {
+	var takings_interval = "HOUR";
+	$.ajax({
+		url: "api/kvs.jsp?function=GETOPERATORTOTALS",
+		data:{"time_interval":takings_interval, "end":moment(moment().subtract(1, "months").format("YYYY-MM-DD")).unix(), "start":moment(moment().subtract(1, "months").subtract(1, "days").format("YYYY-MM-DD")).unix()},
+		dataType: "JSON",
+		success: function(data) {
+			var table = $("#operators-totals")[0];
+			$(table).empty();
+			$.each(data, function(key, item) {
+				var tr = el("tr");
+				
+				var td = el("td", {html:item.name});
+				tr.appendChild(td);
+				
+				var td = el("td", {html:item.value});
+				tr.appendChild(td);
+				table.appendChild(tr);
+			});
+		}
+	});
 }
 function loadModals() {
 	window.modals = $(".import-modal").length;
@@ -231,6 +211,18 @@ $(document).ready( function() {
 	loadModals();
 });
 function loadDashboard() {
+	getBestSellingProducts();
+	getOperatorTakingsTotal();
+	getTakingsByDepartments();
+	getDashboardTotals();
+	getTakingsChart(TAKINGS_INTERVAL_HOUR);
+	$("#autoupdateoverview").bootstrapToggle({
+		"on":"Auto Update",
+		"off":"Manual",
+		size:"large"
+	}).on("change", function() {
+		//alert("");
+	});
 	$("#takings-interval button").on("click", function() {
 		$("#takings-interval button").removeClass("active");
 		$(this).addClass("active");
@@ -253,7 +245,6 @@ function loadDashboard() {
 				break;
 		}
 	});
-	getTakingsChart(TAKINGS_INTERVAL_HOUR);
 	$(".custom-navigation").removeClass("hidden").addClass("animated fadeInDown");
 	$("#main-navigation li:not(:first-child)").click(function() {
 		$("#main-navigation li").removeClass("active");
@@ -403,6 +394,11 @@ function truncateOnWord(str, limit) {
     return result + "...";
 }
 
+function formatMoney(amount, prefix) {
+	var prefix = prefix || "";
+	return accounting.formatMoney(amount, prefix);
+}
+
 function percentage(value, total) {
 	return Math.floor(value/total*100);
 }
@@ -431,44 +427,5 @@ function getSalesData(daysToLookBack, id) {
 				$("#product-sales").html(productSales);
 				renderGraph(salesData);
 			}	
-		});
-	}
-	function renderGraph(salesData) {
-		data = [];
-		labels = [];
-		$.each(salesData, function(key, value) {
-			labels.push(key);
-			data.push(value);
-		});
-		var barChartData = {
-			labels: labels,
-			datasets: [{
-				label: 'Units Sold',
-				borderColor: "#3333ff",
-				borderWidth: 1,
-				data: data
-			}]
-		};
-		var ctx = document.getElementById("canvas").getContext("2d");
-		window.myBar = new Chart(ctx, {
-			type: 'line',
-			data: barChartData,
-			options: {
-				responsive: true,
-				legend: {
-					position: 'bottom',
-				},
-				title: {
-					display: false,
-					text: 'Sales'
-				},
-				scales: {
-					yAxes: [{
-						ticks: {
-							beginAtZero:true
-						}
-					}]
-				}
-			}
 		});
 	}
