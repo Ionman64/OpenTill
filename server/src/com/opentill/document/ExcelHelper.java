@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -12,6 +13,7 @@ import java.util.UUID;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormat;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFCreationHelper;
@@ -55,7 +57,7 @@ public class ExcelHelper {
 	}
 
 	public File createTakingsReport(HashMap<String, String> departmentsToNames, String[] departments,
-			HashMap<String, HashMap<String, Double>> values) {
+			LinkedHashMap<String, LinkedHashMap<String, Double>> values) {
 		// Workbook wb = new HSSFWorkbook();
 		XSSFWorkbook wb = new XSSFWorkbook();
 		XSSFSheet sheet = wb.createSheet("Takings");
@@ -66,7 +68,7 @@ public class ExcelHelper {
 		Map<String, XSSFCellStyle> styles = new HashMap<String, XSSFCellStyle>();
 		XSSFCellStyle style3 = wb.createCellStyle();
 		style3.setAlignment(CellStyle.ALIGN_RIGHT); // THIS LINE HERE!
-		style3.setDataFormat(datafrmt.getFormat("£#,##0.00_);[Red](£#,##0.00)")); // Change for international
+		style3.setDataFormat(datafrmt.getFormat("ï¿½#,##0.00_);[Red](ï¿½#,##0.00)")); // Change for international
 		styles.put("currency", style3);
 
 		XSSFRow row = sheet.createRow(0);
@@ -75,9 +77,9 @@ public class ExcelHelper {
 			cell.setCellType(Cell.CELL_TYPE_STRING);
 			cell.setCellValue(departmentsToNames.get(department));
 		}
-		for (Entry<String, HashMap<String, Double>> singleValue : values.entrySet()) {
+		for (Entry<String, LinkedHashMap<String, Double>> singleValue : values.entrySet()) {
 			String date = singleValue.getKey();
-			HashMap<String, Double> dayTotal = singleValue.getValue();
+			LinkedHashMap<String, Double> dayTotal = singleValue.getValue();
 			row = sheet.createRow(rowId++);
 			columnId = 0;
 			row.createCell(columnId++).setCellValue(date);

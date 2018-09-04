@@ -47,8 +47,6 @@
 	<script type="application/javascript" src="js/transaction_class.js"></script>
 	<script type="application/javascript" src="js/cash_register.js"></script>
 	<link rel="stylesheet" href="css/index.css"/>
-	
-
 </head>
 <body class="no-select">
 	<section id="operator-total-box" class="notify custom-btn-black hidden">
@@ -63,6 +61,20 @@
 		<i>Click to Reply</i>
 	</section>
 	<section class="container-fluid">
+	<section class="overlay overlay-ontop hidden" id="non-barcode-container">
+			<section class="row">
+				<section class="col-md-1">
+					<section class="panel panel-default no-product-barcode">
+						<section class="panel-body no-padding">
+							<img class="img img-responsive" src="img/products/tomato.jpg"/>
+						</section>
+						<section class="panel-footer text-center clearfix">
+							Tomatoes
+						</section>
+					</section>
+			</section>
+		</section>
+	</section>
 	<section class="overlay hidden" id="item-search">
 		<section class="container-fluid">
 		<section class="row">
@@ -215,7 +227,7 @@
 			<section class="row">
 				<section class="col-md-2">
 					<p class="navbar-text" id="menu-button"><i class="fa fa-bars fa-2x"></i></p>
-					<p class="navbar-text hidden" id="non-barcode-btn"><i class="fa fa-search fa-2x"></i></p>
+					<button class="navbar-btn btn btn-lg btn-primary" id="non-barcode-btn">Non-Barcode</button>
 				</section>
 				<section class="col-md-2">
 					<h2 class="navbar-text navbar-left" id="operator-name"></h2>
@@ -248,5 +260,6 @@
 	<modal data-page="modals/supplierModal.jsp"></modal>
 	<modal data-page="modals/takings.jsp"></modal>
 	<modal data-page="modals/transactionProducts.jsp"></modal>
+	<modal data-page="modals/weightModal.jsp"></modal>
 </body>
 </html>

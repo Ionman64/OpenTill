@@ -21,14 +21,13 @@ public class Takings {
 			String sql = Utils.addTablePrefix("SELECT DATE(FROM_UNIXTIME(:prefix:transactions.ended)) AS \"date\", "
 					+ ":prefix:transactiontoproducts.department, SUM(:prefix:transactiontoproducts.price) AS \"amount\" "
 					+ "FROM :prefix:transactiontoproducts LEFT JOIN :prefix:transactions ON :prefix:transactiontoproducts.transaction_id = :prefix:transactions.id "
-					+ "WHERE (:prefix:transactions.started > ? AND :prefix:transactions.ended < ?) AND :prefix:transactions.cashier NOT IN (?) AND :prefix:transactions.type "
-					+ "in (?) AND (:prefix:transactions.ended > 0) GROUP BY :prefix:transactiontoproducts.department, DATE(FROM_UNIXTIME(:prefix:transactions.ended)) "
+					+ "WHERE (:prefix:transactions.ended BETWEEN ? AND ?) AND (:prefix:transactions.type = ?) "
+					+ "GROUP BY :prefix:transactiontoproducts.department, DATE(FROM_UNIXTIME(:prefix:transactions.ended)) "
 					+ "ORDER BY DATE(FROM_UNIXTIME(:prefix:transactions.ended)) DESC");
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setLong(1, start);
 			pstmt.setLong(2, end);
-			pstmt.setString(3, admin);
-			pstmt.setString(4, type);
+			pstmt.setString(3, type);
 			rs = pstmt.executeQuery();
 			JSONObject allDates = new JSONObject();
 			while (rs.next()) {

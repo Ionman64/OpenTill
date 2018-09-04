@@ -1,16 +1,6 @@
-<section class="container-fluid padding-right" style="overflow-y:auto;">
-<section class="row" >
-	<section class="col-md-6">
-		<h1>Overview for <span id="date-of-overview"></span></h1>
-	</section>
-	<section class="col-md-6">
-		<section class="auto-update-container pull-right hidden">
-			<input type="checkbox" id="autoupdateoverview"/>
-		</section>
-		
-	</section>
-</section>
-<section class="row">
+<section class="container-fluid padding-right" style="overflow-y:auto;padding-top:10px;">
+
+<section class="row" style="padding-top:10px;">
 	<section class="col-md-3">
 		<section class="panel panel-success">
 			<section class="panel-heading">
@@ -30,7 +20,7 @@
 		</section>
 	</section>
 	<section class="col-md-3">
-		<section class="panel panel-info">
+		<section class="panel panel-info" id="overview-show-transactions">
 			<section class="panel-heading">
 				<section class="container-fluid">
 					<section class="row">
@@ -83,6 +73,7 @@
 		<section class="panel panel-primary">
 			<section class="panel-heading clearfix">
 				Takings
+				<button class="btn btn-default btn-lg pull-right" id="takings-export-btn">Export</button>
 				 <div class="btn-group pull-right hidden" id="takings-interval">
 			 		<button type="button" class="btn btn-default active" data-id="day">Day</button>
 				  	<button type="button" class="btn btn-default" data-id="week">Week</button>
@@ -92,12 +83,12 @@
 			</section>
 			<section class="panel-body">
 				<section class="graph-container-wide">
-					<canvas id="takings-graph"></canvas>
+					<canvas id="overview-takings-graph"></canvas>
 				</section>
 			</section>
 		</section>
 	</section>
-	<section class="col-md-6 col-sm-8">
+	<section class="col-md-5 col-sm-4">
 		<section class="panel panel-primary">
 			<section class="panel-heading">
 				Department Takings
@@ -113,9 +104,7 @@
 						<section class="col-md-12" style="padding-top:1em;">
 							<table class="table">
 								<tbody id="department-totals">
-									<tr>
-										<td>Hello WOrld</td>
-									</tr>
+						
 								</tbody>
 							</table>
 						</section>
@@ -125,28 +114,28 @@
 			</section>
 		</section>
 	</section>
-	<section class="col-md-3 col-sm-4">
+	<section class="col-md-4 col-sm-4">
 		<section class="panel panel-primary">
 			<section class="panel-heading">
-				Operator Totals
+				Best Selling Products
 			</section>
 			<section class="panel-body">
-				<table class="table">
-					<tbody id="operators-totals">
+				<table class="table clear-text">
+					<tbody id="best-selling-products">
 		
 					</tbody>
 				</table>
 			</section>
 		</section>
 	</section>
-	<section class="col-md-3 col-sm-4">
+		<section class="col-md-3 col-sm-4">
 		<section class="panel panel-primary">
 			<section class="panel-heading">
-				Best Selling Products
+				Operator Totals
 			</section>
 			<section class="panel-body">
-				<table class="table">
-					<tbody id="best-selling-products">
+				<table class="table clear-text">
+					<tbody id="operators-totals">
 		
 					</tbody>
 				</table>

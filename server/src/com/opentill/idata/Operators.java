@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.opentill.database.DatabaseHandler;
@@ -70,29 +71,28 @@ public class Operators {
 		return null;
 	}
 
-	public static JSONObject getOperators() {
+	public static JSONArray getOperators() {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
+		JSONArray joArray = new JSONArray();
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "operators.id, "
-					+ Config.DATABASE_TABLE_PREFIX + "operators.name FROM " + Config.DATABASE_TABLE_PREFIX
-					+ "operators WHERE " + Config.DATABASE_TABLE_PREFIX + "operators.deleted = 0 ORDER BY "
-					+ Config.DATABASE_TABLE_PREFIX + "operators.name");
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT :prefix:operators.id, :prefix:operators.name, :prefix:operators.type FROM :prefix:operators WHERE :prefix:operators.deleted = 0 ORDER BY :prefix:operators.name"));
 			rs = pstmt.executeQuery();
-			JSONObject jo = new JSONObject();
+			
 			while (rs.next()) {
-				JSONObject product = new JSONObject();
-				product.put("name", rs.getString(2));
-				jo.put(rs.getString(1), product);
+				JSONObject jo = new JSONObject();
+				jo.put("id", rs.getString(1));
+				jo.put("name", rs.getString(2));
+				jo.put("type", rs.getInt(3));
+				joArray.add(jo);
 			}
-			return jo;
 		} catch (Exception ex) {
 			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
-		return null;
+		return joArray;
 	}
 }

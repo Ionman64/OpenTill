@@ -31,7 +31,9 @@
 				<section class="col-md-12">
 					<section class="form-group">
 						<label>Departments</label>
-				  		<ul id="takings-departments-export" class="checkbox-select form-control"></ul>
+				  		<select id="takings-departments-export" class="form-control input-lg" multiple>
+				  			
+				  		</select>
 				 	 </section>
   				</section>
   				<section class="col-md-12">

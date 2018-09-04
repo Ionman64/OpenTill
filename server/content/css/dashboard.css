@@ -1,5 +1,6 @@
 body {
 	 overflow-x:hidden;
+	 overflow-y:auto;
 }
 .bold {
 	font-weight:bold;
@@ -13,14 +14,50 @@ body {
 			  user-select: none; /* Non-prefixed version, currently
 									supported by Chrome and Opera */
   }
+  
+.modal-dialog.modal-fullscreen {
+  width: 98%;
+  height: 92%;
+  padding: 0;
+}
+
+.highlight-border {
+	border:2px solid #2646ea;
+}
+
+.text-left {
+	text-align:left;
+}
+
+.text-right {
+	text-align:left;
+}
+
+.department-block {
+	background:#00b6ff;
+	padding:1em;
+	min-height:8.5em;
+	width:100%;
+	border-radius:5px;
+	margin-top:1em;
+	cursor:pointer;
+}
+
+.modal-content.modal-fullscreen {
+  height: 99%;
+}
 .mui-tabs__pane {
 	padding-top:10px;
 }
 #takings-graph {
 	height:30em;
 }
-#operators-totals {
+.clear-text {
 	font-size:24px;
+	vertical-align: middle;
+}
+.inline-block * {
+	display:inline-block;
 }
 .auto-update-container {
 	padding:20px;

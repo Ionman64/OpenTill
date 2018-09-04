@@ -622,7 +622,6 @@ public class API extends AbstractHandler {
 			errorOut(response, "Could not parse time");
 			return;
 		}
-		String admin = "a10f653a-6c20-11e7-b34e-426562cc935f";
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -631,22 +630,20 @@ public class API extends AbstractHandler {
 			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT DATE(FROM_UNIXTIME(:prefix:transactions.ended)) AS \"date\", "
 					+ ":prefix:transactiontoproducts.department, SUM(:prefix:transactiontoproducts.price) AS \"amount\" FROM " 
 					+ ":prefix:transactiontoproducts LEFT JOIN :prefix:transactions ON :prefix:transactiontoproducts.transaction_id = "
-					+ ":prefix:transactions.id WHERE (:prefix:transactions.started > ? AND :prefix:transactions.ended < ?) AND "
-					+ ":prefix:transactions.cashier NOT IN (?) AND :prefix:transactions.type in (?) AND ("
-					+ ":prefix:transactions.ended > 0) GROUP BY :prefix:transactiontoproducts.department, DATE(FROM_UNIXTIME(" 
-					+ ":prefix:transactions.ended)) ORDER BY DATE(FROM_UNIXTIME(prefix:transactions.ended)) DESC"));
+					+ ":prefix:transactions.id WHERE (:prefix:transactions.ended BETWEEN ? AND ?)"
+					+ "AND :prefix:transactions.type in (?) GROUP BY :prefix:transactiontoproducts.department, DATE(FROM_UNIXTIME(" 
+					+ ":prefix:transactions.ended)) ORDER BY DATE(FROM_UNIXTIME(:prefix:transactions.ended)) DESC"));
 			pstmt.setLong(1, startTime);
 			pstmt.setLong(2, endTime);
-			pstmt.setString(3, admin);
-			pstmt.setString(4, "PURCHASE");
+			pstmt.setString(3, "PURCHASE");
 			rs = pstmt.executeQuery();
-			LinkedHashMap<String, HashMap<String, Double>> allDates = new LinkedHashMap<String, HashMap<String, Double>>();
+			LinkedHashMap<String, LinkedHashMap<String, Double>> allDates = new LinkedHashMap<String, LinkedHashMap<String, Double>>();
 			while (rs.next()) {
 				if (allDates.containsKey(rs.getString(1))) {
-					HashMap<String, Double> date = allDates.get(rs.getString(1));
+					LinkedHashMap<String, Double> date = allDates.get(rs.getString(1));
 					date.put(rs.getString(2), rs.getDouble(3));
 				} else {
-					HashMap<String, Double> date = new HashMap<String, Double>();
+					LinkedHashMap<String, Double> date = new LinkedHashMap<String, Double>();
 					date.put(rs.getString(2), rs.getDouble(3));
 					if (Arrays.asList(departments).indexOf(rs.getString(2)) > -1) {
 						allDates.put(rs.getString(1), date);
@@ -657,9 +654,9 @@ public class API extends AbstractHandler {
 			rs.close();
 			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT :prefix:tblcatagories.id, "
 					+ ":prefix:tblcatagories.name FROM :prefix:tblcatagories WHERE "
-					+ ":prefix:tblcatagories.deleted = 0 ORDER BY :prefix:tblcatagories.name"));
+					+ ":prefix:tblcatagories.deleted = 0 ORDER BY :prefix:tblcatagories.orderNum ASC"));
 			rs = pstmt.executeQuery();
-			HashMap<String, String> departmentsToNames = new HashMap<String, String>();
+			LinkedHashMap<String, String> departmentsToNames = new LinkedHashMap<String, String>();
 			while (rs.next()) {
 				departmentsToNames.put(rs.getString(1), rs.getString(2));
 			}
@@ -685,26 +682,17 @@ public class API extends AbstractHandler {
 
 	private void getAllDepartments(ServletRequest baseRequest, ServletResponse response)
 			throws IOException, ServletException {
-		JSONObject departments = Department.getDepartments();
-		JSONObject responseJSON = new JSONObject();
-		responseJSON.put("success", true);
-		responseJSON.put("departments", departments);
-		response.getWriter().write(responseJSON.toJSONString());
-		errorOut(response);
+		response.getWriter().write(Department.getDepartmentsWithInfo().toJSONString());
 	}
 
 	private void getAllOperators(ServletRequest baseRequest, ServletResponse response)
 			throws IOException, ServletException {
-		JSONObject jo = Operators.getOperators();
+		JSONArray jo = Operators.getOperators();
 		if (jo == null) {
 			errorOut(response);
 			return;
 		}
-		JSONObject responseJSON = new JSONObject();
-		responseJSON.put("success", true);
-		responseJSON.put("operators", jo);
-		response.getWriter().write(responseJSON.toJSONString());
-		errorOut(response);
+		response.getWriter().write(jo.toJSONString());
 	}
 
 	private void getAllSuppliers(ServletRequest baseRequest, ServletResponse response)
@@ -907,7 +895,7 @@ public class API extends AbstractHandler {
 		responseJo.put("success", true);
 		responseJo.put("totals", jo);
 		response.getWriter().write(jo.toJSONString());
-		errorOut(response);
+		return;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1332,7 +1320,7 @@ public class API extends AbstractHandler {
 		String startString = baseRequest.getParameter("start");
 		String endString = baseRequest.getParameter("end");
 		if (startString == null || endString == null) {
-			errorOut(response, "missing fields");
+			throw new ServletException("Missing Parameters");
 		}
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -1347,7 +1335,7 @@ public class API extends AbstractHandler {
 			pstmt.setString(4, "PURCHASE");
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				return rs.getBigDecimal(1);
+				return new BigDecimal(rs.getDouble(1));
 			}
 		} catch (Exception ex) {
 			Log.info(ex.getMessage());
@@ -1362,7 +1350,7 @@ public class API extends AbstractHandler {
 		String startString = baseRequest.getParameter("start");
 		String endString = baseRequest.getParameter("end");
 		if (startString == null || endString == null) {
-			errorOut(response, "missing fields");
+			throw new ServletException("Missing parameters");
 		}
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -1378,7 +1366,7 @@ public class API extends AbstractHandler {
 			pstmt.setString(4, "PURCHASE");
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				return rs.getBigDecimal(1);
+				return new BigDecimal(rs.getDouble(1));
 			}
 		} catch (Exception ex) {
 			Log.info(ex.getMessage());
@@ -1406,16 +1394,7 @@ public class API extends AbstractHandler {
 			errorOut(response, "Could not parse start or end");
 			return;
 		}
-		JSONObject jo = Transaction.getTransactions(start, end);
-		if (jo == null) {
-			errorOut(response);
-			return;
-		}
-		JSONObject responseJson = new JSONObject();
-		responseJson.put("success", true);
-		responseJson.put("transactions", jo);
-		response.getWriter().write(responseJson.toJSONString());
-		errorOut(response);
+		response.getWriter().write(Transaction.getTransactions(start, end).toJSONString());
 	}
 
 	private void getProductTransactions(ServletRequest baseRequest, ServletResponse response)
@@ -1871,7 +1850,7 @@ public class API extends AbstractHandler {
 		case "GETTRANSACTION":
 			getTransactionProducts(request, response);
 			break;
-		case "GETPRODUCnameTSALES":
+		case "GETPRODUCTSALES":
 			getProductTransactions(request, response);
 			break;
 		case "GETTRANSACTIONS":
@@ -2046,7 +2025,6 @@ public class API extends AbstractHandler {
 	}
 
 	private void getOverviewTotals(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		String time_interval = request.getParameter("time_interval") != null ? request.getParameter("time_interval") : "HOUR";
 		String startTimeString = request.getParameter("start");
 		String endTimeString = request.getParameter("end");
 		if (startTimeString == null || endTimeString == null) {
@@ -2067,37 +2045,37 @@ public class API extends AbstractHandler {
 		ResultSet rs = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT SUM(kvs_transactions.total) AS 'revenue', COUNT(kvs_transactions.id) AS 'number' "
-					+ "FROM kvs_transactions WHERE kvs_transactions.ended BETWEEN ? AND ?"));
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT SUM(:prefix:transactions.total) AS 'revenue', COUNT(:prefix:transactions.id) AS 'number' "
+					+ "FROM :prefix:transactions WHERE :prefix:transactions.ended BETWEEN ? AND ?"));
 			pstmt.setLong(1, startTime);
 			pstmt.setLong(2, endTime);
 			rs = pstmt.executeQuery();
 			
-			if (!rs.next()) {
-				errorOut(response, "No data");
-				return;
+			BigDecimal card = cardGiven(request, response);
+			BigDecimal cashback = cashback(request, response);
+			BigDecimal refunds = refunds(request, response);
+			BigDecimal payouts = payouts(request, response);
+			BigDecimal revenue = new BigDecimal(0);
+			int numberOfTransactions = 0;
+			if (rs.next()) {
+				revenue = new BigDecimal(rs.getDouble(1));
+				numberOfTransactions = rs.getInt(2);
 			}
-			else {
-				JSONObject jo = new JSONObject();
-				BigDecimal card = cardGiven(request, response);
-				BigDecimal cashback = cashback(request, response);
-				BigDecimal refunds = refunds(request, response);
-				BigDecimal payouts = payouts(request, response);
-				jo.put("revenue", rs.getBigDecimal(1));
-				jo.put("number", rs.getInt(2));
-				jo.put("payouts", payouts);
-				jo.put("card", card);
-				jo.put("refunds", refunds);
-				BigDecimal cashInDrawer = rs.getBigDecimal(1);
-				cashInDrawer = cashInDrawer.subtract(payouts);
-				cashInDrawer = cashInDrawer.subtract(card);
-				cashInDrawer = cashInDrawer.subtract(refunds);
-				cashInDrawer = cashInDrawer.subtract(cashback.multiply(new BigDecimal(2)));
-				jo.put("cashInDrawer", cashInDrawer);
-				response.getWriter().write(jo.toJSONString());
-			}
+			JSONObject jo = new JSONObject();
+			jo.put("revenue", revenue);
+			jo.put("number", numberOfTransactions);
+			jo.put("payouts", payouts);
+			jo.put("card", card);
+			jo.put("refunds", refunds);
+			BigDecimal cashInDrawer = revenue;
+			cashInDrawer = cashInDrawer.subtract(payouts);
+			cashInDrawer = cashInDrawer.subtract(card);
+			cashInDrawer = cashInDrawer.subtract(refunds);
+			cashInDrawer = cashInDrawer.subtract(cashback.multiply(new BigDecimal(2)));
+			jo.put("cashInDrawer", cashInDrawer);
+			response.getWriter().write(jo.toJSONString());
 		} catch (SQLException ex) {
-			Log.info(ex.getMessage());
+			Log.error(ex.getMessage());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
@@ -2127,7 +2105,7 @@ public class API extends AbstractHandler {
 		try {
 			conn = DatabaseHandler.getDatabase();
 			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT :prefix:tblcatagories.name, SUM(:prefix:transactiontoproducts.price) AS 'value', :prefix:tblcatagories.colour "
-					+ "FROM :prefix:tblcatagories LEFT JOIN :prefix:transactiontoproducts ON :prefix:tblcatagories.id = :prefix:transactiontoproducts.department "
+					+ "FROM :prefix:transactiontoproducts RIGHT JOIN :prefix:tblcatagories ON :prefix:tblcatagories.id = :prefix:transactiontoproducts.department "
 					+ "WHERE :prefix:transactiontoproducts.created BETWEEN ? AND ? GROUP BY :prefix:tblcatagories.id ORDER BY value DESC"));
 			pstmt.setLong(1, startTime);
 			pstmt.setLong(2, endTime);
@@ -2290,10 +2268,6 @@ public class API extends AbstractHandler {
 			pstmt.setLong(1, startTime);
 			pstmt.setLong(2, endTime);
 			rs = pstmt.executeQuery();
-			if (!rs.isBeforeFirst()) {
-				errorOut(response, "No data");
-				return;
-			}
 			
 			while (rs.next()) {
 				values[rs.getInt(1)] = rs.getDouble(2);

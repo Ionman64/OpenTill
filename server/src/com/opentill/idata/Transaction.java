@@ -5,20 +5,24 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.opentill.database.DatabaseHandler;
+import com.opentill.database.SQLStatement;
+import com.opentill.document.Importer;
 import com.opentill.logging.Log;
 import com.opentill.main.Config;
 import com.opentill.main.Utils;
 
 public class Transaction {
-	public static JSONObject getTransactions(Long start, Long end) {
+	public static JSONArray getTransactions(Long start, Long end) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
+		JSONArray jo = new JSONArray();
 		try {
-			JSONObject jo = new JSONObject();
+			
 			conn = DatabaseHandler.getDatabase();
 			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "transactions.id AS 'id', "
 					+ Config.DATABASE_TABLE_PREFIX + "operators.name AS cashier, (SELECT COUNT(*) FROM "
@@ -43,6 +47,7 @@ public class Transaction {
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("id", rs.getString(1));
 				jsonObject.put("cashier", rs.getString(2));
 				jsonObject.put("numProducts", rs.getInt(3));
 				jsonObject.put("card", rs.getFloat(4));
@@ -52,15 +57,14 @@ public class Transaction {
 				jsonObject.put("payee", rs.getString(8));
 				jsonObject.put("type", rs.getString(9));
 				jsonObject.put("total", rs.getFloat(10));
-				jo.put(rs.getString(1), jsonObject);
+				jo.add(jsonObject);
 			}
-			return jo;
 		} catch (SQLException ex) {
 			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
-		return null;
+		return jo;
 	}
 
 	public static String startTransaction(String operator) {
@@ -68,18 +72,12 @@ public class Transaction {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		try {
-			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("INSERT INTO " + Config.DATABASE_TABLE_PREFIX
-					+ "transactions (id, started, cashier) VALUES (?, ?, ?)");
 			String guid = Utils.GUID();
-			pstmt.setString(1, guid);
-			pstmt.setLong(2, Utils.getCurrentTimeStamp() / 1000);
-			pstmt.setString(3, operator);
-			if (pstmt.executeUpdate() > 0) {
+			boolean success = new SQLStatement().insertInto(":prefix:transactions").columns(new String[] {"id", "started", "cashier"}).values(new Object[] {guid, Utils.getCurrentTimeStamp() / 1000, operator}).construct().executeUpdate();
+			if (success) {
 				Log.info("Transaction (" + guid + ") STARTED by operator (" + operator + ")");
 				return guid;
 			}
-			return null;
 		} catch (SQLException ex) {
 			Log.info(ex.toString());
 		} finally {

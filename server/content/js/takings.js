@@ -2,61 +2,8 @@ window.departmentNames = {};
 function Takings(){
 	this.init = function() {
 		window.takings.populate_table();
-		$("#takings-export-btn").click(function() {
-			$("#takings-date-start").val(moment().format("YYYY-MM-DD"));
-			$("#takings-date-end").val(moment().format("YYYY-MM-DD"));
-			var holder = document.getElementById("takings-departments-export");
-			$(holder).empty();
-			$.each(window.dashboard_data.departments, function(id, department) {
-				var li = el("li");
-				var label = el("label", {"for":"takings-checkbox-" + id});
-				var input = el("input", {"id":"takings-checkbox-" + id, type:"checkbox", checked:true, "data-id":id});
-				label.appendChild(input);
-				label.appendChild(document.createTextNode(department));
-				li.appendChild(label);
-				holder.appendChild(li);
-			});
-			$("#takings-export-success").addClass("hidden");
-			$("#takings-export-failure").addClass("hidden");
-			$("#export-takings").modal("show");
-		});
-		$("#takings-departments-export").on("change", "input[type=checkbox]", function() {
-			if ($("#takings-departments-export input[type=checkbox]:checked").length == 0) {
-				$("#takings-export").attr("disabled", true);
-			}
-			else {
-				$("#takings-export").attr("disabled", false);
-			}
-		});
-		$("#takings-export").click(function() {
-			var selectedDepartments = [];
-			$("#takings-departments-export input[type=checkbox]:checked").each(function() {
-				selectedDepartments.push(this.getAttribute("data-id"));
-			});
-			$.ajax({
-				url:"api/kvs.jsp?function=GENERATETAKINGSREPORT",
-				dataType: "JSON",
-				data:{"takings-export-type":$("#takings-export-type").val(), "start":moment($("#takings-date-start").val(), "YYYY-MM-DD").format("x"), "end":moment($("#takings-date-end").val(),  "YYYY-MM-DD").format("x"), "departments":selectedDepartments},
-				beforeSend: function() {
-					$("#takings-export-progress").removeClass("hidden");
-				},
-				success: function(data) {
-					if (!data.success) {
-						$("#takings-export-failure").removeClass("hidden");
-						return;
-					}
-					$("#takings-export-success").removeClass("hidden");
-					$("#takings-export-alt-download").attr("href", data.file);
-					window.open(data.file, 'Download');  
-				},
-				error: function() {
-					$("#inventory-export-failure").removeClass("hidden");
-				},
-				complete: function() {
-					$("#takings-export-progress").addClass("hidden");
-				}
-			});
-		});
+		
+		
 		/*var date = moment().subtract(9, "days");
 		var currentTimestamp = parseInt(moment().format("x"));
 		while (currentTimestamp > parseInt(moment(date.format("YYYY-MM-DD")).format("x"))) {
@@ -153,6 +100,9 @@ function Takings(){
 	}
 }
 function formatMoney(amount) {
+	if (typeof amount == undefined) {
+		accounting.formatMoney(0, "");
+	}
 	if (typeof amount != "String") {
 		amount = amount.toString();
 	}

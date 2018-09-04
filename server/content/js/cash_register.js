@@ -8,6 +8,50 @@ window.DepartmentName = "";
 window.cache = {};
 window.supplierArray = {};
 window.shouldPrintReciept = false;
+
+var non_product_barcodes = [];
+var ai2 = 0;
+non_product_barcodes[ai2++] = {"id":"absf2", "name":"Tomatoes", "img":"img/products/tomato.jpg"};
+non_product_barcodes[ai2++] = {"id":"ab", "name":"Jacket Potatoes", "img":"img/products/potatoes.jpg"};
+non_product_barcodes[ai2++] = {"id":"ab", "name":"Sausages", "img":"img/products/sausage.jpg"};
+non_product_barcodes[ai2++] = {"id":"ab", "name":"Smoked Bacon", "img":"img/products/bacon.jpg"};
+delete ai2;
+
+
+function loadNonBarcodeProducts() {
+	var holder = $("#non-barcode-container")[0];
+	$(holder).empty();
+	var row = el("section", {class:"row"});
+	var count = 0;
+	for (var i = 0;i<1;i++) {
+		$.each(non_product_barcodes, function(key, value) {
+			if (count++ % 12 == 0) {
+				holder.appendChild(row);
+				row = el("section", {class:"row"});
+			}
+			
+			var col = el("section", {class:"col-lg-1 col-md-1 col-sm-2 col-xs-3"});
+			
+			var panel = el("section", {class:"panel panel-default no-product-barcode", "data-id":value.id});
+			var panelBody = el("section", {class:"panel-body no-padding"});
+			var img = el("img", {class:"img img-responsive", "src":value.img});
+			
+			panelBody.appendChild(img);
+			panel.appendChild(panelBody);
+			
+			var panelFooter = el("section", {class:"panel-footer text-center clearfix", html:value.name})
+			panel.appendChild(panelFooter);
+			
+			col.appendChild(panel);
+			row.appendChild(col);
+		});
+	}
+	if (count % 12 != 0) {
+		holder.appendChild(row);
+	}
+}
+
+
 function getTransaction() {
 	return window.cashiersTransactions[window.operator] ?  window.cashiersTransactions[window.operator] : false;
 }
@@ -615,6 +659,12 @@ function loadRegister() {
 		$("#chat-window").animate({ scrollTop: $("#chat-window-inner").height() }, 1000);
 		getMessage();
 		$(this).addClass("hidden");
+	});
+	$("#non-barcode-btn").click(function() {
+		$("#non-barcode-container").toggleClass("hidden");
+	});
+	$("#non-barcode-container").on("click", ".no-product-barcode ", function() {
+		$("#weightModal").modal("show");
 	});
 	dialogAlert("Please scan your operator id to continue");
 	window.offlineStorage = new OfflineStorage();
