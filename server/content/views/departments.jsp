@@ -1,4 +1,9 @@
 <section class="container-fluid">
+	<section class="row">
+		<section class="col-md-12">
+			<input type="checkbox" checked="checked" id="showDeletedDepartments"/>
+		</section>
+	</section>
 	<section class="row viewport">
 		<section class="col-md-12">
 			<section id="departments-viewport">

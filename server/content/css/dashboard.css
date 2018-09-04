@@ -43,6 +43,10 @@ body {
 	cursor:pointer;
 }
 
+.block-deleted {
+	background:#ff3300;
+}
+
 .modal-content.modal-fullscreen {
   height: 99%;
 }

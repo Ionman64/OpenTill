@@ -72,17 +72,20 @@ public class Department {
 		JSONArray departments = new JSONArray();
 		try {
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement("SELECT " + Config.DATABASE_TABLE_PREFIX + "tblproducts.department AS \"departmentId\", " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.shortHand, " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.name AS \"departmentName\", " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.colour AS \"colour\", COUNT(" + Config.DATABASE_TABLE_PREFIX + "tblproducts.id) AS \"numOfProducts\" FROM " + Config.DATABASE_TABLE_PREFIX + "tblproducts LEFT JOIN " + Config.DATABASE_TABLE_PREFIX + "tblcatagories ON " + Config.DATABASE_TABLE_PREFIX + "tblproducts.department = " + Config.DATABASE_TABLE_PREFIX + "tblcatagories.id GROUP BY " + Config.DATABASE_TABLE_PREFIX + "tblproducts.department ORDER BY " + Config.DATABASE_TABLE_PREFIX + "tblproducts.name");
+			String sql = Utils.addTablePrefix("SELECT COUNT(:prefix:tblproducts.id) AS \"numOfProducts\", :prefix:tblcatagories.id, :prefix:tblcatagories.shortHand, :prefix:tblcatagories.name, :prefix:tblcatagories.colour, :prefix:tblcatagories.deleted FROM :prefix:tblcatagories LEFT JOIN :prefix:tblproducts ON :prefix:tblcatagories.id = :prefix:tblproducts.department GROUP BY :prefix:tblcatagories.name ORDER BY :prefix:tblproducts.name, :prefix:tblcatagories.deleted ASC");
+			pstmt = conn.prepareStatement(sql);
+
 			
 			rs = pstmt.executeQuery();
 			
 			while (rs.next()) {
 				JSONObject jo = new JSONObject();
-				jo.put("id", rs.getString(1));
-				jo.put("shorthand", rs.getString(2));
-				jo.put("name", rs.getString(3));
-				jo.put("colour", rs.getString(4));
-				jo.put("n_products", rs.getInt(5));
+				jo.put("n_products", rs.getInt(1));
+				jo.put("id", rs.getString(2));
+				jo.put("shorthand", rs.getString(3));
+				jo.put("name", rs.getString(4));
+				jo.put("colour", rs.getString(5));
+				jo.put("deleted", rs.getInt(6));
 				departments.add(jo);
 			}
 		} catch (Exception ex) {

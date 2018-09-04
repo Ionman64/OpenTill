@@ -3,7 +3,7 @@
 	<section class="modal-content">
 	  <section class="modal-header">
 		<button type="button" class="btn btn-default pull-right" data-dismiss="modal" aria-label="Close">Close</button>
-		<h4 class="modal-title" id="productMenuName">Operator Edit</h4>
+		<h4 class="modal-title">Operator Edit</h4>
 	  </section>
 	  <section class="modal-body">
 	  	<section class="container-fluid">

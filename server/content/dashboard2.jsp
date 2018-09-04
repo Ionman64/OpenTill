@@ -125,5 +125,7 @@
     <section class="import-modal" page="modals/departmentModal.jsp"></section>
     <section class="import-modal" page="modals/createDepartment.jsp"></section>
     <section class="import-modal" page="modals/exportTakings.jsp"></section>
+    <section class="import-modal" page="modals/operatorInfo.jsp"></section>
+    <section class="import-modal" page="modals/createOperator.jsp"></section>
 </body>
 </html>

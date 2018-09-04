@@ -3,6 +3,11 @@ const TAKINGS_INTERVAL_DAY = "DAY";
 const TAKINGS_INTERVAL_WEEK = "WEEK";
 const TAKINGS_INTERVAL_MONTH = "MONTH";
 
+const USER_TYPE_UNKNOWN = 0;
+const USER_TYPE_OPERATOR = 1;
+const USER_TYPE_MANAGER = 2;
+const USER_TYPE_ADMINISTRATOR = 3;
+
 var CHARTS = [undefined, undefined];
 var TAKINGS_CHART = 0;
 var TAKINGS_BY_DEPARTMENT_CHART = 1;
@@ -532,6 +537,27 @@ function getTransaction() {
 	});
 }
 
+function deleteDepartment(id) {
+	bootbox.confirm("Are you sure you want to delete this department?", function(result) {
+		if (!result) {
+			return;
+		}
+		$.ajax({
+			url:"api/kvs.jsp?function=DELETEDEPARTMENT", 
+			data: {id:$("#departmentInfo").attr("data-id")},
+			success:function(data) {
+				if (!data.success) {
+					bootbox.alert("There was an error deleting that department");
+					return;
+				}
+				clearDepartmentModal();
+				getDepartments();
+				$("#departmentInfo").attr("data-id", null).modal("hide");
+			}
+		});
+	});
+}
+
 function showDepartment(id) {
 	$.ajax({
 		url:"api/kvs.jsp?function=GETDEPARTMENT",
@@ -592,9 +618,28 @@ function saveDepartment(id) {
 	});
 }
 
-function loadDashboard() {
-	OVERVIEW_CURRENT_DAY = moment().startOf("day");
-	setupAutoPricing();
+function showOperator(id) {
+	$.ajax({
+		url:"api/kvs.jsp?function=GETOPERATOR",
+		data:{"id":id},
+		success:function(data) {
+			if (!data.success) {
+				bootbox.alert("There was an error");
+				return;
+			}
+			var operator = data.operator;
+			clearOperatorModal();
+			$("#operator-code").val(operator.code);
+			$("#operator-name").val(operator.name);
+			$("#operator-telephone").val(operator.telephone);
+			$("#operator-email").val(operator.email);
+			$("#operator-comments").val(operator.comments);
+			$("#operatorInfo").attr("data-id", operator.id).modal("show");
+		}
+	});
+}
+
+function getDepartments() {
 	promiseDepartments.then(JSON.parse).then(function(data){
 		var holder = $("#departments-viewport")[0];
 		$(holder).empty();
@@ -606,7 +651,14 @@ function loadDashboard() {
 			$("#ProductDepartment").append(option);
 			
 			var col = el("section", {class:"col-md-2"});
-			var departmentSection = el("section", {class:"department-block", "data-id":value.id});
+			var departmentSection;
+			if (isZero(value.deleted)) {
+				departmentSection = el("section", {class:"department-block", "data-id":value.id});
+
+			}
+			else {
+				departmentSection = el("section", {class:"department-block block-deleted", "data-id":value.id});
+			}
 			var name = el("h3", {html:value.name});
 			var h4 = el("h4", {class:"italic", html:value["n_products"] + " Products"});
 			departmentSection.appendChild(name);
@@ -622,6 +674,20 @@ function loadDashboard() {
 		col.appendChild(departmentSection);
 		holder.appendChild(col);
 	}).catch(function() {bootbox.alert("There has been an error")});
+}
+
+function clearOperatorModal() {
+	$("#operator-code").val("");
+	$("#operator-name").val("");
+	$("#operator-telephone").val("");
+	$("#operator-email").val("");
+	$("#operator-comments").val("");
+}
+
+function loadDashboard() {
+	OVERVIEW_CURRENT_DAY = moment().startOf("day");
+	setupAutoPricing();
+	getDepartments();
 	promiseOrders.then(JSON.parse).then(function(data){
 		var holder = $("#orders-table")[0];
 		$(holder).empty();
@@ -658,7 +724,25 @@ function loadDashboard() {
 			var col = el("section", {class:"col-md-2"});
 			var departmentSection = el("section", {class:"department-block", "data-id":value.id});
 			var name = el("h3", {html:value.name});
-			var h4 = el("h4", {class:"italic", html:value.type});
+			var type = "Unknown";
+			switch (value.type) {
+				case USER_TYPE_UNKNOWN:
+					type = "Unknown";
+					break;
+				case USER_TYPE_OPERATOR:
+					type = "Operator";
+					break;
+				case USER_TYPE_MANAGER:
+					type = "Manager";
+					break;
+				case USER_TYPE_ADMINISTRATOR:
+					type = "Administrator";
+					break;
+				default:
+					type = "Unknown";
+					break;
+			}
+			var h4 = el("h4", {class:"italic", html:type});
 			departmentSection.appendChild(name);
 			departmentSection.appendChild(h4);
 			col.appendChild(departmentSection);
@@ -672,6 +756,24 @@ function loadDashboard() {
 		col.appendChild(departmentSection);
 		holder.appendChild(col);
 	}).catch(function() {bootbox.alert("There has been an error with users")});
+	$("#update-operator").on("click", function() {
+		saveOperator($("#operatorInfo").attr("data-id"));
+	});
+	$("#operators-table").on("click", "#add-user-btn", function() {
+		$("#create-operator-modal").modal("show");
+	});
+	$("#delete-operator").on("click", function() {
+		deleteOperator();
+	});
+	$("#operators-table").on("click", ".department-block:not(#add-user-btn)", function() {
+		var id = $(this).attr("data-id");
+		if ((id !== null) || (id.length !== 0)) {
+			showOperator(id);
+		}
+	});
+	$("#create-operator").on("click", function() {
+		saveOperator();
+	});
 	$("#departments-viewport").on("click", ".department-block:not(#add-department-btn)", function() {
 		showDepartment($(this).attr("data-id"));
 	});
@@ -699,21 +801,30 @@ function loadDashboard() {
 		//alert("");
 	});
 	
+	$("#showDeletedDepartments").bootstrapToggle({
+		"on":"Show",
+		"off":"Hide",
+		size:"large",
+		prefix:"Deleted"
+	}).on("change", function() {
+		$("#departments-viewport .department-block.block-deleted").parent().toggleClass("hidden");
+	});
+	
 	$("#overview-show-transactions").on("click", function() {
 		$("#transactions-modal").modal("show");
 	});
 	
 	$("#update-department").on("click", function() {
-		window.departments.saveDepartment($("#departmentInfo").attr("data-id"));
+		saveDepartment($("#departmentInfo").attr("data-id"));
 	});
 	$("#add-department").on("click", function() {
-		window.departments.createDepartment();
+		createDepartment();
 	});
 	$("#delete-department").on("click", function() {
-		window.departments.deleteDepartment();
+		deleteDepartment($("#departmentInfo").attr("data-id"));
 	});
 	$("#departments-viewport").on("click", ".selectable", function() {
-		window.departments.showDepartment($(this).attr("data-id"));
+		showDepartment($(this).attr("data-id"));
 	});
 	$("#add-department-btn").click(function() {
 		$("#create-department-modal").modal("show");
