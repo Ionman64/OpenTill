@@ -48,6 +48,15 @@ var promiseUsers = new Promise(function(resolve, reject) {
     xhr.send();
 });
 
+var promiseSuppliers = new Promise(function(resolve, reject) {
+	const xhr = new XMLHttpRequest();
+    xhr.open("POST", "api/kvs.php?function=GETALLSUPPLIERS");
+    xhr.onload = () => resolve(xhr.responseText);
+    xhr.onerror = () => reject(xhr.statusText);
+    xhr.send();
+});
+
+
 function el(tagName, options) {
 	if (tagName.length == 0) {
 		return;
@@ -676,12 +685,132 @@ function getDepartments() {
 	}).catch(function() {bootbox.alert("There has been an error")});
 }
 
+function getSuppliers() {
+	promiseSuppliers.then(JSON.parse).then(function(data){
+		var holder = $("#suppliers-viewport")[0];
+		$(holder).empty();
+		
+		$.each(data, function(key, value) {
+			var col = el("section", {class:"col-md-2"});
+			var departmentSection;
+			if (isUndefined(value.deleted) || isZero(value.deleted)) {
+				departmentSection = el("section", {class:"department-block", "data-id":value.id});
+			}
+			else {
+				departmentSection = el("section", {class:"department-block block-deleted", "data-id":value.id});
+			}
+			var name = el("h3", {html:truncateOnWord(value.name, 30)});
+			//var h4 = el("h4", {class:"italic", html:value["n_products"] + " Products"});
+			departmentSection.appendChild(name);
+			//departmentSection.appendChild(h4);
+			col.appendChild(departmentSection);
+			holder.appendChild(col);
+		});
+		
+		var col = el("section", {class:"col-md-2"});
+		var departmentSection = el("section", {style:"background:#eeeeee", id:"add-supplier-btn", class:"department-block", "data-id":null});
+		var name = el("h4", {html:"Add New Supplier"});
+		departmentSection.appendChild(name);
+		col.appendChild(departmentSection);
+		holder.appendChild(col);
+	}).catch(function() {bootbox.alert("There has been an error")});
+}
+
+function showSupplier(id) {
+	$.ajax({
+		url:"api/kvs.jsp?function=GETSUPPLIER",
+		data:{"id":id},
+		success:function(data) {
+			if (!data.success) {
+				bootbox.alert("There was an error");
+				return;
+			}
+			var supplier = data.supplier;
+			clearSupplierModal();
+			$("#supplier-name").val(supplier.name);
+			$("#supplier-telephone").val(supplier.telephone);
+			$("#supplier-email").val(supplier.email);
+			$("#supplier-website").val(supplier.website);
+			$("#supplier-comments").val(supplier.comments);
+			$("#supplierInfo").attr("data-id", supplier.id).modal("show");
+		}
+	});
+}
+
+function clearSupplierModal() {
+	$("#supplier-name").val("");
+	$("#supplier-telephone").val("");
+	$("#supplier-email").val("");
+	$("#supplier-website").val("");
+	$("#supplier-comments").val("");
+}
+
+function deleteSupplier() {
+	var id = $("#supplierInfo").attr("data-id");
+	bootbox.confirm("Are you sure you want to delete this supplier?", function(result) {
+		if (!result) {
+			return;
+		}
+		$.ajax({
+			url:"api/kvs.jsp?function=DELETESUPPLIER", 
+			data: {id:$("#supplierInfo").attr("data-id")},
+			success:function(data) {
+				if (!data.success) {
+					bootbox.alert("There was an error deleting that supplier");
+					return;
+				}
+				window.suppliers.clearSupplierModal();
+				window.suppliers.getSuppliers();
+				$("#supplierInfo").attr("data-id", null).modal("hide");
+			}
+		});
+	});
+}
+
 function clearOperatorModal() {
 	$("#operator-code").val("");
 	$("#operator-name").val("");
 	$("#operator-telephone").val("");
 	$("#operator-email").val("");
 	$("#operator-comments").val("");
+}
+
+function saveSupplier(id) {
+	if (id == null) {
+		var name = $("#new-supplier-name").val();
+		var telephone = $("#new-supplier-telephone").val();
+		var email = $("#new-supplier-email").val();
+		var website = $("#new-supplier-website").val();
+		var comments = $("#new-supplier-comments").val();
+		$.ajax({
+			url:"api/kvs.jsp?function=ADDSUPPLIER",
+			data:{"name":name, "telephone":telephone, "email":email, "website":website, "comments":comments},
+			success:function(data) {
+				if (!data.success) {
+					bootbox.alert("There has been an error");
+				}
+				$("#supplierInfo").attr("data-id", null).modal("hide");
+				window.suppliers.getSuppliers();
+			}
+		});
+		return;
+	}	
+	var name = $("#supplier-name").val();
+	var telephone = $("#supplier-telephone").val();
+	var email = $("#supplier-email").val();
+	var website = $("#supplier-website").val();
+	var comments = $("#supplier-comments").val();
+	$.ajax({
+		url:"api/kvs.jsp?function=UPDATESUPPLIER",
+		data:{"id":id, "name":name, "telephone":telephone, "email":email, "website":website, "comments":comments},
+		success:function(data) {
+			if (!data.success) {
+				bootbox.alert("There has been an error");
+			}
+			$("#supplierInfo").attr("data-id", null).modal("hide");
+			window.suppliers.getSuppliers();
+		}
+	});
 }
 
 function loadDashboard() {
@@ -780,6 +909,25 @@ function loadDashboard() {
 	$("#departments-viewport").on("click", "#add-department-btn", function() {
 		$("#create-department-modal").modal("show");
 	});
+	$("#suppliers-viewport").on("click", ".department-block:not(#add-supplier-btn)", function() {
+		var id = $(this).attr("data-id");
+		if ((id !== null) || (id.length !== 0)) {
+			showSupplier(id);
+		}
+	});
+	$("#suppliers-viewport").on("click", "#add-supplier-btn", function() {
+		createSupplier();
+	});
+	$("#update-supplier").on("click", function() {
+		saveSupplier($("#supplierInfo").attr("data-id"));
+	});
+	$("#add-supplier-btn").on("click", function() {
+		$("#create-supplier").modal("show");
+	});
+	$("#delete-supplier").on("click", function() {
+		deleteSupplier();
+	});
+	getSuppliers();
 	loadOverview();
 	$("#overview-prev-day").click(function() {
 		OVERVIEW_CURRENT_DAY.subtract(1, "days");
@@ -886,6 +1034,22 @@ function loadDashboard() {
 		}
 		else {
 			$("#takings-export").attr("disabled", false);
+		}
+	});
+	var delay = (function(){
+	  var timer = 0;
+	  return function(callback, ms){
+	  clearTimeout (timer);
+	  timer = setTimeout(callback, ms);
+	 };
+	})();
+	$("#product-view-search").keyup(function() {
+		var text = $("#product-view-search").val();
+		if (text.length == 0) {
+			return;
+		}
+		if (/^\d+$/.test(text) == false) {
+			delay(function() {showSearches(text)}, 200);
 		}
 	});
 	$("#takings-export").click(function() {
@@ -1026,6 +1190,40 @@ function loadDashboard() {
 		div.appendChild(span);
 		$("#timeline").append(div);
 	}, 1000);
+	$("#product-items").on("click", ".department-block", function() {
+		window.open("product.jsp?id=" + $(this).attr("data-id"));
+	});
+}
+
+function showSearches(searchString) {
+	if (searchString.length == 0) {
+		var holder = $("#product-items")[0];
+		$(holder).empty();
+		var h1 = el("h1", {class:"text-info", html:"No Products Found"});
+		holder.appendChild(h1);
+		return;
+	}
+	$.ajax({
+		url: "api/kvs.jsp?function=SEARCH",
+		data : {"search" : searchString},
+		success : function(data) {
+			var holder = $("#product-items")[0];
+			$(holder).empty();
+			$.each(data, function(key, item) {
+				if ($("#product-view-search").val().length == 0) {
+					return;
+				}
+				var col = el("section", {class:"col-md-2"});
+				var departmentSection = el("section", {class:"department-block", "data-id":key});
+				var name = el("h3", {html:truncateOnWord(item.name, 27)});
+				var h4 = el("h4", {class:"italic", html:formatMoney(item.price, "£")});
+				departmentSection.appendChild(name);
+				departmentSection.appendChild(h4);
+				col.appendChild(departmentSection);
+				holder.appendChild(col);
+			});
+		}	
+	});
 }
 
 function truncateOnWord(str, limit) {

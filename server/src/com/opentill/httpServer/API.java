@@ -33,6 +33,7 @@ import org.json.simple.parser.ParseException;
 import com.opentill.database.DatabaseHandler;
 import com.opentill.document.ChartHelper;
 import com.opentill.document.ExcelHelper;
+import com.opentill.document.LabelExport;
 import com.opentill.document.PDFHelper;
 import com.opentill.idata.CustomUser;
 import com.opentill.idata.Department;
@@ -697,15 +698,8 @@ public class API extends AbstractHandler {
 
 	private void getAllSuppliers(ServletRequest baseRequest, ServletResponse response)
 			throws IOException, ServletException {
-		JSONObject jo = Supplier.getSuppliers();
-		if (jo == null) {
-			errorOut(response);
-			return;
-		}
-		JSONObject responseJSON = new JSONObject();
-		responseJSON.put("success", true);
-		responseJSON.put("suppliers", jo);
-		response.getWriter().write(responseJSON.toJSONString());
+		JSONArray joArray = Supplier.getSuppliers();
+		response.getWriter().write(joArray.toJSONString());
 	}
 
 	private void sendMessage(ServletRequest baseRequest, ServletResponse response)
@@ -1422,7 +1416,7 @@ public class API extends AbstractHandler {
 		try {
 			JSONArray jsonArr = new JSONArray();
 			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT * FROM :prefix:transactiontoproducts` WHERE product_id = ? AND created BETWEEN ? AND ?"));
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT * FROM :prefix:transactiontoproducts WHERE product_id = ? AND created BETWEEN ? AND ?"));
 			pstmt.setString(1, id);
 			pstmt.setLong(2, start);
 			pstmt.setLong(3, end);
@@ -1438,7 +1432,7 @@ public class API extends AbstractHandler {
 			}
 			response.getWriter().write(jsonArr.toJSONString());
 		} catch (SQLException ex) {
-			Log.info(ex.toString());
+			Log.error(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
@@ -1577,7 +1571,7 @@ public class API extends AbstractHandler {
 			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT :prefix:tblchat.id, :prefix:tblchat.sender AS \"senderId\", :prefix:tblchat.recipient as \"recipientId\", a.name AS \"senderName\", IFNULL(b.name, \"All\") AS recipientName, "
 					+ ":prefix:tblchat.message, :prefix:tblchat.created FROM :prefix:tblchat LEFT JOIN :prefix:operators a ON a.id = :prefix:tblchat.sender LEFT JOIN :prefix:operators b ON b.id = "
 					+ ":prefix:tblchat.recipient WHERE (:prefix:tblchat.recipient = ? OR :prefix:tblchat.sender = ? OR :prefix:tblchat.recipient = \"All\") AND "
-					+ ":prefix:tblchat.created > ? ORDER BY :prefix:tblchat.created DESC LIMIT 20) ORDER BY created ASC"));
+					+ ":prefix:tblchat.created > ? ORDER BY :prefix:tblchat.created DESC LIMIT 20"));
 			pstmt.setString(1, operator);
 			pstmt.setString(2, operator);
 			pstmt.setInt(3, time);
@@ -1603,6 +1597,34 @@ public class API extends AbstractHandler {
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public JSONObject getCaseFromBarcode(String barcode) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT :prefix:tblcases.id, :prefix:tblcases.product, :prefix:tblcases.units"
+					+ "WHERE barcode = ? LIMIT 1"));
+			pstmt.setString(1, barcode);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("id", rs.getString(1));
+				jsonObject.put("product", rs.getString(2));
+				jsonObject.put("units", rs.getInt(3));
+				jsonObject.put("barcode", barcode);
+				jsonObject.put("isCase", true);
+				return jsonObject;
+			}
+		} catch (SQLException ex) {
+			Log.info(ex.toString());
+		} finally {
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
+		}
+		return null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1672,6 +1694,29 @@ public class API extends AbstractHandler {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
 		return null;
+	}
+	
+	public boolean insertCase(String barcode, String product, int units) {
+		String guid = GUID();
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("INSERT IGNORE INTO :prefix:tblcases (id, barcode, product, units, created) VALUES (?, ?, ?, ?, ?)"));
+			pstmt.setString(1, guid);
+			pstmt.setString(2, barcode);
+			pstmt.setString(3, product);
+			pstmt.setInt(4, units);
+			pstmt.setLong(5, Utils.getCurrentTimeStamp());
+			if (pstmt.executeUpdate() > 0) {
+				return true;
+			}
+		} catch (SQLException ex) {
+			Log.info(ex.toString());
+		} finally {
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
+		}
+		return false;
 	}
 
 	public void operatorLogin(ServletRequest baseRequest, ServletResponse response)
@@ -1756,7 +1801,7 @@ public class API extends AbstractHandler {
 
 	public void barcode(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String barcode = baseRequest.getParameter("number");
-		baseRequest.getParameter("units");
+		boolean isCase = baseRequest.getParameter("isCase") != null ? (baseRequest.getParameter("isCase") == "true" ? true : false) : false;
 		JSONObject product = null;
 		if (barcode == null) {
 			errorOut(response, "no barcode");
@@ -1769,6 +1814,17 @@ public class API extends AbstractHandler {
 		product = getItemFromBarcode(barcode);
 		if (product != null) {
 			response.getWriter().write(product.toJSONString());
+			return;
+		}
+		product = getCaseFromBarcode(barcode);
+		if (product != null) {
+			response.getWriter().write(product.toJSONString());
+			return;
+		}
+		if (isCase) {
+			JSONObject jo = new JSONObject();
+			jo.put("success", false);
+			response.getWriter().write(jo.toJSONString());
 			return;
 		}
 		insertProduct(barcode, "Unknown Product");
@@ -2015,6 +2071,9 @@ public class API extends AbstractHandler {
 		case "GETOVERVIEWTOTALS":
 			getOverviewTotals(request, response);
 			break;
+		case "GENERATELBXLABEL":
+			generateLbxLabel(request, response);
+			break;
 		default:
 			errorOut(response, "No such function");
 			break;
@@ -2022,6 +2081,24 @@ public class API extends AbstractHandler {
 		response.getWriter().flush();
 		response.getWriter().close();
 
+	}
+
+	private void generateLbxLabel(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		String id = request.getParameter("id");
+		if (id == null) {
+			errorOut(response, "missing parameters");
+			return;
+		}
+		Product product = Product.getProduct(id);
+		if (product == null) {
+			errorOut(response, "product not found");
+			return;
+		}
+		File file = LabelExport.generateLabel(product);
+		JSONObject responseJo = new JSONObject();
+		responseJo.put("success", true);
+		responseJo.put("file", String.format("%s/temp/%s", Config.OPEN_TILL_URL, file.getName()));
+		response.getWriter().write(responseJo.toJSONString());
 	}
 
 	private void getOverviewTotals(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {

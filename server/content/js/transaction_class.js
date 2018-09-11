@@ -4,6 +4,7 @@ function Transaction() {
 	this.id = null;
 	this.cashier = getOperator();
 	this.products = {};
+	this.appliedOffers = {};
 	this.moneyGiven = 0.00;
 	this.cardGiven = 0.00;
 	this.total = 0.00; //only used for payouts

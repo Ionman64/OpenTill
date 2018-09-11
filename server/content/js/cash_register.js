@@ -17,6 +17,53 @@ non_product_barcodes[ai2++] = {"id":"ab", "name":"Sausages", "img":"img/products
 non_product_barcodes[ai2++] = {"id":"ab", "name":"Smoked Bacon", "img":"img/products/bacon.jpg"};
 delete ai2;
 
+function isZero(m) {
+	if (m == 0) {
+		return true;
+	}
+	return false;
+}
+
+function isUndefined(m) {
+	if (m == undefined) {
+		return true;
+	}
+	return false;
+}
+
+function detectOffers() {
+	//Send Request to Server looking for offers
+	var offers = {
+		"off1": {
+			"name":"BOGOF",
+			"reduction":0.30,
+			"products":{
+				"d3321af2-bc41-4c08-a7df-e3665aed3c97":2
+			}
+		}
+	};
+	getTransaction().appliedOffers = {};
+	$.each(offers, function(offerKey, offer) {
+		$.each(getTransaction().products, function(productKey, product) {
+			if (isUndefined(offer.products[productKey])) {
+				return;
+			}
+			var offerQuantity = offer.products[productKey];
+			var itemQuantity = product.quantity;
+			while (itemQuantity >= offerQuantity) {
+				if (isUndefined(getTransaction().appliedOffers[offerKey])) {
+					getTransaction().appliedOffers[offerKey] = 1;
+				}
+				else {
+					getTransaction().appliedOffers[offerKey]++;
+				}
+				itemQuantity -= offerQuantity;
+				console.log("Offer Applied");
+			}
+		});
+	});
+}
+
 
 function loadNonBarcodeProducts() {
 	var holder = $("#non-barcode-container")[0];
@@ -454,14 +501,10 @@ function loadContacts() {
 	$.ajax({
 		url:CONTEXT + "kvs.jsp?function=GETALLOPERATORS",
 		success:function(data) {
-			if (!data.success) {
-				bootbox.alert("Error loading contacts");
-				return;
-			}
 			var option = el("option", {html:"All"});
 			$("#chat-contact").append(option).attr("selected", "all");
 			$.each(data.operators, function(key, value) {
-				if (key == getOperator()) {
+				if (value.id == getOperator()) {
 					return;
 				}
 				var option = el("option", {"value":key, html:value.name});
@@ -819,12 +862,8 @@ function loadRegister() {
 	$.ajax({
 		url: CONTEXT + "kvs.jsp?function=GETALLSUPPLIERS",
 		success: function(data) {
-			if (!data.success) {
-				bootbox.alert("There was an error getting the suppliers");
-				return;
-			}
 			$.each(data.suppliers, function(key, item) {
-				window.supplierArray[key] = item;
+				window.supplierArray[item.id] = item;
 			});
 		}
 	});
@@ -1067,7 +1106,19 @@ function loadRegister() {
 			var holder = document.getElementById("department");
 			$(holder).empty();
 			var row = el("section", {class:"row"});
-			$.each(data, function(key, item) {
+			var sortedData = data.sort(function(a, b) {
+				if (a.name > b.name) {
+					return 1;
+				} 
+				if (a.name < b.name) {
+					return -1;
+				}
+				return 0;
+			});
+			$.each(sortedData, function(key, item) {
+				if ((!isUndefined(item.deleted)) && (!isZero(item.deleted))) {
+					return;
+				}
 				var col = el("section", {class:"col-md-6 col-sm-6 col-xs-6 col-lg-4"});
 				var btn = el("button", {class:"btn btn-default", productDepartment:item.id, style:"border-right:5px solid " + item.colour + ";border-left:5px solid " + item.colour, html:item.shorthand});
 				col.appendChild(btn);

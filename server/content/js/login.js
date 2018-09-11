@@ -24,7 +24,7 @@ function login() {
         data:{"email":$("#inputEmail").val(), "password":$("#inputPassword").val()},
         success:function(data){
             if (data.success) {
-                window.location = "dashboard.jsp";
+                window.location = "dashboard2.jsp";
                 return;
             }
             $("#serverMessage").html(data.reason).removeClass("hidden");

@@ -127,5 +127,7 @@
     <section class="import-modal" page="modals/exportTakings.jsp"></section>
     <section class="import-modal" page="modals/operatorInfo.jsp"></section>
     <section class="import-modal" page="modals/createOperator.jsp"></section>
+    <section class="import-modal"  page="modals/supplierInfo.jsp"></section>
+	<section class="import-modal"  page="modals/createSupplier.jsp"></section>
 </body>
 </html>

@@ -56,7 +56,7 @@ public class PDFHelper {
 			while (rs.next()) {
 				Product product = new Product();
 				product.name = rs.getString(1);
-				product.price = rs.getFloat(2);
+				product.price = rs.getBigDecimal(2);
 				product.barcode = rs.getString(3);
 				products.add(product);
 			}
@@ -126,7 +126,7 @@ public class PDFHelper {
 			}
 			
 			contentStream.moveTo(currentX, currentY);
-			PDFHelper.writeLabelInner(doc, page, contentStream, currentX+labelStyle.getPadding(), currentY - labelStyle.getPadding()*2, tempProduct.name,tempProduct.price, labelStyle);
+			PDFHelper.writeLabelInner(doc, page, contentStream, currentX+labelStyle.getPadding(), currentY - labelStyle.getPadding()*2, tempProduct, labelStyle);
 			contentStream.addRect(currentX, currentY - labelStyle.getHeight(), labelStyle.getWidth(), labelStyle.getHeight());
 			contentStream.setStrokingColor(labelStyle.getColorRed(), labelStyle.getColorGreen(), labelStyle.getColorBlue());
 			contentStream.stroke();
@@ -200,19 +200,18 @@ public class PDFHelper {
 		}
 	}
 	
-	public static void writeLabelInner(PDDocument doc, PDPage page, PDPageContentStream contentStream, float x, float y, String title,
-			float price, LabelStyle labelStyle) throws IOException {
+	public static void writeLabelInner(PDDocument doc, PDPage page, PDPageContentStream contentStream, float x, float y, Product product, LabelStyle labelStyle) throws IOException {
 		PDFont helvetica = PDType1Font.HELVETICA;
 		int fontSize = 16;
-		float titleWidth = helvetica.getStringWidth(title) / 1000 * fontSize;
+		float titleWidth = helvetica.getStringWidth(product.name) / 1000 * fontSize;
 		contentStream.setFont(helvetica, fontSize);
 		contentStream.beginText();
 		
-		String strippedString = title;
+		String strippedString = product.name;
 		while ((helvetica.getStringWidth(strippedString) / 1000 * fontSize) > labelStyle.width) {
 			strippedString = strippedString.substring(0, strippedString.length()-1);
 		}
-		if (!strippedString.equals(title)) {
+		if (!strippedString.equals(product.name)) {
 			strippedString = strippedString.substring(0, strippedString.length()-3).concat("...");
 		}
 		contentStream.newLineAtOffset(x + ((labelStyle.getWidth() - (helvetica.getStringWidth(strippedString) / 1000 * fontSize) - labelStyle.getPadding()) / 2), y);
@@ -220,7 +219,7 @@ public class PDFHelper {
 		contentStream.endText();
 		
 		//Price
-		String stringPrice = Utils.formatMoney(price);
+		String stringPrice = Utils.formatMoney(product.price);
 		File fontFile = new File("/usr/share/fonts/truetype/ubuntu/Ubuntu-M.ttf");
 		PDFont font =  PDType0Font.load(doc, fontFile);
 		int fontSize2 = 60;

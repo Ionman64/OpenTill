@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.time.LocalDateTime;
@@ -58,8 +59,7 @@ public class Utils {
 	}
 
 	public static Long getCurrentTimeStamp() {
-		// TODO Auto-generated method stub
-		return System.currentTimeMillis();
+		return new Timestamp(System.currentTimeMillis()).getTime();
 	}
 	
 	public static File generateBarcode(String barcodeContent) throws IOException {
@@ -90,6 +90,11 @@ public class Utils {
 		}	
 		NumberFormat format = NumberFormat.getCurrencyInstance(java.util.Locale.UK);
 		return format.format(number.doubleValue());
+	}
+	
+	public static String formatMoney(BigDecimal number) {
+		NumberFormat format = NumberFormat.getCurrencyInstance(java.util.Locale.UK);
+		return format.format(number);
 	}
 	
 	public static String addTablePrefix(String sql) {
