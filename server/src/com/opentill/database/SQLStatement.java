@@ -227,6 +227,20 @@ public class SQLStatement {
 		return false;
 	}
 	
+	private boolean isLengthZero(Object[] x) {
+		if (isZero(x.length)) {
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean isZero(int x) {
+		if (x == 0) {
+			return true;
+		}
+		return false;
+	}
+	
 	private SQLStatement insertConstruct() throws SQLException {
 		StringBuilder sql = new StringBuilder("INSERT INTO ");
 		if (isNull(this.databaseTable)) {
@@ -234,7 +248,7 @@ public class SQLStatement {
 		}
 		sql.append(this.databaseTable);
 		
-		if ((isNull(this.affectedColumns)) || (this.affectedColumns.length == 0)) {
+		if ((isNull(this.affectedColumns)) || (isLengthZero(this.affectedColumns))) {
 			throw new SQLException("No columns specified for query");
 		}
 		StringJoiner sqlColumns = new StringJoiner(",", " (", ")");
@@ -246,7 +260,7 @@ public class SQLStatement {
 		sql.append(sqlColumns);
 		sql.append(" VALUES ");
 		
-		if ((isNull(this.values)) || (this.values.length == 0)) {
+		if ((isNull(this.values)) || (isLengthZero(this.values))) {
 			throw new SQLException("No values specified for query");
 		}
 		String insertSQL = new String();
@@ -312,7 +326,16 @@ public class SQLStatement {
 		
 		sql.append(this.databaseTable);
 		
-		if ((!isNull(this.groupByColumns)) && (this.groupByColumns.length != 0)) {
+		if ((!isNull(this.whereCase)) && (!isLengthZero(this.whereCase))) {
+			StringJoiner whereCases = new StringJoiner(" AND ");
+			for (String whereCase : this.whereCase) {
+				whereCases.add(whereCase);
+			}
+			sql.append(" WHERE ");
+			sql.append(whereCases);
+		}
+		
+		if ((!isNull(this.groupByColumns)) && (!isLengthZero(this.groupByColumns))) {
 			StringJoiner columns = new StringJoiner(",");
 			for (String column : this.groupByColumns) {
 				columns.add(column);
@@ -321,7 +344,7 @@ public class SQLStatement {
 			sql.append(columns);
 		}
 		
-		if ((!isNull(this.orderByColumns)) && (this.orderByColumns.length != 0)) {
+		if ((!isNull(this.orderByColumns)) && (!isLengthZero(this.orderByColumns))) {
 			StringJoiner columns = new StringJoiner(",");
 			for (String column : this.orderByColumns) {
 				columns.add(column);
@@ -335,14 +358,5 @@ public class SQLStatement {
 		}
 		this.sqlString = sql.toString();
 		return this;
-	}
-	
-	public static void main(String[] args) {
-		try {
-			new SQLStatement().insertInto(":prefix:tblproducts").columns(new String[] {"id", "barcode", "name"}).values(new Object[] {"a45", "1010101", "bacon"}).construct().executeUpdate();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 }

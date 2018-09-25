@@ -13,28 +13,24 @@
 	<!--bootstrap-->
 	<link rel="stylesheet" href="thirdParty/bootstrap/css/bootstrap.min.css"/>
 	<script src="thirdParty/bootstrap/js/bootstrap.min.js"></script>				
-	<title>OpenTill-Login</title>
+	<title>OpenTill-Forgotten Password</title>
 	<script type="text/javascript" src="js/login.js"></script>
 	<link rel="stylesheet" href="css/login.css"/>
 </head>
 <body>
 	<section class="container-fluid">
 		<section class="row">
-			<section class="col-md-12">
-				<a href="forgotPassword.jsp"><button class="btn btn-lg btn-default btn-lg pull-right">Forgot Password</button></a>
-			</section>
 			<section class="col-md-4 col-md-offset-4">
-			  <form class="form-signin signin" id="signin">
+			  <form class="signin" id="forgot-password">
 				<h2 class="form-signin-heading text-center">OpenTill</h2>
 				<h5 class="form-signin-heading text-center">Please enter your details below</h5>
-				<label for="inputEmail" class="sr-only">Email address</label>
-				<input type="email" id="inputEmail" class="form-control input-lg" placeholder="Email address" required autofocus>
-				<label for="inputPassword" class="sr-only">Password</label>
-				<input type="password" id="inputPassword" class="form-control input-lg" placeholder="Password" required>
-				<label id="capsLockIndicator" class="text-warning hidden">Warning: Caps Lock On</label>
+				<section class="form-group">
+					<label for="inputEmail" class="sr-only">Email address</label>
+					<input type="email" id="inputEmail" class="form-control input-lg" placeholder="Email address" required autofocus>
+				</section>
 				<h1 id="serverMessage" class="text-info hidden"></h1>
 				<label class="text-info italic hidden" id="serverMessage"></label>
-				<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+				<button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
 			  </form>
 			</section>
 	  </section>

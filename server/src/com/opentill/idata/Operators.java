@@ -8,6 +8,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.opentill.database.DatabaseHandler;
+import com.opentill.database.SQLStatement;
 import com.opentill.logging.Log;
 import com.opentill.main.Config;
 import com.opentill.main.Utils;
@@ -94,5 +95,17 @@ public class Operators {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
 		return joArray;
+	}
+	
+	public static String createPasswordResetLink(String userId) throws Exception {
+		String id = Utils.GUID();
+		String token = Utils.GUID();
+		SQLStatement sqlStatement = new SQLStatement().insertInto(":prefix:forgotPassword").columns(new String[] {"id", "time", "userId", "token"}).values(new Object[] {id, Utils.getCurrentTimeStamp()/1000, userId, Utils.hashPassword(token, id)});
+		if (sqlStatement.construct().executeUpdate()) {
+			return id;
+		}
+		else {
+			throw new Exception("Could not create password link");
+		}
 	}
 }

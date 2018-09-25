@@ -65,6 +65,6 @@ public class Order {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
 		JSONObject supplier = Supplier.selectSupplier(supplierId);
-		PDFHelper.createOrderSheet(Utils.GUID(), (String) supplier.get("name"), products);
+		//PDFHelper.createOrderSheet(Utils.GUID(), (String) supplier.get("name"), products);
 	}
 }

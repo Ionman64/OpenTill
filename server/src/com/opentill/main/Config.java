@@ -11,6 +11,7 @@ import com.opentill.logging.Log;
 public final class Config {
 	public static boolean HTTPS = false;
 	public static int PORT = 8080;
+	public static String APP_NAME = "OpenTill";
 	public static Float CURRENT_LOCAL_VERSION = 0.02F;
 	public static String SERVER_ADDR = "localhost";
 	public static String DATABASE_TABLE_PREFIX = "kvs_";

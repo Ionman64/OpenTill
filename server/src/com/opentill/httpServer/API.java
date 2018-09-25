@@ -22,6 +22,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.mail.EmailException;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
@@ -31,6 +32,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import com.opentill.database.DatabaseHandler;
+import com.opentill.database.SQLStatement;
 import com.opentill.document.ChartHelper;
 import com.opentill.document.ExcelHelper;
 import com.opentill.document.LabelExport;
@@ -44,6 +46,8 @@ import com.opentill.idata.Supplier;
 import com.opentill.idata.Takings;
 import com.opentill.idata.Transaction;
 import com.opentill.logging.Log;
+import com.opentill.mail.ForgotPasswordEmail;
+import com.opentill.mail.MailHandler;
 import com.opentill.main.Config;
 import com.opentill.main.Utils;
 import com.opentill.products.Product;
@@ -1900,6 +1904,9 @@ public class API extends AbstractHandler {
 		case "LOGIN":
 			login(baseRequest, request, response);
 			break;
+		case "FORGOTPASSWORD":
+			forgotPassword(request, response);
+			break;
 		case "LOGOUT":
 			logout(request, response);
 			break;
@@ -2081,6 +2088,38 @@ public class API extends AbstractHandler {
 		response.getWriter().flush();
 		response.getWriter().close();
 
+	}
+
+	private void forgotPassword(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String email = request.getParameter("email");
+		if (email == null) {
+			errorOut(response, "missing parameters");
+			return;
+		}
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT id, name FROM :prefix:operators WHERE LCASE(email) = LCASE(?) LIMIT 1"));
+			pstmt.setString(1, email);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				String passwordLink = Operators.createPasswordResetLink(rs.getString(1));
+				MailHandler.add(new ForgotPasswordEmail(rs.getString(1), rs.getString(2), email, passwordLink).toEmail());
+				Log.info("User (" + rs.getString(2) + ") requested password reset");
+				successOut(response);
+				return;
+			}
+			errorOut(response, "No user found");
+		} catch (SQLException ex) {
+			Log.info(ex.toString());
+		} catch (Exception ex) {
+			Log.info(ex.toString());
+		} finally {
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
+		}
+		errorOut(response, "Unknown Error");
 	}
 
 	private void generateLbxLabel(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {

@@ -17,6 +17,10 @@ $(document).ready(function() {
         login();
         return false;
     });
+    $("#forgot-password").on("submit", function() {
+    	forgotPassword();
+    	return false;
+    });
 });
 function login() {
     $.ajax({
@@ -25,6 +29,20 @@ function login() {
         success:function(data){
             if (data.success) {
                 window.location = "dashboard2.jsp";
+                return;
+            }
+            $("#serverMessage").html(data.reason).removeClass("hidden");
+        }
+    });
+    return false;
+}
+function forgotPassword() {
+    $.ajax({
+        url:"api/kvs.jsp?function=FORGOTPASSWORD",
+        data:{"email":$("#inputEmail").val()},
+        success:function(data){
+        	if (data.success) {
+        		$("#serverMessage").html("An email has been sent to you").removeClass("hidden");
                 return;
             }
             $("#serverMessage").html(data.reason).removeClass("hidden");

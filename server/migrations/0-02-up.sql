@@ -14,3 +14,10 @@ CREATE TABLE :prefix:tblcases (
 ); 
 
 ALTER TABLE :prefix:tblproducts DROP COLUMN isCase;
+
+CREATE TABLE kvs_forgotPassword (
+    id VARCHAR(36) NOT NULL PRIMARY KEY,
+    time int(13),
+    userId VARCHAR(36) NOT NULL,
+    token VARCHAR(128) NOT NULL
+); 
