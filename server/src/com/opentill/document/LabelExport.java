@@ -1,16 +1,13 @@
 package com.opentill.document;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import com.opentill.logging.Log;
 import com.opentill.main.Config;
 import com.opentill.products.Product;
 

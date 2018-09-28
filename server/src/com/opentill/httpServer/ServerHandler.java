@@ -2,8 +2,6 @@ package com.opentill.httpServer;
 
 import java.io.File;
 import java.net.BindException;
-import java.net.URI;
-import java.net.URL;
 import java.time.LocalDateTime;
 
 import org.eclipse.jetty.server.Handler;
@@ -41,7 +39,7 @@ public final class ServerHandler {
 
 			ContextHandler authContext = new ContextHandler();
 			AuthHandler authHandler = new AuthHandler(sessionHandler,
-					new String[] { "/content/", "/index.jsp", "/login.jsp", "/forgotPassword.jsp", "/thirdParty/", "/api/", "/js/", "/css/", "/views/", "/modals/", "/img/", "/dashboard2.jsp"});
+					new String[] { "/content/", "/index.jsp", "/login.jsp", "/forgotPassword.jsp", "/resetPassword.jsp", "/thirdParty/", "/api/", "/js/", "/css/", "/views/", "/modals/", "/img/", "/dashboard2.jsp"});
 			authHandler.setAuthPage("login.jsp");
 			authContext.setHandler(authHandler);
 			

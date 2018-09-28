@@ -1,18 +1,6 @@
 package com.opentill.idata;
 
-import java.io.File;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-
-import org.json.simple.JSONObject;
-
-import com.opentill.database.DatabaseHandler;
-import com.opentill.document.ExcelHelper;
-import com.opentill.main.Config;
 
 public class TakingsRequest {
 	private Long start = null;

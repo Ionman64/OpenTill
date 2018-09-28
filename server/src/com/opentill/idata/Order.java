@@ -9,12 +9,10 @@ import java.util.ArrayList;
 import org.json.simple.JSONObject;
 
 import com.opentill.database.DatabaseHandler;
-import com.opentill.document.PDFHelper;
 import com.opentill.logging.Log;
 import com.opentill.main.Config;
 import com.opentill.main.Utils;
 import com.opentill.products.OrderProduct;
-import com.opentill.products.Product;
 
 public class Order {
 	public static JSONObject getOrders() {

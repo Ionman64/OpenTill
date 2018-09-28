@@ -98,14 +98,56 @@ public class Operators {
 	}
 	
 	public static String createPasswordResetLink(String userId) throws Exception {
-		String id = Utils.GUID();
-		String token = Utils.GUID();
+		String id = Utils.GUID().replace("-", "");
+		String token = Utils.GUID().replace("-", "");
 		SQLStatement sqlStatement = new SQLStatement().insertInto(":prefix:forgotPassword").columns(new String[] {"id", "time", "userId", "token"}).values(new Object[] {id, Utils.getCurrentTimeStamp()/1000, userId, Utils.hashPassword(token, id)});
 		if (sqlStatement.construct().executeUpdate()) {
-			return id;
+			return String.format(Config.getServerUrl() + "/resetPassword.jsp?id=%s&token=%s", id, token);
 		}
 		else {
 			throw new Exception("Could not create password link");
 		}
+	}
+	
+	public static boolean deleteResetPasswordLink(String userId) {
+			Connection conn = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			try {
+				conn = DatabaseHandler.getDatabase();
+				pstmt = conn.prepareStatement(Utils.addTablePrefix("DELETE FROM :prefix:forgotPassword WHERE userId=?"));
+				pstmt.setString(1, userId);
+				if (pstmt.executeUpdate() > 0) {
+					return true;
+				}
+			} catch (Exception ex) {
+				Log.info(ex.toString());
+			} finally {
+				DatabaseHandler.closeDBResources(null, pstmt, conn);
+			}
+			return false;		 
+	}
+	
+	public static String getUserIdFromResetPasswordLink(String id, String token) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT userId FROM :prefix:forgotPassword WHERE id = ? AND token = ? AND time > ? LIMIT 1"));
+			pstmt.setString(1, id);
+			pstmt.setString(2, Utils.hashPassword(token, id));
+			pstmt.setLong(3, (Utils.getCurrentTimeStamp()/1000)-Utils.SECONDS_IN_A_DAY);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				Operators.deleteResetPasswordLink(rs.getString(1));
+				return rs.getString(1);
+			}
+		} catch (Exception ex) {
+			Log.info(ex.toString());
+		} finally {
+			DatabaseHandler.closeDBResources(null, pstmt, conn);
+		}
+		return null;
 	}
 }

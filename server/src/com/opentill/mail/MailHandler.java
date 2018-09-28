@@ -2,9 +2,10 @@ package com.opentill.mail;
 
 import java.util.ArrayList;
 
-import org.apache.commons.mail.DefaultAuthenticator;
-import org.apache.commons.mail.Email;
-import org.apache.commons.mail.EmailException;
+import org.simplejavamail.email.Email;
+import org.simplejavamail.mailer.Mailer;
+import org.simplejavamail.mailer.MailerBuilder;
+import org.simplejavamail.mailer.config.TransportStrategy;
 
 import com.opentill.logging.Log;
 import com.opentill.main.Config;
@@ -12,33 +13,33 @@ import com.opentill.main.Config;
 public class MailHandler {
 	public static ArrayList<Email> emails = new ArrayList<Email>();
 	public static boolean running = false;
-
+	public static boolean interuptted = false;
 	public static void run() {
 		Log.info("Started: Mail Handler");
-		while (true) {
+		while (!interuptted) {
 			while (MailHandler.emails.size() > 0) {
 				try {
-					Email email = MailHandler.emails.get(0);
-					email.setHostName(Config.emailProperties.getProperty("email_hostname"));
-					email.setSmtpPort(Integer.parseInt(Config.emailProperties.getProperty("email_port")));
-					email.setAuthenticator(new DefaultAuthenticator(Config.emailProperties.getProperty("email_user"),
-							Config.emailProperties.getProperty("email_password")));
-					email.setSSLOnConnect(true);
-					email.setFrom(Config.emailProperties.getProperty("email_user"));
-					email.send();
-					MailHandler.emails.remove(0);
-				} catch (EmailException e) {
-					Log.info("Could not send email");
-					e.printStackTrace();
-				} catch (Exception e) {
+					
+					Email email = MailHandler.emails.remove(0);
+					
+					Mailer mailer = MailerBuilder
+					          .withSMTPServer(Config.emailProperties.getProperty("email_hostname"), Integer.parseInt(Config.emailProperties.getProperty("email_port")), Config.emailProperties.getProperty("email_user"), Config.emailProperties.getProperty("email_password"))
+					          .withTransportStrategy(TransportStrategy.SMTP_TLS)
+					          .trustingSSLHosts(Config.emailProperties.getProperty("email_hostname"))
+					          .withSessionTimeout(10 * 1000)
+					          .buildMailer();
+					mailer.sendMail(email);
+				} 
+				catch (Exception e) {
+					interuptted = true;
 					break;
 				}
 			}
 			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException ex) {
-				Log.info(ex.toString());
-				break;
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				interuptted = true;
+				e.printStackTrace();
 			}
 		}
 		Log.info("Mail Handler has died");
@@ -46,6 +47,6 @@ public class MailHandler {
 
 	public static void add(Email email) {
 		// TODO Auto-generated method stub
-		MailHandler.add(email);
+		MailHandler.emails.add(email);
 	}
 }

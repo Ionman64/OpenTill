@@ -1,20 +1,12 @@
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.varia.NullAppender;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-
-import com.opentill.database.DatabaseMigration;
-import com.opentill.document.PDFHelper;
-import com.opentill.httpServer.API;
 import com.opentill.httpServer.ServerHandler;
 import com.opentill.idata.Order;
 import com.opentill.logging.Log;
 import com.opentill.mail.MailHandler;
 import com.opentill.main.Config;
-import com.opentill.main.HttpConnector;
 import com.opentill.main.Updater;
-import com.opentill.main.Utils;
 
 public class StarterClass {
 	public static void printOpenTillHeader() {

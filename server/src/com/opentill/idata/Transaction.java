@@ -10,7 +10,6 @@ import org.json.simple.JSONObject;
 
 import com.opentill.database.DatabaseHandler;
 import com.opentill.database.SQLStatement;
-import com.opentill.document.Importer;
 import com.opentill.logging.Log;
 import com.opentill.main.Config;
 import com.opentill.main.Utils;

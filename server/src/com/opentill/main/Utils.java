@@ -12,20 +12,15 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.text.NumberFormat;
-import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
-import com.opentill.logging.Log;
-
-import uk.org.okapibarcode.backend.Codabar;
 import uk.org.okapibarcode.backend.Code128;
 import uk.org.okapibarcode.backend.HumanReadableAlignment;
 import uk.org.okapibarcode.backend.HumanReadableLocation;
-import uk.org.okapibarcode.backend.QrCode;
 import uk.org.okapibarcode.output.Java2DRenderer;
 
 public class Utils {
@@ -105,5 +100,19 @@ public class Utils {
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");  
 		LocalDateTime now = LocalDateTime.now();  
 		return dtf.format(now);  
+	}
+	
+	public static boolean isNull(Object x) {
+		return x == null;
+	}
+
+	public static boolean anyNulls(Object... params) {
+		boolean ret = false;
+		for (Object x : params) {
+			if (x==null) {
+				ret = true;
+			}
+		}
+		return ret;
 	}
 }

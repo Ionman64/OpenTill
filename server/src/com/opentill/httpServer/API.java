@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.ServletException;
@@ -22,7 +21,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.Email;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
@@ -32,7 +31,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import com.opentill.database.DatabaseHandler;
-import com.opentill.database.SQLStatement;
 import com.opentill.document.ChartHelper;
 import com.opentill.document.ExcelHelper;
 import com.opentill.document.LabelExport;
@@ -48,24 +46,21 @@ import com.opentill.idata.Transaction;
 import com.opentill.logging.Log;
 import com.opentill.mail.ForgotPasswordEmail;
 import com.opentill.mail.MailHandler;
+import com.opentill.mail.PasswordResetEmail;
 import com.opentill.main.Config;
 import com.opentill.main.Utils;
 import com.opentill.products.Product;
 
 import be.ceau.chart.BarChart;
-import be.ceau.chart.LineChart;
 import be.ceau.chart.PieChart;
 import be.ceau.chart.color.Color;
 import be.ceau.chart.data.BarData;
-import be.ceau.chart.data.LineData;
 import be.ceau.chart.data.PieData;
 import be.ceau.chart.dataset.BarDataset;
-import be.ceau.chart.dataset.LineDataset;
 import be.ceau.chart.dataset.PieDataset;
 import be.ceau.chart.options.BarOptions;
 import be.ceau.chart.options.Legend;
 import be.ceau.chart.options.Legend.Position;
-import be.ceau.chart.options.LineOptions;
 import be.ceau.chart.options.PieOptions;
 
 public class API extends AbstractHandler {
@@ -2081,6 +2076,9 @@ public class API extends AbstractHandler {
 		case "GENERATELBXLABEL":
 			generateLbxLabel(request, response);
 			break;
+		case "RESETPASSWORD":
+			resetPassword(request, response);
+			break;
 		default:
 			errorOut(response, "No such function");
 			break;
@@ -2088,6 +2086,50 @@ public class API extends AbstractHandler {
 		response.getWriter().flush();
 		response.getWriter().close();
 
+	}
+
+	private void resetPassword(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String newPassword = request.getParameter("newPassword");
+		String id = request.getParameter("id");
+		String token = request.getParameter("token");
+		if (Utils.anyNulls(newPassword, id, token)) {
+			errorOut(response, "missing parameters");
+			return;
+		}
+		try {
+			String userId = Operators.getUserIdFromResetPasswordLink(id, token);
+			if (userId == null) {
+				errorOut(response, "Password Reset Link Expired");
+				return;
+			}
+			JSONObject operator = Operators.getOperator(userId);
+			if (operator == null) {
+				errorOut(response, "operator does not exist");
+				return;
+			}
+			conn = DatabaseHandler.getDatabase();
+			pstmt = conn.prepareStatement(Utils.addTablePrefix("UPDATE :prefix:operators SET passwordHash=? WHERE id=?"));
+			pstmt.setString(1, Utils.hashPassword(newPassword, ""));
+			pstmt.setString(2,  userId);
+			if (pstmt.executeUpdate() > 0) {
+				org.simplejavamail.email.Email msg = new PasswordResetEmail(operator.get("name").toString(), operator.get("email").toString()).toEmail();
+				MailHandler.add(msg);
+				Log.info("User (" + userId + ") requested password reset");
+				successOut(response);
+				return;
+			}
+			errorOut(response, "No user found");
+		} catch (SQLException ex) {
+			Log.info(ex.toString());
+		} catch (Exception ex) {
+			Log.info(ex.toString());
+		} finally {
+			DatabaseHandler.closeDBResources(rs, pstmt, conn);
+		}
+		errorOut(response, "Unknown Error");
 	}
 
 	private void forgotPassword(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -2106,7 +2148,8 @@ public class API extends AbstractHandler {
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
 				String passwordLink = Operators.createPasswordResetLink(rs.getString(1));
-				MailHandler.add(new ForgotPasswordEmail(rs.getString(1), rs.getString(2), email, passwordLink).toEmail());
+				org.simplejavamail.email.Email msg = new ForgotPasswordEmail(rs.getString(1), rs.getString(2), email, passwordLink).toEmail();
+				MailHandler.add(msg);
 				Log.info("User (" + rs.getString(2) + ") requested password reset");
 				successOut(response);
 				return;

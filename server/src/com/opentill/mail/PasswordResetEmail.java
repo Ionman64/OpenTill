@@ -6,20 +6,17 @@ import org.simplejavamail.email.Email;
 import org.simplejavamail.email.EmailBuilder;
 
 import com.opentill.main.Config;
+import com.opentill.main.Utils;
 
-public class ForgotPasswordEmail {
+public class PasswordResetEmail {
 	public String name;
-	public String id;
 	public String respondentEmail;
-	public String passwordLink;
-	public ForgotPasswordEmail(String id, String name, String respondentEmail, String passwordLink) {
-		this.id = id;
+	public PasswordResetEmail(String name, String respondentEmail) {
 		this.name = name;
 		this.respondentEmail = respondentEmail;
-		this.passwordLink = passwordLink;
 	}
 	public String getSubject() {
-		return String.format("[%s] Password Reset", Config.APP_NAME);
+		return String.format("[%s] You Have Reset Your Password", Config.APP_NAME);
 	}
 	public Email toEmail() throws EmailException {
 		return EmailBuilder.startingBlank()
@@ -34,12 +31,7 @@ public class ForgotPasswordEmail {
 		sb.append(String.format("Hello %s,", this.name));
 		sb.append("</br>");
 		sb.append("</br>");
-		sb.append(String.format("You have requested a password reset, please <a href='%s'>Click Here</a>", this.passwordLink));
-		sb.append("</br>");
-		sb.append("If you cannot click on the above link, please copy and paste the below link");
-		sb.append("</br>");
-		sb.append("</br>");
-		sb.append(this.passwordLink);
+		sb.append(String.format("You have reset your password at %s, if this was in error please contact your supervisor", Utils.getCurrentDate()));
 		sb.append("</br>");
 		sb.append("</br>");
 		sb.append("From");

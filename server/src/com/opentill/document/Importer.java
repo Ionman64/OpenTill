@@ -15,14 +15,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import com.opentill.database.SQLStatement;
 import com.opentill.logging.Log;
 import com.opentill.main.Config;
-
-import uk.org.okapibarcode.util.Arrays;
 
 public class Importer {
 	int maxImportLimit = 500;

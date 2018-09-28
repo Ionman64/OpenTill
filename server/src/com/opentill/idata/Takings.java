@@ -8,7 +8,6 @@ import org.json.simple.JSONObject;
 
 import com.opentill.database.DatabaseHandler;
 import com.opentill.logging.Log;
-import com.opentill.main.Config;
 import com.opentill.main.Utils;
 
 public class Takings {
