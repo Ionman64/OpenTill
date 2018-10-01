@@ -14,6 +14,8 @@ import java.sql.Timestamp;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
@@ -54,7 +56,9 @@ public class Utils {
 	}
 
 	public static Long getCurrentTimeStamp() {
-		return new Timestamp(System.currentTimeMillis()).getTime();
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeZone(TimeZone.getTimeZone("GMT"));
+		return cal.getTimeInMillis()/1000;
 	}
 	
 	public static File generateBarcode(String barcodeContent) throws IOException {

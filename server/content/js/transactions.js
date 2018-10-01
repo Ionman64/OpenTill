@@ -1,18 +1,6 @@
 function Transactions() {
 	this.init = function() {
-		this.populate_table();
-		$("#transactions-viewport").on("click", ".row", function() {
-			if (!$(this).attr("data-id")) {
-				return;
-			}
-			window.transactions.showTransaction($(this).attr("data-id"));
-		});
-		$("#product-list").on("click", ".selectable", function() {
-			if ($(this).attr("data-id") == "") {
-				return;
-			}
-			window.open("https://www.goldstandardresearch.co.uk/kvs/product.jsp?id=" + $(this).attr("data-id"), '_blank');
-		});
+		
 	}
 	this.populate_table = function() {
 		var holder = document.getElementById("transactions-viewport");

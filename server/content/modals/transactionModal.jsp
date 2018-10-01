@@ -35,7 +35,7 @@
 		</section>
 		<section class="row viewport">
 			<section class="col-md-12">
-				<section id="transactions-viewport">
+				<section id="transactions-modal-viewport">
 		
 				</section>
 			</section>

@@ -410,6 +410,18 @@ function setupAutoPricing() {
 	$("#SupplierPrice").on("keyup", function() {
 		calcAutoPriceUpdate();
 	});	
+	$("#transactions-viewport").on("click", ".row", function() {
+		if (!$(this).attr("data-id")) {
+			return;
+		}
+		showTransaction($(this).attr("data-id"));
+	});
+	$("#product-list").on("click", ".selectable", function() {
+		if ($(this).attr("data-id") == "") {
+			return;
+		}
+		window.open("product.jsp?id=" + $(this).attr("data-id"), '_blank');
+	});
 }
 function loadOverview() {
 	$.each(OVERVIEW_AJAX_REQUESTS, function(key, value) {
@@ -421,6 +433,7 @@ function loadOverview() {
 	getOperatorTakingsTotal();
 	getTakingsByDepartments();
 	getDashboardTotals();
+	getTransaction();
 	getTakingsChart(TAKINGS_INTERVAL_HOUR);
 	$("#overview-select-day").val(moment(OVERVIEW_CURRENT_DAY).format("YYYY-MM-DD"));
 	getTakings();
@@ -433,7 +446,7 @@ function calcAutoPriceUpdate() {
 	var newProductPrice = 0.0;
 	var targetPOR = 0.0;
 	var vatPrice = 0.0;
-	var productPrice = getTransaction().products["d070d9de-6bd2-11e7-b34e-426562cc935f"].cost;
+	//var productPrice = getTransaction().products["d070d9de-6bd2-11e7-b34e-426562cc935f"].cost;
 	if (($("#targetProfitMargin").val().length != 0) && ($("#targetPercentage").is(":checked"))) {
 		targetPOR = parseFloat($("#targetProfitMargin").val());
 	}
@@ -460,6 +473,52 @@ function calcAutoPriceUpdate() {
 		$("#autopriceupdate").html("£" + formatMoney(newProductPrice));
 		$("#autopriceupdate-modal").removeClass("hidden");
 	}
+}
+
+function showTransaction(id) {
+	$.ajax({
+		url:"api/kvs.jsp?function=GETTRANSACTION",
+		data:{"id":id},
+		dataType: "JSON",
+		method:"POST",
+		success: function(data) {
+			var holder = $("#product-list")[0];
+			$(holder).empty();
+			if (isZero(data)) {
+				holder.appendChild(el("h1", {html:"No Products"}));
+				return;
+			}
+			var transTotal = 0;
+			var transQuantity = 0;
+			$.each(data, function(key, item) {
+				var total
+				var row = el("section", {class:"row selectable", "data-id":item.id ? item.id : ""});
+				//quantity
+				var col = el("section", {class:"col-md-2 col-xs-2 col-sm-2"});
+				var label = el("label");
+				label.innerHTML = item.quantity;
+				//transQuantity += parseInt(item.quantity);
+				col.appendChild(label);
+				row.appendChild(col);
+				//name
+				var col = el("section", {class:"col-md-8 col-xs-8 col-sm-8"});
+				var label = el("label", {class:item.id ? "text-info" : ""});
+				label.innerHTML = item.name;
+				col.appendChild(label);
+				row.appendChild(col);
+				//price
+				var col = el("section", {class:"col-md-2 col-xs-2 col-sm-2"});
+				var label = el("label");
+				label.innerHTML = formatMoney(item.price);
+				transTotal += parseFloat(item.price) * item.quantity;
+				col.appendChild(label);
+				row.appendChild(col);
+				holder.appendChild(row);
+			});
+			$("#transTotal").html(formatMoney(transTotal));
+			$("#transactionProducts").modal("show");
+		}
+	});
 }
 
 function getTransaction() {
@@ -1193,6 +1252,26 @@ function loadDashboard() {
 	$("#product-items").on("click", ".department-block", function() {
 		window.open("product.jsp?id=" + $(this).attr("data-id"));
 	});
+}
+
+function clearSupplierModal() {
+	//Existing Supplier Modal
+	$("#supplier-name").val("");
+	$("#supplier-telephone").val("");
+	$("#supplier-email").val("");
+	$("#supplier-website").val("");
+	$("#supplier-comments").val("");
+	//New Supplier Modal
+	$("#new-supplier-name").val("");
+	$("#new-supplier-telephone").val("");
+	$("#new-supplier-email").val("");
+	$("#new-supplier-website").val("");
+	$("#new-supplier-comments").val("");
+}
+
+function createSupplier() {
+	clearSupplierModal();
+	$("#create-supplier").modal("show");
 }
 
 function showSearches(searchString) {

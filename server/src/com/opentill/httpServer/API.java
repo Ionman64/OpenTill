@@ -1440,7 +1440,7 @@ public class API extends AbstractHandler {
 	@SuppressWarnings("unchecked")
 	private void getTransactionProducts(ServletRequest baseRequest, ServletResponse response)
 			throws IOException, ServletException {
-		
+		JSONArray jsonArr = new JSONArray();
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -1450,7 +1450,6 @@ public class API extends AbstractHandler {
 			return;
 		}
 		try {
-			JSONArray jsonArr = new JSONArray();
 			conn = DatabaseHandler.getDatabase();
 			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT :prefix:transactiontoproducts.product_id, COUNT(*) AS \"quantity\", :prefix:transactiontoproducts.price, IFNULL((SELECT name FROM "
 					+ ":prefix:tblproducts WHERE id = :prefix:transactiontoproducts.product_id LIMIT 1), :prefix:tblcatagories.name) AS \"name\" FROM "
@@ -1466,15 +1465,15 @@ public class API extends AbstractHandler {
 				jsonObject.put("price", rs.getString(3));
 				jsonObject.put("name", rs.getString(4));
 				jsonArr.add(jsonObject);
-				return;
 			}
-			response.getWriter().write(jsonArr.toJSONString());
 		} catch (SQLException ex) {
 			Log.info(ex.toString());
+			errorOut(response);
+			return;
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
-		errorOut(response);
+		response.getWriter().write(jsonArr.toJSONString());
 	}
 
 	private void logout(HttpServletRequest request, ServletResponse response) throws IOException, ServletException {

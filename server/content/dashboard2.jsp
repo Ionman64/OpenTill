@@ -94,9 +94,9 @@
 			<div class="tab" id="pane-primary-takings" data-page-name="Takings">
 				<section class="import-modal" page="./views/takings.jsp"></section>
 			</div>
-			<!-- <div class="tab hidden" id="pane-primary-transactions" data-page-name="Transactions">
+			<div class="tab hidden" id="pane-primary-transactions" data-page-name="Transactions">
 				<section class="import-modal" page="./views/transactions.jsp"></section>
-			</div> -->
+			</div>
 			<div class="tab hidden" id="pane-primary-operators" data-page-name="Operators">
 				<section class="import-modal" page="./views/operators.jsp"></section>
 			</div>
