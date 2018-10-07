@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
+import com.opentill.main.Config;
+
 public class AuthHandler extends AbstractHandler {
 	CustomSessionHandler sessionHandler = null;
 	String authPage = null;
@@ -40,7 +42,7 @@ public class AuthHandler extends AbstractHandler {
 		}
 		if ((request.getCookies() != null) && (request.getCookies().length > 0)) {
 			for (Cookie cookie : request.getCookies()) {
-				if (cookie.getName().equals("auth")) {
+				if (cookie.getName().equals(Config.AUTH_COOKIE_NAME)) {
 					sessionId = cookie.getValue();
 				}
 			}

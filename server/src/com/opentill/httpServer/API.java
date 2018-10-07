@@ -30,6 +30,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import com.google.gson.Gson;
 import com.opentill.database.DatabaseHandler;
 import com.opentill.document.ChartHelper;
 import com.opentill.document.ExcelHelper;
@@ -49,6 +50,7 @@ import com.opentill.mail.MailHandler;
 import com.opentill.mail.PasswordResetEmail;
 import com.opentill.main.Config;
 import com.opentill.main.Utils;
+import com.opentill.models.UserAuth;
 import com.opentill.products.Product;
 
 import be.ceau.chart.BarChart;
@@ -1488,21 +1490,20 @@ public class API extends AbstractHandler {
 
 	private void login(Request baseRequest, ServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
-		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		String email = baseRequest.getParameter("email");
-		String password = baseRequest.getParameter("password");
-		if ((email == null) || (password == null)) {
+		String data = Utils.getJSONFromRequest(baseRequest);
+		UserAuth userAuth = new Gson().fromJson(data, UserAuth.class);
+		if (!userAuth.isValid()) {
 			errorOut(response, "missing parameters");
 			return;
 		}
 		try {
 			conn = DatabaseHandler.getDatabase();
 			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT id, name, type, email, telephone FROM :prefix:operators WHERE LCASE(email) = LCASE(?) AND passwordHash = ? LIMIT 1"));
-			pstmt.setString(1, email);
-			pstmt.setString(2, Utils.hashPassword(password, ""));
+			pstmt.setString(1, userAuth.getEmail());
+			pstmt.setString(2, userAuth.getHashedPassword());
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
 				CustomUser user = new CustomUser();
@@ -1512,7 +1513,7 @@ public class API extends AbstractHandler {
 				user.setEmail(rs.getString(4));
 				user.setTelephone(rs.getString(5));
 				Log.info("User (" + user.getName() + ") logged in successfully");
-				Cookie cookie = new Cookie("auth", sessionHandler.createUserSession(user));
+				Cookie cookie = new Cookie(Config.AUTH_COOKIE_NAME, sessionHandler.createUserSession(user));
 				cookie.setPath("/");
 				response.addCookie(cookie);
 				successOut(response);
@@ -1569,7 +1570,7 @@ public class API extends AbstractHandler {
 			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT :prefix:tblchat.id, :prefix:tblchat.sender AS \"senderId\", :prefix:tblchat.recipient as \"recipientId\", a.name AS \"senderName\", IFNULL(b.name, \"All\") AS recipientName, "
 					+ ":prefix:tblchat.message, :prefix:tblchat.created FROM :prefix:tblchat LEFT JOIN :prefix:operators a ON a.id = :prefix:tblchat.sender LEFT JOIN :prefix:operators b ON b.id = "
 					+ ":prefix:tblchat.recipient WHERE (:prefix:tblchat.recipient = ? OR :prefix:tblchat.sender = ? OR :prefix:tblchat.recipient = \"All\") AND "
-					+ ":prefix:tblchat.created > ? ORDER BY :prefix:tblchat.created DESC LIMIT 20"));
+					+ ":prefix:tblchat.created > ? ORDER BY :prefix:tblchat.created ASC"));
 			pstmt.setString(1, operator);
 			pstmt.setString(2, operator);
 			pstmt.setInt(3, time);

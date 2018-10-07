@@ -503,12 +503,22 @@ function loadContacts() {
 		success:function(data) {
 			var option = el("option", {html:"All"});
 			$("#chat-contact").append(option).attr("selected", "all");
-			$.each(data.operators, function(key, value) {
+			$("#chat-contact-list").empty();
+			$.each(data, function(index, value) {
 				if (value.id == getOperator()) {
 					return;
 				}
-				var option = el("option", {"value":key, html:value.name});
-				$("#chat-contact").append(option);
+				var li = el("li", {class:"list-group-item", "data-id":value.id, html:value.name});
+				var badge = el("span", {"data-id":value.id, class:"badge hidden", html:"0"});
+				
+				li.appendChild(badge);
+				$("#chat-contact-list").append(li);
+			});
+			$("#chat-contact-list").on("click", "li", function() {
+				$("#chat-contact-list li").removeClass("active");
+				$(this).addClass("active");
+				$(this).children(".badge").addClass("hidden");
+				showMessagesFromSender($(this).attr("data-id"));
 			});
 		}
 	});
@@ -527,6 +537,15 @@ function sendMessage(message, to) {
 		}
 	});
 }
+
+function showMessagesFromSender(senderId) {
+	$("#chat-window-inner .message").addClass("hidden");
+	$("#chat-window-inner .message[data-sender-id='" + senderId + "']").removeClass("hidden");
+	$("#chat-window-inner .message[data-sender-id='" + getOperator() + "']").removeClass("hidden");
+	$("#chat-window").animate({ scrollTop: $("#chat-window-inner").height() }, 1000);
+	$("#chat-window-inner").attr("data-sender-id", senderId);
+}
+
 function getMessage() {
 	if (!getOperator()) {
 		return;
@@ -546,13 +565,24 @@ function getMessage() {
 			if (data.messages.length == 0) {
 				return;
 			}
+			var newMessagesFromContacts = {};
+			var holder = el("section");
 			$.each(data.messages, function(key, value) {
 				if (value.senderId != getOperator()) {
-					if ((0 < LAST_MESSAGE_UPDATE) && (LAST_MESSAGE_UPDATE < moment().unix()) && (!$("#chat-modal").is(':visible'))) {
-						$("#newMessages").removeClass("hidden");
+					newMessagesFromContacts[value.senderId] = 0;
+					if ((0 < LAST_MESSAGE_UPDATE) && (LAST_MESSAGE_UPDATE < moment().unix())) {
+						if (!$("#chat-modal").is(':visible')) {
+							$("#newMessages").removeClass("hidden");
+						}
+						$("#chat-contact-list .badge[data-id='" + value.senderId + "']").html(++newMessagesFromContacts[value.senderId]).removeClass("hidden");
 					}
 				}
-				var section = el("section", {class:"row"})
+				var section = el("section", {class:"row message", "data-sender-id":value.senderId});
+				if (!isUndefined($("#chat-window-inner").attr("data-sender-id"))) {
+					if (value.senderId != $("#chat-window-inner").attr("data-sender-id")) {
+						section = el("section", {class:"row message hidden", "data-sender-id":value.senderId});
+					}
+				}
 				var messageBody = el("section", {class:"col-lg-12 col-md-12 col-sm-12 col-xs-12 message-body wordwrap"});
 				var p = el("h4", {class:"message-text", html:"<b>" + value.senderName + "</b>: " + value.message});
 				messageBody.appendChild(p);
@@ -561,10 +591,18 @@ function getMessage() {
 				var p = el("label", {class:"message-text", html:moment(value.created*1000).calendar()});
 				dateSection.appendChild(p);
 				section.appendChild(dateSection);
-				$("#chat-window-inner").append(section);
+				holder.appendChild(section);
 			});
+			$("#chat-window-inner").append(holder);
 			LAST_MESSAGE_UPDATE = moment().unix();
-			$("#chat-window").animate({ scrollTop: $("#chat-window-inner").height() }, 1000);
+			if (isZero($("#chat-contact-list li.active").length)) {
+				$("#chat-contact-list li").first().click();
+			}
+			if ($("#chat-contact-list li.active").attr("data-id") == $("#chat-window-inner").attr("data-sender-id")) {
+				if (!isZero(newMessagesFromContacts[$("#chat-window-inner").attr("data-sender-id")]) || isZero(LAST_MESSAGE_UPDATE)) {
+					$("#chat-window").animate({ scrollTop: $("#chat-window-inner").height() }, 1000);
+				}
+			}
 		},
 		complete:function() {
 			var delay = $("#chat-modal").is(':visible') == true ? 2000 : 10000;
@@ -774,7 +812,7 @@ function loadRegister() {
 	});
 	loadContacts();
 	$("#chat-form").on("submit", function(e) {
-		sendMessage($("#chat-message").val(), $("#chat-contact").val());
+		sendMessage($("#chat-message").val(), $("#chat-contact-list li.active").first().attr("data-id"));
 		$("#chat-message").val("");
 		e.preventDefault();
 	});

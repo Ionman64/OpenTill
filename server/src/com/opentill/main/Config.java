@@ -11,8 +11,10 @@ import com.opentill.logging.Log;
 public final class Config {
 	public static boolean HTTPS = false;
 	public static int PORT = 8080;
-	public static String APP_NAME = "OpenTill";
-	public static Float CURRENT_LOCAL_VERSION = 0.02F;
+	public static final String APP_NAME = "OpenTill";
+	public static final Float CURRENT_LOCAL_VERSION = 0.02F;
+	public static final String AUTH_COOKIE_NAME = "auth";
+	public static final String JSON_PARAMETER_NAME = "json";
 	public static String SERVER_ADDR = "localhost";
 	public static String DATABASE_TABLE_PREFIX = "kvs_";
 	public static String OPEN_TILL_URL = Config.getServerUrl();

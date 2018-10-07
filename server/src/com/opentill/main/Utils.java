@@ -20,6 +20,10 @@ import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.validator.EmailValidator;
+import org.eclipse.jetty.server.Request;
+import org.hazlewood.connor.bottema.emailaddress.EmailAddressValidator;
+
 import uk.org.okapibarcode.backend.Code128;
 import uk.org.okapibarcode.backend.HumanReadableAlignment;
 import uk.org.okapibarcode.backend.HumanReadableLocation;
@@ -118,5 +122,13 @@ public class Utils {
 			}
 		}
 		return ret;
+	}
+
+	public static String getJSONFromRequest(Request request) {
+		return request.getParameter(Config.JSON_PARAMETER_NAME);
+	}
+
+	public static boolean isValidEmail(String email) {
+		return EmailAddressValidator.isValid(email);
 	}
 }

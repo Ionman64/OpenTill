@@ -40,9 +40,10 @@ $(document).ready(function() {
     });
 });
 function login() {
+	var data = {"email":$("#inputEmail").val(), "password":$("#inputPassword").val()};
     $.ajax({
         url:"api/kvs.jsp?function=LOGIN",
-        data:{"email":$("#inputEmail").val(), "password":$("#inputPassword").val()},
+        data:{"json":JSON.stringify(data)},
         success:function(data){
             if (data.success) {
                 window.location = "dashboard2.jsp";
