@@ -12,14 +12,12 @@ import com.opentill.main.Config;
 
 public class MailHandler {
 	public static ArrayList<Email> emails = new ArrayList<Email>();
-	public static boolean running = false;
 	public static boolean interuptted = false;
 	public static void run() {
 		Log.info("Started: Mail Handler");
 		while (!interuptted) {
 			while (MailHandler.emails.size() > 0) {
 				try {
-					
 					Email email = MailHandler.emails.remove(0);
 					
 					Mailer mailer = MailerBuilder

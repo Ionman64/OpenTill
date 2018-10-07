@@ -1,4 +1,8 @@
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.varia.NullAppender;
 import com.opentill.httpServer.ServerHandler;
@@ -7,6 +11,7 @@ import com.opentill.logging.Log;
 import com.opentill.mail.MailHandler;
 import com.opentill.main.Config;
 import com.opentill.main.Updater;
+import com.opentill.message.MessageHandler;
 
 public class StarterClass {
 	public static void printOpenTillHeader() {
@@ -36,6 +41,12 @@ public class StarterClass {
 		};
 		thread2.setDaemon(true);
 		thread2.start();
+		
+		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+		long initialDelay = 0L;
+		long intervalValue = 1L; 
+		scheduler.scheduleAtFixedRate(new MessageHandler(), initialDelay, intervalValue, TimeUnit.DAYS);
+		
 		Order.getOrderForSupplier("f9d62c39-70ce-11e7-b34e-426562cc935f");
 		//return;
 		// new SparkTest();
