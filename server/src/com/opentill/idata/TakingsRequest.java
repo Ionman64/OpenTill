@@ -6,6 +6,18 @@ public class TakingsRequest {
 	private Long start = null;
 	private Long end = null;
 	private HashMap<String, Long> takings = new HashMap<String, Long>();
+	public Long getStart() {
+		return start;
+	}
+	public void setStart(Long start) {
+		this.start = start;
+	}
+	public Long getEnd() {
+		return end;
+	}
+	public void setEnd(Long end) {
+		this.end = end;
+	}
 	public TakingsRequest(Long startTime, Long endTime, String[] departments) {
 		/*this.start = start;
 		this.end = end;

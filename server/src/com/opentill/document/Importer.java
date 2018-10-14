@@ -45,9 +45,6 @@ public class Importer {
         // Getting the Sheet at index zero
         Sheet sheet = wb.getSheetAt(0);
 
-        // Create a DataFormatter to format and get each cell's value as String
-        DataFormatter dataFormatter = new DataFormatter();
-
         // 1. You can obtain a rowIterator and columnIterator and iterate over them
         System.out.println("\n\nIterating over Rows and Columns using Iterator\n");
         Iterator<Row> rowIterator = sheet.rowIterator();

@@ -5,13 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.json.simple.JSONObject;
 import org.simplejavamail.email.Email;
 import org.simplejavamail.email.EmailBuilder;
-import org.simplejavamail.mailer.Mailer;
-import org.simplejavamail.mailer.MailerBuilder;
-import org.simplejavamail.mailer.config.TransportStrategy;
-
 import com.opentill.database.DatabaseHandler;
 import com.opentill.logging.Log;
 import com.opentill.mail.MailHandler;

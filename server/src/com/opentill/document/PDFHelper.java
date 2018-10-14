@@ -307,7 +307,6 @@ public class PDFHelper {
 	}
 	
 	public static void createPDF() {
-		final float page_margin = 25;
 		PDDocument doc = new PDDocument();
 		String filename = Config.APP_HOME + File.separatorChar + "example.pdf";
 		try {

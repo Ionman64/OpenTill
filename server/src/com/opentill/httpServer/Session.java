@@ -24,7 +24,7 @@ public class Session {
 	}
 
 	public String getId() {
-		return this.getId();
+		return this.id;
 	}
 
 	public Session(String id, CustomUser user, Long expiryTimeStamp) {

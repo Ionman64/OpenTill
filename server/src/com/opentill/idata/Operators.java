@@ -123,7 +123,7 @@ public class Operators {
 			} catch (Exception ex) {
 				Log.info(ex.toString());
 			} finally {
-				DatabaseHandler.closeDBResources(null, pstmt, conn);
+				DatabaseHandler.closeDBResources(rs, pstmt, conn);
 			}
 			return false;		 
 	}

@@ -10,7 +10,7 @@
 	<script type="text/javascript" src="thirdParty/jQuery/js/jquery.min.js"></script>
 	<script type="text/javascript" src="thirdParty/moment/js/moment.min.js"></script>
 	<script type="text/javascript" src="thirdParty/accounting/js/accounting.min.js"></script>
-	<link rel="stylesheet" href="thirdParty/bootstrap/css/bootstrap.min.css"/>
+	<link rel="stylesheet" href="thirdParty/bootstrap4/css/bootstrap.min.css"/>
 	<!--font awesome-->
 	<link rel="stylesheet" href="thirdParty/font-awesome/css/font-awesome.min.css" />
 	<!--accountingJS-->
@@ -19,7 +19,7 @@
 	<script type="text/javascript" src="thirdParty/chartJS/js/chart.bundle.js"></script>
 	<!--bootstrap-->
 	<link rel="stylesheet" href="thirdParty/animate/css/animate.css"/>
-	<script src="thirdParty/bootstrap/js/bootstrap.min.js"></script>
+	<script src="thirdParty/bootstrap4/js/bootstrap.min.js"></script>
 	<!--touchspin-->
 	<script src="thirdParty/touchspin/js/jquery.bootstrap-touchspin.min.js"></script>
 	<link rel="stylesheet" href="thirdParty/touchspin/css/jquery.bootstrap-touchspin.min.css" />

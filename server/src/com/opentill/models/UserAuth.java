@@ -9,13 +9,13 @@ public class UserAuth {
 		return email;
 	}
 	public void setEmail(String email) {
-		email = email;
+		this.email = email;
 	}
 	public String getPassword() {
 		return password;
 	}
 	public void setPassword(String password) {
-		password = password;
+		this.password = password;
 	}
 	public String getHashedPassword() {
 		// TODO Auto-generated method stub
