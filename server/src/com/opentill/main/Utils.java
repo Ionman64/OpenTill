@@ -18,6 +18,8 @@ import java.util.TimeZone;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.jetty.server.Request;
 import org.hazlewood.connor.bottema.emailaddress.EmailAddressValidator;
@@ -115,7 +117,17 @@ public class Utils {
 	public static boolean anyNulls(Object... params) {
 		boolean ret = false;
 		for (Object x : params) {
-			if (x==null) {
+			if (isNull(x)) {
+				ret = true;
+			}
+		}
+		return ret;
+	}
+	
+	public static boolean anyNulls(Object[]... params) {
+		boolean ret = false;
+		for (Object[] x : params) {
+			if (isNull(x)) {
 				ret = true;
 			}
 		}
@@ -128,5 +140,17 @@ public class Utils {
 
 	public static boolean isValidEmail(String email) {
 		return EmailAddressValidator.isValid(email);
+	}
+	
+	public static String getCookieValue(HttpServletRequest request, String cookieName) {
+		String value = null;
+		if ((request.getCookies() != null) && (20 > request.getCookies().length) && (request.getCookies().length > 0)) {
+			for (Cookie cookie : request.getCookies()) {
+				if (cookie.getName().equals(cookieName)) {
+					value = cookie.getValue();
+				}
+			}
+		}
+		return value;
 	}
 }

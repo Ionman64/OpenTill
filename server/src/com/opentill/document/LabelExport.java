@@ -9,17 +9,17 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import com.opentill.main.Config;
-import com.opentill.products.Product;
+import com.opentill.models.ProductModel;
 
 public class LabelExport {
-	public final static String PLACEHOLDER_NAME = "{:NAME}";
-	public final static String PLACEHOLDER_PRICE = "{:PRICE}";
-	public final static String PLACEHOLDER_DATE = "{:DATE}";
-	public final static String PLACEHOLDER_BARCODE = "{:BARCODE}";
-	public final static String PLACEHOLDER_CHAR_LENGTH = "{:CHAR_LENGTH}";
+	private final static String PLACEHOLDER_NAME = "{:NAME}";
+	private final static String PLACEHOLDER_PRICE = "{:PRICE}";
+	private final static String PLACEHOLDER_DATE = "{:DATE}";
+	private final static String PLACEHOLDER_BARCODE = "{:BARCODE}";
+	private final static String PLACEHOLDER_CHAR_LENGTH = "{:CHAR_LENGTH}";
 	
 	public static void main(String[] args) {
-		Product product = Product.getProduct("005ae897-06e6-41ba-bda2-bdf4a109454a");
+		ProductModel product = ProductModel.getProduct("005ae897-06e6-41ba-bda2-bdf4a109454a");
 		try {
 			LabelExport.generateLabel(product);
 		} catch (IOException e) {
@@ -33,7 +33,7 @@ public class LabelExport {
 		SimpleDateFormat format = new SimpleDateFormat("dd MMM");
 		return format.format(calendar.getTime());
 	}
-	public static File generateLabel(Product product) throws IOException {
+	public static File generateLabel(ProductModel product) throws IOException {
 		File file = new File(Config.APP_HOME + File.separatorChar + "temp" + File.separatorChar + product.id + ".lbx");
 		
 		//if (importTemplateLabelFile)

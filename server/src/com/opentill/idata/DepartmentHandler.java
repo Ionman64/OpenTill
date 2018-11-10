@@ -3,6 +3,7 @@ package com.opentill.idata;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -10,8 +11,9 @@ import org.json.simple.JSONObject;
 import com.opentill.database.DatabaseHandler;
 import com.opentill.logging.Log;
 import com.opentill.main.Utils;
+import com.opentill.models.DepartmentModel;
 
-public class Department {
+public class DepartmentHandler {
 	public static JSONArray getDepartmentId() {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -37,11 +39,11 @@ public class Department {
 		}
 		return departments;
 	}
-	public static JSONArray getDepartments() {
+	public static DepartmentModel[] getDepartments() {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		JSONArray departments = new JSONArray();
+		DepartmentModel[] departments = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
 			String sql = Utils.addTablePrefix("SELECT :prefix:tblcatagories.id, :prefix:tblcatagories.name, :prefix:tblcatagories.shortHand,"
@@ -49,13 +51,14 @@ public class Department {
 			pstmt = conn.prepareStatement(sql);
 			Log.log(sql);
 			rs = pstmt.executeQuery();
-
+			departments = new DepartmentModel[rs.getFetchSize()];
+			int i = 0;
 			while (rs.next()) {
-				JSONObject jo = new JSONObject();
-				jo.put("id", rs.getString(1));
-				jo.put("name", rs.getString(2));
-				jo.put("shortHand", rs.getString(3));
-				departments.add(jo);
+				DepartmentModel department = new DepartmentModel();
+				department.setId(rs.getString(1));
+				department.setName(rs.getString(2));
+				department.setShortHand(rs.getString(3));
+				departments[i++] = department;
 			}
 		} catch (Exception ex) {
 			Log.info(ex.toString());
@@ -64,28 +67,25 @@ public class Department {
 		}
 		return departments;
 	}
-	public static JSONArray getDepartmentsWithInfo() {
+	public static DepartmentModel[] getDepartmentsWithInfo() {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		JSONArray departments = new JSONArray();
+		DepartmentModel[] departments = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
-			String sql = Utils.addTablePrefix("SELECT COUNT(:prefix:tblproducts.id) AS \"numOfProducts\", :prefix:tblcatagories.id, :prefix:tblcatagories.shortHand, :prefix:tblcatagories.name, :prefix:tblcatagories.colour, :prefix:tblcatagories.deleted FROM :prefix:tblcatagories LEFT JOIN :prefix:tblproducts ON :prefix:tblcatagories.id = :prefix:tblproducts.department GROUP BY :prefix:tblcatagories.name ORDER BY :prefix:tblproducts.name, :prefix:tblcatagories.deleted ASC");
+			String sql = Utils.addTablePrefix("SELECT :prefix:tblcatagories.id, :prefix:tblcatagories.shortHand, :prefix:tblcatagories.name, :prefix:tblcatagories.colour, :prefix:tblcatagories.deleted FROM :prefix:tblcatagories GROUP BY :prefix:tblcatagories.name ORDER BY :prefix:tblcatagories.deleted ASC");
 			pstmt = conn.prepareStatement(sql);
-
-			
 			rs = pstmt.executeQuery();
-			
+			int i = 0;
 			while (rs.next()) {
-				JSONObject jo = new JSONObject();
-				jo.put("n_products", rs.getInt(1));
-				jo.put("id", rs.getString(2));
-				jo.put("shorthand", rs.getString(3));
-				jo.put("name", rs.getString(4));
-				jo.put("colour", rs.getString(5));
-				jo.put("deleted", rs.getInt(6));
-				departments.add(jo);
+				DepartmentModel department = new DepartmentModel();
+				department.setId(rs.getString(1));
+				department.setShortHand(rs.getString(2));
+				department.setName(rs.getString(3));
+				department.setColour(rs.getString(4));
+				department.setDeleted(rs.getBoolean(5));
+				departments[i++] = department;
 			}
 		} catch (Exception ex) {
 			Log.info(ex.toString());

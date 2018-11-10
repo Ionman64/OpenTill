@@ -18,7 +18,7 @@ public class Log {
 	private static String WARN = "WARN";
 	private static String INFO = "INFO";
 	private static String LOG = "LOG";
-	
+	private static String DEBUG = "DEBUG";
 	
 	private static void writeToFile(String m) {
 		System.out.println(m);
@@ -66,5 +66,9 @@ public class Log {
 
 	public static void log(String m) {
 		writeToFile(String.format("[%s][%s]\t%s", Log.LOG, Log.getDateTime(), m));
+	}
+	
+	public static void Debug(String m) {
+		writeToFile(String.format("[%s][%s]\t%s", Log.DEBUG, Log.getDateTime(), m));
 	}
 }

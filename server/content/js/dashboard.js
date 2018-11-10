@@ -56,42 +56,6 @@ var promiseSuppliers = new Promise(function(resolve, reject) {
     xhr.send();
 });
 
-
-function el(tagName, options) {
-	if (tagName.length == 0) {
-		return;
-	}
-	var options = options || {};
-	var el = document.createElement(tagName);
-	if (options.id) {
-		el.id = options.id;
-		delete options.id;
-	}
-	if (options.class) {
-		el.className = options.class;
-		delete options.class;
-	}
-	if (options.html) {
-		el.innerHTML = options.html;
-		delete options.html;
-	}
-	if (options.text) {
-		el.appendChild(document.createTextNode(options.text));
-		delete options.text;
-	}
-	$.each(options, function(key, value) {
-		el.setAttribute(key, value);
-	});
-	return el;
-}
-
-function isZero(m) {
-	if (m == 0) {
-		return true;
-	}
-	return false;
-}
-
 function getAllDepartments() {
 	$.ajax({
 		url:"api/kvs.php?function=GETALLDEPARTMENTS",
@@ -108,10 +72,6 @@ function getAllDepartments() {
 			});
 		}
 	});
-}
-
-function isUndefined(m) {
-	return m == undefined ? true : false;
 }
 
 function getTakings() {
@@ -341,26 +301,32 @@ function getOperatorTakingsTotal() {
 		}
 	});
 }
-function loadModals() {
-	window.modals = $(".import-modal").length;
-	if (window.modals == 0) {
-		loadDashboard();
-	}
-	$(".import-modal").each(function(key, el) {
-		$(el).load(this.getAttribute("page"), function() {
-			$(el).replaceWith(function() { return $(this).contents(); });
-			if (--window.modals == 0) {
-				loadModals();
-			}
-		});
-	});
-}
 $(document).ready( function() {
 	$.ajaxSetup({
 		method:"POST",
 		dataType:"json"
 	});
-	loadModals();
+	requirejs(['js/views/home.js', 'js/views/overview.js', 'js/views/sales.js', 'js/views/products.js', 'js/views/supplierView.js', 'js/widgets/userNotification.js', 'js/utils.js', "js/transactions", "js/operators", "js/suppliers", 
+		"js/inventory", "js/departments", "js/orders", "js/views/transactions.js", "js/widgets/navigation.js", 'js/views/departments.js', 'js/views/users/users.js', 'js/views/users/selectedUser.js', 'js/views/suppliers.js', 'js/views/settings/settings.js', 'js/views/settings/settingsNavigation.js'], function() {
+		setTimeout(function() {
+			closeLoadingScreen();
+		}, 1000);
+		m.mount(document.getElementById("mithril-navbar-container"), NavigationView);
+		m.mount(document.getElementById("mithril-notification-container"), UserNotification);
+		m.route(document.getElementById("mithril-container"), "/home", {
+			"/home":HomeView,
+			"/overview":OverviewView,
+			"/sales":SalesView,
+			"/transactions":TransactionsView,
+			"/products":ProductsView,
+			"/departments":DepartmentsView,
+			"/users":UsersView,
+			"/users/:id":SelectedUserView,
+			"/suppliers":SuppliersView,
+			"/suppliers/:id":SupplierView,
+			"/settings":SettingsView,
+		});
+	});
 });
 function setupAutoPricing() {
 	$("#auto-pricing-enabled").bootstrapToggle({size:"large"}).on("change", function() {
@@ -872,7 +838,13 @@ function saveSupplier(id) {
 	});
 }
 
+function closeLoadingScreen() {
+	document.getElementById("loader").classList.add("d-none");
+	document.getElementById("loading-overlay").classList.add("closed");
+}
+
 function loadDashboard() {
+	return;
 	OVERVIEW_CURRENT_DAY = moment().startOf("day");
 	setupAutoPricing();
 	getDepartments();
@@ -1151,9 +1123,6 @@ function loadDashboard() {
 		$("#" + $(this).attr("data-page")).removeClass("hidden");
 		$("#page-name").html($("#" + $(this).attr("data-page")).attr("data-page-name"));
 	});
-	requirejs(["js/transactions", "js/operators", "js/suppliers", "js/inventory", "js/departments", "js/orders"], function() {
-		console.log("Loaded Scripts");
-	});
 	$("#logout").click(function() {
 		logout();
 	});
@@ -1305,29 +1274,6 @@ function showSearches(searchString) {
 	});
 }
 
-function truncateOnWord(str, limit) {
-    var trimmable = '\u0009\u000A\u000B\u000C\u000D\u0020\u00A0\u1680\u180E\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u2028\u2029\u3000\uFEFF';
-    var reg = new RegExp('(?=[' + trimmable + '])');
-    var words = str.split(reg);
-    var count = 0;
-    var result = words.filter(function(word) {
-        count += word.length;
-        return count <= limit;
-    }).join('');
-    if (result == str) {
-    	return result;
-    }
-    return result + "...";
-}
-
-function formatMoney(amount, prefix) {
-	var prefix = prefix || "";
-	return accounting.formatMoney(amount, prefix);
-}
-
-function percentage(value, total) {
-	return Math.floor(value/total*100);
-}
 function getSalesData(daysToLookBack, id) {
 	$.ajax({
 		url:"api/kvs.jsp?function=GETPRODUCTSALES",

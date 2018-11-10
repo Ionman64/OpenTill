@@ -1031,8 +1031,8 @@ function loadRegister() {
 			success : function(data) {
 				window.cache[data.barcode.toString()] = data;
 				addProduct(data);
-			}
-			complete:function()  {}
+			},
+			complete:function()  {
 				beep();
 			}
 		});

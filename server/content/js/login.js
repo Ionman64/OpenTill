@@ -42,7 +42,7 @@ $(document).ready(function() {
 function login() {
 	var data = {"email":$("#inputEmail").val(), "password":$("#inputPassword").val()};
     $.ajax({
-        url:"api/kvs.jsp?function=LOGIN",
+        url:"api/login",
         data:{"json":JSON.stringify(data)},
         success:function(data){
             if (data.success) {

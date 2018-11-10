@@ -2,7 +2,7 @@ package com.opentill.models;
 
 import com.opentill.main.Utils;
 
-public class UserAuth {
+public class UserAuthModel {
 	public String email = null;
 	public String password = null;
 	public String getEmail() {

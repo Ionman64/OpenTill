@@ -12,6 +12,7 @@ import com.opentill.database.DatabaseHandler;
 import com.opentill.logging.Log;
 import com.opentill.main.Config;
 import com.opentill.main.Utils;
+import com.opentill.models.SupplierModel;
 import com.opentill.products.OrderProduct;
 
 public class Order {
@@ -62,7 +63,7 @@ public class Order {
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
-		JSONObject supplier = Supplier.selectSupplier(supplierId);
+		SupplierModel supplier = Supplier.selectSupplier(supplierId);
 		//PDFHelper.createOrderSheet(Utils.GUID(), (String) supplier.get("name"), products);
 	}
 }

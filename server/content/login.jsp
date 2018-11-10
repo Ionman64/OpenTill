@@ -11,33 +11,51 @@
 	<!--font awesome-->
 	<link rel="stylesheet" href="thirdParty/font-awesome/css/font-awesome.min.css" />
 	<!--bootstrap-->
-	<link rel="stylesheet" href="thirdParty/bootstrap/css/bootstrap.min.css"/>
-	<script src="thirdParty/bootstrap/js/bootstrap.min.js"></script>				
+	<link rel="stylesheet" href="thirdParty/bootstrap4/css/bootstrap.min.css"/>
+	<script src="thirdParty/bootstrap4/js/bootstrap.min.js"></script>				
 	<title>OpenTill-Login</title>
 	<script type="text/javascript" src="js/login.js"></script>
 	<link rel="stylesheet" href="css/login.css"/>
 </head>
-<body>
-	<section class="container-fluid">
-		<section class="row">
-			<section class="col-md-12">
-				<a href="forgotPassword.jsp"><button class="btn btn-lg btn-default btn-lg pull-right">Forgot Password</button></a>
-			</section>
-			<section class="col-md-4 col-md-offset-4">
-			  <form class="form-signin signin" id="signin">
-				<h2 class="form-signin-heading text-center">OpenTill</h2>
-				<h5 class="form-signin-heading text-center">Please enter your details below</h5>
-				<label for="inputEmail" class="sr-only">Email address</label>
-				<input type="email" id="inputEmail" class="form-control input-lg" placeholder="Email address" required autofocus>
-				<label for="inputPassword" class="sr-only">Password</label>
-				<input type="password" id="inputPassword" class="form-control input-lg" placeholder="Password" required>
-				<label id="capsLockIndicator" class="text-warning hidden">Warning: Caps Lock On</label>
-				<h1 id="serverMessage" class="text-info hidden"></h1>
-				<label class="text-info italic hidden" id="serverMessage"></label>
-				<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-			  </form>
-			</section>
-	  </section>
-    </section> <!-- /container -->
+<body class="bg-dark">
+<section class="container py-5">
+    <section class="row">
+        <section class="col-md-12">
+            <h2 class="text-center text-white mb-4">OpenTill</h2>
+            <h5 class="text-center text-light mb-4">Please enter your details below</h5>
+            <section class="row">
+                <section class="col-lg-6 col-md-8 col-sm-10 col-xs-12 mx-auto">
+                    <!-- form card login -->
+                    <section class="card rounded-0">
+                        <section class="card-header">
+                            <h3 class="mb-0">Login</h3>
+                        </section>
+                        <section class="card-body">
+                            <form class="form" role="form" autocomplete="off" id="signin" novalidate="" method="POST">
+                                <section class="form-group">
+                                    <label for="inputEmail">Email</label>
+                                    <input type="email" id="inputEmail" class="form-control form-control-lg rounded-0" placeholder="Email address" value="peterpickerill2016@gmail.com" required autofocus>
+                                    <section class="invalid-feedback">Oops, you missed this one.</section>
+                                </section>
+                                <section class="form-group">
+                                    <label>Password</label>
+                                    <input type="password" class="form-control form-control-lg rounded-0" id="inputPassword" placeholder="Password" value="x" required autocomplete="new-password">
+                                    <section class="invalid-feedback">Enter your password too!</section>
+                                </section>
+                                <section>
+                                    <label class="custom-control custom-checkbox">
+                                      <a href="forgotPassword.jsp"><span class="custom-control-description small text-info pull-right">Forgotten Password</span></a>
+                                    </label>
+                                </section>
+                                <label class="text-info italic hidden" id="serverMessage"></label>
+                                <button type="submit" class="btn btn-success btn-lg float-right" id="btnLogin">Login</button>
+                            </form>
+                        </section>
+                    </section>
+                </section>
+            </section>
+        </section>
+    </section>
+</section>
 </body>
 </html>

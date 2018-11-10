@@ -9,19 +9,22 @@ import java.util.Properties;
 import com.opentill.logging.Log;
 
 public final class Config {
-	public static boolean HTTPS = false;
-	public static int PORT = 8080;
+	public static final boolean HTTPS = false;
+	public static final int PORT = 8080;
+	public static final int DATABASE_PORT = 3306;
 	public static final String APP_NAME = "OpenTill";
 	public static final Float CURRENT_LOCAL_VERSION = 0.02F;
 	public static final String AUTH_COOKIE_NAME = "auth";
 	public static final String JSON_PARAMETER_NAME = "json";
-	public static String SERVER_ADDR = "localhost";
-	public static String DATABASE_TABLE_PREFIX = "kvs_";
+	public static final String SERVER_ADDR = "localhost";
+	public static final String DATABASE_TABLE_PREFIX = "kvs_";
 	public static String OPEN_TILL_URL = Config.getServerUrl();
 	public static String USER_HOME = System.getProperty("user.home");
 	public static String APP_HOME = Config.USER_HOME + File.separatorChar + ".opentill";
 	public final static Properties databaseProperties = Config.readDatabasePropertiesFile();
 	public final static Properties emailProperties = Config.getEmailProperties();
+	private static final String CONNECTION_POOL_SIZE = "10";
+	public static final String CONNECTION_URL = "jdbc:mysql://" + Config.SERVER_ADDR + ":" + Config.DATABASE_PORT + "/" + Config.APP_NAME;
 
 	public static boolean setup() {
 		if (!createRootFolderIfNotExists()) {
@@ -137,7 +140,7 @@ public final class Config {
 			return true;
 		}
 	}
-
+	
 	public static boolean createDatabasePropertiesFileIfNotExists() {
 		String props_path = Config.USER_HOME + File.separatorChar + ".opentill" + File.separatorChar
 				+ "database.properties";
@@ -146,12 +149,16 @@ public final class Config {
 			try {
 				FileOutputStream fileO = new FileOutputStream(props_path);
 				Properties props = new Properties();
-				props.setProperty("database_name", "opentill");
-				props.setProperty("database_user", "root");
-				props.setProperty("database_password", "");
-				props.setProperty("database_port", "3306");
-				props.setProperty("database_url", "localhost");
-				props.store(fileO, "opentill database connection details");
+				props.put("hibernate.connection.url", Config.CONNECTION_URL);
+				props.put("hibernate.connection.username", "root");
+				props.put("hibernate.connection.password", "");
+				props.put("hibernate.driver_class", "com.mysql.jdbc.Driver");
+				props.put("hibernate.dialect", "org.hibernate.dialect.MySQLInnoDBDialect");
+				props.put("hibernate.order_updates", "true");
+				props.put("hibernate.show_sql", "true");
+				props.put("hibernate.pool_size", Config.CONNECTION_POOL_SIZE);
+				props.put("current_session_context_class", "thread");
+				props.store(fileO, String.format("%s hibernate database connection details", Config.APP_NAME));
 				fileO.close();
 				return true;
 			} catch (IOException e) {

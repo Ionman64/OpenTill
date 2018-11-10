@@ -8,7 +8,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
+
 import com.opentill.main.Config;
+import com.opentill.models.SupplierModel;
+import com.opentill.models.UserModel;
 
 public class DatabaseHandler {
 	private static String dbms = "mysql";
@@ -27,6 +35,22 @@ public class DatabaseHandler {
 			throw new SQLException("Cannot connect to database - Please check configuration");
 		}
 		return conn;
+	}
+	
+	public static Session getDatabaseSession() throws SQLException {
+		Connection conn = DriverManager.getConnection(Config.databaseProperties.getProperty("hibernate.connection.url"), "root", "");
+		if (conn == null) {
+			throw new SQLException("Cannot connect to database - Please check configuration");
+		}
+		conn.close();
+		
+		Configuration configuration = new Configuration()
+				.addAnnotatedClass(SupplierModel.class)
+				.addAnnotatedClass(UserModel.class)
+				.setProperties(Config.databaseProperties);
+        StandardServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
+        SessionFactory sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+        return sessionFactory.openSession();
 	}
 
 	public static Connection getDatabase(String url, int port, String user, String password, String databaseName)

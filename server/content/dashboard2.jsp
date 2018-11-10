@@ -47,26 +47,17 @@
 	<title>KVS-Dashboard</title>
 </head>
 <body class="no-select">
-	<section class="container-fluid no-padding">
-		<section class="row">
-			<aside class="col-lg-2 col-md-3 col-sm-3 col-xs-4 no-padding-right">
-				<ul id="main-navigation" class="custom-navigation hidden">
-					<li class="user-details-box">
-						<h3 id="user-name"></h3>
-						<h5 class="italic" id="user-role"></h5>
-						<button id="user-logout" title="Logout" class="btn btn-danger"><i class="fa fa-sign-out"></i></button>
-					</li>
-					<li  data-page="pane-primary-overview"><i class="fa fa-eye" ></i>Overview</li>
-					<li class="active" data-page="pane-primary-takings"><i class="fa fa-bar-chart" ></i>Takings</li>
-					<li data-page="pane-primary-transactions"><i class="fa fa-tasks" ></i>Transactions</li>
-					<li data-page="pane-primary-departments"><i class="fa fa-table" ></i>Departments</li>
-					<li data-page="pane-primary-orders"><i class="fa fa-tags"></i>Orders</li>
-					<li data-page="pane-primary-operators"><i class="fa fa-user"></i>Operators</li>
-					<li data-page="pane-primary-suppliers"><i class="fa fa-truck"></i>Suppliers</li>
-					<li data-page="pane-primary-products"><i class="fa fa-cubes" ></i>Products</li>
-					<li data-page="pane-primary-settings"><i class="fa fa-cogs"></i>Settings</li>
-				</ul>
-			</aside>
+	<section id="loading-overlay" class="bg-dark">
+		<section id="loader"></section>
+	</section>
+	<section id="mithril-navbar-container">
+	
+	</section>
+	<section id="mithril-notification-container">
+		
+	</section>
+	<section class="container-fluid no-padding" id="mithril-container">
+		<!-- <section class="row">
 		<article class="col-lg-10 col-md-9 col-sm-9 col-xs-8 no-padding-left">
 		<section class="row" style="padding-top:10px">
 			<section class="col-md-6">
@@ -83,7 +74,7 @@
 				<section class=" inline-block">
 					
 					
-					<!--  <input type="checkbox" id="autoupdateoverview"/>-->
+					<!--  <input type="checkbox" id="autoupdateoverview"/>
 				</section>
 				
 			</section>
@@ -128,6 +119,7 @@
     <section class="import-modal" page="modals/operatorInfo.jsp"></section>
     <section class="import-modal" page="modals/createOperator.jsp"></section>
     <section class="import-modal"  page="modals/supplierInfo.jsp"></section>
-	<section class="import-modal"  page="modals/createSupplier.jsp"></section>
+	<section class="import-modal"  page="modals/createSupplier.jsp"></section>-->
+	</section>
 </body>
 </html>

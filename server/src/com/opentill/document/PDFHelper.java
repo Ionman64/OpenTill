@@ -21,28 +21,28 @@ import com.opentill.database.DatabaseHandler;
 import com.opentill.logging.Log;
 import com.opentill.main.Config;
 import com.opentill.main.Utils;
+import com.opentill.models.ProductModel;
 import com.opentill.products.LabelStyle;
 import com.opentill.products.OrderProduct;
-import com.opentill.products.Product;
 
 public class PDFHelper {
 	public static String repeat(int count, String with) {
 		String newString = new String(new char[count]).replace("\0", with);
 		return newString.substring(0, newString.length()-1);
 	}
-	public static ArrayList<Product> getLabels(String[] ids, boolean includeLabelled) {
+	public static ArrayList<ProductModel> getLabels(String[] ids, boolean includeLabelled) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		ArrayList<Product> products = new ArrayList<Product>();
+		ArrayList<ProductModel> ProductModels = new ArrayList<ProductModel>();
 		try {
 			conn = DatabaseHandler.getDatabase();
 			String sql;
 			if (!includeLabelled) {
-				sql = "SELECT name, price, barcode FROM " + Config.DATABASE_TABLE_PREFIX + "tblproducts WHERE id IN (:?:) GROUP BY id";
+				sql = "SELECT name, price, barcode FROM " + Config.DATABASE_TABLE_PREFIX + "tblProductModels WHERE id IN (:?:) GROUP BY id";
 			}
 			else {
-				sql = "SELECT name, price, barcode FROM " + Config.DATABASE_TABLE_PREFIX + "tblproducts WHERE labelPrinted = 1 OR id IN (:?:) GROUP BY id";
+				sql = "SELECT name, price, barcode FROM " + Config.DATABASE_TABLE_PREFIX + "tblProductModels WHERE labelPrinted = 1 OR id IN (:?:) GROUP BY id";
 			}
 			sql = sql.replace(":?:",  repeat(ids.length, "?,"));
 			pstmt = conn.prepareStatement(sql);
@@ -52,18 +52,18 @@ public class PDFHelper {
 			}
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				Product product = new Product();
-				product.name = rs.getString(1);
-				product.price = rs.getBigDecimal(2);
-				product.barcode = rs.getString(3);
-				products.add(product);
+				ProductModel ProductModel = new ProductModel();
+				ProductModel.name = rs.getString(1);
+				ProductModel.price = rs.getBigDecimal(2);
+				ProductModel.barcode = rs.getString(3);
+				ProductModels.add(ProductModel);
 			}
 		} catch (SQLException ex) {
 			Log.error(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
-		return products;
+		return ProductModels;
 	}
 	
 	public static void drawLabels(PDDocument doc, float margin, String[] products, boolean includeLabelled) throws IOException {
@@ -82,7 +82,7 @@ public class PDFHelper {
 		PDPageContentStream contentStream = null;
 		
 		boolean newPageNeeded = true;
-		Iterator<Product> iter = getLabels(products, includeLabelled).iterator();
+		Iterator<ProductModel> iter = getLabels(products, includeLabelled).iterator();
 		if (!iter.hasNext()) {
 			page = new PDPage();
 			doc.addPage(page);
@@ -100,7 +100,7 @@ public class PDFHelper {
 			return;
 		}
 		while (iter.hasNext()) {
-			Product tempProduct = iter.next();
+			ProductModel tempProduct = iter.next();
 			if ((newPageNeeded) || (currentY - (labelStyle.getHeight() + margin) < 0)) {
 				if (contentStream != null) {
 					contentStream.close();
@@ -198,7 +198,7 @@ public class PDFHelper {
 		}
 	}
 	
-	public static void writeLabelInner(PDDocument doc, PDPage page, PDPageContentStream contentStream, float x, float y, Product product, LabelStyle labelStyle) throws IOException {
+	public static void writeLabelInner(PDDocument doc, PDPage page, PDPageContentStream contentStream, float x, float y, ProductModel product, LabelStyle labelStyle) throws IOException {
 		PDFont helvetica = PDType1Font.HELVETICA;
 		int fontSize = 16;
 		float titleWidth = helvetica.getStringWidth(product.name) / 1000 * fontSize;

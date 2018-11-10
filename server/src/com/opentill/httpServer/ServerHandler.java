@@ -39,7 +39,7 @@ public final class ServerHandler {
 
 			ContextHandler authContext = new ContextHandler();
 			AuthHandler authHandler = new AuthHandler(sessionHandler,
-					new String[] { "/content/", "/index.jsp", "/login.jsp", "/forgotPassword.jsp", "/resetPassword.jsp", "/thirdParty/", "/api/", "/js/", "/css/", "/views/", "/modals/", "/img/", "/dashboard2.jsp"});
+					new String[] { "/content/", "/index.jsp", "/login.jsp", "/forgotPassword.jsp", "/resetPassword.jsp", "/thirdParty/", "/api/", "/js/", "/css/", "/views/", "/modals/", "/img/"});
 			authHandler.setAuthPage("login.jsp");
 			authContext.setHandler(authHandler);
 			

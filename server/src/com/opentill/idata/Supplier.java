@@ -11,33 +11,35 @@ import com.opentill.database.DatabaseHandler;
 import com.opentill.logging.Log;
 import com.opentill.main.Config;
 import com.opentill.main.Utils;
+import com.opentill.models.SupplierModel;
 
 public class Supplier {
-	public static JSONObject selectSupplier(String id) {
+	public static SupplierModel selectSupplier(String id) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
+		SupplierModel supplier = null;
 		try {
 			conn = DatabaseHandler.getDatabase();
 			pstmt = conn.prepareStatement("SELECT name, telephone, website, email, comments FROM "
 					+ Config.DATABASE_TABLE_PREFIX + "tblsuppliers WHERE id = ? LIMIT 1");
 			pstmt.setString(1, id);
 			rs = pstmt.executeQuery();
-			JSONObject jo = new JSONObject();
 			if (rs.next()) {
-				jo.put("name", rs.getString(1));
-				jo.put("telephone", rs.getString(2));
-				jo.put("website", rs.getString(3));
-				jo.put("email", rs.getString(4));
-				jo.put("comments", rs.getString(5));
+				supplier = new SupplierModel();
+				supplier.setId(id);
+				supplier.setName(rs.getString(1));
+				supplier.setTelephone(rs.getString(2));
+				supplier.setWebsite(rs.getString(3));
+				supplier.setEmail(rs.getString(4));
+				supplier.setComments(rs.getString(5));
 			}
-			return jo;
 		} catch (Exception ex) {
 			Log.info(ex.toString());
 		} finally {
 			DatabaseHandler.closeDBResources(null, pstmt, conn);
 		}
-		return null;
+		return supplier;
 	}
 
 	public static JSONArray getSuppliers() {

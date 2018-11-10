@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.ServletException;
@@ -23,7 +24,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
-
+import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -35,22 +37,25 @@ import com.opentill.document.ChartHelper;
 import com.opentill.document.ExcelHelper;
 import com.opentill.document.LabelExport;
 import com.opentill.document.PDFHelper;
-import com.opentill.idata.CustomUser;
-import com.opentill.idata.Department;
+import com.opentill.idata.DepartmentHandler;
 import com.opentill.idata.Inventory;
 import com.opentill.idata.Operators;
 import com.opentill.idata.Order;
 import com.opentill.idata.Supplier;
 import com.opentill.idata.Takings;
 import com.opentill.idata.Transaction;
+import com.opentill.idata.UserType;
 import com.opentill.logging.Log;
 import com.opentill.mail.ForgotPasswordEmail;
 import com.opentill.mail.MailHandler;
 import com.opentill.mail.PasswordResetEmail;
 import com.opentill.main.Config;
 import com.opentill.main.Utils;
-import com.opentill.models.UserAuth;
-import com.opentill.products.Product;
+import com.opentill.models.DepartmentModel;
+import com.opentill.models.ProductModel;
+import com.opentill.models.SupplierModel;
+import com.opentill.models.UserAuthModel;
+import com.opentill.models.UserModel;
 
 import be.ceau.chart.BarChart;
 import be.ceau.chart.PieChart;
@@ -76,7 +81,7 @@ public class API extends AbstractHandler {
 		JSONObject jo = new JSONObject();
 		jo.put("inventory", Inventory.get_product_levels());
 		jo.put("orders", Order.getOrders());
-		jo.put("departments", Department.getDepartments());
+		jo.put("departments", DepartmentHandler.getDepartments());
 		jo.put("takings", Takings.getTakings(Utils.getCurrentTimeStamp() - Utils.SECONDS_IN_A_DAY, Utils.getCurrentTimeStamp(), "a10f653a-6c20-11e7-b34e-426562cc935f",
 				"PURCHASE"));
 		jo.put("suppliers", Supplier.getSuppliers());
@@ -365,15 +370,12 @@ public class API extends AbstractHandler {
 			errorOut(response, "missing fields");
 			return;
 		}
-		JSONObject jo = Supplier.selectSupplier(id);
-		if (jo == null) {
+		SupplierModel supplier = Supplier.selectSupplier(id);
+		if (supplier == null) {
 			errorOut(response);
 			return;
 		}
-		JSONObject responseJSON = new JSONObject();
-		responseJSON.put("success", true);
-		responseJSON.put("supplier", jo);
-		response.getWriter().write(responseJSON.toJSONString());
+		response.getWriter().write(new Gson().toJson(supplier));
 	}
 
 	private void selectOperator(ServletRequest baseRequest, ServletResponse response)
@@ -428,18 +430,15 @@ public class API extends AbstractHandler {
 					+ ":prefix:tblcatagories WHERE id = ? LIMIT 1"));
 			pstmt.setString(1, id);
 			rs = pstmt.executeQuery();
-			JSONObject jo = new JSONObject();
+			DepartmentModel department = new DepartmentModel();
 			if (rs.next()) {
-				jo.put("id", rs.getString(1));
-				jo.put("name", rs.getString(2));
-				jo.put("shorthand", rs.getString(3));
-				jo.put("comments", rs.getString(4));
-				jo.put("colour", rs.getString(5));
+				department.setId(rs.getString(1));
+				department.setName(rs.getString(2));
+				department.setShortHand(rs.getString(3));
+				department.setComments(rs.getString(4));
+				department.setColour(rs.getString(5));
 			}
-			JSONObject responseJSON = new JSONObject();
-			responseJSON.put("success", true);
-			responseJSON.put("department", jo);
-			response.getWriter().write(responseJSON.toJSONString());
+			response.getWriter().write(new Gson().toJson(department));
 			return;
 		} catch (Exception ex) {
 			Log.info(ex.toString());
@@ -524,26 +523,26 @@ public class API extends AbstractHandler {
 		try {
 			conn = DatabaseHandler.getDatabase();
 			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT :prefix:tblcatagories.id, "
-					+ ":prefix:tblproducts.id, :prefix:tblproducts.name, "
-					+ ":prefix:tblproducts.current_stock, :prefix:tblproducts.max_stock "
-					+ "FROM :prefix:tblproducts LEFT JOIN :prefix:tblcatagories ON "
-					+ ":prefix:tblproducts.department = :prefix:tblcatagories.id WHERE "
-					+ ":prefix:tblproducts.deleted = 0 ORDER BY :prefix:tblproducts.name DESC"));
+					+ ":prefix:tblProductModels.id, :prefix:tblProductModels.name, "
+					+ ":prefix:tblProductModels.current_stock, :prefix:tblProductModels.max_stock "
+					+ "FROM :prefix:tblProductModels LEFT JOIN :prefix:tblcatagories ON "
+					+ ":prefix:tblProductModels.department = :prefix:tblcatagories.id WHERE "
+					+ ":prefix:tblProductModels.deleted = 0 ORDER BY :prefix:tblProductModels.name DESC"));
 			rs = pstmt.executeQuery();
-			HashMap<String, HashMap<String, Product>> inventory = new HashMap<String, HashMap<String, Product>>();
+			HashMap<String, HashMap<String, ProductModel>> inventory = new HashMap<String, HashMap<String, ProductModel>>();
 			while (rs.next()) {
-				Product tempProduct = new Product();
-				tempProduct.id = rs.getString(2);
-				tempProduct.name = rs.getString(3);
-				tempProduct.current_stock = rs.getInt(4);
-				tempProduct.max_stock = rs.getInt(5);
+				ProductModel tempProductModel = new ProductModel();
+				tempProductModel.id = rs.getString(2);
+				tempProductModel.name = rs.getString(3);
+				tempProductModel.current_stock = rs.getInt(4);
+				tempProductModel.max_stock = rs.getInt(5);
 				if (inventory.containsKey(rs.getString(1))) {
-					HashMap<String, Product> department = inventory.get(rs.getString(1));
-					department.put(rs.getString(2), tempProduct);
+					HashMap<String, ProductModel> department = inventory.get(rs.getString(1));
+					department.put(rs.getString(2), tempProductModel);
 				} else {
 					if (Arrays.asList(departments).indexOf(rs.getString(1)) > -1) {
-						HashMap<String, Product> department = new HashMap<String, Product>();
-						department.put(rs.getString(2), tempProduct);
+						HashMap<String, ProductModel> department = new HashMap<String, ProductModel>();
+						department.put(rs.getString(2), tempProductModel);
 						inventory.put(rs.getString(1), department);
 					}
 				}
@@ -683,17 +682,22 @@ public class API extends AbstractHandler {
 
 	private void getAllDepartments(ServletRequest baseRequest, ServletResponse response)
 			throws IOException, ServletException {
-		response.getWriter().write(Department.getDepartmentsWithInfo().toJSONString());
+		response.getWriter().write(new Gson().toJson(DepartmentHandler.getDepartmentsWithInfo()));
 	}
 
-	private void getAllOperators(ServletRequest baseRequest, ServletResponse response)
+	private void getUsers(ServletRequest baseRequest, ServletResponse response)
 			throws IOException, ServletException {
-		JSONArray jo = Operators.getOperators();
-		if (jo == null) {
-			errorOut(response);
-			return;
+		Session session = null;
+		try {
+			session = DatabaseHandler.getDatabaseSession();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		response.getWriter().write(jo.toJSONString());
+		Query query = session.createQuery(Utils.addTablePrefix("from User where type != :type"));
+		query.setParameter("type", UserType.ADMINISTRATOR);
+		List<UserModel> operators = (List<UserModel>) query.list();
+		response.getWriter().write(new Gson().toJson(operators));
 	}
 
 	private void getAllSuppliers(ServletRequest baseRequest, ServletResponse response)
@@ -1487,42 +1491,31 @@ public class API extends AbstractHandler {
 		successOut(response);
 	}
 
-	private void login(Request baseRequest, ServletRequest request, HttpServletResponse response)
-			throws IOException, ServletException {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
+	private void login(Request baseRequest, ServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		String data = Utils.getJSONFromRequest(baseRequest);
-		UserAuth userAuth = new Gson().fromJson(data, UserAuth.class);
+		UserAuthModel userAuth = new Gson().fromJson(data, UserAuthModel.class);
 		if (!userAuth.isValid()) {
 			errorOut(response, "missing parameters");
 			return;
 		}
 		try {
-			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT id, name, type, email, telephone FROM :prefix:operators WHERE LCASE(email) = LCASE(?) AND passwordHash = ? LIMIT 1"));
-			pstmt.setString(1, userAuth.getEmail());
-			pstmt.setString(2, userAuth.getHashedPassword());
-			rs = pstmt.executeQuery();
-			if (rs.next()) {
-				CustomUser user = new CustomUser();
-				user.setId(rs.getString(1));
-				user.setName(rs.getString(2));
-				user.setType(rs.getInt(3));
-				user.setEmail(rs.getString(4));
-				user.setTelephone(rs.getString(5));
-				Log.info("User (" + user.getName() + ") logged in successfully");
-				Cookie cookie = new Cookie(Config.AUTH_COOKIE_NAME, sessionHandler.createUserSession(user));
-				cookie.setPath("/");
-				response.addCookie(cookie);
-				successOut(response);
+			Session session = DatabaseHandler.getDatabaseSession();
+			Query query = session.createQuery(Utils.addTablePrefix("from User where email = :email and passwordHash = :password"));
+			query.setParameter("email", userAuth.getEmail());
+			query.setParameter("password", userAuth.getHashedPassword());
+			UserModel user = (UserModel) query.getSingleResult();
+			if (Utils.isNull(user)) {
+				errorOut(response, "Incorrect Email/Password combination");
 				return;
 			}
-			errorOut(response, "Incorrect Email/Password combination");
-		} catch (SQLException ex) {
+			Log.info("User (" + user.getName() + ") logged in successfully");
+			Cookie cookie = new Cookie(Config.AUTH_COOKIE_NAME, sessionHandler.createUserSession(user));
+			cookie.setPath("/");
+			response.addCookie(cookie);
+			successOut(response);
+			
+		} catch (Exception ex) {
 			Log.info(ex.toString());
-		} finally {
-			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
 	}
 
@@ -1720,33 +1713,26 @@ public class API extends AbstractHandler {
 	public void operatorLogin(ServletRequest baseRequest, ServletResponse response)
 			throws IOException, ServletException {
 		String code = baseRequest.getParameter("code");
-		JSONObject json = null;
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		if (code == null) {
+		if (Utils.isNull(code)) {
 			errorOut(response, "missing fields");
 			return;
 		}
 		Log.info(code + "attemping to login");
 		try {
-			conn = DatabaseHandler.getDatabase();
-			pstmt = conn.prepareStatement(Utils.addTablePrefix("SELECT :prefix:operators.id, :prefix:operators.name FROM :prefix:operators WHERE code = ? AND deleted = 0 LIMIT 1"));
-			pstmt.setString(1, code);
-			rs = pstmt.executeQuery();
-			if (rs.next()) {
-				json = new JSONObject();
-				json.put("success", true);
-				json.put("id", rs.getString(1));
-				json.put("name", rs.getString(2));
-				response.getWriter().write(json.toJSONString());
-				Log.info("Operator " + rs.getString(2) + "(" + rs.getString(1) + ") logged in successfully");
+			Session session = DatabaseHandler.getDatabaseSession();
+			Query query = session.createQuery("from User where code = :code");
+			Log.Debug(query.getQueryString());
+			query.setParameter("code", code);
+			UserModel user = (UserModel) query.getSingleResult();
+			if (Utils.isNull(user)) {
+				errorOut(response, "Cannot find user");
 				return;
 			}
+			response.getWriter().write(new Gson().toJson(user));
+			Log.info("Operator " + user.getName() + "(" + user.getId() + ") logged in successfully");
+			return;
 		} catch (SQLException ex) {
 			Log.info(ex.toString());
-		} finally {
-			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
 		errorOut(response, null);
 	}
@@ -1834,7 +1820,7 @@ public class API extends AbstractHandler {
 
 	@SuppressWarnings("unchecked")
 	public void getDepartments(ServletResponse response) throws IOException, ServletException {
-		response.getWriter().write(Department.getDepartmentsWithInfo().toJSONString());
+		response.getWriter().write(new Gson().toJson(DepartmentHandler.getDepartmentsWithInfo()));
 	}
 
 	public void errorOut(ServletResponse response) throws IOException, ServletException {
@@ -1858,31 +1844,15 @@ public class API extends AbstractHandler {
 		response.getWriter().write(json.toJSONString());
 	}
 	
-	public String getCookieValue(HttpServletRequest request, String cookieName) {
-		String value = null;
-		if ((request.getCookies() != null) && (20 > request.getCookies().length) && (request.getCookies().length > 0)) {
-			for (Cookie cookie : request.getCookies()) {
-				if (cookie.getName().equals(cookieName)) {
-					value = cookie.getValue();
-				}
-			}
-		}
-		return value;
-	}
-	
 	public String getAuthCookieValue(HttpServletRequest request) {
-		return getCookieValue(request, "auth");
+		return Utils.getCookieValue(request, "auth");
 	}
 
 	@Override
-	public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ServletException {
+	public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		response.setContentType("application/json; charset=utf-8");
 		response.setCharacterEncoding("UTF-8");
-		if (request.getParameter("function") == null) {
-			errorOut(response, "No such function");
-		}
-		switch (request.getParameter("function")) {
+		switch (target) {
 		case "BARCODE":
 			barcode(request, response);
 			break;
@@ -1895,13 +1865,13 @@ public class API extends AbstractHandler {
 		case "DASHBOARD":
 			getDashboard(request, response);
 			break;
-		case "LOGIN":
+		case "/login":
 			login(baseRequest, request, response);
 			break;
-		case "FORGOTPASSWORD":
+		case "/forgotPassword":
 			forgotPassword(request, response);
 			break;
-		case "LOGOUT":
+		case "/logout":
 			logout(request, response);
 			break;
 		case "GETTRANSACTION":
@@ -1952,10 +1922,10 @@ public class API extends AbstractHandler {
 		case "DELETESUPPLIER":
 			// deleteSupplier(request, response);
 			break;
-		case "GETALLOPERATORS":
-			getAllOperators(request, response);
+		case "/users":
+			getUsers(request, response);
 			break;
-		case "GETOPERATOR":
+		case "/users/{0}":
 			selectOperator(request, response);
 			break;
 		case "UPDATEOPERATOR":
@@ -2136,7 +2106,7 @@ public class API extends AbstractHandler {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String email = request.getParameter("email");
-		if (email == null) {
+		if (Utils.anyNulls(email)) {
 			errorOut(response, "missing parameters");
 			return;
 		}
@@ -2170,7 +2140,7 @@ public class API extends AbstractHandler {
 			errorOut(response, "missing parameters");
 			return;
 		}
-		Product product = Product.getProduct(id);
+		ProductModel product = ProductModel.getProduct(id);
 		if (product == null) {
 			errorOut(response, "product not found");
 			return;
@@ -2185,7 +2155,7 @@ public class API extends AbstractHandler {
 	private void getOverviewTotals(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		String startTimeString = request.getParameter("start");
 		String endTimeString = request.getParameter("end");
-		if (startTimeString == null || endTimeString == null) {
+		if (Utils.anyNulls(startTimeString, endTimeString)) {
 			errorOut(response, "missing parameters");
 			return;
 		}
@@ -2243,7 +2213,7 @@ public class API extends AbstractHandler {
 		String time_interval = request.getParameter("time_interval") != null ? request.getParameter("time_interval") : "HOUR";
 		String startTimeString = request.getParameter("start");
 		String endTimeString = request.getParameter("end");
-		if (startTimeString == null || endTimeString == null) {
+		if (Utils.anyNulls(startTimeString, endTimeString)) {
 			errorOut(response, "missing parameters");
 			return;
 		}
@@ -2321,7 +2291,7 @@ public class API extends AbstractHandler {
 		String time_interval = request.getParameter("time_interval") != null ? request.getParameter("time_interval") : "HOUR";
 		String startTimeString = request.getParameter("start");
 		String endTimeString = request.getParameter("end");
-		if (startTimeString == null || endTimeString == null) {
+		if (Utils.anyNulls(startTimeString, endTimeString)) {
 			errorOut(response, "missing parameters");
 			return;
 		}
@@ -2370,7 +2340,7 @@ public class API extends AbstractHandler {
 		String time_interval = request.getParameter("time_interval") != null ? request.getParameter("time_interval") : "HOUR";
 		String startTimeString = request.getParameter("start");
 		String endTimeString = request.getParameter("end");
-		if (startTimeString == null || endTimeString == null) {
+		if (Utils.anyNulls(startTimeString, endTimeString)) {
 			errorOut(response, "missing parameters");
 			return;
 		}
@@ -2470,7 +2440,7 @@ public class API extends AbstractHandler {
 			includeLabelled = false;
 		}
 		String[] products = request.getParameterValues("products[]");
-		if (products == null) {
+		if (Utils.anyNulls(products)) {
 			errorOut(response, "missing parameters");
 			return;
 		}
@@ -2495,31 +2465,12 @@ public class API extends AbstractHandler {
 			errorOut(response, "Not Logged In");
 			return;
 		}
-		CustomUser user = this.sessionHandler.getSessionValue(getAuthCookieValue(request));
+		UserModel user = this.sessionHandler.getSessionValue(getAuthCookieValue(request));
 		if (user == null) {
 			errorOut(response, "Unkown User");
 			return;
 		}
-		JSONObject jo = new JSONObject();
-		jo.put("id", user.getId());
-		jo.put("name", user.getName());
-		switch (user.getType()) {
-			case 0:
-				jo.put("type", "Unknown");
-				break;
-			case 1:
-				jo.put("type", "Operator");
-				break;
-			case 2:
-				jo.put("type", "Manager");
-				break;
-			case 3:
-				jo.put("type", "Administrator");
-				break;
-		}
-		jo.put("email", user.getEmail());
-		jo.put("telephone", user.getTelephone());
-		response.getWriter().write(jo.toJSONString());
+		response.getWriter().write(new Gson().toJson(user));
 	}
 	
 	private void getOrderForSupplier(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {

@@ -1,4 +1,4 @@
-package com.opentill.products;
+package com.opentill.models;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -9,9 +9,9 @@ import java.sql.SQLException;
 import com.opentill.database.DatabaseHandler;
 import com.opentill.logging.Log;
 import com.opentill.main.Utils;
+import com.opentill.models.BaseModels.BaseModel;
 
-public class Product {
-	public String id = null;
+public class ProductModel extends BaseModel {
 	public String name = null;
 	public String barcode = null;
 	public int current_stock = 0;
@@ -29,12 +29,10 @@ public class Product {
 	public boolean isCase = false;
 	public int units = 0;
 	public String unitType = null;
-	public int updated = 0;
-	public int created = 0;
 	public boolean deleted = false;
 	public int status = 0;
 	
-	public static Product getProduct(String id) {
+	public static ProductModel getProduct(String id) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -49,7 +47,7 @@ public class Product {
 			pstmt.setString(1, id);
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				Product product = new Product();
+				ProductModel product = new ProductModel();
 				product.id = rs.getString(1);
 				product.name = rs.getString(2);
 				product.price = rs.getBigDecimal(3);

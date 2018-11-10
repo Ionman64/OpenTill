@@ -1,5 +1,7 @@
 package com.opentill.products;
 
-public class OrderProduct extends Product{
+import com.opentill.models.ProductModel;
+
+public class OrderProduct extends ProductModel {
 	public int order_stock = 0;
 }

@@ -1,18 +1,20 @@
-package com.opentill.idata;
+package com.opentill.models;
 
-public class CustomUser {
-	private String id = null;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import com.opentill.idata.UserType;
+import com.opentill.main.Config;
+import com.opentill.models.BaseModels.BaseModelWithComments;
+
+@Entity	(name = "User")
+@Table( name = Config.DATABASE_TABLE_PREFIX + "operators")
+public class UserModel extends BaseModelWithComments {
 	private String name = null;
 	private int type = UserType.UNKNOWN;
 	private String email = null;
 	private String telephone = null;
 	
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
 	public String getName() {
 		return name;
 	}

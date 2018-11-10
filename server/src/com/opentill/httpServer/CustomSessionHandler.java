@@ -3,19 +3,19 @@ package com.opentill.httpServer;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import com.opentill.idata.CustomUser;
 import com.opentill.main.Utils;
+import com.opentill.models.UserModel;
 
 public class CustomSessionHandler {
-	private HashMap<String, Session> active = null;
+	private HashMap<String, UserSession> active = null;
 	private int SESSIONTIMEOUT = -1;
 	public Long nextCleanUp = Utils.getCurrentTimeStamp();
 
 	public CustomSessionHandler() {
-		this.active = new HashMap<String, Session>();
+		this.active = new HashMap<String, UserSession>();
 	}
 
-	public CustomUser getSessionValue(String sessionGuid) {
+	public UserModel getSessionValue(String sessionGuid) {
 		// Check session key exists, if it does, check the timeout, then return
 		if (sessionGuid == null) {
 			return null;
@@ -23,22 +23,22 @@ public class CustomSessionHandler {
 		if (!active.containsKey(sessionGuid)) {
 			return null;
 		}
-		Session session = active.get(sessionGuid);
+		UserSession session = active.get(sessionGuid);
 		return session.getValue();
 	}
 
-	public String createUserSession(CustomUser user) {
+	public String createUserSession(UserModel user) {
 		String newSessionGuid = Utils.GUID();
-		Session newSession = new Session(newSessionGuid, user);
+		UserSession newSession = new UserSession(newSessionGuid, user);
 		this.active.put(newSessionGuid, newSession);
 		return newSessionGuid;
 	}
 
 	public void updateSessions() {
 		// Remove Expired Sessions
-		Iterator<Session> sessions = active.values().iterator();
+		Iterator<UserSession> sessions = active.values().iterator();
 		while (sessions.hasNext()) {
-			Session session = sessions.next();
+			UserSession session = sessions.next();
 			if (session.state != SessionState.ACTIVE) {
 				active.remove(session.getId());
 			}

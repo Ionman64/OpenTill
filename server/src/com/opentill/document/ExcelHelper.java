@@ -21,7 +21,8 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.opentill.main.Config;
-import com.opentill.products.Product;
+import com.opentill.models.ProductModel;
+
 
 public class ExcelHelper {
 	public void testWrite() {
@@ -117,7 +118,7 @@ public class ExcelHelper {
 	}
 
 	public File createProductLevelsReport(HashMap<String, String> departmentsToNames, String[] departments,
-			HashMap<String, HashMap<String, Product>> values) {
+			HashMap<String, HashMap<String, ProductModel>> values) {
 		// Workbook wb = new HSSFWorkbook();
 		XSSFWorkbook wb = new XSSFWorkbook();
 		for (String department : departments) {
@@ -125,7 +126,7 @@ public class ExcelHelper {
 				continue;
 			}
 			XSSFSheet sheet = wb.createSheet(departmentsToNames.get(department).replace("/", "-"));
-			HashMap<String, Product> products = values.get(department);
+			HashMap<String, ProductModel> products = values.get(department);
 			if (products == null) {
 				continue;
 			}
@@ -148,8 +149,8 @@ public class ExcelHelper {
 			cell.setCellType(Cell.CELL_TYPE_STRING);
 			cell.setCellValue("Order Amount");
 
-			for (Entry<String, Product> product : products.entrySet()) {
-				Product tempProduct = product.getValue();
+			for (Entry<String, ProductModel> product : products.entrySet()) {
+				ProductModel tempProduct = product.getValue();
 				if (tempProduct == null || tempProduct.name == null) {
 					continue;
 				}

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <faceted-project>
   <runtime name="jre-10.0.2"/>
+  <secondary-runtime name="J2EE Runtime Library"/>
   <fixed facet="wst.jsdt.web"/>
   <installed facet="wst.jsdt.web" version="1.0"/>
   <installed facet="java" version="9"/>

@@ -1,17 +1,17 @@
 package com.opentill.httpServer;
 
-import com.opentill.idata.CustomUser;
 import com.opentill.main.Utils;
+import com.opentill.models.UserModel;
 
-public class Session {
+public class UserSession {
 	private String id = new String();
 	public SessionState state = SessionState.UNKNOWN;
 	public Long expiryTimeStamp = -1L;
 	private boolean expires = true;
 	private Long DEFAULTEXPIRYTIME = 3600L; // One Hour
-	private CustomUser user = new CustomUser();
+	private UserModel user = new UserModel();
 
-	public Session(String id, CustomUser user) {
+	public UserSession(String id, UserModel user) {
 		this.id = id;
 		this.expiryTimeStamp = Utils.getCurrentTimeStamp() + DEFAULTEXPIRYTIME;
 		this.expires = false;
@@ -27,7 +27,7 @@ public class Session {
 		return this.id;
 	}
 
-	public Session(String id, CustomUser user, Long expiryTimeStamp) {
+	public UserSession(String id, UserModel user, Long expiryTimeStamp) {
 		this.id = id;
 		this.expiryTimeStamp = expiryTimeStamp;
 		if (expiryTimeStamp == -1L) {
@@ -45,7 +45,7 @@ public class Session {
 		return true;
 	}
 
-	public CustomUser getValue() {
+	public UserModel getValue() {
 		this.updateSession();
 		if (this.state == SessionState.EXPIRED) {
 			System.out.println("Warning: Expired Session Being Read");
