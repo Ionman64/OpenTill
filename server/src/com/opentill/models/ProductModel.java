@@ -6,30 +6,35 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 import com.opentill.database.DatabaseHandler;
 import com.opentill.logging.Log;
+import com.opentill.main.Config;
 import com.opentill.main.Utils;
 import com.opentill.models.BaseModels.BaseModel;
 
+@Entity	(name = "Product")
+@Table( name = Config.DATABASE_TABLE_PREFIX + "tblproducts")
 public class ProductModel extends BaseModel {
 	public String name = null;
 	public String barcode = null;
 	public int current_stock = 0;
 	public int max_stock = 0;
 	public BigDecimal price = new BigDecimal(0);
-	public boolean autoPricing = false;
-	public Float supplierPrice = 0.0F;
-	public int unitsInCase = 0;
-	public boolean includesVAT = false;
-	public Float VATamount = 0.0F;
-	public boolean targetPercentage = false;
-	public Float targetProfitMargin = 0.0F;
+	//public boolean autoPricing = false;
+	//public Float supplierPrice = 0.0F;
+	//public int unitsInCase = 0;
+	//public boolean includesVAT = false;
+	//public Float VATamount = 0.0F;
+	//public boolean targetPercentage = false;
+	//public Float targetProfitMargin = 0.0F;
 	public String department = null;
 	public boolean labelPrinted = false;
 	public boolean isCase = false;
 	public int units = 0;
 	public String unitType = null;
-	public boolean deleted = false;
 	public int status = 0;
 	
 	public static ProductModel getProduct(String id) {

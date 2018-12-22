@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -1484,7 +1485,7 @@ public class API extends AbstractHandler {
 	private void logout(HttpServletRequest request, ServletResponse response) throws IOException, ServletException {
 		String session = this.getAuthCookieValue(request);
 		if (session == null) {
-			errorOut(response, "missing parameters");
+			errorOut(response, "no session");
 			return;
 		}
 		sessionHandler.destroySession(session);
@@ -1782,7 +1783,7 @@ public class API extends AbstractHandler {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
 	}
-
+	
 	public void barcode(ServletRequest baseRequest, ServletResponse response) throws IOException, ServletException {
 		String barcode = baseRequest.getParameter("number");
 		boolean isCase = baseRequest.getParameter("isCase") != null ? (baseRequest.getParameter("isCase") == "true" ? true : false) : false;

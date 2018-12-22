@@ -16,6 +16,8 @@ import org.hibernate.cfg.Configuration;
 
 import com.opentill.database.DatabaseHandler;
 import com.opentill.httpServer.ServerHandler;
+import com.opentill.httpServer.ServerHandler2;
+import com.opentill.idata.Order;
 import com.opentill.logging.Log;
 import com.opentill.mail.MailHandler;
 import com.opentill.main.Config;
@@ -82,6 +84,6 @@ public class StarterClass {
 
          
 		//Updater.updateFromRemoteDatabaseIfNeeded();
-		ServerHandler.run();
+		ServerHandler2.run();
 	}
 }

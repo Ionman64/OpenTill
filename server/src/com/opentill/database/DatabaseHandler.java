@@ -15,6 +15,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
 import com.opentill.main.Config;
+import com.opentill.models.ProductModel;
 import com.opentill.models.SupplierModel;
 import com.opentill.models.UserModel;
 
@@ -47,6 +48,7 @@ public class DatabaseHandler {
 		Configuration configuration = new Configuration()
 				.addAnnotatedClass(SupplierModel.class)
 				.addAnnotatedClass(UserModel.class)
+				.addAnnotatedClass(ProductModel.class)
 				.setProperties(Config.databaseProperties);
         StandardServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
         SessionFactory sessionFactory = configuration.buildSessionFactory(serviceRegistry);
