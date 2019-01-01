@@ -31,7 +31,7 @@ public class ProductModel extends BaseModel {
 	//public boolean targetPercentage = false;
 	//public Float targetProfitMargin = 0.0F;
 	public String department = null;
-	public boolean labelPrinted = false;
+	public boolean labelprinted = false;
 	public boolean isCase = false;
 	public int units = 0;
 	public String unitType = null;
@@ -58,7 +58,7 @@ public class ProductModel extends BaseModel {
 				product.price = rs.getBigDecimal(3);
 				product.barcode = rs.getString(4);
 				product.department = rs.getString(5);
-				product.labelPrinted = rs.getInt(6) == 0 ? false : true;
+				product.labelprinted = rs.getInt(6) == 0 ? false : true;
 				product.isCase = rs.getInt(7) == 0 ? false : true;
 				product.units = rs.getInt(8);
 				product.unitType = rs.getString(9);

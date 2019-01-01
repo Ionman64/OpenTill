@@ -40,10 +40,9 @@ $(document).ready(function() {
     });
 });
 function login() {
-	var data = {"email":$("#inputEmail").val(), "password":$("#inputPassword").val()};
     $.ajax({
-        url:"api/login",
-        data:{"json":JSON.stringify(data)},
+        url:"api/auth/login",
+        data:{"email":$("#inputEmail").val(), "password":$("#inputPassword").val()},
         success:function(data){
             if (data.success) {
                 window.location = "dashboard2.jsp";

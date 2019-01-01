@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import org.json.simple.JSONObject;
 
 import com.opentill.database.DatabaseHandler;
+import com.opentill.document.PDFHelper;
 import com.opentill.logging.Log;
 import com.opentill.main.Config;
 import com.opentill.main.Utils;
@@ -64,6 +65,6 @@ public class Order {
 			DatabaseHandler.closeDBResources(rs, pstmt, conn);
 		}
 		SupplierModel supplier = Supplier.selectSupplier(supplierId);
-		//PDFHelper.createOrderSheet(Utils.GUID(), (String) supplier.get("name"), products);
+		PDFHelper.createOrderSheet(Utils.GUID(), supplier.name, products);
 	}
 }

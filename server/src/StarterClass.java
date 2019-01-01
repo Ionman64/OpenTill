@@ -54,14 +54,14 @@ public class StarterClass {
 		thread2.setDaemon(true);
 		thread2.start();
 		
-		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-		long initialDelay = 0L;
-		long intervalValue = 1L; 
-		scheduler.scheduleAtFixedRate(new MessageHandler(), initialDelay, intervalValue, TimeUnit.DAYS);
+		//ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+		//long initialDelay = 0L;
+		//long intervalValue = 1L; 
+		//scheduler.scheduleAtFixedRate(new MessageHandler(), initialDelay, intervalValue, TimeUnit.DAYS);
 		
 		//Order.getOrderForSupplier("f9d62c39-70ce-11e7-b34e-426562cc935f");
-		/*
-		Connection conn = DriverManager.getConnection(Config.databaseProperties.getProperty("hibernate.connection.url"), "root", "");
+
+		Connection conn = DriverManager.getConnection(Config.databaseProperties.getProperty("hibernate.connection.url"), Config.databaseProperties.getProperty("database_user"), Config.databaseProperties.getProperty("database_password"));
 		if (conn == null) {
 			throw new SQLException("Cannot connect to database - Please check configuration");
 		}
@@ -73,10 +73,9 @@ public class StarterClass {
         
         
         Session session = sessionFactory.openSession();
-		SupplierModel supplier = session.byId( SupplierModel.class ).load("0fd1ef2f-274a-4b3d-b8c4-fca3225bf9f6");
+		//SupplierModel supplier = session.byId( SupplierModel.class ).load("0fd1ef2f-274a-4b3d-b8c4-fca3225bf9f6");
 		//Clear the Session so the person entity becomes detached
 		//session.clear();
-		System.out.print(supplier.getName());
 		session.close();
 		serviceRegistry.close();
 		/*System.exit(0);*/

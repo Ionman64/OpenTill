@@ -39,7 +39,7 @@ public class DatabaseHandler {
 	}
 	
 	public static Session getDatabaseSession() throws SQLException {
-		Connection conn = DriverManager.getConnection(Config.databaseProperties.getProperty("hibernate.connection.url"), "root", "");
+		Connection conn = DriverManager.getConnection(Config.databaseProperties.getProperty("hibernate.connection.url"), Config.databaseProperties.getProperty("database_user"), Config.databaseProperties.getProperty("database_password"));
 		if (conn == null) {
 			throw new SQLException("Cannot connect to database - Please check configuration");
 		}
