@@ -10,10 +10,12 @@ import com.opentill.models.BaseModels.BaseModelWithComments;
 @Entity	(name = "User")
 @Table( name = Config.DATABASE_TABLE_PREFIX + "operators")
 public class UserModel extends BaseModelWithComments {
-	private String name = null;
-	private int type = UserType.UNKNOWN;
-	private String email = null;
-	private String telephone = null;
+	public String name = null;
+	public int type = UserType.UNKNOWN;
+	public String email = null;
+	public String telephone = null;
+	public String passwordHash;
+	public String code;
 	
 	public String getName() {
 		return name;

@@ -61,7 +61,7 @@ public class StarterClass {
 		
 		//Order.getOrderForSupplier("f9d62c39-70ce-11e7-b34e-426562cc935f");
 
-		Connection conn = DriverManager.getConnection(Config.databaseProperties.getProperty("hibernate.connection.url"), Config.databaseProperties.getProperty("database_user"), Config.databaseProperties.getProperty("database_password"));
+		Connection conn = DriverManager.getConnection(Config.databaseProperties.getProperty("hibernate.connection.url"), Config.databaseProperties.getProperty("hibernate.connection.username"), Config.databaseProperties.getProperty("hibernate.connection.password"));
 		if (conn == null) {
 			throw new SQLException("Cannot connect to database - Please check configuration");
 		}

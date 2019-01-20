@@ -23,7 +23,7 @@ public abstract class BaseModel {
 	public int updated;
 	
 	@Version
-    private int version;
+    public int version;
 	
 	public int getVersion() {
 		return version;
@@ -31,7 +31,7 @@ public abstract class BaseModel {
 	public void setVersion(int version) {
 		this.version = version;
 	}
-	public boolean deleted;
+	public int deleted;
 	
 	public String getId() {
 		return id;
@@ -52,9 +52,9 @@ public abstract class BaseModel {
 		this.updated = updated;
 	}
 	public boolean isDeleted() {
-		return deleted;
+		return deleted == 1;
 	}
 	public void setDeleted(boolean deleted) {
-		this.deleted = deleted;
+		this.deleted = deleted ? 1 : 0;
 	}
 }

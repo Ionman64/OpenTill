@@ -39,13 +39,15 @@ public class LoginController  {
 	@Path("login")
 	public String findById(@FormParam("email") String email, @FormParam("password") String password) {
 		try {
-			Subject currentUser = SecurityUtils.getSubject();
-			Log.log(currentUser.toString());
+			//Subject currentUser = SecurityUtils.getSubject();
+			//Log.log(currentUser.toString());
 			Session session = DatabaseHandler.getDatabaseSession();
-			Query query = session.createQuery(Utils.addTablePrefix("select user.id from User user where email = :email and password = :password"));
+			Query query = session.createQuery(Utils.addTablePrefix("select user from User user where email=:email and passwordHash=:password"));
 			query.setParameter("email", email);
-			query.setParameter("password", password);
-			String id = (String) query.getSingleResult();
+			String hashPassword = Utils.hashPassword(password, "");
+			query.setParameter("password", hashPassword);
+			UserModel user = (UserModel) query.getSingleResult();
+			Log.log(user.id);
 			return "{\"success\":true}";
 			//UserModel user = (UserModel) query.getSingleResult();
 			//return new Gson().toJson(user);
@@ -55,6 +57,9 @@ public class LoginController  {
 		} 
 		catch (SQLException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (Exception e) {
 			e.printStackTrace();
 		}
 		return "";
