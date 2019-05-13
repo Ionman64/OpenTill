@@ -64,7 +64,7 @@ public class ProductModel extends BaseModel {
 				product.unitType = rs.getString(9);
 				product.updated = rs.getInt(10);
 				product.created = rs.getInt(11);
-				product.deleted = rs.getInt(12) == 0 ? false : true;
+				product.deleted = rs.getInt(12);
 				product.status = rs.getInt(13);
 				product.max_stock = rs.getInt(14);
 				product.current_stock = rs.getInt(15);

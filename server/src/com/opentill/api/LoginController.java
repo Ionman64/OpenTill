@@ -1,4 +1,4 @@
-package com.opentill.api;
+/*package com.opentill.api;
 
 import java.math.BigInteger;
 import java.sql.SQLException;
@@ -64,4 +64,4 @@ public class LoginController  {
 		}
 		return "";
 	}
-}
+}*/

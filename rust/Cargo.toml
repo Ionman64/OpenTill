@@ -1,0 +1,17 @@
+[package]
+name = "open_till"
+version = "0.1.0"
+authors = ["Ionman64 <PeterPickerill2014@gmail.com>"]
+
+[dependencies]
+uuid = { version = "0.7", features = ["serde", "v4"] }
+chrono = { version = "0.4", features = ["serde"] }
+diesel = { version = "1.0.0", features = ["sqlite"] }
+dotenv = "0.9.0"
+reqwest = "0.9.15"
+dirs = "1.0"
+log = "0.4"
+fern = "0.5"
+qrcodegen = "1.4.0"
+zip = "0.5.2"
+blake2 = "0.8"

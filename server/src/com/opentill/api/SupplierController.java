@@ -1,7 +1,9 @@
-package com.opentill.api;
+/*package com.opentill.api;
 
 import java.math.BigInteger;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.NoResultException;
 import javax.ws.rs.GET;
@@ -47,4 +49,22 @@ public class SupplierController  {
 			return "Not Found";
 		}
 	}
-}
+	
+	@GET
+	public String getAll() {
+		List<SupplierModel> suppliers = new ArrayList<SupplierModel>();
+		try {
+			Configuration configuration = new Configuration().addAnnotatedClass(SupplierModel.class).setProperties(Config.databaseProperties);
+	        StandardServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
+	        SessionFactory sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+	        
+	        Session session = sessionFactory.openSession();
+	        suppliers = session.createCriteria(SupplierModel.class).list();
+        
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new Gson().toJson(suppliers);
+	}
+}*/

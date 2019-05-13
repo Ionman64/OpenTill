@@ -1,8 +1,9 @@
 var NavigationView = {
 		searchQuery:"",
-		search: function(query) {
+		search: function(e) {
 			//m.startComputation()
-			NavigationView.searchQuery = query;		
+			console.log(e);
+			NavigationView.searchQuery = e.target.value;		
 		},
 		view: function() {
 			return m("section.container-fluid", [
@@ -27,9 +28,9 @@ var NavigationView = {
 					]),
 				]),
 				m("section.row", [
-					m("input[type='text'].form-control.navbar-search.bg-dark.text-info.rounded-0", {placeholder:"Search...", style:"margin-top:56px;", value:this.searchQuery, onkeyup:m.withAttr("value", this.search)})
+					m("input[type='text'].form-control.navbar-search.bg-dark.text-info.rounded-0", {placeholder:"Search...", style:"margin-top:56px;", value:this.searchQuery, onkeyup:this.search})
 				]),
-				!isZero(this.searchQuery) ? m.fragment({}, [
+				!isZero(this.searchQuery.length) ? m.fragment({}, [
 					m("section.search-overlay.bg-dark.text-white", [
 						m("ul.list-group.list-group-flush", [
 							m("li.list-group-item.bg-dark", [

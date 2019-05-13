@@ -21,7 +21,6 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.jetty.server.Request;
 import org.hazlewood.connor.bottema.emailaddress.EmailAddressValidator;
 
 import uk.org.okapibarcode.backend.Code128;
@@ -66,7 +65,7 @@ public class Utils {
 	}
 	
 	public static File generateBarcode(String barcodeContent) throws IOException {
-		Code128 barcode = new Code128();
+		/*Code128 barcode = new Code128();
 		barcode.setFontName("Helvetica");
 		barcode.setFontSize(20);
 		barcode.setModuleWidth(2);
@@ -84,7 +83,19 @@ public class Utils {
 		renderer.render(barcode);
 		File file = new File(Config.APP_HOME + File.separatorChar + "temp" + File.separatorChar + "codabar.png");
 		ImageIO.write(image, "png", file);
-		return file;
+		return file;*/
+		return null;
+	}
+	
+	public static String generateAsciiLogo() {
+			return  " _____                    _____ _ _ _ \r\n" + 
+					"|  _  |                  |_   _(_) | |\r\n" + 
+					"| | | |_ __   ___ _ __     | |  _| | |\r\n" + 
+					"| | | | '_ \\ / _ \\ '_ \\    | | | | | |\r\n" + 
+					"\\ \\_/ / |_) |  __/ | | |   | | | | | |\r\n" + 
+					" \\___/| .__/ \\___|_| |_|   \\_/ |_|_|_| v" + Config.CURRENT_LOCAL_VERSION +"\r\n" + 
+					"      | |                             \r\n" + 
+					"      |_|                             \r\n";
 	}
 
 	public static String formatMoney(Float number) {
@@ -115,28 +126,26 @@ public class Utils {
 	}
 
 	public static boolean anyNulls(Object... params) {
-		boolean ret = false;
 		for (Object x : params) {
 			if (isNull(x)) {
-				ret = true;
+				return true;
 			}
 		}
-		return ret;
+		return false;
 	}
 	
 	public static boolean anyNulls(Object[]... params) {
-		boolean ret = false;
 		for (Object[] x : params) {
 			if (isNull(x)) {
-				ret = true;
+				return true;
 			}
 		}
-		return ret;
+		return false;
 	}
 
-	public static String getJSONFromRequest(Request request) {
+	/*public static String getJSONFromRequest(Request request) {
 		return request.getParameter(Config.JSON_PARAMETER_NAME);
-	}
+	}*/
 
 	public static boolean isValidEmail(String email) {
 		return EmailAddressValidator.isValid(email);

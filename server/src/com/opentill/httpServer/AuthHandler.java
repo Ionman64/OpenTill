@@ -1,4 +1,4 @@
-package com.opentill.httpServer;
+/*package com.opentill.httpServer;
 
 import java.io.IOException;
 
@@ -55,4 +55,4 @@ public class AuthHandler extends AbstractHandler {
 		}
 	}
 
-}
+}*/

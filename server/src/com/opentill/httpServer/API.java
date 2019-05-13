@@ -1,4 +1,4 @@
-package com.opentill.httpServer;
+/*package com.opentill.httpServer;
 
 import java.io.File;
 import java.io.IOException;
@@ -2486,4 +2486,4 @@ public class API extends AbstractHandler {
 		
 		response.getWriter().write(ChartHelper.generateTakingsChart());
 	}
-}
+}*/

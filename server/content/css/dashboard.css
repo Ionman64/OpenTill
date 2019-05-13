@@ -495,3 +495,8 @@ canvas {
 .selectable-product {
 	cursor:pointer;
 }
+.calendar-date {
+	height:100px;
+	width:100%;
+	background:#eee;
+}

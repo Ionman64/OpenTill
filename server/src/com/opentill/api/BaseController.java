@@ -1,4 +1,4 @@
-package com.opentill.api;
+/*package com.opentill.api;
 
 
 import java.io.IOException;
@@ -96,4 +96,4 @@ public abstract class BaseController extends AbstractHandler {
 			e.printStackTrace();
 		}
 	}
-}
+}*/

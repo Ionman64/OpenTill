@@ -1,4 +1,4 @@
-package com.opentill.httpServer;
+/*package com.opentill.httpServer;
 
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
@@ -92,4 +92,4 @@ public class ServerHandler2 {
 		Log.info("Server Terminated at " + LocalDateTime.now());
         server.destroy();
     }
-}
+}*/

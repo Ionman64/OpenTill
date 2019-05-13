@@ -317,13 +317,14 @@ $(document).ready( function() {
 			"/home":HomeView,
 			"/overview":OverviewView,
 			"/sales":SalesView,
+			"/sales/:year/:month":SalesView,
 			"/transactions":TransactionsView,
 			"/products":ProductsView,
 			"/departments":DepartmentsView,
 			"/users":UsersView,
 			"/users/:id":SelectedUserView,
 			"/suppliers":SuppliersView,
-			"/suppliers/:id":SupplierView,
+			"/supplier/:id":SupplierView,
 			"/settings":SettingsView,
 		});
 	});
