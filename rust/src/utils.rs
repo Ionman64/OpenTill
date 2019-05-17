@@ -5,34 +5,38 @@ use uuid::Uuid;
 use chrono::{NaiveDateTime, Timelike, Datelike};
 use std::path::{Path, PathBuf};
 use std::fs::File;
-use std::env;
-use std::io;
-use std::str;
-use std::fs;
-use std::result;
+use std::{env, io, str, fs, thread};
 use qrcodegen::QrCode;
 use qrcodegen::QrCodeEcc;
-use qrcodegen::QrSegment;
 use models::Product;
-use zip::write::ZipWriter;
 use std::io::Write;
 use blake2::{Blake2b, Digest};
 use diesel::{SqliteConnection, Connection};
 use dotenv::*;
+use rand::Rng; 
+use rand::distributions::Alphanumeric;
+use notifica::notify;
+use printpdf::*;
+use std::io::BufWriter;
+use csv::Reader;
+use models::Version;
+
+const APP_VERSION_MAJOR:i8 = 2;
+const APP_VERSION_MINOR:i8 = 3; 
 
 pub fn uuid4() -> Uuid {
     Uuid::new_v4()
 }
 
-pub fn print_logo_ascii() -> String {
-    return  String::from(r###"
+pub fn logo_ascii() -> String {
+    return  String::from(format!(r###"
    ___                     _____ _ _ _ 
   / _ \ _ __   ___ _ __   |_   _(_) | |
  | | | | '_ \ / _ \ '_ \    | | | | | |
  | |_| | |_) |  __/ | | |   | | | | | |
-  \___/| .__/ \___|_| |_|   |_| |_|_|_| v2.0 [Powered By Rust]
+  \___/| .__/ \___|_| |_|   |_| |_|_|_| v{}.{} [Powered By Rust]
        |_|                             
-    "###);
+    "###, APP_VERSION_MAJOR, APP_VERSION_MINOR));
 }
 
 /// Returns the timestamp of the first monday BEFORE a given timestamp
@@ -48,21 +52,10 @@ pub fn get_monday_timestamp(timestamp: i64) -> i64 {
     naive_date.timestamp() - (days_from_monday * SECONDS_PER_DAY) - seconds_from_midnight
 }
 
-pub fn download_update_file() -> Result<bool, &'static str> {
-    let update_file_name = "update.sh";
-    let mut resp = match reqwest::get("https://sh.rustup.rs") {
-        Ok(x) => x,
-        Err(_) => return Err("Could not contact server")
-    };
-    let mut out = match File::create(get_app_dir().join(config::UPDATES_HOME).join(update_file_name)) {
-        Ok(x) => x,
-        Err(_) => return Err("Found Update, but could not create update file")
-    };
-    match io::copy(&mut resp, &mut out) {
-        Ok(x) => x,
-        Err(_) => return Err("Update file created, but cannot write to the file")
-    };
-    Ok(true)
+pub fn show_notification(title: &str, message: &str) {
+    if config::NOTIFICATIONS_ON {
+        notifica::notify(title, message);
+    }
 }
 
 pub fn get_home_dir() -> PathBuf {
@@ -80,6 +73,10 @@ pub fn get_app_temp() -> PathBuf {
     get_app_dir().join(config::TEMP_HOME).to_path_buf()
 }
 
+pub fn get_web_dir() -> PathBuf {
+    get_app_dir().join(config::WEB_CONTENT_HOME).to_path_buf()
+}
+
 pub fn character_count(str_line: &String, matching_character: char) -> u32 {
     let mut count: u32 = 0;
     for character in str_line.chars() {
@@ -92,7 +89,7 @@ pub fn character_count(str_line: &String, matching_character: char) -> u32 {
 
 pub fn setup_file_system() {
     let home_dir = get_app_dir();
-    let folders = vec!{config::LOG_HOME, config::UPDATES_HOME, config::TEMP_HOME};
+    let folders = vec!{config::LOG_HOME, config::UPDATES_HOME, config::TEMP_HOME, config::WEB_CONTENT_HOME};
     for folder in folders {
         let project_path = Path::new(&home_dir).join(String::from(folder));
         if !project_path.exists() {
@@ -187,5 +184,87 @@ pub fn establish_connection() -> SqliteConnection {
 
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     SqliteConnection::establish(&database_url).expect(&format!("Error connecting to {}", database_url))
+}
+
+pub fn generate_user_code() -> String {
+    rand::thread_rng().sample_iter(&Alphanumeric).take(config::USER_CODE_LENGTH).collect::<String>() 
+}
+
+fn download_file<'a>(online_location: &'a str, location: &'a Path) -> Result<&'a Path, &'static str> {
+    let mut resp = match reqwest::get(online_location) {
+        Ok(x) => x,
+        Err(x) => {
+            error!("Error while downloading file {}", x);
+            return Err("Could not contact server")
+        }
+    };
+    let mut out = match File::create(location) {
+        Ok(x) => x,
+        Err(x) => {
+            error!("{}", x);
+            return Err("Found Update, but could not create update file")
+        }
+    };
+    match io::copy(&mut resp, &mut out) {
+        Ok(_) => {},
+        Err(x) => {
+            error!("{}", x);
+            return Err("Update file created, but cannot write to the file")
+        }
+    };
+    Ok(location)
+}
+
+pub fn download_update_file() {
+    thread::spawn(move || {
+        let version_file_name = get_app_temp().join("versions.csv");
+        match download_file(&"https://www.goldstandardresearch.co.uk/versions/versions.csv", &version_file_name) {
+            Ok(file_path) => {
+                let mut rdr = csv::Reader::from_path(file_path).unwrap();
+                for result in rdr.records() {
+                    let record = result.unwrap();
+                    println!("{:?}", record);
+                }
+            },
+            Err(x) => {
+                error!("{}", x);
+                return;
+            }
+        }
+    });
+}
+
+pub fn check_for_updates() {
+    thread::spawn(move || {
+        //This will download any updates in a seperate thread so the main program can start
+        //updates will be installed afterwards
+        let core_file_name = get_app_dir().join(config::UPDATES_HOME).join(format!("{}-{}.exe", APP_VERSION_MAJOR, APP_VERSION_MINOR));
+        match download_file(&format!("https://www.goldstandardresearch.co.uk/versions/{}.{}/main.exe", APP_VERSION_MAJOR, APP_VERSION_MINOR), &core_file_name) {
+            Ok(_) => {
+                info!("Downloaded new version");
+            },
+            Err(x) => {
+                error!("{}", x);
+                return;
+            }
+        }
+        let web_file_name = get_app_dir().join(config::UPDATES_HOME).join(format!("{}-{}.zip", APP_VERSION_MAJOR, APP_VERSION_MINOR));
+        match download_file(&format!("https://www.goldstandardresearch.co.uk/versions/{}.{}/content.zip", APP_VERSION_MAJOR, APP_VERSION_MINOR), &web_file_name) {
+            Ok(x) => {
+                info!("Downloaded new version");
+            },
+            Err(x) => {
+                warn!("{}", x);
+                return;
+            }
+        }
+    });
+}
+
+pub fn printpdf() {
+    let (doc, page1, layer1) = PdfDocument::new("PDF_Document_title", Mm(247.0), Mm(210.0), "Layer 1");
+    let (page2, layer1) = doc.add_page(Mm(10.0), Mm(250.0),"Page 2, Layer 1");
+
+    doc.save(&mut BufWriter::new(File::create(get_app_temp().join("test_working.pdf")).unwrap())).unwrap();
 }
 

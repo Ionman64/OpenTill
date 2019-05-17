@@ -7,10 +7,10 @@ pub enum Currency {
     SEK,
 }
 
-pub fn format_currency(amount: f64, currency:Currency) -> Result<String, &'static str> {
+pub fn format_currency(amount: i64, currency:Currency) -> Result<String, &'static str> {
     let currency_setup = get_config_from_currency(currency);
     let formatted_amount = format_amount(amount, &currency_setup);
-    if amount.is_sign_positive() {
+    if amount < 0 {
         let mut result = currency_setup.positive_format.clone();
         return Ok(result.replace("%s", &currency_setup.symbol.clone()).replace("%v", &formatted_amount));
     }
@@ -20,25 +20,22 @@ pub fn format_currency(amount: f64, currency:Currency) -> Result<String, &'stati
     }
 }
 
-fn format_amount(amount: f64, currency_setup:&CurrencySetup) -> String {
+fn format_amount(amount: i64, currency_setup:&CurrencySetup) -> String {
     let mut result = String::new();
-    let mut floor = amount.floor();
-    let part = (amount - floor) as f64;
-    //(&currency_setup.precision);
-    while floor > 1000.0 {
+    let mut floor = 0;//amount / u64::pow(10, &currency_setup.precision);
+    while floor > 1000 {
         result.push_str(&floor.to_string());
         result.push_str(&currency_setup.thousand);
-        floor = floor / 1000.0;
+        floor = floor / 1000;
     }
     result.push_str(&floor.to_string());
     result.push_str(&currency_setup.decimal);
-    result.push_str(&part.to_string());
     return result;
 }
 
 struct CurrencySetup {
     symbol: String,
-    precision: i8,
+    precision: u8,
     thousand: String,
     decimal: String,
     positive_format: String,
@@ -56,7 +53,7 @@ impl CurrencySetup {
             negative_format: String::from("- %s%v")
         }
     }
-    pub fn new(currency_symbol: String, precision:i8, thousand_sep: String, decimal_sep: String, positive_format:String, negative_format:String) -> CurrencySetup {
+    pub fn new(currency_symbol: String, precision:u8, thousand_sep: String, decimal_sep: String, positive_format:String, negative_format:String) -> CurrencySetup {
         return CurrencySetup {
             symbol: currency_symbol,
             precision: precision,
