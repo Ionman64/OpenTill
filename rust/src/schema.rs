@@ -33,7 +33,6 @@ table! {
         release_sequence_num -> Integer,
         major -> Integer,
         minor -> Integer,
-        installed -> Bool,
         release_date -> Timestamp,
     }
 }

@@ -171,11 +171,10 @@ pub struct LoginRequest {
 }
 
 #[table_name="versions"]
-#[derive(Debug,Queryable,Insertable)]
+#[derive(Deserialize,Debug,Queryable,Insertable)]
 pub struct Version {
     pub release_sequence_num: i32,
     pub major: i32,
     pub minor: i32,
-    pub installed: bool,
     pub release_date: NaiveDateTime
 }

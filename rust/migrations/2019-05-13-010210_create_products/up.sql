@@ -29,7 +29,6 @@ CREATE TABLE versions (
   release_sequence_num INTEGER NOT NULL PRIMARY KEY,
   major INTEGER NOT NULL,
   minor INTEGER NOT NULL,
-  installed BOOLEAN NOT NULL,
   release_date DATETIME NOT NULL,
   CONSTRAINT build_unique UNIQUE (major, minor)
 );

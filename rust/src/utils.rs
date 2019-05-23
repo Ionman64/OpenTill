@@ -220,11 +220,15 @@ pub fn download_update_file() {
         let version_file_name = get_app_temp().join("versions.csv");
         match download_file(&"https://www.goldstandardresearch.co.uk/versions/versions.csv", &version_file_name) {
             Ok(file_path) => {
-                let mut rdr = csv::Reader::from_path(file_path).unwrap();
-                for result in rdr.records() {
-                    let record = result.unwrap();
-                    println!("{:?}", record);
+                println!("{:?}", &file_path);
+                let mut rdr = csv::Reader::from_path(file_path).expect("Could not read versions.csv");
+                let mut count = 0;
+                for result in rdr.deserialize() {
+                    let record: Version = result.expect("a CSV record");
+                    println!("RECORD = {:?}", record);
+                    count += 1;
                 }
+                println!("{} rows read", count);
             },
             Err(x) => {
                 error!("{}", x);
