@@ -15,9 +15,8 @@ use open_till::config as config;
 use open_till::models as models;
 use std::path::{Path};
 use rocket_contrib::json::Json;
-use open_till::listener::listen;
 use rocket_contrib::serve::StaticFiles;
-use open_till::sender::send;
+use open_till::network_broadcast::{send, listen};
 
 fn setup_logger() -> Result<(), fern::InitError> {
     fern::Dispatch::new()
@@ -51,7 +50,7 @@ fn main() {
     setup_logger().expect("Cannot Setup Logger"); //Setup Fern Logger
 
     listen();
-    send();
+    send(String::from("{\"id\":\"566944d0-09b9-499c-9aca-76aacedf2c33\",\"name\":\"Bob\"}"));
 
     /*app::show_notification("OpenTill Started", "Hello");
     app::setup_file_system(); //Sets up the file system (e.g. all the folders needed for the program)
