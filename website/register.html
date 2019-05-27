@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>OpenTill - Register</title>
+    <!--ThirdParty-->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <!--Custom-->
+    <link rel="stylesheet" href="css/index.css"/>
+    <script src="js/index.js"></script> 
+</head>
+<body class="bg-white">
+    <nav class="navbar navbar-expand-sm sticky-top navbar-info bg-light">
+        <a class="navbar-brand" href="#">OpenTill</a>
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                <li class="nav-item active">
+                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="#">About</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="#">Features</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="#">FAQ</a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control form-control-sm mr-sm-2" type="input" placeholder="Username" aria-label="Username">
+                <input class="form-control form-control-sm mr-sm-2" type="input" placeholder="Password" aria-label="Password">
+                <button class="btn btn-primary my-2 my-sm-0 btn-sm" type="submit">Login</button>
+            </form>
+        </div>
+    </nav>
+    <section class="container-fluid">
+        <form method="POST" enctype="application/x-www-form-urlencoded" action="register.php">
+            <section class="row">
+                <section class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
+                    <section class="col-md-12">
+                            <h1 class="text-primary">Register for a cloud account</h1>
+                            <h6 class="text-secondary">Fill in the required details below and press the blue register button. You will be able to change these details later.</h6>
+                            <p class="text-dark"><span class="text-danger">*</span> required field</p>
+                    </section>
+                    <section class="col-md-12">
+                        <div class="form-group">
+                            <label for="email">Email address:</label>
+                            <input type="email" class="form-control" id="email">
+                        </div>
+                    </section>
+                    <section class="col-md-12">
+                        <div class="form-group">
+                            <label for="pwd">Password:</label>
+                            <input type="password" class="form-control" id="pwd">
+                        </div>
+                    </section>
+                    <section class="col-md-12">
+                        <div class="form-group">
+                            <label for="confirm-pwd">Please type your password again:</label>
+                            <input type="password" class="form-control" id="confirm-pwd">
+                        </div>
+                    </section>
+                    <section class="col-md-12">
+                        <div class="form-group">
+                            <label for="business-name">Business Name (e.g. Bob's Hardware Store):</label>
+                            <input type="text" class="form-control" id="business-name">
+                        </div>
+                    </section>
+                    <section class="col-md-12">
+                        <label class="italic">Captcha goes here</label>
+                    </section>
+                    <section class="col-md-12">
+                        <input class="btn btn-primary btn-lg float-right" type="submit" value="Register"/>
+                    </section>
+                </section>
+            </section>
+        </form>
+    </section>
+</body>
+</html>
