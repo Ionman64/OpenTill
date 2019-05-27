@@ -20,9 +20,10 @@ use printpdf::*;
 use std::io::BufWriter;
 use csv::Reader;
 use models::Version;
+use std::net::Ipv4Addr;
 
-const APP_VERSION_MAJOR:i8 = 2;
-const APP_VERSION_MINOR:i8 = 3; 
+const APP_VERSION_MAJOR:i32 = 2;
+const APP_VERSION_MINOR:i32 = 3; 
 
 pub fn uuid4() -> Uuid {
     Uuid::new_v4()
@@ -217,24 +218,31 @@ fn download_file<'a>(online_location: &'a str, location: &'a Path) -> Result<&'a
 
 pub fn download_update_file() {
     thread::spawn(move || {
-        let version_file_name = get_app_temp().join("versions.csv");
-        match download_file(&"https://www.goldstandardresearch.co.uk/versions/versions.csv", &version_file_name) {
-            Ok(file_path) => {
-                println!("{:?}", &file_path);
-                let mut rdr = csv::Reader::from_path(file_path).expect("Could not read versions.csv");
-                let mut count = 0;
+        match reqwest::get("https://www.goldstandardresearch.co.uk/versions/versions.csv").unwrap().text() {
+            Ok(resp) => {
+                let mut rdr = csv::Reader::from_reader(resp.as_bytes());
+                let mut updates_count = 0;
                 for result in rdr.deserialize() {
-                    let record: Version = result.expect("a CSV record");
-                    println!("RECORD = {:?}", record);
-                    count += 1;
+                    let mut version: Version = result.expect("a CSV record");
+                    version.save();
+                    if version.major > APP_VERSION_MAJOR || version.major == APP_VERSION_MAJOR && version.minor > APP_VERSION_MINOR {
+                        updates_count += 1;
+                    }
                 }
-                println!("{} rows read", count);
+                if updates_count > 0 {
+                    println!("{} updates available", updates_count);
+                }
+                else {
+                    println!("Running latest version");
+                }
+                
             },
             Err(x) => {
-                error!("{}", x);
-                return;
+                error!("Error while downloading file {}", x);
+                return Err("Could not contact server")
             }
-        }
+        };
+        Ok(())
     });
 }
 
@@ -270,5 +278,10 @@ pub fn printpdf() {
     let (page2, layer1) = doc.add_page(Mm(10.0), Mm(250.0),"Page 2, Layer 1");
 
     doc.save(&mut BufWriter::new(File::create(get_app_temp().join("test_working.pdf")).unwrap())).unwrap();
+}
+
+pub fn find_all_instaces_on_the_network() {
+    let addr = Ipv4Addr::BROADCAST;
+    
 }
 

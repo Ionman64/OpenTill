@@ -26,9 +26,9 @@ CREATE TABLE users (
 );
 
 CREATE TABLE versions (
-  release_sequence_num INTEGER NOT NULL PRIMARY KEY,
+  id VARCHAR(36) NOT NULL PRIMARY KEY,
+  release_date DATETIME NOT NULL,
   major INTEGER NOT NULL,
   minor INTEGER NOT NULL,
-  release_date DATETIME NOT NULL,
   CONSTRAINT build_unique UNIQUE (major, minor)
 );

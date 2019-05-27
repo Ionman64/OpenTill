@@ -10,14 +10,14 @@ extern crate log;
 extern crate diesel;
 extern crate open_till;
 
-use std::io;
 use open_till::utils as app;
 use open_till::config as config;
-use open_till::format as formatter;
 use open_till::models as models;
-use std::path::{Path, PathBuf};
+use std::path::{Path};
+use rocket_contrib::json::Json;
+use open_till::listener::listen;
 use rocket_contrib::serve::StaticFiles;
-use rocket::response::NamedFile;
+use open_till::sender::send;
 
 fn setup_logger() -> Result<(), fern::InitError> {
     fern::Dispatch::new()
@@ -42,18 +42,29 @@ fn login() -> String {
     String::new()
 }
 
+#[get("/details")]
+fn details() -> Json<models::Server> {
+    Json(models::Server::details())
+}
+
 fn main() {
     setup_logger().expect("Cannot Setup Logger"); //Setup Fern Logger
-    app::show_notification("OpenTill Started", "Hello");
+
+    listen();
+    send();
+
+    /*app::show_notification("OpenTill Started", "Hello");
     app::setup_file_system(); //Sets up the file system (e.g. all the folders needed for the program)
     app::download_update_file();
     if config::AUTO_DOWNLOAD_UPDATES {
         app::check_for_updates();
     }
     println!("{}", app::logo_ascii()); //Print Sexy Logo
-    app::printpdf();
+    //app::printpdf();*/
+    
+    
     
 
-    rocket::ignite().mount("/", StaticFiles::from(app::get_web_dir())).mount("/api", routes![login]).launch();
+    rocket::ignite().mount("/", StaticFiles::from(app::get_web_dir())).mount("/api", routes![login, details]).launch();
     info!("System started successfully");
 }

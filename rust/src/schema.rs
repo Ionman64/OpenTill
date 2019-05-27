@@ -29,11 +29,11 @@ table! {
 }
 
 table! {
-    versions (release_sequence_num) {
-        release_sequence_num -> Integer,
+    versions (id) {
+        id -> Text,
+        release_date -> Timestamp,
         major -> Integer,
         minor -> Integer,
-        release_date -> Timestamp,
     }
 }
 
