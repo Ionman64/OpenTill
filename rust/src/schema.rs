@@ -4,6 +4,15 @@ table! {
         name -> Text,
         barcode -> Text,
         price -> Integer,
+        department -> Text,
+        supplier -> Text,
+        labelPrinted -> Bool,
+        isCase -> Bool,
+        updated -> Timestamp,
+        created -> Timestamp,
+        deleted -> Bool,
+        max_stock -> Integer,
+        current_stock -> Integer,
     }
 }
 

@@ -16,6 +16,7 @@ use open_till::models as models;
 use std::path::{Path};
 use rocket_contrib::json::Json;
 use rocket_contrib::serve::StaticFiles;
+use rocket_contrib::templates::Template;
 use open_till::network_broadcast::{send, listen};
 
 fn setup_logger() -> Result<(), fern::InitError> {
@@ -46,6 +47,15 @@ fn details() -> Json<models::Server> {
     Json(models::Server::details())
 }
 
+
+
+
+#[get("/")]
+fn index() -> Template {
+    let context = models::TemplateContent::new();
+    Template::render("index", &context)
+}
+
 fn main() {
     setup_logger().expect("Cannot Setup Logger"); //Setup Fern Logger
 
@@ -64,6 +74,6 @@ fn main() {
     
     
 
-    rocket::ignite().mount("/", StaticFiles::from(app::get_web_dir())).mount("/api", routes![login, details]).launch();
+    rocket::ignite().mount("/", StaticFiles::from(app::get_web_dir())).mount("/api", routes![index, login, details]).attach(Template::fairing()).launch();
     info!("System started successfully");
 }

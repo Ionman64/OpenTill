@@ -7,6 +7,7 @@ use rocket::request::Form;
 use chrono::{DateTime, NaiveDateTime, Utc};
 use serde::{de::Error, Deserialize, Deserializer};
 use serde::ser::{Serialize, Serializer, SerializeSeq, SerializeMap};
+use config;
  
 #[table_name="products"]
 #[derive(Queryable,Insertable)]
@@ -15,6 +16,15 @@ pub struct Product {
     pub name: String,
     pub barcode: String,
     pub price: i32,
+    pub department: String,
+    pub supplier: String,
+    pub labelPrinted: bool,
+    pub isCase: bool,
+    pub updated: NaiveDateTime,
+    pub created: NaiveDateTime,
+    pub deleted: bool,
+    pub max_stock: i32,
+    pub current_stock: i32,   
 }
 
 impl Product {
@@ -23,7 +33,16 @@ impl Product {
             id: app::uuid4().to_string(),
             name: name,
             barcode:barcode,
-            price:price
+            price:price,
+            department: String::from(config::NO_DEPARTMENT_GUID),
+            supplier: String::from(config::NO_SUPPLIER_GUID),
+            labelPrinted: false,
+            isCase: false,
+            updated: DateTime::<Utc>::naive_utc(),
+            created: DateTime::<Utc>::naive_utc(),
+            deleted: false,
+            max_stock: 0,
+            current_stock: 0,
         }
     }
     pub fn get_all() -> Vec<Product> {
@@ -187,6 +206,21 @@ impl Version {
         match diesel::replace_into(versions::table).values(self).execute(&conn) {
             Ok(x) => x,
             Err(x) => 0
+        }
+    }
+}
+
+#[derive(serde::Serialize, Deserialize)]
+pub struct TemplateContent {
+    pub LOGO: String,
+    pub APPNAME: String,
+}
+
+impl TemplateContent {
+    pub fn new() -> TemplateContent {
+        TemplateContent {
+            LOGO: app::logo_ascii(),
+            APPNAME: String::from(config::APP_NAME),
         }
     }
 }

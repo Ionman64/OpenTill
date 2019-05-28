@@ -6,6 +6,7 @@ keep_alive = 5
 log = "normal"
 # secret_key = [randomly generated at launch]
 limits = { forms = 32768 }
+template_dir = "templates/"
 
 [staging]
 address = "0.0.0.0"
@@ -15,6 +16,7 @@ keep_alive = 5
 log = "normal"
 # secret_key = [randomly generated at launch]
 limits = { forms = 32768 }
+template_dir = "templates/"
 
 [production]
 address = "0.0.0.0"
@@ -24,3 +26,4 @@ keep_alive = 5
 log = "critical"
 # secret_key = [randomly generated at launch]
 limits = { forms = 32768 }
+template_dir = "templates/"

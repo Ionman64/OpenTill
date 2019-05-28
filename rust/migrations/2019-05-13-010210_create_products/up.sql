@@ -1,9 +1,18 @@
--- Your SQL goes here
+
 CREATE TABLE products (
   id VARCHAR(36) NOT NULL PRIMARY KEY,
   name VARCHAR NOT NULL,
   barcode VARCHAR NOT NULL UNIQUE,
   price INTEGER NOT NULL DEFAULT 1,
+  department VARCHAR(36) NOT NULL,
+  supplier VARCHAR(36) NOT NULL,
+  labelPrinted BOOLEAN NOT NULL DEFAULT false,
+  isCase BOOLEAN NOT NULL DEFAULT false,
+  updated DATETIME NOT NULL,
+  created DATETIME NOT NULL,
+  deleted BOOLEAN NOT NULL DEFAULT false,
+  max_stock INTEGER NOT NULL DEFAULT 0,
+  current_stock INTEGER NOT NULL DEFAULT 0,
   CONSTRAINT barcode_unique UNIQUE (barcode)
 );
 
