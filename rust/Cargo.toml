@@ -4,21 +4,32 @@ version = "0.1.0"
 authors = ["Ionman64 <PeterPickerill2014@gmail.com>"]
 
 [dependencies]
+#Rocket HTTP server management
 rocket = "0.4.1"
 rocket_contrib = {version = "0.4.1", features = ["handlebars_templates"]}
-uuid = { version = "0.7", features = ["serde", "v4"] }
-chrono = { version = "0.4", features = ["serde"] }
-diesel = { version = "1.0.0", features = ["sqlite", "chrono"] }
-dotenv = "0.9.0"
-reqwest = "0.9.15"
-dirs = "1.0"
+
+#Critical [These are essential for making everything work]
 log = "0.4"
 fern = "0.5"
+uuid = { version = "0.7", features = ["serde", "v4"] }
+chrono = { version = "0.4", features = ["serde"] }
+serde = "1.0.91"
+serde_json = "1.0"
+
+# Database management
+libsqlite3-sys = { version = "0.9.1", features = ["bundled"] }
+diesel = { version = "1.0.0", features = ["sqlite", "chrono"] }
+diesel_migrations = "1.4.0"
+dotenv = "0.9.0"
+#barrel = "0.5.8" More investigation needs to be put into this
+
+#Additional
+reqwest = "0.9.15"
+dirs = "1.0"
 qrcodegen = "1.4.0"
 zip = "0.5.2"
 blake2 = "0.8"
 rand = "0.6.5"
-serde = "1.0.91"
 notifica = "1.0.2"
 printpdf = "0.2.10"
 csv = "1.0.7"

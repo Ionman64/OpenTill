@@ -1,4 +1,11 @@
 table! {
+    configurations (config_key) {
+        config_key -> Text,
+        config_value -> Text,
+    }
+}
+
+table! {
     products (id) {
         id -> Text,
         name -> Text,
@@ -13,6 +20,15 @@ table! {
         deleted -> Bool,
         max_stock -> Integer,
         current_stock -> Integer,
+    }
+}
+
+table! {
+    servers (id) {
+        id -> Text,
+        major -> Integer,
+        minor -> Integer,
+        ip_address -> Text,
     }
 }
 
@@ -47,7 +63,9 @@ table! {
 }
 
 allow_tables_to_appear_in_same_query!(
+    configurations,
     products,
+    servers,
     suppliers,
     users,
     versions,

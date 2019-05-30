@@ -41,3 +41,16 @@ CREATE TABLE versions (
   minor INTEGER NOT NULL,
   CONSTRAINT build_unique UNIQUE (major, minor)
 );
+
+CREATE TABLE servers (
+  id VARCHAR(36) NOT NULL PRIMARY KEY,
+  major INTEGER NOT NULL,
+  minor INTEGER NOT NULL,
+  ip_address VARCHAR(45) NOT NULL,
+  CONSTRAINT ip_address_unique UNIQUE (ip_address)
+);
+
+CREATE TABLE configurations (
+  config_key VARCHAR(100) NOT NULL PRIMARY KEY, 
+  config_value VARCHAR(200) NOT NULL
+);

@@ -8,6 +8,7 @@ extern crate rocket_contrib;
 
 #[macro_use] 
 extern crate diesel;
+extern crate diesel_migrations;
 extern crate dotenv;
 extern crate uuid;
 extern crate chrono;
@@ -17,6 +18,7 @@ extern crate zip;
 extern crate blake2;
 extern crate rand;
 extern crate serde;
+extern crate serde_json;
 extern crate notifica;
 extern crate printpdf;
 extern crate csv;
@@ -27,6 +29,7 @@ pub mod format;
 pub mod models;
 pub mod schema;
 pub mod network_broadcast;
+pub mod migrations;
 
 #[cfg(test)]
 mod tests {

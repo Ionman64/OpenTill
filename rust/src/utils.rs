@@ -19,11 +19,10 @@ use notifica::notify;
 use printpdf::*;
 use std::io::BufWriter;
 use csv::Reader;
-use models::Version;
+use models::{Version, AppConfiguration};
 use std::net::Ipv4Addr;
-
-const APP_VERSION_MAJOR:i32 = 2;
-const APP_VERSION_MINOR:i32 = 3; 
+use diesel_migrations::embed_migrations;
+use migrations;
 
 pub fn uuid4() -> Uuid {
     Uuid::new_v4()
@@ -37,7 +36,7 @@ pub fn logo_ascii() -> String {
  | |_| | |_) |  __/ | | |   | | | | | |
   \___/| .__/ \___|_| |_|   |_| |_|_|_| v{}.{} [Powered By Rust]
        |_|                             
-    "###, APP_VERSION_MAJOR, APP_VERSION_MINOR));
+    "###, config::APP_VERSION_MAJOR, config::APP_VERSION_MINOR));
 }
 
 /// Returns the timestamp of the first monday BEFORE a given timestamp
@@ -78,6 +77,10 @@ pub fn get_web_dir() -> PathBuf {
     get_app_dir().join(config::WEB_CONTENT_HOME).to_path_buf()
 }
 
+pub fn get_data_dir() -> PathBuf {
+    get_app_dir().join(config::DATA_HOME).to_path_buf()
+}
+
 pub fn character_count(str_line: &String, matching_character: char) -> u32 {
     let mut count: u32 = 0;
     for character in str_line.chars() {
@@ -90,7 +93,7 @@ pub fn character_count(str_line: &String, matching_character: char) -> u32 {
 
 pub fn setup_file_system() {
     let home_dir = get_app_dir();
-    let folders = vec!{config::LOG_HOME, config::UPDATES_HOME, config::TEMP_HOME, config::WEB_CONTENT_HOME};
+    let folders = vec!{config::LOG_HOME, config::UPDATES_HOME, config::TEMP_HOME, config::WEB_CONTENT_HOME, config::DATA_HOME};
     for folder in folders {
         let project_path = Path::new(&home_dir).join(String::from(folder));
         if !project_path.exists() {
@@ -101,6 +104,24 @@ pub fn setup_file_system() {
             }
         }
     }
+}
+
+pub fn setup_database() -> bool {
+    let project_path = Path::new(&get_data_dir()).join("database.sqlite3");
+    if project_path.exists() {
+        warn!("Check database and setup not implemented");
+        return false;
+    }
+    info!("Missing database, creating it from scratch");
+    let conn = establish_connection();
+    migrations::database_setup(&conn);
+    info!("database setup!");
+    true
+}
+
+pub fn setup_default_configuration() {
+    //This should be run the first time the program is run
+    AppConfiguration::new(config::INSTANCE_GUID_KEY, &uuid4().to_string()).save();
 }
 
 pub fn generate_qr_code_as_svg(content: String) -> String {
@@ -183,8 +204,7 @@ pub fn hash_password(m: String) -> Result<String, &'static str> {
 pub fn establish_connection() -> SqliteConnection {
     dotenv().ok();
 
-    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-    SqliteConnection::establish(&database_url).expect(&format!("Error connecting to {}", database_url))
+    SqliteConnection::establish(&get_data_dir().join(config::DATABASE_NAME).to_str().unwrap()).expect(&format!("Error connecting to {:?}", get_data_dir().join(config::DATABASE_NAME)))
 }
 
 pub fn generate_user_code() -> String {
@@ -225,7 +245,7 @@ pub fn download_update_file() {
                 for result in rdr.deserialize() {
                     let mut version: Version = result.expect("a CSV record");
                     version.save();
-                    if version.major > APP_VERSION_MAJOR || version.major == APP_VERSION_MAJOR && version.minor > APP_VERSION_MINOR {
+                    if version.major > config::APP_VERSION_MAJOR || version.major == config::APP_VERSION_MAJOR && version.minor > config::APP_VERSION_MINOR {
                         updates_count += 1;
                     }
                 }
@@ -250,8 +270,8 @@ pub fn check_for_updates() {
     thread::spawn(move || {
         //This will download any updates in a seperate thread so the main program can start
         //updates will be installed afterwards
-        let core_file_name = get_app_dir().join(config::UPDATES_HOME).join(format!("{}-{}.exe", APP_VERSION_MAJOR, APP_VERSION_MINOR));
-        match download_file(&format!("https://www.goldstandardresearch.co.uk/versions/{}.{}/main.exe", APP_VERSION_MAJOR, APP_VERSION_MINOR), &core_file_name) {
+        let core_file_name = get_app_dir().join(config::UPDATES_HOME).join(format!("{}-{}.exe", config::APP_VERSION_MAJOR, config::APP_VERSION_MINOR));
+        match download_file(&format!("https://www.goldstandardresearch.co.uk/versions/{}.{}/main.exe", config::APP_VERSION_MAJOR, config::APP_VERSION_MINOR), &core_file_name) {
             Ok(_) => {
                 info!("Downloaded new version");
             },
@@ -260,8 +280,8 @@ pub fn check_for_updates() {
                 return;
             }
         }
-        let web_file_name = get_app_dir().join(config::UPDATES_HOME).join(format!("{}-{}.zip", APP_VERSION_MAJOR, APP_VERSION_MINOR));
-        match download_file(&format!("https://www.goldstandardresearch.co.uk/versions/{}.{}/content.zip", APP_VERSION_MAJOR, APP_VERSION_MINOR), &web_file_name) {
+        let web_file_name = get_app_dir().join(config::UPDATES_HOME).join(format!("{}-{}.zip", config::APP_VERSION_MAJOR, config::APP_VERSION_MINOR));
+        match download_file(&format!("https://www.goldstandardresearch.co.uk/versions/{}.{}/content.zip", config::APP_VERSION_MAJOR, config::APP_VERSION_MINOR), &web_file_name) {
             Ok(x) => {
                 info!("Downloaded new version");
             },
@@ -278,10 +298,5 @@ pub fn printpdf() {
     let (page2, layer1) = doc.add_page(Mm(10.0), Mm(250.0),"Page 2, Layer 1");
 
     doc.save(&mut BufWriter::new(File::create(get_app_temp().join("test_working.pdf")).unwrap())).unwrap();
-}
-
-pub fn find_all_instaces_on_the_network() {
-    let addr = Ipv4Addr::BROADCAST;
-    
 }
 

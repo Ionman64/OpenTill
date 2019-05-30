@@ -42,28 +42,35 @@ fn login() -> String {
     String::new()
 }
 
-#[get("/details")]
-fn details() -> Json<models::Server> {
-    Json(models::Server::details())
+#[get("/servers")]
+fn details() -> Json<Vec<models::Server>> {
+    Json(models::Server::get_all())
 }
-
-
-
 
 #[get("/")]
 fn index() -> Template {
     let context = models::TemplateContent::new();
-    Template::render("index", &context)
+    Template::render("index2", &context)
 }
 
 fn main() {
+    app::setup_file_system(); //Sets up the file system (e.g. all the folders needed for the program)
     setup_logger().expect("Cannot Setup Logger"); //Setup Fern Logger
+    app::setup_database();
+    app::setup_default_configuration();
+    
 
     listen();
-    send(String::from("{\"id\":\"566944d0-09b9-499c-9aca-76aacedf2c33\",\"name\":\"Bob\"}"));
+    let server_details = match serde_json::to_string(&models::Server::details()) {
+        Ok(x) => x,
+        Err(x) => {
+            panic!("Could not serialize server {}", x);
+        }
+    };
+    send(server_details);
 
     /*app::show_notification("OpenTill Started", "Hello");
-    app::setup_file_system(); //Sets up the file system (e.g. all the folders needed for the program)
+    
     app::download_update_file();
     if config::AUTO_DOWNLOAD_UPDATES {
         app::check_for_updates();

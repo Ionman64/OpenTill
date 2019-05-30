@@ -38,8 +38,8 @@ impl Product {
             supplier: String::from(config::NO_SUPPLIER_GUID),
             labelPrinted: false,
             isCase: false,
-            updated: DateTime::<Utc>::naive_utc(),
-            created: DateTime::<Utc>::naive_utc(),
+            updated: Utc::now().naive_utc(),
+            created: Utc::now().naive_utc(),
             deleted: false,
             max_stock: 0,
             current_stock: 0,
@@ -214,6 +214,8 @@ impl Version {
 pub struct TemplateContent {
     pub LOGO: String,
     pub APPNAME: String,
+    pub APP_VERSION_MAJOR: i32,
+    pub APP_VERSION_MINOR: i32,
 }
 
 impl TemplateContent {
@@ -221,24 +223,82 @@ impl TemplateContent {
         TemplateContent {
             LOGO: app::logo_ascii(),
             APPNAME: String::from(config::APP_NAME),
+            APP_VERSION_MAJOR: config::APP_VERSION_MAJOR,
+            APP_VERSION_MINOR: config::APP_VERSION_MINOR
         }
     }
 }
 
-#[derive(serde::Serialize, Deserialize)]
+#[table_name="servers"]
+#[derive(serde::Serialize,Deserialize,Queryable,Insertable)]
 pub struct Server {
     pub id: String,
-    pub name: String
+    pub major: i32,
+    pub minor: i32,
+    pub ip_address: String,
 }
 
 impl Server {
     pub fn details() -> Server {
         Server {
-            id: app::uuid4().to_string(),
-            name: String::from("Bob")
+            id: AppConfiguration::get(config::INSTANCE_GUID_KEY).expect("Cannot find INSTANCE_GUID_KEY in configuration"),
+            major: config::APP_VERSION_MAJOR,
+            minor: config::APP_VERSION_MINOR,
+            ip_address: String::from("[Unknown]")
+        }
+    }
+    pub fn get_all() -> Vec<Server> {
+        let conn = app::establish_connection();
+        match servers::table.load::<Server>(&conn) {
+            Ok(x) => x,
+            Err(x) => {
+                warn!("{}", x);
+                Vec::new()
+            }
+        }
+    }
+    pub fn save(&self) -> usize {
+        let conn = app::establish_connection();
+        match diesel::replace_into(servers::table).values(self).execute(&conn) {
+            Ok(x) => x,
+            Err(x) => 0
         }
     } 
 }
+
+#[table_name="configurations"]
+#[derive(Deserialize,Debug,Queryable,Insertable)]
+pub struct AppConfiguration {
+    #[column_name="config_key"]
+    pub key: String,
+    #[column_name="config_value"]
+    pub value: String,
+}
+
+impl AppConfiguration {
+    pub fn new(key: &str, value: &str) -> AppConfiguration {
+        AppConfiguration {key: String::from(key), value: String::from(value)}
+    }
+    pub fn get(key: &str) -> Option<String> {
+        let conn = app::establish_connection();
+        match configurations::table.find(key).get_result::<AppConfiguration>(&conn) {
+            Ok(x) => Some(x.value),
+            Err(diesel::NotFound) => None,
+            Err(x) => {
+                warn!("{}", x);
+                None
+            } 
+        }
+    }
+    pub fn save(&self) -> usize {
+        let conn = app::establish_connection();
+        match diesel::replace_into(configurations::table).values(self).execute(&conn) {
+            Ok(x) => x,
+            Err(x) => 0
+        }
+    }  
+}
+
 
 //Taken from https://earvinkayonga.com/posts/deserialize-date-in-rust/
 mod date_serializer {

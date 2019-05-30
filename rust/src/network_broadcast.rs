@@ -1,5 +1,8 @@
 use std::net::UdpSocket;
 use std::{thread, time};
+use serde_json::{Result, Value};
+use models::Server;
+use config;
 
 const MAX_BUFFER_SIZE: usize = 255;
 const SEND_ADDR: &str = "0.0.0.0:65444";
@@ -11,27 +14,37 @@ pub fn send(msg: String) {
     let now = time::Instant::now();
     thread::spawn(move || {
         loop {
-            let socket = match UdpSocket::bind(SEND_ADDR) {
-                Ok(x) => x,
-                Err(x) => {
-                    error!("Could not bind to socket {}", x);
-                    return;
-                }
-            };
-            let buf = &mut msg.as_bytes();
-            if buf.len() >= MAX_BUFFER_SIZE {
-                panic!("UDP message cannot exceed max buffer length {}", MAX_BUFFER_SIZE);
-            }
-            match socket.send_to(buf, &BROADCAST_ADDR) {
-                Ok(x) => x,
-                Err(x) => {
-                    error!("{}", x);
-                    break;
-                }
-            };
             thread::sleep(thead_sleep_duration);
+            if !config::AUTO_BROADCAST {
+                continue;
+            }
+            if !send_udp_advertisement(&msg) {
+                break;
+            }
         };
     });
+}
+
+fn send_udp_advertisement(msg: &String) -> bool {
+    let socket = match UdpSocket::bind(SEND_ADDR) {
+        Ok(x) => x,
+        Err(x) => {
+            error!("Could not bind to socket {}", x);
+            return false;
+        }
+    };
+    let buf = &mut msg.as_bytes();
+    if buf.len() >= MAX_BUFFER_SIZE {
+        panic!("UDP message cannot exceed max buffer length {}", MAX_BUFFER_SIZE);
+    }
+    match socket.send_to(buf, &BROADCAST_ADDR) {
+        Ok(x) => x,
+        Err(x) => {
+            error!("{}", x);
+            return true;
+        }
+    };
+    true
 }
 
 pub fn listen() {
@@ -44,7 +57,7 @@ pub fn listen() {
             }
         };
         loop {
-            let mut buf = [0; MAX_BUFFER_SIZE];
+            let mut buf = [0x20; MAX_BUFFER_SIZE];
             let (amt, src) = match socket.recv_from(&mut buf) {
                 Ok(x) => x,
                 Err(x) => {
@@ -55,11 +68,21 @@ pub fn listen() {
             let msg = match String::from_utf8(buf.to_vec()) {
                 Ok(x) => x,
                 Err(x) => {
-                    warn!("Host {} sent garbage data to udp endpoint", x);
+                    warn!("Garbage data sent to udp endpoint: {}", x);
                     continue;
                 }
             };
-            debug!("Got msg {}", msg);
+            debug!("Got msg {}", &msg.trim_end()); 
+            let mut server: Server = match serde_json::from_str(&msg.trim_end()) {
+                Ok(x) => x,
+                Err(x) => {
+                    warn!("Host data sent to udp endpoint {}", x);
+                    continue;
+                }
+            };
+            info!("Host is at {:?}", src);
+            server.ip_address = String::from("[Known]");
+            server.save();
         }
     });
 }
