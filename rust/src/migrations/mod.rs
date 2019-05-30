@@ -1,25 +1,24 @@
-use diesel::{sql_query, SqliteConnection, Connection, RunQueryDsl};
-use diesel::connection::SimpleConnection;
 use config;
+use diesel::connection::SimpleConnection;
+use diesel::SqliteConnection;
 
 //Remember to update when version changes
 pub fn database_setup(conn: &SqliteConnection) {
     if config::APP_VERSION_MAJOR != 2 && config::APP_VERSION_MINOR != 3 {
         panic!("[Developer Error] Database SQL has not been checked against current version, cannot continue");
     }
-    conn.batch_execute(CORE_SCHEMA).expect("Could not setup database");
-    
-}   
+    conn.batch_execute(CORE_SCHEMA)
+        .expect("Could not setup database");
+}
 
 //Remember to update from scratch
 pub fn database_setup_from_previous_version() {
     if config::APP_VERSION_MAJOR != 2 && config::APP_VERSION_MINOR != 3 {
         panic!("[Developer Error] Database SQL has not been checked against current version, cannot continue");
-    }   
+    }
 }
 
-const CORE_SCHEMA: &str =
-    r##"CREATE TABLE products (
+const CORE_SCHEMA: &str = r##"CREATE TABLE products (
         id VARCHAR(36) NOT NULL PRIMARY KEY,
         name VARCHAR NOT NULL,
         barcode VARCHAR NOT NULL UNIQUE,

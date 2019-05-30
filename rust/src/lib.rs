@@ -1,41 +1,41 @@
-#[macro_use] 
+#[macro_use]
 extern crate log;
 extern crate fern;
 
-#[macro_use] 
+#[macro_use]
 extern crate rocket;
 extern crate rocket_contrib;
 
-#[macro_use] 
+#[macro_use]
 extern crate diesel;
+extern crate blake2;
+extern crate chrono;
+extern crate csv;
 extern crate diesel_migrations;
 extern crate dotenv;
-extern crate uuid;
-extern crate chrono;
-extern crate reqwest;
-extern crate qrcodegen;
-extern crate zip;
-extern crate blake2;
-extern crate rand;
-extern crate serde;
-extern crate serde_json;
 extern crate notifica;
 extern crate printpdf;
-extern crate csv;
+extern crate qrcodegen;
+extern crate rand;
+extern crate reqwest;
+extern crate serde;
+extern crate serde_json;
+extern crate uuid;
+extern crate zip;
 
-pub mod utils;
 pub mod config;
 pub mod format;
-pub mod models;
-pub mod schema;
-pub mod network_broadcast;
 pub mod migrations;
+pub mod models;
+pub mod network_broadcast;
+pub mod schema;
+pub mod utils;
 
 #[cfg(test)]
 mod tests {
-    use utils::*;
     use models::*;
     use std::fs;
+    use utils::*;
     #[test]
     fn uuid_length_test_1() {
         assert_eq!(36, String::from(uuid4().to_string()).len());
@@ -77,18 +77,21 @@ mod tests {
     }
     #[test]
     fn write_lbx_file_to_temp_directory() {
-        let product = Product {id: String::from(uuid4().to_string()), name: String::from("test_item"), barcode: String::from("012344798232"), price: 42};
+        let product = Product::default();
         let file_path = match generate_lbx_from_product(&product) {
             Ok(x) => x,
-            Err(x) => panic!("Could not write file {}", x)
+            Err(x) => panic!("Could not write file {}", x),
         };
 
         match fs::File::open(&file_path) {
             Ok(_) => {
                 assert!(true);
-            },
+            }
             Err(x) => {
-                panic!("Could not find file returned by the function 'generate_lbx_from_product': {}", x);
+                panic!(
+                    "Could not find file returned by the function 'generate_lbx_from_product': {}",
+                    x
+                );
             }
         };
     }
@@ -102,7 +105,7 @@ mod tests {
             Some(x) => x,
             None => {
                 panic!("Product not found!");
-            }  
+            }
         };
         assert_eq!(saved_product.barcode, barcode);
     }
@@ -121,7 +124,7 @@ mod tests {
             Some(x) => x,
             None => {
                 panic!("Product not found!");
-            }  
+            }
         };
         assert_eq!(saved_product.name, new_product_name);
         assert_eq!(saved_product.price, new_product_price);
