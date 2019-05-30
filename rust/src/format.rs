@@ -11,11 +11,11 @@ pub fn format_currency(amount: i64, currency:Currency) -> Result<String, &'stati
     let currency_setup = get_config_from_currency(currency);
     let formatted_amount = format_amount(amount, &currency_setup);
     if amount < 0 {
-        let mut result = currency_setup.positive_format.clone();
+        let result = currency_setup.positive_format.clone();
         return Ok(result.replace("%s", &currency_setup.symbol.clone()).replace("%v", &formatted_amount));
     }
     else {
-        let mut result = currency_setup.negative_format.clone();
+        let result = currency_setup.negative_format.clone();
         return Ok(result.replace("%s", &currency_setup.symbol.clone()).replace("%v", &formatted_amount));
     }
 }
@@ -26,7 +26,7 @@ fn format_amount(amount: i64, currency_setup:&CurrencySetup) -> String {
     while floor > 1000 {
         result.push_str(&floor.to_string());
         result.push_str(&currency_setup.thousand);
-        floor = floor / 1000;
+        floor /= 1000;
     }
     result.push_str(&floor.to_string());
     result.push_str(&currency_setup.decimal);

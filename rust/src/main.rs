@@ -32,7 +32,7 @@ fn setup_logger() -> Result<(), fern::InitError> {
         })
         .level(log::LevelFilter::Debug)
         .chain(std::io::stdout())
-        .chain(fern::log_file(&Path::new(&app::get_app_dir()).join(String::from(config::LOG_HOME)).join(&String::from(format!("{}.log", chrono::Local::now().format("%Y-%m-%d")))).to_str().unwrap())?)
+        .chain(fern::log_file(&Path::new(&app::get_app_dir()).join(String::from(config::LOG_HOME)).join(&format!("{}.log", chrono::Local::now().format("%Y-%m-%d"))))?)
         .apply()?;
     Ok(())
 }

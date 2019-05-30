@@ -1,6 +1,7 @@
 //Here lives the applications constants, some may be replaced later by environment variables
 
 pub const APP_NAME: &str = "OpenTill";
+
 pub const APP_HOME: &str = ".rustic";
 pub const LOG_HOME: &str = "logs";
 pub const UPDATES_HOME: &str = "updates";

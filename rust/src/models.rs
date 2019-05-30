@@ -18,8 +18,10 @@ pub struct Product {
     pub price: i32,
     pub department: String,
     pub supplier: String,
-    pub labelPrinted: bool,
-    pub isCase: bool,
+    #[column_name="labelPrinted"]
+    pub label_printed: bool,
+    #[column_name="isCase"]
+    pub is_case: bool,
     pub updated: NaiveDateTime,
     pub created: NaiveDateTime,
     pub deleted: bool,
@@ -36,8 +38,8 @@ impl Product {
             price:price,
             department: String::from(config::NO_DEPARTMENT_GUID),
             supplier: String::from(config::NO_SUPPLIER_GUID),
-            labelPrinted: false,
-            isCase: false,
+            label_printed: false,
+            is_case: false,
             updated: Utc::now().naive_utc(),
             created: Utc::now().naive_utc(),
             deleted: false,
@@ -55,7 +57,7 @@ impl Product {
             }
         }
     }
-    pub fn find_by_id(id: &String) -> Option<Product> {
+    pub fn find_by_id(id: &str) -> Option<Product> {
         let conn = app::establish_connection();
         match products::table.find(id).get_result::<Product>(&conn) {
             Ok(x) => Some(x),
@@ -66,7 +68,7 @@ impl Product {
             } 
         }
     }
-    pub fn find_by_barcode(code: &String) -> Option<Product> {
+    pub fn find_by_barcode(code: &str) -> Option<Product> {
         let conn = app::establish_connection();
         match products::table.filter(products::barcode.eq(code)).first::<Product>(&conn) {
             Ok(x) => Some(x),
@@ -119,7 +121,7 @@ impl Supplier {
             }
         }
     }
-    pub fn find_by_id(id: &String) -> Option<Supplier> {
+    pub fn find_by_id(id: &str) -> Option<Supplier> {
         let conn = app::establish_connection();
         match suppliers::table.find(id).get_result::<Supplier>(&conn) {
             Ok(x) => Some(x),
@@ -212,19 +214,19 @@ impl Version {
 
 #[derive(serde::Serialize, Deserialize)]
 pub struct TemplateContent {
-    pub LOGO: String,
-    pub APPNAME: String,
-    pub APP_VERSION_MAJOR: i32,
-    pub APP_VERSION_MINOR: i32,
+    pub logo: String,
+    pub app_name: String,
+    pub app_version_major: i32,
+    pub app_version_minor: i32,
 }
 
 impl TemplateContent {
     pub fn new() -> TemplateContent {
         TemplateContent {
-            LOGO: app::logo_ascii(),
-            APPNAME: String::from(config::APP_NAME),
-            APP_VERSION_MAJOR: config::APP_VERSION_MAJOR,
-            APP_VERSION_MINOR: config::APP_VERSION_MINOR
+            logo: app::logo_ascii(),
+            app_name: String::from(config::APP_NAME),
+            app_version_major: config::APP_VERSION_MAJOR,
+            app_version_minor: config::APP_VERSION_MINOR
         }
     }
 }
@@ -310,7 +312,7 @@ mod date_serializer {
     }
  
     pub fn serialize<S: Serializer>(time: &NaiveDateTime, serializer: S) -> Result<S::Ok, S::Error> {
-        time_to_json(time.clone()).serialize(serializer)
+        time_to_json(*time).serialize(serializer)
     }
 
     pub fn deserialize<'de, D: Deserializer<'de>>(deserializer: D) -> Result<NaiveDateTime, D::Error> {

@@ -29,14 +29,14 @@ pub fn uuid4() -> Uuid {
 }
 
 pub fn logo_ascii() -> String {
-    return  String::from(format!(r###"
+    return format!(r###"
    ___                     _____ _ _ _ 
   / _ \ _ __   ___ _ __   |_   _(_) | |
  | | | | '_ \ / _ \ '_ \    | | | | | |
  | |_| | |_) |  __/ | | |   | | | | | |
   \___/| .__/ \___|_| |_|   |_| |_|_|_| v{}.{} [Powered By Rust]
        |_|                             
-    "###, config::APP_VERSION_MAJOR, config::APP_VERSION_MINOR));
+    "###, config::APP_VERSION_MAJOR, config::APP_VERSION_MINOR);
 }
 
 /// Returns the timestamp of the first monday BEFORE a given timestamp
@@ -47,8 +47,8 @@ pub fn logo_ascii() -> String {
 pub fn get_monday_timestamp(timestamp: i64) -> i64 {
     const SECONDS_PER_DAY:i64 = 86400;
     let naive_date = NaiveDateTime::from_timestamp(timestamp, 0);
-    let seconds_from_midnight = naive_date.num_seconds_from_midnight() as i64;
-    let days_from_monday = naive_date.weekday().num_days_from_monday() as i64;
+    let seconds_from_midnight = i64::from(naive_date.num_seconds_from_midnight());
+    let days_from_monday = i64::from(naive_date.weekday().num_days_from_monday());
     naive_date.timestamp() - (days_from_monday * SECONDS_PER_DAY) - seconds_from_midnight
 }
 
@@ -81,7 +81,7 @@ pub fn get_data_dir() -> PathBuf {
     get_app_dir().join(config::DATA_HOME).to_path_buf()
 }
 
-pub fn character_count(str_line: &String, matching_character: char) -> u32 {
+pub fn character_count(str_line: &str, matching_character: char) -> u32 {
     let mut count: u32 = 0;
     for character in str_line.chars() {
         if character == matching_character {
@@ -176,7 +176,7 @@ pub fn generate_lbx_from_product(product: &Product) -> Result<PathBuf, &'static 
         Err(x) => {return Err("Could not write complete zip write to disk")}
     }
 
-    Ok(PathBuf::from(file_path))
+    Ok(file_path)
 }
 
 pub fn hash_file(mut file: File) -> Result<String, &'static str> {
@@ -186,7 +186,7 @@ pub fn hash_file(mut file: File) -> Result<String, &'static str> {
         Err(x) => {return Err("Could not hash file returned by the function 'generate_lbx_from_product': {}")}
     };
     let hash = hasher.result();
-    println!("{:x}", hash.clone());
+    println!("{:x}", hash);
     let s = match String::from_utf8(hash.as_slice().to_vec()) {
         Ok(v) => v,
         Err(e) => {
@@ -243,7 +243,7 @@ pub fn download_update_file() {
                 let mut rdr = csv::Reader::from_reader(resp.as_bytes());
                 let mut updates_count = 0;
                 for result in rdr.deserialize() {
-                    let mut version: Version = result.expect("a CSV record");
+                    let version: Version = result.expect("a CSV record");
                     version.save();
                     if version.major > config::APP_VERSION_MAJOR || version.major == config::APP_VERSION_MAJOR && version.minor > config::APP_VERSION_MINOR {
                         updates_count += 1;
