@@ -80,6 +80,7 @@ impl Product {
             Ok(x) => Some(x),
             Err(diesel::NotFound) => None,
             Err(x) => {
+                println!("{:?}", x);
                 error!("{}", x);
                 None
             }
@@ -199,7 +200,7 @@ impl User {
             String::from(""),
             String::from(""),
             String::from(""),
-            app::hash_password(String::from("changeme")).unwrap(),
+            String::from(app::hash_password("changeme")),
             app::generate_user_code(),
         )
     }

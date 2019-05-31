@@ -12,7 +12,6 @@ extern crate blake2;
 extern crate chrono;
 extern crate csv;
 extern crate diesel_migrations;
-extern crate dotenv;
 extern crate notifica;
 extern crate printpdf;
 extern crate qrcodegen;
@@ -22,6 +21,7 @@ extern crate serde;
 extern crate serde_json;
 extern crate uuid;
 extern crate zip;
+extern crate regex;
 
 pub mod config;
 pub mod format;
@@ -36,6 +36,9 @@ mod tests {
     use models::*;
     use std::fs;
     use utils::*;
+    
+    use regex::Regex;
+
     #[test]
     fn uuid_length_test_1() {
         assert_eq!(36, String::from(uuid4().to_string()).len());
@@ -64,16 +67,18 @@ mod tests {
     }
     #[test]
     fn get_home_directory_test() {
-        if character_count(&String::from(get_home_dir().to_str().unwrap()), '\\') > 0 {
-            assert!(true);
-        }
-        assert!(false);
+        let re = Regex::new(r##"(C:\\|/home/).*[\\|/]?.*?"##).unwrap();
+        assert!(re.is_match(&get_home_dir().to_str().unwrap()));
     }
     #[test]
     fn hash_password_test() {
-        let password = String::from("Hello World");
-        let hash = hash_password(password);
-        assert_eq!(hash.unwrap(), "hello");
+        let hash = hash_password("bob");
+        assert_eq!(hash, String::from("cd424d42804ff4fb318c97baf389c840d27f6d1b42ba5318ef1935ebdfc7a5e0cad6b361ac3dc13b1e1f910643e502704f8cb5b1b7db5b2625a64569cde2"));
+    }
+    #[test]
+    fn hash_password_russian() {
+        let hash = hash_password("русский язык");
+        assert_eq!(hash, String::from("b088a0121910121d2996c5a4a658787de548c4f525a0aa9e92c7b5986bd838f465a0d5385e282f85ddce51a64c27afc8d91bb844ec70ba1a719794e6fc5b47"));
     }
     #[test]
     fn write_lbx_file_to_temp_directory() {

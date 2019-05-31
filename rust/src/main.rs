@@ -7,6 +7,9 @@ extern crate rocket_contrib;
 #[macro_use]
 extern crate log;
 
+#[macro_use]
+extern crate lazy_static;
+
 extern crate diesel;
 extern crate open_till;
 
@@ -14,10 +17,15 @@ use open_till::config;
 use open_till::models;
 use open_till::network_broadcast::{listen, send};
 use open_till::utils as app;
+use std::collections::HashMap;
+use rocket::config::{Config, Environment, Value};
 use rocket_contrib::json::Json;
 use rocket_contrib::serve::StaticFiles;
 use rocket_contrib::templates::Template;
 use std::path::Path;
+use std::sync::{Arc, Mutex};
+
+
 
 fn setup_logger() -> Result<(), fern::InitError> {
     fern::Dispatch::new()
@@ -58,6 +66,8 @@ fn index() -> Template {
 }
 
 fn main() {
+    app::hash_password("bob");
+    return;
     app::setup_file_system(); //Sets up the file system (e.g. all the folders needed for the program)
     setup_logger().expect("Cannot Setup Logger"); //Setup Fern Logger
     app::setup_database();
@@ -81,7 +91,20 @@ fn main() {
     println!("{}", app::logo_ascii()); //Print Sexy Logo
     //app::printpdf();*/
 
-    rocket::ignite()
+    let mut database_config = HashMap::new();
+    let mut databases = HashMap::new();
+
+    // This is the same as the following TOML:
+    // my_db = { url = "database.sqlite" }
+    database_config.insert("url", Value::from(app::get_data_dir().join(config::DATABASE_NAME).to_str().unwrap()));
+    databases.insert("my_db", Value::from(database_config));
+
+    let config = Config::build(Environment::Development)
+        .extra("databases", databases)
+        .finalize()
+        .unwrap();
+
+    rocket::custom(config)
         .mount("/", StaticFiles::from(app::get_web_dir()))
         .mount("/api", routes![index, login, details])
         .attach(Template::fairing())

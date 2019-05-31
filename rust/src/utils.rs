@@ -4,7 +4,6 @@ use blake2::{Blake2b, Digest};
 use chrono::{Datelike, NaiveDateTime, Timelike};
 use config;
 use diesel::{Connection, SqliteConnection};
-use dotenv::*;
 use models::Product;
 use qrcodegen::QrCode;
 use qrcodegen::QrCodeEcc;
@@ -221,13 +220,17 @@ pub fn hash_file(mut file: File) -> Result<String, &'static str> {
     Ok(s)
 }
 
-pub fn hash_password(m: String) -> Result<String, &'static str> {
-    Ok(String::from_utf8(Blake2b::digest(m.as_bytes()).as_slice().to_vec()).unwrap())
+pub fn hash_password(m: &str) -> String {
+    let mut hasher = Blake2b::new();
+    hasher.input(m.as_bytes());
+    let mut result = String::new();
+    for byte in hasher.result().iter() {
+        result.push_str(format!("{:x}", byte).as_str());
+    }
+    result.clone()
 }
 
 pub fn establish_connection() -> SqliteConnection {
-    dotenv().ok();
-
     SqliteConnection::establish(&get_data_dir().join(config::DATABASE_NAME).to_str().unwrap())
         .expect(&format!(
             "Error connecting to {:?}",
