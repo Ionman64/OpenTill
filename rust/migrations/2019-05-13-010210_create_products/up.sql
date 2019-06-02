@@ -54,3 +54,17 @@ CREATE TABLE configurations (
   config_key VARCHAR(100) NOT NULL PRIMARY KEY, 
   config_value VARCHAR(200) NOT NULL
 );
+
+CREATE TABLE departments (
+    id VARCHAR(36) NOT NULL PRIMARY KEY,
+    name VARCHAR(30) NOT NULL,
+    short_hand VARCHAR(15) NOT NULL,
+    comments varchar(200),
+    colour varchar(7) NOT NULL,
+    order_num INTEGER NOT NULL,
+    created DATETIME NOT NULL,
+    updated DATETIME NOT NULL,
+    deleted BOOLEAN NOT NULL DEFAULT false,
+    CONSTRAINT name_unique UNIQUE(name),
+    CONSTRAINT short_hand UNIQUE(short_hand)
+);

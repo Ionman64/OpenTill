@@ -2,15 +2,11 @@
 
 #[macro_use]
 extern crate rocket;
+#[macro_use]
 extern crate rocket_contrib;
-
 #[macro_use]
 extern crate log;
 
-#[macro_use]
-extern crate lazy_static;
-
-extern crate diesel;
 extern crate open_till;
 
 use open_till::config;
@@ -22,10 +18,18 @@ use rocket::config::{Config, Environment, Value};
 use rocket_contrib::json::Json;
 use rocket_contrib::serve::StaticFiles;
 use rocket_contrib::templates::Template;
+use rocket_contrib::databases::diesel;
 use std::path::Path;
 use std::sync::{Arc, Mutex};
+use diesel::SqliteConnection;
+use rocket::response::status;
+use rocket::http::Status;
+use rocket::request::Form;
+use models::NewDepartment;
 
 
+#[database("my_db")]
+struct Db(SqliteConnection);
 
 fn setup_logger() -> Result<(), fern::InitError> {
     fern::Dispatch::new()
@@ -64,10 +68,62 @@ fn index() -> Template {
     let context = models::TemplateContent::new();
     Template::render("index2", &context)
 }
+#[get("/dashboard")]
+fn dashboard() -> Template {
+    let context = models::TemplateContent::new();
+    Template::render("dashboard", &context)
+}
+
+#[get("/barcode/<code>")]
+fn barcode(conn: Db, code: String) -> Result<Json<models::Product>, rocket::response::status::NotFound<&'static str>> {
+    match models::Product::find_by_barcode(code.as_str(), &conn) {
+        Some(x) => {
+            return Ok(Json(x));
+        },
+        None => {
+            return Err(rocket::response::status::NotFound(""));
+        }
+    };
+}
+
+#[get("/departments")]
+fn get_all_departments(conn: Db) -> Result<Json<Vec<models::Department>>, rocket::response::status::Custom<&'static str>> {
+    match models::Department::get_all(&conn) {
+        Some(x) => {
+            return Ok(Json(x));
+        },
+        None => {
+            return Err(rocket::response::status::Custom(Status::InternalServerError, "Could not read departments"));
+        }
+    };
+}
+
+#[get("/department/<id>")]
+fn get_department(conn: Db, id: String) -> Result<Json<models::Department>, rocket::response::status::Custom<&'static str>> {
+    match models::Department::find_by_id(id.as_str(), &conn) {
+        Some(x) => {
+            return Ok(Json(x));
+        },
+        None => {
+            return Err(rocket::response::status::Custom(Status::NotFound, "Could not get department"));
+        }
+    };
+}
+
+#[post("/department", format = "application/json", data = "<new_department>")]
+fn insert_department(conn: Db, new_department: Json<NewDepartment>) -> Result<Json<models::Department>, rocket::response::status::Custom<&'static str>> {
+    let department = models::Department::new(new_department.0.name, new_department.0.short_hand, new_department.0.colour);
+    match department.insert(&conn) {
+        Some(x) => {
+            return Ok(Json(department));
+        },
+        None => {
+            return Err(rocket::response::status::Custom(Status::InternalServerError, "Could not create department"));
+        }
+    }   
+}
 
 fn main() {
-    app::hash_password("bob");
-    return;
     app::setup_file_system(); //Sets up the file system (e.g. all the folders needed for the program)
     setup_logger().expect("Cannot Setup Logger"); //Setup Fern Logger
     app::setup_database();
@@ -105,9 +161,11 @@ fn main() {
         .unwrap();
 
     rocket::custom(config)
+        .mount("/", routes![index, dashboard])
         .mount("/", StaticFiles::from(app::get_web_dir()))
-        .mount("/api", routes![index, login, details])
+        .mount("/api", routes![login, details, barcode, get_all_departments, insert_department, get_department])
         .attach(Template::fairing())
+        .attach(Db::fairing())
         .launch();
     info!("System started successfully");
 }

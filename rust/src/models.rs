@@ -1,16 +1,18 @@
 use schema::*;
 
 use diesel::prelude::*;
-use diesel::{Insertable, Queryable};
+use diesel::{Insertable, Queryable, SqliteConnection};
 use utils as app;
 
 use chrono::{NaiveDateTime, Utc};
-use serde::Deserialize;
+use serde::{Serialize, Deserialize};
+use rocket::request::FromRequest;
+
 
 use config;
 
 #[table_name = "products"]
-#[derive(Queryable, Insertable)]
+#[derive(Queryable, Insertable, Serialize)]
 pub struct Product {
     pub id: String,
     pub name: String,
@@ -50,9 +52,8 @@ impl Product {
     pub fn default() -> Product {
         Product::new(String::from("Unknown Product"), String::from("01"), 0)
     }
-    pub fn get_all() -> Vec<Product> {
-        let conn = app::establish_connection();
-        match products::table.load::<Product>(&conn) {
+    pub fn get_all(conn: &SqliteConnection) -> Vec<Product> {
+        match products::table.load(conn) {
             Ok(x) => x,
             Err(x) => {
                 error!("{}", x);
@@ -60,7 +61,7 @@ impl Product {
             }
         }
     }
-    pub fn find_by_id(id: &str) -> Option<Product> {
+    pub fn find_by_id(id: &str, conn: &SqliteConnection) -> Option<Product> {
         let conn = app::establish_connection();
         match products::table.find(id).get_result::<Product>(&conn) {
             Ok(x) => Some(x),
@@ -71,20 +72,18 @@ impl Product {
             }
         }
     }
-    pub fn find_by_barcode(code: &str) -> Option<Product> {
-        let conn = app::establish_connection();
+    pub fn find_by_barcode(code: &str, conn: &SqliteConnection) -> Option<Product> {
         match products::table
             .filter(products::barcode.eq(code))
-            .first::<Product>(&conn)
-        {
-            Ok(x) => Some(x),
-            Err(diesel::NotFound) => None,
-            Err(x) => {
-                println!("{:?}", x);
-                error!("{}", x);
-                None
+            .first::<Product>(conn) {
+                Ok(x) => Some(x),
+                Err(diesel::NotFound) => None,
+                Err(x) => {
+                    println!("{:?}", x);
+                    error!("{}", x);
+                    None
+                }
             }
-        }
     }
     pub fn save(&self) -> bool {
         let conn = app::establish_connection();
@@ -96,6 +95,73 @@ impl Product {
             Err(x) => {
                 error!("{}", x);
                 0
+            }
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct NewDepartment {
+    pub name: String,
+    pub short_hand: String,
+    pub comments: Option<String>,
+    pub colour: String,
+}
+
+#[table_name = "departments"]
+#[derive(Queryable, Insertable, Serialize)]
+pub struct Department {
+    pub id: String,
+    pub name: String,
+    pub short_hand: String,
+    pub comments: Option<String>,
+    pub colour: String,
+    pub order_num: i32,
+    pub updated: NaiveDateTime,
+    pub created: NaiveDateTime,
+    pub deleted: bool,
+}
+
+impl Department {
+    pub fn new(name: String, short_hand: String, colour: String) -> Department {
+        Department {
+            id: app::uuid4().to_string(),
+            name: name,
+            short_hand: short_hand,
+            comments: None,
+            colour: colour,
+            order_num: std::i32::MAX,
+            updated: Utc::now().naive_utc(),
+            created: Utc::now().naive_utc(),
+            deleted: false,
+        }
+    }
+    pub fn get_all(conn: &SqliteConnection) -> Option<Vec<Department>> {
+        match departments::table.load(conn) {
+            Ok(x) => Some(x),
+            Err(x) => {
+                error!("{}", x);
+                None
+            }
+        }
+    }
+    pub fn find_by_id(id: &str, conn: &SqliteConnection) -> Option<Department> {
+        match departments::table.find(id).get_result::<Department>(conn) {
+            Ok(x) => Some(x),
+            Err(diesel::NotFound) => None,
+            Err(x) => {
+                error!("{}", x);
+                None
+            }
+        }
+    }
+    pub fn insert(&self, conn: &SqliteConnection) -> Option<usize> {
+        match diesel::insert_into(departments::table).values(self).execute(conn)
+        {
+            Ok(x) => Some(x),
+            Err(x) => {
+                error!("{}", x);
+                None
             }
         }
     }

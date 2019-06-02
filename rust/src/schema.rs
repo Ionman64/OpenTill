@@ -6,6 +6,20 @@ table! {
 }
 
 table! {
+    departments (id) {
+        id -> Text,
+        name -> Text,
+        short_hand -> Text,
+        comments -> Nullable<Text>,
+        colour -> Text,
+        order_num -> Integer,
+        created -> Timestamp,
+        updated -> Timestamp,
+        deleted -> Bool,
+    }
+}
+
+table! {
     products (id) {
         id -> Text,
         name -> Text,
@@ -64,6 +78,7 @@ table! {
 
 allow_tables_to_appear_in_same_query!(
     configurations,
+    departments,
     products,
     servers,
     suppliers,

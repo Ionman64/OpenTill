@@ -4,6 +4,7 @@ extern crate fern;
 
 #[macro_use]
 extern crate rocket;
+#[macro_use]
 extern crate rocket_contrib;
 
 #[macro_use]
@@ -79,6 +80,11 @@ mod tests {
     fn hash_password_russian() {
         let hash = hash_password("русский язык");
         assert_eq!(hash, String::from("b088a0121910121d2996c5a4a658787de548c4f525a0aa9e92c7b5986bd838f465a0d5385e282f85ddce51a64c27afc8d91bb844ec70ba1a719794e6fc5b47"));
+    }
+    #[test]
+    fn hash_password_chinese() {
+        let hash = hash_password("你好世界");
+        assert_eq!(hash, String::from("d62b69534ae921011e6432fd499fe5074bf482aab0d422e864ebbdc444786856af13e88dbd3e89a2796c34feb145baf25c7f766cd92ec492d77e5632aac"));
     }
     #[test]
     fn write_lbx_file_to_temp_directory() {
