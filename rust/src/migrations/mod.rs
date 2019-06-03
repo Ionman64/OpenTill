@@ -39,7 +39,10 @@ const CORE_SCHEMA: &str = r##"CREATE TABLE products (
         name VARCHAR NOT NULL,
         telephone VARCHAR NOT NULL,
         website VARCHAR NOT NULL,
-        email VARCHAR NOT NULL
+        email VARCHAR NOT NULL,
+        created DATETIME NOT NULL,
+        updated DATETIME NOT NULL,
+        deleted BOOLEAN NOT NULL DEFAULT false,
     );
     CREATE TABLE users (
         id VARCHAR(36) NOT NULL PRIMARY KEY,
@@ -48,6 +51,9 @@ const CORE_SCHEMA: &str = r##"CREATE TABLE products (
         email VARCHAR NOT NULL,
         password_hash VARCHAR NOT NULL,
         code VARCHAR NOT NULL,
+        created DATETIME NOT NULL,
+        updated DATETIME NOT NULL,
+        deleted BOOLEAN NOT NULL DEFAULT false,
         CONSTRAINT code_unique UNIQUE (code)
     );
     CREATE TABLE versions (
@@ -79,6 +85,5 @@ const CORE_SCHEMA: &str = r##"CREATE TABLE products (
         updated DATETIME NOT NULL,
         deleted BOOLEAN NOT NULL DEFAULT false,
         CONSTRAINT name_unique UNIQUE(name),
-        CONSTRAINT short_hand UNIQUE(shorthand),
-        CONSTRAINT order_num UNIQUE(order_num)
+        CONSTRAINT short_hand UNIQUE(short_hand)
     );"##;

@@ -53,6 +53,9 @@ table! {
         telephone -> Text,
         website -> Text,
         email -> Text,
+        created -> Timestamp,
+        updated -> Timestamp,
+        deleted -> Bool,
     }
 }
 
@@ -64,6 +67,9 @@ table! {
         email -> Text,
         password_hash -> Text,
         code -> Text,
+        created -> Timestamp,
+        updated -> Timestamp,
+        deleted -> Bool,
     }
 }
 

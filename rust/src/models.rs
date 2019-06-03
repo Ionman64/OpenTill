@@ -100,12 +100,47 @@ impl Product {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize)]
+pub struct CustomResponse {
+    pub success: bool,
+    pub message: Option<String>
+}
+
+impl CustomResponse {
+    pub fn success() -> CustomResponse {
+        CustomResponse {success:true, message: None}
+    }
+    pub fn fail() -> CustomResponse {
+        CustomResponse {success:false, message: None}
+    }
+    pub fn fail_with_message(m: String) -> CustomResponse {
+        CustomResponse {success:false, message: Some(m)}
+    }
+}
+
+
+#[derive(Deserialize)]
+pub struct NewUser {
+    pub name: String,
+    pub telephone: String,
+    pub email: String,
+    pub password: String,
+}
+
+#[derive(Deserialize)]
 pub struct NewDepartment {
     pub name: String,
     pub short_hand: String,
     pub comments: Option<String>,
     pub colour: String,
+}
+
+#[derive(Deserialize)]
+pub struct NewSupplier {
+    pub name: String,
+    pub telephone: String,
+    pub website: String,
+    pub email: String,
 }
 
 #[table_name = "departments"]
@@ -165,16 +200,32 @@ impl Department {
             }
         }
     }
+    pub fn delete(department_id: &str, conn: &SqliteConnection) -> Option<usize> {
+        //Assets are never deleted
+        use schema::departments::dsl::*;
+        match diesel::update(departments.filter(id.eq(department_id))).set(deleted.eq(true)).execute(conn)
+        {
+            Ok(x) => Some(x),
+            Err(x) => {
+                error!("{}", x);
+                None
+            }
+        }
+    }
 }
 
 #[table_name = "suppliers"]
-#[derive(Queryable, Insertable)]
+#[derive(Queryable, Insertable, Serialize, Deserialize)]
 pub struct Supplier {
     pub id: String,
     pub name: String,
     pub telephone: String,
     pub website: String,
     pub email: String,
+    pub updated: NaiveDateTime,
+    pub created: NaiveDateTime,
+    pub deleted: bool,
+    
 }
 
 impl Supplier {
@@ -185,43 +236,56 @@ impl Supplier {
             telephone: telephone,
             website: website,
             email: email,
+            updated: Utc::now().naive_utc(),
+            created: Utc::now().naive_utc(),
+            deleted: false
         }
     }
-    pub fn get_all() -> Vec<Supplier> {
-        let conn = app::establish_connection();
-        match suppliers::table.load::<Supplier>(&conn) {
-            Ok(x) => x,
-            Err(x) => {
-                warn!("{}", x);
-                Vec::new()
-            }
-        }
-    }
-    pub fn find_by_id(id: &str) -> Option<Supplier> {
-        let conn = app::establish_connection();
-        match suppliers::table.find(id).get_result::<Supplier>(&conn) {
+    pub fn get_all(conn: &SqliteConnection) -> Option<Vec<Supplier>> {
+        match suppliers::table.load(conn) {
             Ok(x) => Some(x),
-            Err(diesel::NotFound) => None,
             Err(x) => {
-                warn!("{}", x);
+                error!("{}", x);
                 None
             }
         }
     }
-    pub fn save(&self) -> usize {
-        let conn = app::establish_connection();
-        match diesel::replace_into(suppliers::table)
-            .values(self)
-            .execute(&conn)
+    pub fn find_by_id(id: &str, conn: &SqliteConnection) -> Option<Supplier> {
+        match suppliers::table.find(id).get_result::<Supplier>(conn) {
+            Ok(x) => Some(x),
+            Err(diesel::NotFound) => None,
+            Err(x) => {
+                error!("{}", x);
+                None
+            }
+        }
+    }
+    pub fn insert(&self, conn: &SqliteConnection) -> Option<usize> {
+        match diesel::insert_into(suppliers::table).values(self).execute(conn)
         {
-            Ok(x) => x,
-            Err(_x) => 0,
+            Ok(x) => Some(x),
+            Err(x) => {
+                error!("{}", x);
+                None
+            }
+        }
+    }
+    pub fn delete(supplier_id: &str, conn: &SqliteConnection) -> Option<usize> {
+        //Assets are never deleted
+        use schema::suppliers::dsl::*;
+        match diesel::update(suppliers.filter(id.eq(supplier_id))).set(deleted.eq(true)).execute(conn)
+        {
+            Ok(x) => Some(x),
+            Err(x) => {
+                error!("{}", x);
+                None
+            }
         }
     }
 }
 
 #[table_name = "users"]
-#[derive(Queryable, Insertable)]
+#[derive(Queryable, Insertable, Serialize, Deserialize)]
 pub struct User {
     pub id: String,
     pub name: String,
@@ -229,29 +293,28 @@ pub struct User {
     pub email: String,
     pub password_hash: String,
     pub code: String,
+    pub updated: NaiveDateTime,
+    pub created: NaiveDateTime,
+    pub deleted: bool,
 }
 
 impl User {
-    pub fn new(
-        name: String,
-        telephone: String,
-        _website: String,
-        email: String,
-        password_hash: String,
-        code: String,
-    ) -> User {
+    pub fn new(name: String, telephone: String, email: String, password_hash: String) -> User {
         User {
             id: app::uuid4().to_string(),
             name: name,
             telephone: telephone,
             email: email,
             password_hash: password_hash,
-            code: code,
+            code: app::generate_user_code(),
+            updated: Utc::now().naive_utc(),
+            created: Utc::now().naive_utc(),
+            deleted: false,
+            
         }
     }
-    pub fn find_by_id(id: &String) -> Option<User> {
-        let conn = app::establish_connection();
-        match users::table.find(id).get_result::<User>(&conn) {
+    pub fn find_by_id(id: &str, conn: &SqliteConnection) -> Option<User> {
+        match users::table.find(id).get_result::<User>(conn) {
             Ok(x) => Some(x),
             Err(diesel::NotFound) => None,
             Err(x) => {
@@ -265,19 +328,38 @@ impl User {
             String::from("Unknown User"),
             String::from(""),
             String::from(""),
-            String::from(""),
             String::from(app::hash_password("changeme")),
-            app::generate_user_code(),
         )
     }
-    pub fn save(&self) -> usize {
-        let conn = app::establish_connection();
-        match diesel::replace_into(users::table)
-            .values(self)
-            .execute(&conn)
+    pub fn get_all(conn: &SqliteConnection) -> Option<Vec<User>> {
+        match users::table.load(conn) {
+            Ok(x) => Some(x),
+            Err(x) => {
+                error!("{}", x);
+                None
+            }
+        }
+    }
+    pub fn insert(&self, conn: &SqliteConnection) -> Option<usize> {
+        match diesel::insert_into(users::table).values(self).execute(conn)
         {
-            Ok(x) => x,
-            Err(_x) => 0,
+            Ok(x) => Some(x),
+            Err(x) => {
+                error!("{}", x);
+                None
+            }
+        }
+    }
+    pub fn delete(user_id: &str, conn: &SqliteConnection) -> Option<usize> {
+        //Assets are never deleted
+        use schema::users::dsl::*;
+        match diesel::update(users.filter(id.eq(user_id))).set(deleted.eq(true)).execute(conn)
+        {
+            Ok(x) => Some(x),
+            Err(x) => {
+                error!("{}", x);
+                None
+            }
         }
     }
 }
