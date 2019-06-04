@@ -1,0 +1,65 @@
+{
+    "Language": {
+        "en": "Language"
+    },
+    "Enter": {
+        "en": "Enter"
+    },
+    "Clear": {
+        "en": "Clear"
+    },
+    "No Sale": {
+        "en": "No Sale"
+    },
+    "Pay Out": {
+        "en": "Pay Out"
+    },
+    "Refund": {
+        "en": "Refund"
+    },
+    "Items": {
+        "en": "Items"
+    },
+    "Price": {
+        "en": "Price"
+    },
+    "Quantity": {
+        "en": "Quantity"
+    },
+    "Total": {
+        "en": "Total"
+    },
+    "Please type or scan your operator code": {
+        "en": "Please type or scan your operator code"
+    },
+    "CLEAR": {
+        "en": "CLEAR"
+    },
+    "OK": {
+        "en": "OK"
+    },
+    "Click here to add a new department": {
+        "en": "Click here to add a new department"
+    },
+    "No departments have been added, go to the dashboard to add them": {
+        "en": "No departments have been added, go to the dashboard to add them"
+    },
+    "No departments have been added, click here to add some": {
+        "en": "No departments have been added, click here to add some"
+    },
+    "No users have been added, click here to add some": {
+        "en":"No users have been added, click here to add some"
+    },
+    "New Department": {
+        "en":"New Department"
+    },
+    "New User": {
+        "en":"New User"
+    },
+    "Details":{
+        "en":"Details"
+    },
+    "Delete":{
+        "en":"Delete"
+    }
+}

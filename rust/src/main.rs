@@ -124,7 +124,7 @@ fn main() {
     rocket::custom(config)
         .mount("/", routes![index, dashboard])
         .mount("/", StaticFiles::from(app::get_web_dir()))
-        .mount("/api", routes![login, details, barcode])
+        .mount("/api", routes![login, details, barcode, heartbeat])
         .mount("/api/department", routes![get_all_departments, insert_department, get_department, delete_department])
         .mount("/api/user", routes![get_all_users, insert_user, get_user, delete_user])
         .mount("/api/supplier", routes![get_all_suppliers, insert_supplier, get_supplier, delete_supplier])
@@ -138,6 +138,11 @@ fn main() {
 
 #[database("my_db")]
 pub struct Db(SqliteConnection);
+
+#[get("/heartbeat")]
+pub fn heartbeat() -> Json<models::CustomResponse> {
+    Json(models::CustomResponse::success())
+}
 
 #[get("/")]
 pub fn get_all_departments(conn: Db) -> Result<Json<Vec<models::Department>>, rocket::response::status::Custom<&'static str>> {

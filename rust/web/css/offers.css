@@ -1,0 +1,56 @@
+.offers-drag-and-drop-container {
+	width:100%;
+	background:#fff;
+	height:200px;
+	border-radius:5px;
+	padding:5px;
+}
+.block {
+	cursor:pointer;
+	background:#eee;
+	height:2em;
+	padding:0.3em;
+	border-radius:5px;
+	font-family:'helvetica';
+	font-size:24px;
+	/*width:50px;*/
+	display:inline-block;
+	text-align:center;
+	margin-top:5px;
+	margin-right:5px;
+	float:left;
+}
+.condition {
+	background:#ad7fa8;
+}
+.target {
+	background:#fce94f;
+}
+.bitwise-op {
+	background:#888ee1;
+}
+.transaction {
+	background:#3465a4;
+}
+.comparator {
+	background:#e9b96e;
+}
+.value {
+	background:#3465a4;
+}
+.parenthesis {
+	background:#ad7fa8;
+}
+.assignment {
+	background:#ef2929;
+}
+
+.product-search-block {
+	width:100%;
+	background:#aaa;
+	margin-top:5px;
+	padding:5px;
+	padding-left:20px;	
+	cursor:pointer;
+}
+}

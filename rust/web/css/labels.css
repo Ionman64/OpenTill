@@ -1,0 +1,50 @@
+@media print
+{    
+	.no-print, .no-print *
+	{
+		display: none !important;
+	}
+}
+body {
+	overflow-x:hidden;		
+	height:100%;
+	width:100%;	
+	padding:2em;
+}
+#document-inner {
+	width:100%;
+	top:0;
+	left:0;
+	position:relative;
+}
+.viewport {
+	overflow-y:auto;
+}	
+.viewport * {
+	box-sizing:unset;
+}
+.navigation>ul {
+	list-style-type: none;
+	margin: 0;
+	overflow: hidden;
+	width:100%;
+	padding:3mm;
+}
+.navigation>ul>li {
+	float:left;
+	margin-right:10px;
+	cursor:pointer;
+	color:#fff;
+	font-size:4mm;
+}
+.sidebar {
+	overflow-y:auto;
+	height:100%;
+}
+#table {
+	max-height:500px;
+}
+#print-label-products {
+	padding:5px;
+	font-weight:bold;
+}

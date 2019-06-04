@@ -1,0 +1,2218 @@
+[2019-05-20][02:13:20][hyper::client::connect::dns][DEBUG] resolving host="www.goldstandardresearch.co.uk"
+[2019-05-20][02:13:20][launch][INFO] 🔧 Configured for development.
+[2019-05-20][02:13:20][launch_][INFO] address: [1;49;39mlocalhost[0m
+[2019-05-20][02:13:20][launch_][INFO] port: [1;49;39m8000[0m
+[2019-05-20][02:13:20][launch_][INFO] log: [1;49;39mnormal[0m
+[2019-05-20][02:13:20][launch_][INFO] workers: [1;49;39m24[0m
+[2019-05-20][02:13:20][launch_][INFO] secret key: [1;49;39mgenerated[0m
+[2019-05-20][02:13:20][launch_][INFO] limits: [1;49;39mforms = 32KiB[0m
+[2019-05-20][02:13:20][launch_][INFO] keep-alive: [1;49;39m5s[0m
+[2019-05-20][02:13:20][launch_][INFO] tls: [1;49;39mdisabled[0m
+[2019-05-20][02:13:20][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/[0m[35m:[0m
+[2019-05-20][02:13:20][_][INFO] [32mGET[0m [34m/[0m [[1;49;39m10[0m]
+[2019-05-20][02:13:20][_][INFO] [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][02:13:20][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/api[0m[35m:[0m
+[2019-05-20][02:13:20][_][INFO] [32mPOST[0m [34m/api/login[0m [36m([0m[35mlogin[0m[36m)[0m
+[2019-05-20][02:13:20][launch][INFO] 🚀 [1;49;39mRocket has launched from[0m [1;4;49;39mhttp://[0m[1;4;49;39mlocalhost:8000[0m
+[2019-05-20][02:13:20][hyper::server][DEBUG] threads = 24
+[2019-05-20][02:13:20][hyper::client::connect::http][DEBUG] connecting to 77.111.240.21:443
+[2019-05-20][02:13:20][tokio_reactor][DEBUG] adding I/O source: 0
+[2019-05-20][02:13:20][tokio_reactor::registration][DEBUG] scheduling Write for: 0
+[2019-05-20][02:13:20][hyper::client::connect::http][DEBUG] connected to Some(V4(77.111.240.21:443))
+[2019-05-20][02:13:20][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:13:20][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:13:20][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:13:20][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:13:20][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:13:20][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:13:20][hyper::proto::h1::io][DEBUG] flushed 141 bytes
+[2019-05-20][02:13:20][hyper::proto::h1::io][DEBUG] read 333 bytes
+[2019-05-20][02:13:20][hyper::proto::h1::io][DEBUG] parsed 12 headers
+[2019-05-20][02:13:20][hyper::proto::h1::conn][DEBUG] incoming body is content-length (16 bytes)
+[2019-05-20][02:13:20][hyper::proto::h1::conn][DEBUG] incoming body completed
+[2019-05-20][02:13:20][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:13:20][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:13:20][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:13:20][hyper::client::pool][DEBUG] pooling idle connection for "https://www.goldstandardresearch.co.uk"
+[2019-05-20][02:13:20][reqwest::async_impl::response][DEBUG] Response: '200 OK' for https://www.goldstandardresearch.co.uk/versions/versions.csv
+[2019-05-20][02:13:20][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:13:20][tokio_reactor][DEBUG] dropping I/O source: 0
+[2019-05-20][02:15:51][hyper::client::connect::dns][DEBUG] resolving host="www.goldstandardresearch.co.uk"
+[2019-05-20][02:15:51][hyper::client::connect::http][DEBUG] connecting to 77.111.240.21:443
+[2019-05-20][02:15:51][tokio_reactor][DEBUG] adding I/O source: 0
+[2019-05-20][02:15:51][tokio_reactor::registration][DEBUG] scheduling Write for: 0
+[2019-05-20][02:15:51][launch][INFO] 🔧 Configured for development.
+[2019-05-20][02:15:51][launch_][INFO] address: [1;49;39mlocalhost[0m
+[2019-05-20][02:15:51][launch_][INFO] port: [1;49;39m8000[0m
+[2019-05-20][02:15:51][launch_][INFO] log: [1;49;39mnormal[0m
+[2019-05-20][02:15:51][launch_][INFO] workers: [1;49;39m24[0m
+[2019-05-20][02:15:51][launch_][INFO] secret key: [1;49;39mgenerated[0m
+[2019-05-20][02:15:51][launch_][INFO] limits: [1;49;39mforms = 32KiB[0m
+[2019-05-20][02:15:51][launch_][INFO] keep-alive: [1;49;39m5s[0m
+[2019-05-20][02:15:51][launch_][INFO] tls: [1;49;39mdisabled[0m
+[2019-05-20][02:15:51][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/[0m[35m:[0m
+[2019-05-20][02:15:51][_][INFO] [32mGET[0m [34m/[0m [[1;49;39m10[0m]
+[2019-05-20][02:15:51][_][INFO] [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][02:15:51][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/api[0m[35m:[0m
+[2019-05-20][02:15:51][_][INFO] [32mPOST[0m [34m/api/login[0m [36m([0m[35mlogin[0m[36m)[0m
+[2019-05-20][02:15:51][launch][INFO] 🚀 [1;49;39mRocket has launched from[0m [1;4;49;39mhttp://[0m[1;4;49;39mlocalhost:8000[0m
+[2019-05-20][02:15:51][hyper::server][DEBUG] threads = 24
+[2019-05-20][02:15:51][hyper::client::connect::http][DEBUG] connected to Some(V4(77.111.240.21:443))
+[2019-05-20][02:15:51][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:15:51][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:15:51][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:15:51][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:15:51][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:15:51][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:15:51][hyper::proto::h1::io][DEBUG] flushed 141 bytes
+[2019-05-20][02:15:51][hyper::proto::h1::io][DEBUG] read 333 bytes
+[2019-05-20][02:15:52][hyper::proto::h1::io][DEBUG] parsed 12 headers
+[2019-05-20][02:15:52][hyper::proto::h1::conn][DEBUG] incoming body is content-length (16 bytes)
+[2019-05-20][02:15:52][hyper::proto::h1::conn][DEBUG] incoming body completed
+[2019-05-20][02:15:52][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:15:52][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:15:52][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:15:52][hyper::client::pool][DEBUG] pooling idle connection for "https://www.goldstandardresearch.co.uk"
+[2019-05-20][02:15:52][reqwest::async_impl::response][DEBUG] Response: '200 OK' for https://www.goldstandardresearch.co.uk/versions/versions.csv
+[2019-05-20][02:15:52][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:15:52][tokio_reactor][DEBUG] dropping I/O source: 0
+[2019-05-20][02:17:35][hyper::client::connect::dns][DEBUG] resolving host="www.goldstandardresearch.co.uk"
+[2019-05-20][02:17:35][hyper::client::connect::http][DEBUG] connecting to 77.111.240.21:443
+[2019-05-20][02:17:35][tokio_reactor][DEBUG] adding I/O source: 0
+[2019-05-20][02:17:35][tokio_reactor::registration][DEBUG] scheduling Write for: 0
+[2019-05-20][02:17:35][launch][INFO] 🔧 Configured for development.
+[2019-05-20][02:17:35][launch_][INFO] address: [1;49;39mlocalhost[0m
+[2019-05-20][02:17:35][launch_][INFO] port: [1;49;39m8000[0m
+[2019-05-20][02:17:35][launch_][INFO] log: [1;49;39mnormal[0m
+[2019-05-20][02:17:35][launch_][INFO] workers: [1;49;39m24[0m
+[2019-05-20][02:17:35][launch_][INFO] secret key: [1;49;39mgenerated[0m
+[2019-05-20][02:17:35][launch_][INFO] limits: [1;49;39mforms = 32KiB[0m
+[2019-05-20][02:17:35][launch_][INFO] keep-alive: [1;49;39m5s[0m
+[2019-05-20][02:17:35][launch_][INFO] tls: [1;49;39mdisabled[0m
+[2019-05-20][02:17:35][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/[0m[35m:[0m
+[2019-05-20][02:17:35][_][INFO] [32mGET[0m [34m/[0m [[1;49;39m10[0m]
+[2019-05-20][02:17:35][_][INFO] [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][02:17:35][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/api[0m[35m:[0m
+[2019-05-20][02:17:35][_][INFO] [32mPOST[0m [34m/api/login[0m [36m([0m[35mlogin[0m[36m)[0m
+[2019-05-20][02:17:35][launch][INFO] 🚀 [1;49;39mRocket has launched from[0m [1;4;49;39mhttp://[0m[1;4;49;39mlocalhost:8000[0m
+[2019-05-20][02:17:35][hyper::server][DEBUG] threads = 24
+[2019-05-20][02:17:35][hyper::client::connect::http][DEBUG] connected to Some(V4(77.111.240.21:443))
+[2019-05-20][02:17:35][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:17:35][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:17:35][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:17:35][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:17:35][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:17:35][hyper::proto::h1::io][DEBUG] flushed 141 bytes
+[2019-05-20][02:17:35][hyper::proto::h1::io][DEBUG] read 333 bytes
+[2019-05-20][02:17:35][hyper::proto::h1::io][DEBUG] parsed 12 headers
+[2019-05-20][02:17:35][hyper::proto::h1::conn][DEBUG] incoming body is content-length (16 bytes)
+[2019-05-20][02:17:35][hyper::proto::h1::conn][DEBUG] incoming body completed
+[2019-05-20][02:17:35][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:17:35][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:17:35][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:17:35][hyper::client::pool][DEBUG] pooling idle connection for "https://www.goldstandardresearch.co.uk"
+[2019-05-20][02:17:35][reqwest::async_impl::response][DEBUG] Response: '200 OK' for https://www.goldstandardresearch.co.uk/versions/versions.csv
+[2019-05-20][02:17:35][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:17:35][tokio_reactor][DEBUG] dropping I/O source: 0
+[2019-05-20][02:19:51][hyper::client::connect::dns][DEBUG] resolving host="www.goldstandardresearch.co.uk"
+[2019-05-20][02:19:51][hyper::client::connect::http][DEBUG] connecting to 77.111.240.21:443
+[2019-05-20][02:19:51][tokio_reactor][DEBUG] adding I/O source: 0
+[2019-05-20][02:19:51][tokio_reactor::registration][DEBUG] scheduling Write for: 0
+[2019-05-20][02:19:51][launch][INFO] 🔧 Configured for development.
+[2019-05-20][02:19:51][launch_][INFO] address: [1;49;39mlocalhost[0m
+[2019-05-20][02:19:51][launch_][INFO] port: [1;49;39m8000[0m
+[2019-05-20][02:19:51][launch_][INFO] log: [1;49;39mnormal[0m
+[2019-05-20][02:19:51][launch_][INFO] workers: [1;49;39m24[0m
+[2019-05-20][02:19:51][launch_][INFO] secret key: [1;49;39mgenerated[0m
+[2019-05-20][02:19:51][launch_][INFO] limits: [1;49;39mforms = 32KiB[0m
+[2019-05-20][02:19:51][launch_][INFO] keep-alive: [1;49;39m5s[0m
+[2019-05-20][02:19:51][launch_][INFO] tls: [1;49;39mdisabled[0m
+[2019-05-20][02:19:51][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/[0m[35m:[0m
+[2019-05-20][02:19:51][_][INFO] [32mGET[0m [34m/[0m [[1;49;39m10[0m]
+[2019-05-20][02:19:51][_][INFO] [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][02:19:51][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/api[0m[35m:[0m
+[2019-05-20][02:19:51][_][INFO] [32mPOST[0m [34m/api/login[0m [36m([0m[35mlogin[0m[36m)[0m
+[2019-05-20][02:19:51][launch][INFO] 🚀 [1;49;39mRocket has launched from[0m [1;4;49;39mhttp://[0m[1;4;49;39mlocalhost:8000[0m
+[2019-05-20][02:19:51][hyper::server][DEBUG] threads = 24
+[2019-05-20][02:19:51][hyper::client::connect::http][DEBUG] connected to Some(V4(77.111.240.21:443))
+[2019-05-20][02:19:51][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:19:51][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:19:51][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:19:51][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:19:51][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:19:51][hyper::proto::h1::io][DEBUG] flushed 141 bytes
+[2019-05-20][02:19:51][hyper::proto::h1::io][DEBUG] read 333 bytes
+[2019-05-20][02:19:51][hyper::proto::h1::io][DEBUG] parsed 12 headers
+[2019-05-20][02:19:51][hyper::proto::h1::conn][DEBUG] incoming body is content-length (16 bytes)
+[2019-05-20][02:19:51][hyper::proto::h1::conn][DEBUG] incoming body completed
+[2019-05-20][02:19:51][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:19:51][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:19:51][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:19:51][hyper::client::pool][DEBUG] pooling idle connection for "https://www.goldstandardresearch.co.uk"
+[2019-05-20][02:19:51][reqwest::async_impl::response][DEBUG] Response: '200 OK' for https://www.goldstandardresearch.co.uk/versions/versions.csv
+[2019-05-20][02:19:51][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:19:51][tokio_reactor][DEBUG] dropping I/O source: 0
+[2019-05-20][02:20:49][hyper::client::connect::dns][DEBUG] resolving host="www.goldstandardresearch.co.uk"
+[2019-05-20][02:20:49][hyper::client::connect::http][DEBUG] connecting to 77.111.240.21:443
+[2019-05-20][02:20:49][tokio_reactor][DEBUG] adding I/O source: 0
+[2019-05-20][02:20:49][tokio_reactor::registration][DEBUG] scheduling Write for: 0
+[2019-05-20][02:20:49][launch][INFO] 🔧 Configured for development.
+[2019-05-20][02:20:49][launch_][INFO] address: [1;49;39mlocalhost[0m
+[2019-05-20][02:20:49][launch_][INFO] port: [1;49;39m8000[0m
+[2019-05-20][02:20:49][launch_][INFO] log: [1;49;39mnormal[0m
+[2019-05-20][02:20:49][launch_][INFO] workers: [1;49;39m24[0m
+[2019-05-20][02:20:49][launch_][INFO] secret key: [1;49;39mgenerated[0m
+[2019-05-20][02:20:49][launch_][INFO] limits: [1;49;39mforms = 32KiB[0m
+[2019-05-20][02:20:49][launch_][INFO] keep-alive: [1;49;39m5s[0m
+[2019-05-20][02:20:49][launch_][INFO] tls: [1;49;39mdisabled[0m
+[2019-05-20][02:20:49][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/[0m[35m:[0m
+[2019-05-20][02:20:49][_][INFO] [32mGET[0m [34m/[0m [[1;49;39m10[0m]
+[2019-05-20][02:20:49][_][INFO] [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][02:20:49][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/api[0m[35m:[0m
+[2019-05-20][02:20:49][_][INFO] [32mPOST[0m [34m/api/login[0m [36m([0m[35mlogin[0m[36m)[0m
+[2019-05-20][02:20:49][launch][INFO] 🚀 [1;49;39mRocket has launched from[0m [1;4;49;39mhttp://[0m[1;4;49;39mlocalhost:8000[0m
+[2019-05-20][02:20:49][hyper::server][DEBUG] threads = 24
+[2019-05-20][02:20:49][hyper::client::connect::http][DEBUG] connected to Some(V4(77.111.240.21:443))
+[2019-05-20][02:20:49][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:20:49][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:20:49][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:20:49][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:20:49][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:20:49][hyper::proto::h1::io][DEBUG] flushed 141 bytes
+[2019-05-20][02:20:49][hyper::proto::h1::io][DEBUG] read 333 bytes
+[2019-05-20][02:20:49][hyper::proto::h1::io][DEBUG] parsed 12 headers
+[2019-05-20][02:20:49][hyper::proto::h1::conn][DEBUG] incoming body is content-length (16 bytes)
+[2019-05-20][02:20:49][hyper::proto::h1::conn][DEBUG] incoming body completed
+[2019-05-20][02:20:49][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:20:49][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:20:49][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:20:49][hyper::client::pool][DEBUG] pooling idle connection for "https://www.goldstandardresearch.co.uk"
+[2019-05-20][02:20:49][reqwest::async_impl::response][DEBUG] Response: '200 OK' for https://www.goldstandardresearch.co.uk/versions/versions.csv
+[2019-05-20][02:20:49][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:20:49][tokio_reactor][DEBUG] dropping I/O source: 0
+[2019-05-20][02:21:43][hyper::client::connect::dns][DEBUG] resolving host="www.goldstandardresearch.co.uk"
+[2019-05-20][02:21:43][hyper::client::connect::http][DEBUG] connecting to 77.111.240.21:443
+[2019-05-20][02:21:43][tokio_reactor][DEBUG] adding I/O source: 0
+[2019-05-20][02:21:43][tokio_reactor::registration][DEBUG] scheduling Write for: 0
+[2019-05-20][02:21:43][launch][INFO] 🔧 Configured for development.
+[2019-05-20][02:21:43][launch_][INFO] address: [1;49;39mlocalhost[0m
+[2019-05-20][02:21:43][launch_][INFO] port: [1;49;39m8000[0m
+[2019-05-20][02:21:43][launch_][INFO] log: [1;49;39mnormal[0m
+[2019-05-20][02:21:43][launch_][INFO] workers: [1;49;39m24[0m
+[2019-05-20][02:21:43][launch_][INFO] secret key: [1;49;39mgenerated[0m
+[2019-05-20][02:21:43][launch_][INFO] limits: [1;49;39mforms = 32KiB[0m
+[2019-05-20][02:21:43][launch_][INFO] keep-alive: [1;49;39m5s[0m
+[2019-05-20][02:21:43][launch_][INFO] tls: [1;49;39mdisabled[0m
+[2019-05-20][02:21:43][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/[0m[35m:[0m
+[2019-05-20][02:21:43][_][INFO] [32mGET[0m [34m/[0m [[1;49;39m10[0m]
+[2019-05-20][02:21:43][_][INFO] [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][02:21:43][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/api[0m[35m:[0m
+[2019-05-20][02:21:43][_][INFO] [32mPOST[0m [34m/api/login[0m [36m([0m[35mlogin[0m[36m)[0m
+[2019-05-20][02:21:43][launch][INFO] 🚀 [1;49;39mRocket has launched from[0m [1;4;49;39mhttp://[0m[1;4;49;39mlocalhost:8000[0m
+[2019-05-20][02:21:43][hyper::server][DEBUG] threads = 24
+[2019-05-20][02:21:43][hyper::client::connect::http][DEBUG] connected to Some(V4(77.111.240.21:443))
+[2019-05-20][02:21:43][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:21:43][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:21:44][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:21:44][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:21:44][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:21:44][hyper::proto::h1::io][DEBUG] flushed 141 bytes
+[2019-05-20][02:21:44][hyper::proto::h1::io][DEBUG] read 333 bytes
+[2019-05-20][02:21:44][hyper::proto::h1::io][DEBUG] parsed 12 headers
+[2019-05-20][02:21:44][hyper::proto::h1::conn][DEBUG] incoming body is content-length (16 bytes)
+[2019-05-20][02:21:44][hyper::proto::h1::conn][DEBUG] incoming body completed
+[2019-05-20][02:21:44][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:21:44][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:21:44][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:21:44][hyper::client::pool][DEBUG] pooling idle connection for "https://www.goldstandardresearch.co.uk"
+[2019-05-20][02:21:44][reqwest::async_impl::response][DEBUG] Response: '200 OK' for https://www.goldstandardresearch.co.uk/versions/versions.csv
+[2019-05-20][02:21:44][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:21:44][tokio_reactor][DEBUG] dropping I/O source: 0
+[2019-05-20][02:38:32][hyper::client::connect::dns][DEBUG] resolving host="www.goldstandardresearch.co.uk"
+[2019-05-20][02:38:32][hyper::client::connect::http][DEBUG] connecting to 77.111.240.21:443
+[2019-05-20][02:38:32][tokio_reactor][DEBUG] adding I/O source: 0
+[2019-05-20][02:38:32][tokio_reactor::registration][DEBUG] scheduling Write for: 0
+[2019-05-20][02:38:32][launch][INFO] 🔧 Configured for development.
+[2019-05-20][02:38:32][launch_][INFO] address: [1;49;39mlocalhost[0m
+[2019-05-20][02:38:32][launch_][INFO] port: [1;49;39m8000[0m
+[2019-05-20][02:38:32][launch_][INFO] log: [1;49;39mnormal[0m
+[2019-05-20][02:38:32][launch_][INFO] workers: [1;49;39m24[0m
+[2019-05-20][02:38:32][launch_][INFO] secret key: [1;49;39mgenerated[0m
+[2019-05-20][02:38:32][launch_][INFO] limits: [1;49;39mforms = 32KiB[0m
+[2019-05-20][02:38:32][launch_][INFO] keep-alive: [1;49;39m5s[0m
+[2019-05-20][02:38:32][launch_][INFO] tls: [1;49;39mdisabled[0m
+[2019-05-20][02:38:32][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/[0m[35m:[0m
+[2019-05-20][02:38:32][_][INFO] [32mGET[0m [34m/[0m [[1;49;39m10[0m]
+[2019-05-20][02:38:32][_][INFO] [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][02:38:32][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/api[0m[35m:[0m
+[2019-05-20][02:38:32][_][INFO] [32mPOST[0m [34m/api/login[0m [36m([0m[35mlogin[0m[36m)[0m
+[2019-05-20][02:38:32][launch][INFO] 🚀 [1;49;39mRocket has launched from[0m [1;4;49;39mhttp://[0m[1;4;49;39mlocalhost:8000[0m
+[2019-05-20][02:38:32][hyper::server][DEBUG] threads = 24
+[2019-05-20][02:38:32][hyper::client::connect::http][DEBUG] connected to Some(V4(77.111.240.21:443))
+[2019-05-20][02:38:32][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:38:32][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:38:32][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:38:32][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:38:32][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:38:32][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:38:32][hyper::proto::h1::io][DEBUG] flushed 141 bytes
+[2019-05-20][02:38:32][hyper::proto::h1::io][DEBUG] read 394 bytes
+[2019-05-20][02:38:32][hyper::proto::h1::io][DEBUG] parsed 12 headers
+[2019-05-20][02:38:32][hyper::proto::h1::conn][DEBUG] incoming body is content-length (77 bytes)
+[2019-05-20][02:38:32][hyper::proto::h1::conn][DEBUG] incoming body completed
+[2019-05-20][02:38:32][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:38:32][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:38:32][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:38:32][hyper::client::pool][DEBUG] pooling idle connection for "https://www.goldstandardresearch.co.uk"
+[2019-05-20][02:38:32][reqwest::async_impl::response][DEBUG] Response: '200 OK' for https://www.goldstandardresearch.co.uk/versions/versions.csv
+[2019-05-20][02:38:32][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:38:32][tokio_reactor][DEBUG] dropping I/O source: 0
+[2019-05-20][02:41:49][hyper::client::connect::dns][DEBUG] resolving host="www.goldstandardresearch.co.uk"
+[2019-05-20][02:41:49][hyper::client::connect::http][DEBUG] connecting to 77.111.240.21:443
+[2019-05-20][02:41:49][tokio_reactor][DEBUG] adding I/O source: 0
+[2019-05-20][02:41:49][tokio_reactor::registration][DEBUG] scheduling Write for: 0
+[2019-05-20][02:41:49][launch][INFO] 🔧 Configured for development.
+[2019-05-20][02:41:49][launch_][INFO] address: [1;49;39mlocalhost[0m
+[2019-05-20][02:41:49][launch_][INFO] port: [1;49;39m8000[0m
+[2019-05-20][02:41:49][launch_][INFO] log: [1;49;39mnormal[0m
+[2019-05-20][02:41:49][launch_][INFO] workers: [1;49;39m24[0m
+[2019-05-20][02:41:49][launch_][INFO] secret key: [1;49;39mgenerated[0m
+[2019-05-20][02:41:49][launch_][INFO] limits: [1;49;39mforms = 32KiB[0m
+[2019-05-20][02:41:49][launch_][INFO] keep-alive: [1;49;39m5s[0m
+[2019-05-20][02:41:49][launch_][INFO] tls: [1;49;39mdisabled[0m
+[2019-05-20][02:41:49][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/[0m[35m:[0m
+[2019-05-20][02:41:49][_][INFO] [32mGET[0m [34m/[0m [[1;49;39m10[0m]
+[2019-05-20][02:41:49][_][INFO] [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][02:41:49][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/api[0m[35m:[0m
+[2019-05-20][02:41:49][_][INFO] [32mPOST[0m [34m/api/login[0m [36m([0m[35mlogin[0m[36m)[0m
+[2019-05-20][02:41:49][launch][INFO] 🚀 [1;49;39mRocket has launched from[0m [1;4;49;39mhttp://[0m[1;4;49;39mlocalhost:8000[0m
+[2019-05-20][02:41:49][hyper::server][DEBUG] threads = 24
+[2019-05-20][02:41:49][hyper::client::connect::http][DEBUG] connected to Some(V4(77.111.240.21:443))
+[2019-05-20][02:41:49][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:41:49][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:41:49][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:41:49][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:41:49][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:41:49][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:41:49][hyper::proto::h1::io][DEBUG] flushed 141 bytes
+[2019-05-20][02:41:50][hyper::proto::h1::io][DEBUG] read 394 bytes
+[2019-05-20][02:41:50][hyper::proto::h1::io][DEBUG] parsed 12 headers
+[2019-05-20][02:41:50][hyper::proto::h1::conn][DEBUG] incoming body is content-length (77 bytes)
+[2019-05-20][02:41:50][hyper::proto::h1::conn][DEBUG] incoming body completed
+[2019-05-20][02:41:50][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:41:50][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:41:50][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:41:50][hyper::client::pool][DEBUG] pooling idle connection for "https://www.goldstandardresearch.co.uk"
+[2019-05-20][02:41:50][reqwest::async_impl::response][DEBUG] Response: '200 OK' for https://www.goldstandardresearch.co.uk/versions/versions.csv
+[2019-05-20][02:41:50][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:41:50][tokio_reactor][DEBUG] dropping I/O source: 0
+[2019-05-20][02:59:26][hyper::client::connect::dns][DEBUG] resolving host="www.goldstandardresearch.co.uk"
+[2019-05-20][02:59:26][hyper::client::connect::http][DEBUG] connecting to 77.111.240.21:443
+[2019-05-20][02:59:26][tokio_reactor][DEBUG] adding I/O source: 0
+[2019-05-20][02:59:26][tokio_reactor::registration][DEBUG] scheduling Write for: 0
+[2019-05-20][02:59:26][launch][INFO] 🔧 Configured for development.
+[2019-05-20][02:59:26][launch_][INFO] address: [1;49;39mlocalhost[0m
+[2019-05-20][02:59:26][launch_][INFO] port: [1;49;39m8000[0m
+[2019-05-20][02:59:26][launch_][INFO] log: [1;49;39mnormal[0m
+[2019-05-20][02:59:26][launch_][INFO] workers: [1;49;39m24[0m
+[2019-05-20][02:59:26][launch_][INFO] secret key: [1;49;39mgenerated[0m
+[2019-05-20][02:59:26][launch_][INFO] limits: [1;49;39mforms = 32KiB[0m
+[2019-05-20][02:59:26][launch_][INFO] keep-alive: [1;49;39m5s[0m
+[2019-05-20][02:59:26][launch_][INFO] tls: [1;49;39mdisabled[0m
+[2019-05-20][02:59:26][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/[0m[35m:[0m
+[2019-05-20][02:59:26][_][INFO] [32mGET[0m [34m/[0m [[1;49;39m10[0m]
+[2019-05-20][02:59:26][_][INFO] [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][02:59:26][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/api[0m[35m:[0m
+[2019-05-20][02:59:26][_][INFO] [32mPOST[0m [34m/api/login[0m [36m([0m[35mlogin[0m[36m)[0m
+[2019-05-20][02:59:26][launch][INFO] 🚀 [1;49;39mRocket has launched from[0m [1;4;49;39mhttp://[0m[1;4;49;39mlocalhost:8000[0m
+[2019-05-20][02:59:26][hyper::server][DEBUG] threads = 24
+[2019-05-20][02:59:26][hyper::client::connect::http][DEBUG] connected to Some(V4(77.111.240.21:443))
+[2019-05-20][02:59:26][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:59:26][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:59:26][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:59:26][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:59:26][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:59:26][hyper::proto::h1::io][DEBUG] flushed 141 bytes
+[2019-05-20][02:59:27][hyper::proto::h1::io][DEBUG] read 394 bytes
+[2019-05-20][02:59:27][hyper::proto::h1::io][DEBUG] parsed 12 headers
+[2019-05-20][02:59:27][hyper::proto::h1::conn][DEBUG] incoming body is content-length (77 bytes)
+[2019-05-20][02:59:27][hyper::proto::h1::conn][DEBUG] incoming body completed
+[2019-05-20][02:59:27][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:59:27][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:59:27][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:59:27][hyper::client::pool][DEBUG] pooling idle connection for "https://www.goldstandardresearch.co.uk"
+[2019-05-20][02:59:27][reqwest::async_impl::response][DEBUG] Response: '200 OK' for https://www.goldstandardresearch.co.uk/versions/versions.csv
+[2019-05-20][02:59:27][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][02:59:27][tokio_reactor][DEBUG] dropping I/O source: 0
+[2019-05-20][03:00:25][hyper::client::connect::dns][DEBUG] resolving host="www.goldstandardresearch.co.uk"
+[2019-05-20][03:00:25][hyper::client::connect::http][DEBUG] connecting to 77.111.240.21:443
+[2019-05-20][03:00:25][tokio_reactor][DEBUG] adding I/O source: 0
+[2019-05-20][03:00:25][launch][INFO] 🔧 Configured for development.
+[2019-05-20][03:00:25][launch_][INFO] address: [1;49;39mlocalhost[0m
+[2019-05-20][03:00:25][tokio_reactor::registration][DEBUG] scheduling Write for: 0
+[2019-05-20][03:00:25][launch_][INFO] port: [1;49;39m8000[0m
+[2019-05-20][03:00:25][launch_][INFO] log: [1;49;39mnormal[0m
+[2019-05-20][03:00:25][launch_][INFO] workers: [1;49;39m24[0m
+[2019-05-20][03:00:25][launch_][INFO] secret key: [1;49;39mgenerated[0m
+[2019-05-20][03:00:25][launch_][INFO] limits: [1;49;39mforms = 32KiB[0m
+[2019-05-20][03:00:25][launch_][INFO] keep-alive: [1;49;39m5s[0m
+[2019-05-20][03:00:25][launch_][INFO] tls: [1;49;39mdisabled[0m
+[2019-05-20][03:00:25][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/[0m[35m:[0m
+[2019-05-20][03:00:25][_][INFO] [32mGET[0m [34m/[0m [[1;49;39m10[0m]
+[2019-05-20][03:00:25][_][INFO] [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][03:00:25][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/api[0m[35m:[0m
+[2019-05-20][03:00:25][_][INFO] [32mPOST[0m [34m/api/login[0m [36m([0m[35mlogin[0m[36m)[0m
+[2019-05-20][03:00:25][launch][INFO] 🚀 [1;49;39mRocket has launched from[0m [1;4;49;39mhttp://[0m[1;4;49;39mlocalhost:8000[0m
+[2019-05-20][03:00:25][hyper::server][DEBUG] threads = 24
+[2019-05-20][03:00:25][hyper::client::connect::http][DEBUG] connected to Some(V4(77.111.240.21:443))
+[2019-05-20][03:00:25][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][03:00:25][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][03:00:25][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][03:00:25][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][03:00:25][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][03:00:25][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][03:00:25][hyper::proto::h1::io][DEBUG] flushed 141 bytes
+[2019-05-20][03:00:25][hyper::proto::h1::io][DEBUG] read 394 bytes
+[2019-05-20][03:00:25][hyper::proto::h1::io][DEBUG] parsed 12 headers
+[2019-05-20][03:00:25][hyper::proto::h1::conn][DEBUG] incoming body is content-length (77 bytes)
+[2019-05-20][03:00:25][hyper::proto::h1::conn][DEBUG] incoming body completed
+[2019-05-20][03:00:25][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][03:00:25][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][03:00:25][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][03:00:25][hyper::client::pool][DEBUG] pooling idle connection for "https://www.goldstandardresearch.co.uk"
+[2019-05-20][03:00:25][reqwest::async_impl::response][DEBUG] Response: '200 OK' for https://www.goldstandardresearch.co.uk/versions/versions.csv
+[2019-05-20][03:00:25][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][03:00:25][tokio_reactor][DEBUG] dropping I/O source: 0
+[2019-05-20][03:21:44][hyper::client::connect::dns][DEBUG] resolving host="www.goldstandardresearch.co.uk"
+[2019-05-20][03:21:44][launch][INFO] 🔧 Configured for development.
+[2019-05-20][03:21:44][launch_][INFO] address: [1;49;39mlocalhost[0m
+[2019-05-20][03:21:44][launch_][INFO] port: [1;49;39m8000[0m
+[2019-05-20][03:21:44][launch_][INFO] log: [1;49;39mnormal[0m
+[2019-05-20][03:21:44][launch_][INFO] workers: [1;49;39m24[0m
+[2019-05-20][03:21:44][launch_][INFO] secret key: [1;49;39mgenerated[0m
+[2019-05-20][03:21:44][launch_][INFO] limits: [1;49;39mforms = 32KiB[0m
+[2019-05-20][03:21:44][launch_][INFO] keep-alive: [1;49;39m5s[0m
+[2019-05-20][03:21:44][launch_][INFO] tls: [1;49;39mdisabled[0m
+[2019-05-20][03:21:44][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/[0m[35m:[0m
+[2019-05-20][03:21:44][_][INFO] [32mGET[0m [34m/[0m [[1;49;39m10[0m]
+[2019-05-20][03:21:44][_][INFO] [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][03:21:44][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/api[0m[35m:[0m
+[2019-05-20][03:21:44][_][INFO] [32mPOST[0m [34m/api/login[0m [36m([0m[35mlogin[0m[36m)[0m
+[2019-05-20][03:21:44][launch][INFO] 🚀 [1;49;39mRocket has launched from[0m [1;4;49;39mhttp://[0m[1;4;49;39mlocalhost:8000[0m
+[2019-05-20][03:21:44][hyper::server][DEBUG] threads = 24
+[2019-05-20][03:21:44][hyper::client::connect::http][DEBUG] connecting to 77.111.240.21:443
+[2019-05-20][03:21:44][tokio_reactor][DEBUG] adding I/O source: 0
+[2019-05-20][03:21:44][tokio_reactor::registration][DEBUG] scheduling Write for: 0
+[2019-05-20][03:21:44][hyper::client::connect::http][DEBUG] connected to Some(V4(77.111.240.21:443))
+[2019-05-20][03:21:44][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][03:21:44][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][03:21:44][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][03:21:44][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][03:21:44][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][03:21:44][hyper::proto::h1::io][DEBUG] flushed 141 bytes
+[2019-05-20][03:21:44][hyper::proto::h1::io][DEBUG] read 406 bytes
+[2019-05-20][03:21:44][hyper::proto::h1::io][DEBUG] parsed 12 headers
+[2019-05-20][03:21:44][hyper::proto::h1::conn][DEBUG] incoming body is content-length (89 bytes)
+[2019-05-20][03:21:44][hyper::proto::h1::conn][DEBUG] incoming body completed
+[2019-05-20][03:21:44][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][03:21:44][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][03:21:44][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][03:21:44][hyper::client::pool][DEBUG] pooling idle connection for "https://www.goldstandardresearch.co.uk"
+[2019-05-20][03:21:44][reqwest::async_impl::response][DEBUG] Response: '200 OK' for https://www.goldstandardresearch.co.uk/versions/versions.csv
+[2019-05-20][03:21:44][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][03:21:44][tokio_reactor][DEBUG] dropping I/O source: 0
+[2019-05-20][03:23:28][hyper::client::connect::dns][DEBUG] resolving host="www.goldstandardresearch.co.uk"
+[2019-05-20][03:23:28][hyper::client::connect::http][DEBUG] connecting to 77.111.240.21:443
+[2019-05-20][03:23:28][tokio_reactor][DEBUG] adding I/O source: 0
+[2019-05-20][03:23:28][tokio_reactor::registration][DEBUG] scheduling Write for: 0
+[2019-05-20][03:23:28][launch][INFO] 🔧 Configured for development.
+[2019-05-20][03:23:28][launch_][INFO] address: [1;49;39mlocalhost[0m
+[2019-05-20][03:23:28][launch_][INFO] port: [1;49;39m8000[0m
+[2019-05-20][03:23:28][launch_][INFO] log: [1;49;39mnormal[0m
+[2019-05-20][03:23:28][launch_][INFO] workers: [1;49;39m24[0m
+[2019-05-20][03:23:28][launch_][INFO] secret key: [1;49;39mgenerated[0m
+[2019-05-20][03:23:28][launch_][INFO] limits: [1;49;39mforms = 32KiB[0m
+[2019-05-20][03:23:28][launch_][INFO] keep-alive: [1;49;39m5s[0m
+[2019-05-20][03:23:28][launch_][INFO] tls: [1;49;39mdisabled[0m
+[2019-05-20][03:23:28][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/[0m[35m:[0m
+[2019-05-20][03:23:28][_][INFO] [32mGET[0m [34m/[0m [[1;49;39m10[0m]
+[2019-05-20][03:23:28][_][INFO] [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][03:23:28][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/api[0m[35m:[0m
+[2019-05-20][03:23:28][_][INFO] [32mPOST[0m [34m/api/login[0m [36m([0m[35mlogin[0m[36m)[0m
+[2019-05-20][03:23:28][launch][INFO] 🚀 [1;49;39mRocket has launched from[0m [1;4;49;39mhttp://[0m[1;4;49;39mlocalhost:8000[0m
+[2019-05-20][03:23:28][hyper::server][DEBUG] threads = 24
+[2019-05-20][03:23:28][hyper::client::connect::http][DEBUG] connected to Some(V4(77.111.240.21:443))
+[2019-05-20][03:23:28][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][03:23:28][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][03:23:28][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][03:23:28][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][03:23:28][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][03:23:28][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][03:23:28][hyper::proto::h1::io][DEBUG] flushed 141 bytes
+[2019-05-20][03:23:28][hyper::proto::h1::io][DEBUG] read 391 bytes
+[2019-05-20][03:23:28][hyper::proto::h1::io][DEBUG] parsed 12 headers
+[2019-05-20][03:23:28][hyper::proto::h1::conn][DEBUG] incoming body is content-length (74 bytes)
+[2019-05-20][03:23:28][hyper::proto::h1::conn][DEBUG] incoming body completed
+[2019-05-20][03:23:28][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][03:23:28][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][03:23:28][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][03:23:28][hyper::client::pool][DEBUG] pooling idle connection for "https://www.goldstandardresearch.co.uk"
+[2019-05-20][03:23:28][reqwest::async_impl::response][DEBUG] Response: '200 OK' for https://www.goldstandardresearch.co.uk/versions/versions.csv
+[2019-05-20][03:23:28][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][03:23:28][tokio_reactor][DEBUG] dropping I/O source: 0
+[2019-05-20][05:45:27][hyper::client::connect::dns][DEBUG] resolving host="www.goldstandardresearch.co.uk"
+[2019-05-20][05:45:27][hyper::client::connect::http][DEBUG] connecting to 77.111.240.21:443
+[2019-05-20][05:45:27][launch][INFO] 🔧 Configured for development.
+[2019-05-20][05:45:27][tokio_reactor][DEBUG] adding I/O source: 0
+[2019-05-20][05:45:27][launch_][INFO] address: [1;49;39mlocalhost[0m
+[2019-05-20][05:45:27][tokio_reactor::registration][DEBUG] scheduling Write for: 0
+[2019-05-20][05:45:27][launch_][INFO] port: [1;49;39m8000[0m
+[2019-05-20][05:45:27][launch_][INFO] log: [1;49;39mnormal[0m
+[2019-05-20][05:45:27][launch_][INFO] workers: [1;49;39m24[0m
+[2019-05-20][05:45:27][launch_][INFO] secret key: [1;49;39mgenerated[0m
+[2019-05-20][05:45:27][launch_][INFO] limits: [1;49;39mforms = 32KiB[0m
+[2019-05-20][05:45:27][launch_][INFO] keep-alive: [1;49;39m5s[0m
+[2019-05-20][05:45:27][launch_][INFO] tls: [1;49;39mdisabled[0m
+[2019-05-20][05:45:27][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/[0m[35m:[0m
+[2019-05-20][05:45:27][_][INFO] [32mGET[0m [34m/[0m [[1;49;39m10[0m]
+[2019-05-20][05:45:27][_][INFO] [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:45:27][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/api[0m[35m:[0m
+[2019-05-20][05:45:27][_][INFO] [32mPOST[0m [34m/api/login[0m [36m([0m[35mlogin[0m[36m)[0m
+[2019-05-20][05:45:27][launch][INFO] 🚀 [1;49;39mRocket has launched from[0m [1;4;49;39mhttp://[0m[1;4;49;39mlocalhost:8000[0m
+[2019-05-20][05:45:27][hyper::server][DEBUG] threads = 24
+[2019-05-20][05:45:27][hyper::client::connect::http][DEBUG] connected to Some(V4(77.111.240.21:443))
+[2019-05-20][05:45:27][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][05:45:27][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][05:45:27][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][05:45:27][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][05:45:27][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][05:45:27][hyper::proto::h1::io][DEBUG] flushed 141 bytes
+[2019-05-20][05:45:27][hyper::proto::h1::io][DEBUG] read 391 bytes
+[2019-05-20][05:45:27][hyper::proto::h1::io][DEBUG] parsed 12 headers
+[2019-05-20][05:45:27][hyper::proto::h1::conn][DEBUG] incoming body is content-length (74 bytes)
+[2019-05-20][05:45:27][hyper::proto::h1::conn][DEBUG] incoming body completed
+[2019-05-20][05:45:27][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][05:45:27][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][05:45:27][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][05:45:27][hyper::client::pool][DEBUG] pooling idle connection for "https://www.goldstandardresearch.co.uk"
+[2019-05-20][05:45:27][reqwest::async_impl::response][DEBUG] Response: '200 OK' for https://www.goldstandardresearch.co.uk/versions/versions.csv
+[2019-05-20][05:45:27][tokio_reactor::registration][DEBUG] scheduling Read for: 0
+[2019-05-20][05:45:27][tokio_reactor][DEBUG] dropping I/O source: 0
+[2019-05-20][05:46:26][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/") Http11
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Connection: keep-alive
+, Upgrade-Insecure-Requests: 1
+, }
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/[0m [33mtext/html[0m:
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: text/html; charset=utf-8
+, Server: Rocket
+, Content-Length: 11595
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 3403 bytes
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53966
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53966
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/thirdParty/animate/css/animate.css") Http11
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: text/css,*/*;q=0.1
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/thirdParty/jQuery/js/jquery.min.js") Http11
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/thirdParty/bootstrap/css/bootstrap.min.css") Http11
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/thirdParty/animate/css/animate.css[0m [33mtext/css[0m:
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/thirdParty/bootstrap/js/bootstrap.min.js") Http11
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/thirdParty/bootstrap-toggle/css/bootstrap-toggle.min.css") Http11
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: text/css,*/*;q=0.1
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/thirdParty/jQuery/js/jquery.min.js[0m:
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/thirdParty/bootstrap-toggle/js/bootstrap-toggle.min.js") Http11
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/thirdParty/bootstrap/css/bootstrap.min.css[0m [33mtext/css[0m:
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: text/css,*/*;q=0.1
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/thirdParty/bootstrap-toggle/css/bootstrap-toggle.min.css[0m [33mtext/css[0m:
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/thirdParty/bootstrap-toggle/js/bootstrap-toggle.min.js[0m:
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/thirdParty/bootstrap/js/bootstrap.min.js[0m:
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: text/css; charset=utf-8
+, Server: Rocket
+, Content-Length: 75052
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 1324 bytes
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53967
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53967
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: text/css; charset=utf-8
+, Server: Rocket
+, Content-Length: 121265
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: text/css; charset=utf-8
+, Server: Rocket
+, Content-Length: 1617
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 1617 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/thirdParty/moment/js/moment-with-locales.min.js") Http11
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53971
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/thirdParty/moment/js/moment-with-locales.min.js[0m:
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53971
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/thirdParty/touchspin/js/jquery.bootstrap-touchspin.min.js") Http11
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: application/javascript
+, Server: Rocket
+, Content-Length: 4137
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 4137 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/thirdParty/touchspin/js/jquery.bootstrap-touchspin.min.js[0m:
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53972
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 6577 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53972
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53969
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/thirdParty/jscrollpane/js/jquery.jscrollpane.min.js") Http11
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53969
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/thirdParty/jscrollpane/css/jquery.jscrollpane.css") Http11
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: text/css,*/*;q=0.1
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/thirdParty/jscrollpane/js/jquery.jscrollpane.min.js[0m:
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/thirdParty/jscrollpane/css/jquery.jscrollpane.css[0m [33mtext/css[0m:
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: text/css; charset=utf-8
+, Server: Rocket
+, Content-Length: 1493
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 1493 bytes
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53976
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53976
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: application/javascript
+, Server: Rocket
+, Content-Length: 9502
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: application/javascript
+, Server: Rocket
+, Content-Length: 36874
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/js/product_class.js") Http11
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 1310 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53974
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/js/product_class.js[0m:
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 4106 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53974
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: application/javascript
+, Server: Rocket
+, Content-Length: 14857
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: application/javascript
+, Server: Rocket
+, Content-Length: 85593
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 6665 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/css/index.css") Http11
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53970
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: text/css,*/*;q=0.1
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53970
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/css/index.css[0m [33mtext/css[0m:
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53975
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/thirdParty/font-awesome/css/font-awesome.min.css") Http11
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53975
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: text/css,*/*;q=0.1
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: application/javascript
+, Server: Rocket
+, Content-Length: 959
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/thirdParty/touchspin/css/jquery.bootstrap-touchspin.min.css") Http11
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/thirdParty/font-awesome/css/font-awesome.min.css[0m [33mtext/css[0m:
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 959 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: text/css,*/*;q=0.1
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: application/javascript
+, Server: Rocket
+, Content-Length: 225904
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/thirdParty/touchspin/css/jquery.bootstrap-touchspin.min.css[0m [33mtext/css[0m:
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 3673 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53977
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: text/css; charset=utf-8
+, Server: Rocket
+, Content-Length: 10988
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53977
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53968
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 2796 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53968
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/js/cash_register.js") Http11
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53978
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53978
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/js/cash_register.js[0m:
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/thirdParty/bootbox/js/bootbox.min.js") Http11
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: text/css; charset=utf-8
+, Server: Rocket
+, Content-Length: 26715
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/thirdParty/accounting/js/accounting.min.js") Http11
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/thirdParty/bootbox/js/bootbox.min.js[0m:
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/thirdParty/accounting/js/accounting.min.js[0m:
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 2139 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53979
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53979
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/js/transaction_class.js") Http11
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: text/css; charset=utf-8
+, Server: Rocket
+, Content-Length: 908
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 908 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: application/javascript
+, Server: Rocket
+, Content-Length: 9977
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: application/javascript
+, Server: Rocket
+, Content-Length: 3155
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/js/transaction_class.js[0m:
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: application/javascript
+, Server: Rocket
+, Content-Length: 45923
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 3155 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 1785 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53980
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53983
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53982
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53980
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53983
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53982
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 4963 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 4720 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53981
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53973
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53981
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53973
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/thirdParty/chartJS/js/chart.bundle.js") Http11
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/thirdParty/chartJS/js/chart.bundle.js[0m:
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: application/javascript
+, Server: Rocket
+, Content-Length: 4117
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 4117 bytes
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53984
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53984
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: application/javascript
+, Server: Rocket
+, Content-Length: 201589
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 4981 bytes
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53985
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53985
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/img/products/tomato.jpg") Http11
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: image/webp,*/*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/img/products/tomato.jpg[0m [33mimage/webp[0m:
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: image/jpeg
+, Server: Rocket
+, Content-Length: 2485256
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/modals/productMenuModal.jsp") Http11
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/modals/cashOut.jsp") Http11
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/modals/caseModal.jsp") Http11
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/modals/chat.jsp") Http11
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/modals/departmentInfo.jsp") Http11
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, X-Requested-With: XMLHttpRequest
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, X-Requested-With: XMLHttpRequest
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, X-Requested-With: XMLHttpRequest
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, X-Requested-With: XMLHttpRequest
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, X-Requested-With: XMLHttpRequest
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/modals/productMenuModal.jsp[0m:
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/modals/cashOut.jsp[0m:
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/modals/caseModal.jsp[0m:
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/modals/chat.jsp[0m:
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/modals/departmentInfo.jsp[0m:
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][WARN] Response was `None`.
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;31mFailure[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][WARN] Responding with [31m404 Not Found[0m catcher.
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 NotFound
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: text/html; charset=utf-8
+, Server: Rocket
+, Content-Length: 496
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 496 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53991
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53991
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Server: Rocket
+, Content-Length: 1558
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/modals/operatorInfo.jsp") Http11
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 1558 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, X-Requested-With: XMLHttpRequest
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Server: Rocket
+, Content-Length: 955
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Server: Rocket
+, Content-Length: 5510
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Server: Rocket
+, Content-Length: 1049
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/modals/operatorInfo.jsp[0m:
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 955 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53990
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 5510 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 1049 bytes
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53987
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53990
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53988
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53989
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53987
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/modals/supplierModal.jsp") Http11
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53988
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53989
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, X-Requested-With: XMLHttpRequest
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/modals/takings.jsp") Http11
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/modals/productModal.jsp") Http11
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/modals/transactionProducts.jsp") Http11
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, X-Requested-With: XMLHttpRequest
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/modals/supplierModal.jsp[0m:
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, X-Requested-With: XMLHttpRequest
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, X-Requested-With: XMLHttpRequest
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/modals/takings.jsp[0m:
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/modals/productModal.jsp[0m:
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/modals/transactionProducts.jsp[0m:
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Server: Rocket
+, Content-Length: 1981
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 1981 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53992
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53992
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/modals/newProduct.jsp") Http11
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, X-Requested-With: XMLHttpRequest
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Server: Rocket
+, Content-Length: 2003
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/modals/newProduct.jsp[0m:
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 2003 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Server: Rocket
+, Content-Length: 1153
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 1153 bytes
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Server: Rocket
+, Content-Length: 9104
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Server: Rocket
+, Content-Length: 1309
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53994
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 912 bytes
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53993
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 1309 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53995
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53994
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Server: Rocket
+, Content-Length: 4131
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53993
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 4131 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53996
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53995
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/thirdParty/font-awesome/fonts/fontawesome-webfont.woff2?v=4.4.0") Http11
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: application/font-woff2;q=1.0,application/font-woff;q=0.9,*/*;q=0.8
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: identity
+, Referer: http://localhost:8000/thirdParty/font-awesome/css/font-awesome.min.css
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/modals/priceOverrideModal.jsp") Http11
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53996
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53997
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/img/currency/uk/Fifty_Pound.jpg") Http11
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, X-Requested-With: XMLHttpRequest
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/thirdParty/font-awesome/fonts/fontawesome-webfont.woff2?v=4.4.0[0m [33mapplication/font-woff2; q=1.0[0m:
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: image/webp,*/*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/modals/priceOverrideModal.jsp[0m:
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53997
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/modals/supplierInfo.jsp") Http11
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/img/currency/uk/Fifty_Pound.jpg[0m [33mimage/webp[0m:
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, X-Requested-With: XMLHttpRequest
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/modals/weightModal.jsp") Http11
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/modals/supplierInfo.jsp[0m:
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, X-Requested-With: XMLHttpRequest
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/modals/weightModal.jsp[0m:
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: image/jpeg
+, Server: Rocket
+, Content-Length: 45568
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: font/woff2
+, Server: Rocket
+, Content-Length: 64464
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Server: Rocket
+, Content-Length: 1993
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 4608 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 1993 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 7120 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:54000
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:54001
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:54000
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:54001
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53998
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53998
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Server: Rocket
+, Content-Length: 3453
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Server: Rocket
+, Content-Length: 3442
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/img/currency/uk/Five_Pound.jpg") Http11
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/modals/orderModal.jsp") Http11
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 3453 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 3442 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: image/webp,*/*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, X-Requested-With: XMLHttpRequest
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/img/currency/uk/Two_Pound.jpg") Http11
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/img/currency/uk/Five_Pound.jpg[0m [33mimage/webp[0m:
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: image/webp,*/*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53999
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:54002
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/modals/orderModal.jsp[0m:
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/img/currency/uk/Two_Pound.jpg[0m [33mimage/webp[0m:
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53999
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:54002
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: image/jpeg
+, Server: Rocket
+, Content-Length: 35184
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/img/currency/uk/Twenty_Pence.jpg") Http11
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/img/currency/uk/One_Pound.jpg") Http11
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: image/webp,*/*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: image/jpeg
+, Server: Rocket
+, Content-Length: 26256
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: image/webp,*/*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/img/currency/uk/Twenty_Pence.jpg[0m [33mimage/webp[0m:
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/img/currency/uk/One_Pound.jpg[0m [33mimage/webp[0m:
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Server: Rocket
+, Content-Length: 1464
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 2416 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 1464 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 1680 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:54003
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: image/jpeg
+, Server: Rocket
+, Content-Length: 5089
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: image/jpeg
+, Server: Rocket
+, Content-Length: 20194
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:54004
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:54005
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 5089 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:54003
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:54004
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:54005
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:54006
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 3810 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/img/currency/uk/Twenty_Pound.jpg") Http11
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:54006
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: image/webp,*/*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:54007
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/img/currency/uk/Five_Pence.jpg") Http11
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/img/currency/uk/Two_Pence.jpg") Http11
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: image/webp,*/*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/img/currency/uk/Twenty_Pound.jpg[0m [33mimage/webp[0m:
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: image/webp,*/*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/img/currency/uk/Fifty_Pence.jpg") Http11
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:54007
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/img/currency/uk/Five_Pence.jpg[0m [33mimage/webp[0m:
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/img/currency/uk/Two_Pence.jpg[0m [33mimage/webp[0m:
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: image/webp,*/*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/img/currency/uk/Ten_Pence.jpg") Http11
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: image/webp,*/*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/img/currency/uk/Fifty_Pence.jpg[0m [33mimage/webp[0m:
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/img/currency/uk/Ten_Pence.jpg[0m [33mimage/webp[0m:
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: image/jpeg
+, Server: Rocket
+, Content-Length: 256584
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: image/jpeg
+, Server: Rocket
+, Content-Length: 4114
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 4114 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: image/jpeg
+, Server: Rocket
+, Content-Length: 9531
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: image/jpeg
+, Server: Rocket
+, Content-Length: 8234
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: image/jpeg
+, Server: Rocket
+, Content-Length: 6868
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:54009
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 1339 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 6868 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 42 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:54009
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:54010
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:54011
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:54012
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:54010
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:54012
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:54011
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/img/currency/uk/Ten_Pound.jpg") Http11
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/img/currency/uk/One_Penny.jpg") Http11
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: image/webp,*/*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: image/webp,*/*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/img/currency/uk/Ten_Pound.jpg[0m [33mimage/webp[0m:
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/img/currency/uk/One_Penny.jpg[0m [33mimage/webp[0m:
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 3080 bytes
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: image/jpeg
+, Server: Rocket
+, Content-Length: 35594
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:53986
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: image/jpeg
+, Server: Rocket
+, Content-Length: 6178
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:53986
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 6178 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:54014
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 2826 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:54014
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:54013
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:54013
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 2632 bytes
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:54008
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:54008
+[2019-05-20][05:46:27][hyper::server][DEBUG] Incoming stream
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/img/site/icon.ico") Http11
+[2019-05-20][05:46:27][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: image/webp,*/*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Connection: keep-alive
+, }
+[2019-05-20][05:46:27][rocket::rocket][INFO] [32mGET[0m [34m/img/site/icon.ico[0m [33mimage/webp[0m:
+[2019-05-20][05:46:27][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-20][05:46:27][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: image/x-icon
+, Server: Rocket
+, Content-Length: 32038
+, Date: Mon, 20 May 2019 03:46:27 GMT
+, }]
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-20][05:46:27][hyper::server::response][DEBUG] write 7462 bytes
+[2019-05-20][05:46:27][_][INFO] [32mResponse succeeded.[0m
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive = true for [::1]:54015
+[2019-05-20][05:46:27][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-20][05:46:27][hyper::server][DEBUG] keep_alive loop ending for [::1]:54015

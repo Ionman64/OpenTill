@@ -1,0 +1,690 @@
+[2019-05-16][05:24:53][launch][INFO] 🔧 Configured for development.
+[2019-05-16][05:24:53][launch_][INFO] address: [1;49;39mlocalhost[0m
+[2019-05-16][05:24:53][launch_][INFO] port: [1;49;39m8000[0m
+[2019-05-16][05:24:53][launch_][INFO] log: [1;49;39mnormal[0m
+[2019-05-16][05:24:53][launch_][INFO] workers: [1;49;39m24[0m
+[2019-05-16][05:24:53][launch_][INFO] secret key: [1;49;39mgenerated[0m
+[2019-05-16][05:24:53][launch_][INFO] limits: [1;49;39mforms = 32KiB[0m
+[2019-05-16][05:24:53][launch_][INFO] keep-alive: [1;49;39m5s[0m
+[2019-05-16][05:24:53][launch_][INFO] tls: [1;49;39mdisabled[0m
+[2019-05-16][05:24:53][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/[0m[35m:[0m
+[2019-05-16][05:24:53][_][INFO] [32mGET[0m [34m/[0m [36m([0m[35mindex[0m[36m)[0m
+[2019-05-16][05:24:53][launch][INFO] 🚀 [1;49;39mRocket has launched from[0m [1;4;49;39mhttp://[0m[1;4;49;39mlocalhost:8000[0m
+[2019-05-16][05:24:53][hyper::server][DEBUG] threads = 24
+[2019-05-16][05:25:06][hyper::server][DEBUG] Incoming stream
+[2019-05-16][05:25:06][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/") Http11
+[2019-05-16][05:25:06][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Connection: keep-alive
+, Upgrade-Insecure-Requests: 1
+, }
+[2019-05-16][05:25:06][rocket::rocket][INFO] [32mGET[0m [34m/[0m [33mtext/html[0m:
+[2019-05-16][05:25:06][_][INFO] Matched: [32mGET[0m [34m/[0m [36m([0m[35mindex[0m[36m)[0m
+[2019-05-16][05:25:06][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-16][05:25:06][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-16][05:25:06][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: text/plain; charset=utf-8
+, Server: Rocket
+, Content-Length: 13
+, Date: Thu, 16 May 2019 03:25:06 GMT
+, }]
+[2019-05-16][05:25:06][hyper::server::response][DEBUG] write 13 bytes
+[2019-05-16][05:25:06][_][INFO] [32mResponse succeeded.[0m
+[2019-05-16][05:25:06][hyper::server][DEBUG] keep_alive = true for [::1]:52138
+[2019-05-16][05:25:06][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-16][05:25:06][hyper::server][DEBUG] keep_alive loop ending for [::1]:52138
+[2019-05-16][05:25:06][hyper::server][DEBUG] Incoming stream
+[2019-05-16][05:25:06][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/favicon.ico") Http11
+[2019-05-16][05:25:06][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: image/webp,*/*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Connection: keep-alive
+, }
+[2019-05-16][05:25:06][rocket::rocket][INFO] [32mGET[0m [34m/favicon.ico[0m [33mimage/webp[0m:
+[2019-05-16][05:25:06][_][ERROR] No matching routes for [32mGET[0m [34m/favicon.ico[0m [33mimage/webp[0m.
+[2019-05-16][05:25:06][_][WARN] Responding with [31m404 Not Found[0m catcher.
+[2019-05-16][05:25:06][hyper::server::response][DEBUG] writing head: Http11 NotFound
+[2019-05-16][05:25:06][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: text/html; charset=utf-8
+, Server: Rocket
+, Content-Length: 496
+, Date: Thu, 16 May 2019 03:25:06 GMT
+, }]
+[2019-05-16][05:25:06][hyper::server::response][DEBUG] write 496 bytes
+[2019-05-16][05:25:06][_][INFO] [32mResponse succeeded.[0m
+[2019-05-16][05:25:06][hyper::server][DEBUG] keep_alive = true for [::1]:52139
+[2019-05-16][05:25:06][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-16][05:25:06][hyper::server][DEBUG] keep_alive loop ending for [::1]:52139
+[2019-05-16][05:25:11][hyper::server][DEBUG] Incoming stream
+[2019-05-16][05:25:11][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/") Http11
+[2019-05-16][05:25:11][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Connection: keep-alive
+, Upgrade-Insecure-Requests: 1
+, Cache-Control: max-age=0
+, }
+[2019-05-16][05:25:11][rocket::rocket][INFO] [32mGET[0m [34m/[0m [33mtext/html[0m:
+[2019-05-16][05:25:11][_][INFO] Matched: [32mGET[0m [34m/[0m [36m([0m[35mindex[0m[36m)[0m
+[2019-05-16][05:25:11][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-16][05:25:11][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-16][05:25:11][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: text/plain; charset=utf-8
+, Server: Rocket
+, Content-Length: 13
+, Date: Thu, 16 May 2019 03:25:11 GMT
+, }]
+[2019-05-16][05:25:11][hyper::server::response][DEBUG] write 13 bytes
+[2019-05-16][05:25:11][_][INFO] [32mResponse succeeded.[0m
+[2019-05-16][05:25:11][hyper::server][DEBUG] keep_alive = true for [::1]:52140
+[2019-05-16][05:25:11][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-16][05:25:11][hyper::server][DEBUG] keep_alive loop ending for [::1]:52140
+[2019-05-16][05:25:11][hyper::server][DEBUG] Incoming stream
+[2019-05-16][05:25:11][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-16][05:25:11][hyper::server][DEBUG] keep_alive loop ending for [::1]:52141
+[2019-05-16][05:25:12][hyper::server][DEBUG] Incoming stream
+[2019-05-16][05:25:12][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/") Http11
+[2019-05-16][05:25:12][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Connection: keep-alive
+, Upgrade-Insecure-Requests: 1
+, Cache-Control: max-age=0
+, }
+[2019-05-16][05:25:12][rocket::rocket][INFO] [32mGET[0m [34m/[0m [33mtext/html[0m:
+[2019-05-16][05:25:12][_][INFO] Matched: [32mGET[0m [34m/[0m [36m([0m[35mindex[0m[36m)[0m
+[2019-05-16][05:25:12][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-16][05:25:12][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-16][05:25:12][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: text/plain; charset=utf-8
+, Server: Rocket
+, Content-Length: 13
+, Date: Thu, 16 May 2019 03:25:12 GMT
+, }]
+[2019-05-16][05:25:12][hyper::server::response][DEBUG] write 13 bytes
+[2019-05-16][05:25:12][_][INFO] [32mResponse succeeded.[0m
+[2019-05-16][05:25:12][hyper::server][DEBUG] keep_alive = true for [::1]:52142
+[2019-05-16][05:25:12][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-16][05:25:12][hyper::server][DEBUG] keep_alive loop ending for [::1]:52142
+[2019-05-16][05:51:28][launch][INFO] 🔧 Configured for development.
+[2019-05-16][05:51:28][launch_][INFO] address: [1;49;39mlocalhost[0m
+[2019-05-16][05:51:28][launch_][INFO] port: [1;49;39m8000[0m
+[2019-05-16][05:51:28][launch_][INFO] log: [1;49;39mnormal[0m
+[2019-05-16][05:51:28][launch_][INFO] workers: [1;49;39m24[0m
+[2019-05-16][05:51:28][launch_][INFO] secret key: [1;49;39mgenerated[0m
+[2019-05-16][05:51:28][launch_][INFO] limits: [1;49;39mforms = 32KiB[0m
+[2019-05-16][05:51:28][launch_][INFO] keep-alive: [1;49;39m5s[0m
+[2019-05-16][05:51:28][launch_][INFO] tls: [1;49;39mdisabled[0m
+[2019-05-16][05:51:28][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/[0m[35m:[0m
+[2019-05-16][05:51:28][_][INFO] [32mGET[0m [34m/[0m [[1;49;39m10[0m]
+[2019-05-16][05:51:28][_][INFO] [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-16][05:51:28][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/api[0m[35m:[0m
+[2019-05-16][05:51:28][_][INFO] [32mGET[0m [34m/api[0m [36m([0m[35mindex[0m[36m)[0m
+[2019-05-16][05:51:28][launch][INFO] 🚀 [1;49;39mRocket has launched from[0m [1;4;49;39mhttp://[0m[1;4;49;39mlocalhost:8000[0m
+[2019-05-16][05:51:28][hyper::server][DEBUG] threads = 24
+[2019-05-16][05:51:31][hyper::server][DEBUG] Incoming stream
+[2019-05-16][05:51:31][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/") Http11
+[2019-05-16][05:51:31][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Connection: keep-alive
+, Upgrade-Insecure-Requests: 1
+, }
+[2019-05-16][05:51:31][rocket::rocket][INFO] [32mGET[0m [34m/[0m [33mtext/html[0m:
+[2019-05-16][05:51:31][_][INFO] Matched: [32mGET[0m [34m/[0m [[1;49;39m10[0m]
+[2019-05-16][05:51:31][_][WARN] Response was `None`.
+[2019-05-16][05:51:31][_][INFO] [1;49;39mOutcome:[0m [49;31mFailure[0m
+[2019-05-16][05:51:31][_][WARN] Responding with [31m404 Not Found[0m catcher.
+[2019-05-16][05:51:31][hyper::server::response][DEBUG] writing head: Http11 NotFound
+[2019-05-16][05:51:31][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: text/html; charset=utf-8
+, Server: Rocket
+, Content-Length: 496
+, Date: Thu, 16 May 2019 03:51:31 GMT
+, }]
+[2019-05-16][05:51:31][hyper::server::response][DEBUG] write 496 bytes
+[2019-05-16][05:51:31][_][INFO] [32mResponse succeeded.[0m
+[2019-05-16][05:51:31][hyper::server][DEBUG] keep_alive = true for [::1]:52394
+[2019-05-16][05:51:31][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-16][05:51:31][hyper::server][DEBUG] keep_alive loop ending for [::1]:52394
+[2019-05-16][05:51:31][hyper::server][DEBUG] Incoming stream
+[2019-05-16][05:51:31][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-16][05:51:31][hyper::server][DEBUG] keep_alive loop ending for [::1]:52395
+[2019-05-16][05:51:40][hyper::server][DEBUG] Incoming stream
+[2019-05-16][05:51:40][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/index.html") Http11
+[2019-05-16][05:51:40][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Connection: keep-alive
+, Upgrade-Insecure-Requests: 1
+, }
+[2019-05-16][05:51:40][rocket::rocket][INFO] [32mGET[0m [34m/index.html[0m [33mtext/html[0m:
+[2019-05-16][05:51:40][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-16][05:51:40][_][WARN] Response was `None`.
+[2019-05-16][05:51:40][_][INFO] [1;49;39mOutcome:[0m [49;31mFailure[0m
+[2019-05-16][05:51:40][_][WARN] Responding with [31m404 Not Found[0m catcher.
+[2019-05-16][05:51:40][hyper::server::response][DEBUG] writing head: Http11 NotFound
+[2019-05-16][05:51:40][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: text/html; charset=utf-8
+, Server: Rocket
+, Content-Length: 496
+, Date: Thu, 16 May 2019 03:51:40 GMT
+, }]
+[2019-05-16][05:51:40][hyper::server::response][DEBUG] write 496 bytes
+[2019-05-16][05:51:40][_][INFO] [32mResponse succeeded.[0m
+[2019-05-16][05:51:40][hyper::server][DEBUG] keep_alive = true for [::1]:52396
+[2019-05-16][05:51:40][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-16][05:51:40][hyper::server][DEBUG] keep_alive loop ending for [::1]:52396
+[2019-05-16][05:51:40][hyper::server][DEBUG] Incoming stream
+[2019-05-16][05:51:40][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-16][05:51:40][hyper::server][DEBUG] keep_alive loop ending for [::1]:52397
+[2019-05-16][05:52:50][launch][INFO] 🔧 Configured for development.
+[2019-05-16][05:52:50][launch_][INFO] address: [1;49;39mlocalhost[0m
+[2019-05-16][05:52:50][launch_][INFO] port: [1;49;39m8000[0m
+[2019-05-16][05:52:50][launch_][INFO] log: [1;49;39mnormal[0m
+[2019-05-16][05:52:50][launch_][INFO] workers: [1;49;39m24[0m
+[2019-05-16][05:52:50][launch_][INFO] secret key: [1;49;39mgenerated[0m
+[2019-05-16][05:52:50][launch_][INFO] limits: [1;49;39mforms = 32KiB[0m
+[2019-05-16][05:52:50][launch_][INFO] keep-alive: [1;49;39m5s[0m
+[2019-05-16][05:52:50][launch_][INFO] tls: [1;49;39mdisabled[0m
+[2019-05-16][05:52:50][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/[0m[35m:[0m
+[2019-05-16][05:52:50][_][INFO] [32mGET[0m [34m/[0m [[1;49;39m10[0m]
+[2019-05-16][05:52:50][_][INFO] [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-16][05:52:50][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/api[0m[35m:[0m
+[2019-05-16][05:52:50][_][INFO] [32mGET[0m [34m/api[0m [36m([0m[35mindex[0m[36m)[0m
+[2019-05-16][05:52:50][launch][INFO] 🚀 [1;49;39mRocket has launched from[0m [1;4;49;39mhttp://[0m[1;4;49;39mlocalhost:8000[0m
+[2019-05-16][05:52:50][hyper::server][DEBUG] threads = 24
+[2019-05-16][05:52:56][hyper::server][DEBUG] Incoming stream
+[2019-05-16][05:52:56][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/index.html") Http11
+[2019-05-16][05:52:56][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Connection: keep-alive
+, Upgrade-Insecure-Requests: 1
+, Cache-Control: max-age=0
+, }
+[2019-05-16][05:52:56][rocket::rocket][INFO] [32mGET[0m [34m/index.html[0m [33mtext/html[0m:
+[2019-05-16][05:52:56][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-16][05:52:56][_][WARN] Response was `None`.
+[2019-05-16][05:52:56][_][INFO] [1;49;39mOutcome:[0m [49;31mFailure[0m
+[2019-05-16][05:52:56][_][WARN] Responding with [31m404 Not Found[0m catcher.
+[2019-05-16][05:52:56][hyper::server::response][DEBUG] writing head: Http11 NotFound
+[2019-05-16][05:52:56][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: text/html; charset=utf-8
+, Server: Rocket
+, Content-Length: 496
+, Date: Thu, 16 May 2019 03:52:56 GMT
+, }]
+[2019-05-16][05:52:56][hyper::server::response][DEBUG] write 496 bytes
+[2019-05-16][05:52:56][_][INFO] [32mResponse succeeded.[0m
+[2019-05-16][05:52:56][hyper::server][DEBUG] keep_alive = true for [::1]:52401
+[2019-05-16][05:52:56][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-16][05:52:56][hyper::server][DEBUG] keep_alive loop ending for [::1]:52401
+[2019-05-16][05:52:56][hyper::server][DEBUG] Incoming stream
+[2019-05-16][05:52:56][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-16][05:52:56][hyper::server][DEBUG] keep_alive loop ending for [::1]:52402
+[2019-05-16][05:52:57][hyper::server][DEBUG] Incoming stream
+[2019-05-16][05:52:57][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/index.html") Http11
+[2019-05-16][05:52:57][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Connection: keep-alive
+, Upgrade-Insecure-Requests: 1
+, Cache-Control: max-age=0
+, }
+[2019-05-16][05:52:57][rocket::rocket][INFO] [32mGET[0m [34m/index.html[0m [33mtext/html[0m:
+[2019-05-16][05:52:57][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-16][05:52:57][_][WARN] Response was `None`.
+[2019-05-16][05:52:57][_][INFO] [1;49;39mOutcome:[0m [49;31mFailure[0m
+[2019-05-16][05:52:57][_][WARN] Responding with [31m404 Not Found[0m catcher.
+[2019-05-16][05:52:57][hyper::server::response][DEBUG] writing head: Http11 NotFound
+[2019-05-16][05:52:57][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: text/html; charset=utf-8
+, Server: Rocket
+, Content-Length: 496
+, Date: Thu, 16 May 2019 03:52:57 GMT
+, }]
+[2019-05-16][05:52:57][hyper::server::response][DEBUG] write 496 bytes
+[2019-05-16][05:52:57][_][INFO] [32mResponse succeeded.[0m
+[2019-05-16][05:52:57][hyper::server][DEBUG] keep_alive = true for [::1]:52403
+[2019-05-16][05:52:57][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-16][05:52:57][hyper::server][DEBUG] keep_alive loop ending for [::1]:52403
+[2019-05-16][05:53:19][hyper::server][DEBUG] Incoming stream
+[2019-05-16][05:53:19][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/login.html") Http11
+[2019-05-16][05:53:19][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Connection: keep-alive
+, Upgrade-Insecure-Requests: 1
+, }
+[2019-05-16][05:53:19][rocket::rocket][INFO] [32mGET[0m [34m/login.html[0m [33mtext/html[0m:
+[2019-05-16][05:53:19][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-16][05:53:19][_][WARN] Response was `None`.
+[2019-05-16][05:53:19][_][INFO] [1;49;39mOutcome:[0m [49;31mFailure[0m
+[2019-05-16][05:53:19][_][WARN] Responding with [31m404 Not Found[0m catcher.
+[2019-05-16][05:53:19][hyper::server::response][DEBUG] writing head: Http11 NotFound
+[2019-05-16][05:53:19][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: text/html; charset=utf-8
+, Server: Rocket
+, Content-Length: 496
+, Date: Thu, 16 May 2019 03:53:19 GMT
+, }]
+[2019-05-16][05:53:19][hyper::server::response][DEBUG] write 496 bytes
+[2019-05-16][05:53:19][_][INFO] [32mResponse succeeded.[0m
+[2019-05-16][05:53:19][hyper::server][DEBUG] keep_alive = true for [::1]:52404
+[2019-05-16][05:53:19][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-16][05:53:19][hyper::server][DEBUG] keep_alive loop ending for [::1]:52404
+[2019-05-16][05:53:19][hyper::server][DEBUG] Incoming stream
+[2019-05-16][05:53:19][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-16][05:53:19][hyper::server][DEBUG] keep_alive loop ending for [::1]:52405
+[2019-05-16][05:54:44][launch][INFO] 🔧 Configured for development.
+[2019-05-16][05:54:44][launch_][INFO] address: [1;49;39mlocalhost[0m
+[2019-05-16][05:54:44][launch_][INFO] port: [1;49;39m8000[0m
+[2019-05-16][05:54:44][launch_][INFO] log: [1;49;39mnormal[0m
+[2019-05-16][05:54:44][launch_][INFO] workers: [1;49;39m24[0m
+[2019-05-16][05:54:44][launch_][INFO] secret key: [1;49;39mgenerated[0m
+[2019-05-16][05:54:44][launch_][INFO] limits: [1;49;39mforms = 32KiB[0m
+[2019-05-16][05:54:44][launch_][INFO] keep-alive: [1;49;39m5s[0m
+[2019-05-16][05:54:44][launch_][INFO] tls: [1;49;39mdisabled[0m
+[2019-05-16][05:54:44][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/[0m[35m:[0m
+[2019-05-16][05:54:44][_][INFO] [32mGET[0m [34m/[0m [[1;49;39m10[0m]
+[2019-05-16][05:54:44][_][INFO] [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-16][05:54:44][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/api[0m[35m:[0m
+[2019-05-16][05:54:44][_][INFO] [32mGET[0m [34m/api[0m [36m([0m[35mindex[0m[36m)[0m
+[2019-05-16][05:54:44][launch][INFO] 🚀 [1;49;39mRocket has launched from[0m [1;4;49;39mhttp://[0m[1;4;49;39mlocalhost:8000[0m
+[2019-05-16][05:54:44][hyper::server][DEBUG] threads = 24
+[2019-05-16][05:54:49][hyper::server][DEBUG] Incoming stream
+[2019-05-16][05:54:49][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/login.html") Http11
+[2019-05-16][05:54:49][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Connection: keep-alive
+, Upgrade-Insecure-Requests: 1
+, Cache-Control: max-age=0
+, }
+[2019-05-16][05:54:49][rocket::rocket][INFO] [32mGET[0m [34m/login.html[0m [33mtext/html[0m:
+[2019-05-16][05:54:49][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-16][05:54:49][_][WARN] Response was `None`.
+[2019-05-16][05:54:49][_][INFO] [1;49;39mOutcome:[0m [49;31mFailure[0m
+[2019-05-16][05:54:49][_][WARN] Responding with [31m404 Not Found[0m catcher.
+[2019-05-16][05:54:49][hyper::server::response][DEBUG] writing head: Http11 NotFound
+[2019-05-16][05:54:49][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: text/html; charset=utf-8
+, Server: Rocket
+, Content-Length: 496
+, Date: Thu, 16 May 2019 03:54:49 GMT
+, }]
+[2019-05-16][05:54:49][hyper::server::response][DEBUG] write 496 bytes
+[2019-05-16][05:54:49][_][INFO] [32mResponse succeeded.[0m
+[2019-05-16][05:54:49][hyper::server][DEBUG] keep_alive = true for [::1]:52414
+[2019-05-16][05:54:49][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-16][05:54:49][hyper::server][DEBUG] keep_alive loop ending for [::1]:52414
+[2019-05-16][05:54:49][hyper::server][DEBUG] Incoming stream
+[2019-05-16][05:54:49][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-16][05:54:49][hyper::server][DEBUG] keep_alive loop ending for [::1]:52415
+[2019-05-16][05:56:49][launch][INFO] 🔧 Configured for development.
+[2019-05-16][05:56:49][launch_][INFO] address: [1;49;39mlocalhost[0m
+[2019-05-16][05:56:49][launch_][INFO] port: [1;49;39m8000[0m
+[2019-05-16][05:56:49][launch_][INFO] log: [1;49;39mnormal[0m
+[2019-05-16][05:56:49][launch_][INFO] workers: [1;49;39m24[0m
+[2019-05-16][05:56:49][launch_][INFO] secret key: [1;49;39mgenerated[0m
+[2019-05-16][05:56:49][launch_][INFO] limits: [1;49;39mforms = 32KiB[0m
+[2019-05-16][05:56:49][launch_][INFO] keep-alive: [1;49;39m5s[0m
+[2019-05-16][05:56:49][launch_][INFO] tls: [1;49;39mdisabled[0m
+[2019-05-16][05:56:49][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/[0m[35m:[0m
+[2019-05-16][05:56:49][_][INFO] [32mGET[0m [34m/[0m [[1;49;39m10[0m]
+[2019-05-16][05:56:49][_][INFO] [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-16][05:56:49][rocket::rocket][INFO] 🛰  [35mMounting[0m [34m/api[0m[35m:[0m
+[2019-05-16][05:56:49][_][INFO] [32mGET[0m [34m/api[0m [36m([0m[35mindex[0m[36m)[0m
+[2019-05-16][05:56:49][launch][INFO] 🚀 [1;49;39mRocket has launched from[0m [1;4;49;39mhttp://[0m[1;4;49;39mlocalhost:8000[0m
+[2019-05-16][05:56:49][hyper::server][DEBUG] threads = 24
+[2019-05-16][05:56:52][hyper::server][DEBUG] Incoming stream
+[2019-05-16][05:56:52][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/login.html") Http11
+[2019-05-16][05:56:52][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Connection: keep-alive
+, Upgrade-Insecure-Requests: 1
+, Cache-Control: max-age=0
+, }
+[2019-05-16][05:56:52][rocket::rocket][INFO] [32mGET[0m [34m/login.html[0m [33mtext/html[0m:
+[2019-05-16][05:56:52][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-16][05:56:52][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: text/html; charset=utf-8
+, Server: Rocket
+, Content-Length: 3557
+, Date: Thu, 16 May 2019 03:56:52 GMT
+, }]
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 3557 bytes
+[2019-05-16][05:56:52][_][INFO] [32mResponse succeeded.[0m
+[2019-05-16][05:56:52][hyper::server][DEBUG] keep_alive = true for [::1]:52423
+[2019-05-16][05:56:52][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-16][05:56:52][hyper::server][DEBUG] keep_alive loop ending for [::1]:52423
+[2019-05-16][05:56:52][hyper::server][DEBUG] Incoming stream
+[2019-05-16][05:56:52][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/thirdParty/jQuery/js/jquery.min.js") Http11
+[2019-05-16][05:56:52][hyper::server][DEBUG] Incoming stream
+[2019-05-16][05:56:52][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/login.html
+, Connection: keep-alive
+, }
+[2019-05-16][05:56:52][hyper::server][DEBUG] Incoming stream
+[2019-05-16][05:56:52][hyper::server][DEBUG] Incoming stream
+[2019-05-16][05:56:52][hyper::server][DEBUG] Incoming stream
+[2019-05-16][05:56:52][hyper::server][DEBUG] Incoming stream
+[2019-05-16][05:56:52][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/thirdParty/bootstrap4/js/bootstrap.min.js") Http11
+[2019-05-16][05:56:52][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/thirdParty/bootstrap4/css/bootstrap.min.css") Http11
+[2019-05-16][05:56:52][rocket::rocket][INFO] [32mGET[0m [34m/thirdParty/jQuery/js/jquery.min.js[0m:
+[2019-05-16][05:56:52][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/thirdParty/font-awesome/css/font-awesome.min.css") Http11
+[2019-05-16][05:56:52][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/css/login.css") Http11
+[2019-05-16][05:56:52][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/js/login.js") Http11
+[2019-05-16][05:56:52][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/login.html
+, Connection: keep-alive
+, }
+[2019-05-16][05:56:52][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: text/css,*/*;q=0.1
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/login.html
+, Connection: keep-alive
+, }
+[2019-05-16][05:56:52][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-16][05:56:52][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: text/css,*/*;q=0.1
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/login.html
+, Connection: keep-alive
+, }
+[2019-05-16][05:56:52][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: text/css,*/*;q=0.1
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/login.html
+, Connection: keep-alive
+, }
+[2019-05-16][05:56:52][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: */*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/login.html
+, Connection: keep-alive
+, }
+[2019-05-16][05:56:52][rocket::rocket][INFO] [32mGET[0m [34m/thirdParty/bootstrap4/js/bootstrap.min.js[0m:
+[2019-05-16][05:56:52][rocket::rocket][INFO] [32mGET[0m [34m/thirdParty/bootstrap4/css/bootstrap.min.css[0m [33mtext/css[0m:
+[2019-05-16][05:56:52][rocket::rocket][INFO] [32mGET[0m [34m/thirdParty/font-awesome/css/font-awesome.min.css[0m [33mtext/css[0m:
+[2019-05-16][05:56:52][rocket::rocket][INFO] [32mGET[0m [34m/css/login.css[0m [33mtext/css[0m:
+[2019-05-16][05:56:52][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-16][05:56:52][rocket::rocket][INFO] [32mGET[0m [34m/js/login.js[0m:
+[2019-05-16][05:56:52][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-16][05:56:52][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-16][05:56:52][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-16][05:56:52][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-16][05:56:52][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-16][05:56:52][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-16][05:56:52][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: text/css; charset=utf-8
+, Server: Rocket
+, Content-Length: 140936
+, Date: Thu, 16 May 2019 03:56:52 GMT
+, }]
+[2019-05-16][05:56:52][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: text/css; charset=utf-8
+, Server: Rocket
+, Content-Length: 26715
+, Date: Thu, 16 May 2019 03:56:52 GMT
+, }]
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: text/css; charset=utf-8
+, Server: Rocket
+, Content-Length: 836
+, Date: Thu, 16 May 2019 03:56:52 GMT
+, }]
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 836 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: application/javascript
+, Server: Rocket
+, Content-Length: 2706
+, Date: Thu, 16 May 2019 03:56:52 GMT
+, }]
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][_][INFO] [32mResponse succeeded.[0m
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 2706 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server][DEBUG] keep_alive = true for [::1]:52428
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][_][INFO] [32mResponse succeeded.[0m
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 2139 bytes
+[2019-05-16][05:56:52][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server][DEBUG] keep_alive = true for [::1]:52429
+[2019-05-16][05:56:52][_][INFO] [32mResponse succeeded.[0m
+[2019-05-16][05:56:52][hyper::server][DEBUG] keep_alive loop ending for [::1]:52428
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-16][05:56:52][hyper::server][DEBUG] keep_alive = true for [::1]:52427
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server][DEBUG] keep_alive loop ending for [::1]:52429
+[2019-05-16][05:56:52][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server][DEBUG] keep_alive loop ending for [::1]:52427
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: application/javascript
+, Server: Rocket
+, Content-Length: 51039
+, Date: Thu, 16 May 2019 03:56:52 GMT
+, }]
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: application/javascript
+, Server: Rocket
+, Content-Length: 85593
+, Date: Thu, 16 May 2019 03:56:52 GMT
+, }]
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 1672 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 1887 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][_][INFO] [32mResponse succeeded.[0m
+[2019-05-16][05:56:52][_][INFO] [32mResponse succeeded.[0m
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server][DEBUG] keep_alive = true for [::1]:52426
+[2019-05-16][05:56:52][hyper::server][DEBUG] keep_alive = true for [::1]:52425
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-16][05:56:52][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server][DEBUG] keep_alive loop ending for [::1]:52426
+[2019-05-16][05:56:52][hyper::server][DEBUG] keep_alive loop ending for [::1]:52425
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 3673 bytes
+[2019-05-16][05:56:52][_][INFO] [32mResponse succeeded.[0m
+[2019-05-16][05:56:52][hyper::server][DEBUG] keep_alive = true for [::1]:52424
+[2019-05-16][05:56:52][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-16][05:56:52][hyper::server][DEBUG] keep_alive loop ending for [::1]:52424
+[2019-05-16][05:56:52][hyper::server][DEBUG] Incoming stream
+[2019-05-16][05:56:52][hyper::server::request][DEBUG] Request Line: Post AbsolutePath("/api/kvs.jsp?function=ISLOGGEDIN") Http11
+[2019-05-16][05:56:52][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: application/json, text/javascript, */*; q=0.01
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/login.html
+, X-Requested-With: XMLHttpRequest
+, Connection: keep-alive
+, Cache-Control: max-age=0
+, Content-Length: 0
+, }
+[2019-05-16][05:56:52][rocket::rocket][INFO] [32mPOST[0m [34m/api/kvs.jsp?function=ISLOGGEDIN[0m:
+[2019-05-16][05:56:52][_][ERROR] No matching routes for [32mPOST[0m [34m/api/kvs.jsp?function=ISLOGGEDIN[0m.
+[2019-05-16][05:56:52][_][WARN] Responding with [31m404 Not Found[0m catcher.
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] writing head: Http11 NotFound
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: text/html; charset=utf-8
+, Server: Rocket
+, Content-Length: 496
+, Date: Thu, 16 May 2019 03:56:52 GMT
+, }]
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 496 bytes
+[2019-05-16][05:56:52][_][INFO] [32mResponse succeeded.[0m
+[2019-05-16][05:56:52][hyper::server][DEBUG] keep_alive = true for [::1]:52430
+[2019-05-16][05:56:52][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-16][05:56:52][hyper::server][DEBUG] keep_alive loop ending for [::1]:52430
+[2019-05-16][05:56:52][hyper::server][DEBUG] Incoming stream
+[2019-05-16][05:56:52][hyper::server::request][DEBUG] Request Line: Get AbsolutePath("/img/site/icon.ico") Http11
+[2019-05-16][05:56:52][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: image/webp,*/*
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Connection: keep-alive
+, }
+[2019-05-16][05:56:52][rocket::rocket][INFO] [32mGET[0m [34m/img/site/icon.ico[0m [33mimage/webp[0m:
+[2019-05-16][05:56:52][_][INFO] Matched: [32mGET[0m [34m/<path..>[0m [[1;49;39m10[0m]
+[2019-05-16][05:56:52][_][INFO] [1;49;39mOutcome:[0m [49;32mSuccess[0m
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] writing head: Http11 Ok
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: image/x-icon
+, Server: Rocket
+, Content-Length: 32038
+, Date: Thu, 16 May 2019 03:56:52 GMT
+, }]
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 8192 bytes
+[2019-05-16][05:56:52][hyper::server::response][DEBUG] write 7462 bytes
+[2019-05-16][05:56:52][_][INFO] [32mResponse succeeded.[0m
+[2019-05-16][05:56:52][hyper::server][DEBUG] keep_alive = true for [::1]:52431
+[2019-05-16][05:56:52][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-16][05:56:52][hyper::server][DEBUG] keep_alive loop ending for [::1]:52431
+[2019-05-16][05:57:11][hyper::server][DEBUG] Incoming stream
+[2019-05-16][05:57:11][hyper::server::request][DEBUG] Request Line: Post AbsolutePath("/api/auth/login") Http11
+[2019-05-16][05:57:11][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: application/json, text/javascript, */*; q=0.01
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/login.html
+, Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+, X-Requested-With: XMLHttpRequest
+, Content-Length: 47
+, Connection: keep-alive
+, }
+[2019-05-16][05:57:11][rocket::rocket][INFO] [32mPOST[0m [34m/api/auth/login[0m [33mapplication/x-www-form-urlencoded; charset=UTF-8[0m:
+[2019-05-16][05:57:11][_][ERROR] No matching routes for [32mPOST[0m [34m/api/auth/login[0m [33mapplication/x-www-form-urlencoded; charset=UTF-8[0m.
+[2019-05-16][05:57:11][_][WARN] Responding with [31m404 Not Found[0m catcher.
+[2019-05-16][05:57:11][hyper::server::response][DEBUG] writing head: Http11 NotFound
+[2019-05-16][05:57:11][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: text/html; charset=utf-8
+, Server: Rocket
+, Content-Length: 496
+, Date: Thu, 16 May 2019 03:57:11 GMT
+, }]
+[2019-05-16][05:57:11][hyper::server::response][DEBUG] write 496 bytes
+[2019-05-16][05:57:11][_][INFO] [32mResponse succeeded.[0m
+[2019-05-16][05:57:11][hyper::server][DEBUG] keep_alive = true for [::1]:52433
+[2019-05-16][05:57:11][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-16][05:57:11][hyper::server][DEBUG] keep_alive loop ending for [::1]:52433
+[2019-05-16][05:57:19][hyper::server][DEBUG] Incoming stream
+[2019-05-16][05:57:19][hyper::server::request][DEBUG] Request Line: Post AbsolutePath("/api/auth/login") Http11
+[2019-05-16][05:57:19][hyper::server::request][DEBUG] Headers { Host: localhost:8000
+, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+, Accept: application/json, text/javascript, */*; q=0.01
+, Accept-Language: en-US,en;q=0.5
+, Accept-Encoding: gzip, deflate
+, Referer: http://localhost:8000/login.html
+, Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+, X-Requested-With: XMLHttpRequest
+, Content-Length: 47
+, Connection: keep-alive
+, }
+[2019-05-16][05:57:19][rocket::rocket][INFO] [32mPOST[0m [34m/api/auth/login[0m [33mapplication/x-www-form-urlencoded; charset=UTF-8[0m:
+[2019-05-16][05:57:19][_][ERROR] No matching routes for [32mPOST[0m [34m/api/auth/login[0m [33mapplication/x-www-form-urlencoded; charset=UTF-8[0m.
+[2019-05-16][05:57:19][_][WARN] Responding with [31m404 Not Found[0m catcher.
+[2019-05-16][05:57:19][hyper::server::response][DEBUG] writing head: Http11 NotFound
+[2019-05-16][05:57:19][hyper::server::response][DEBUG] headers [
+Headers { Content-Type: text/html; charset=utf-8
+, Server: Rocket
+, Content-Length: 496
+, Date: Thu, 16 May 2019 03:57:19 GMT
+, }]
+[2019-05-16][05:57:19][hyper::server::response][DEBUG] write 496 bytes
+[2019-05-16][05:57:19][_][INFO] [32mResponse succeeded.[0m
+[2019-05-16][05:57:19][hyper::server][DEBUG] keep_alive = true for [::1]:52434
+[2019-05-16][05:57:19][hyper::server][DEBUG] ioerror in keepalive loop = Custom { kind: UnexpectedEof, error: StringError("end of stream before headers finished") }
+[2019-05-16][05:57:19][hyper::server][DEBUG] keep_alive loop ending for [::1]:52434
+[2019-05-16][16:30:52][open_till][INFO] System started successfully
+[2019-05-16][16:35:35][open_till][INFO] System started successfully
+[2019-05-16][18:59:15][open_till][INFO] System started successfully
+[2019-05-16][22:32:08][open_till][INFO] System started successfully
+[2019-05-16][23:17:19][open_till][INFO] System started successfully
+[2019-05-16][23:52:00][open_till][INFO] System started successfully

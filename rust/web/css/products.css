@@ -1,0 +1,85 @@
+header {
+	width:100%;
+	top:0px;
+	left:0px;
+	position:relative;
+	background-color:yellow;
+}
+header label {
+	width:100%;
+	text-align:center;
+	font-size:56px;
+	color:blue;
+	margin-left:auto;
+	margin-right:auto;
+}
+section.productTitle {
+	position:absolute;
+	width:100%;
+	height:40px;
+	left:0px;
+	top:0px;
+	background-color:yello;
+}
+table.products {
+	border-width: 1px;
+	border-spacing: 2px;
+	border-style: solid;
+	border-color: black;
+	border-collapse: collapse;
+	background-color: white;
+}
+table.products th {
+	text-align:left;
+	font-size:24px;
+	border-width: 1px;
+	padding: 1px;
+	border-style: inset;
+	border-color: gray;
+	background-color: white;
+	-moz-border-radius: ;
+}
+table.products td {
+	border-width: 1px;
+	padding: 1px;
+	border-style: inset;
+	border-color: gray;
+	background-color: white;
+	-moz-border-radius: ;
+}
+section.productLabel {
+	top:0px;
+	left:0px;
+	height:35mm;
+	width:65mm;
+	border:5px solid blue;
+}
+.productName {
+	position:relative;
+	left:5px;
+	font-family:'arial';
+	top:10px;
+	font-size:20px;
+	display:block;
+	text-align:center;
+	margin-left: auto;
+    margin-right: auto;
+}
+.productPrice {
+	position:relative;
+	bottom:3px;
+	display:block;
+	text-align:center;
+	margin-top:10px;
+	margin-left: auto;
+    margin-right: auto;
+	font-size:72px;
+}
+.barcode {
+    top: 5px;
+	left:5px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+}

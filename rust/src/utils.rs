@@ -14,6 +14,7 @@ use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::{fs, io, str, thread};
 use uuid::Uuid;
+use std::env;
 
 use printpdf::*;
 use std::io::BufWriter;
@@ -61,9 +62,9 @@ pub fn show_notification(title: &str, message: &str) {
 }
 
 pub fn get_home_dir() -> PathBuf {
-    match dirs::home_dir() {
-        Some(x) => x,
-        None => panic!("Cannot find home directory"),
+    match env::current_dir() {
+        Ok(x) => x,
+        Err(x) => panic!("Cannot find home directory"),
     }
 }
 

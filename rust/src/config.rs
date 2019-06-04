@@ -2,7 +2,7 @@
 
 pub const APP_NAME: &str = "OpenTill";
 
-pub const APP_HOME: &str = ".rustic";
+pub const APP_HOME: &str = "";
 pub const LOG_HOME: &str = "logs";
 pub const UPDATES_HOME: &str = "updates";
 pub const TEMP_HOME: &str = "temp";
