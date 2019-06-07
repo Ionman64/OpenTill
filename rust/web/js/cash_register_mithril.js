@@ -6,7 +6,8 @@ function main() {
 	window.playSound = true;
 	m.route(document.body, "/login", {
 		"/login": Login,
-		"/register": Register
+		"/register": Register,
+		"/language": Language,
 	});
 }
 
@@ -28,6 +29,14 @@ function isUndefined(m) {
 	return false;
 }
 
+function isCurrency(currency) {
+	var pattern = /^\d+(?:\.\d{0,2})$/;
+	if (pattern.test(currency)) {
+		return true;
+	}
+	return false;
+}
+
 function beep() {
 	if (!window.playSound) {
 		return false;
@@ -42,6 +51,10 @@ function formatMoney(amount, prefix) {
 	}
 	var prefix = prefix || "";
 	return accounting.formatMoney(amount, prefix);
+}
+
+function openDrawer() {
+	document.createElement("img").src = ("http://localhost:8888/drawer" + '?' + $.param({ "open_drawer": true }));
 }
 
 var Keypad = {
@@ -128,47 +141,6 @@ var Keypad = {
 	}
 }
 
-var Departments = {
-	departments: [],
-	oninit: function () {
-		m.request({
-			url: "api/department",
-			method: "GET"
-		}).then(function (data) {
-			Departments.departments = data;
-		}).catch(function (e) {
-			Logger.error(e);
-		});
-	},
-	view: function (vnode) {
-		if (isZeroLength(this.departments)) {
-			return m(".container-fluid.no-padding", [
-				m(".row-fluid", [
-					m(".custom-fill-parent.bg-warning.p-1.text-center", [
-						m("label", Translate.translate("No departments have been added, go to the dashboard to add them"))
-					])
-				])
-			]);
-		}
-		else {
-			return m(".container-fluid.no-padding", [
-				m(".row", [
-					this.departments.map(function (department, y) {
-						return m(".col-lg-4.col-md-6.col-sm-6.col-xs-6", [
-							m(".card.rounded-0", [
-								m(".card-body.bg-light.text-center.p-3", [
-									m("b", department.name),
-									m(".custom-color-badge", {style:format("background-color:{0}", department.colour)})
-								])
-							])
-						])
-					})
-				])
-			]);
-		}
-	}
-}
-
 function getMetaContentByName(name, content) {
 	var content = (content == null) ? 'content' : content;
 	return document.querySelector("meta[property='" + name + "']").getAttribute(content);
@@ -191,7 +163,7 @@ var Login = {
 								m("p.text-info.float-left", "Version " + getMetaContentByName("APP_VERSION_MAJOR") + "." + getMetaContentByName("APP_VERSION_MINOR"))
 							]),
 							m(".col-lg-6.col-md-6.col-sm-6.col-xs-12", [
-								m("p.text-info.float-right", Translate.translate("Language"))
+								m("a[href='/language'].text-info.float-right", {onupdate:m.route.link, oncreate:m.route.link}, Translate.translate("Language"))
 							])
 						])
 					])
@@ -201,26 +173,45 @@ var Login = {
 	}
 }
 
-var KeypadMoney = {
+var SidePanel = {
 	currentValue: [],
-	submit: function (e) {
-		var code = document.getElementById("barcode").value;
+	selectedDepartment: undefined,
+	departments: [],
+	oninit: function () {
 		m.request({
-			url: "api/barcode/" + code,
+			url: "api/department",
 			method: "GET"
 		}).then(function (data) {
-			console.log(data);
+			SidePanel.departments = data;
 		}).catch(function (e) {
-			Logger.error(e.message);
-		})
+			Logger.error(e);
+		});
+	},
+	submit: function (e) {
+		let code = document.getElementById("barcode").value;
+		if (isCurrency(code)) {
+			if (isUndefined(SidePanel.selectedDepartment)) {
+
+			}
+		}
+		else {
+			m.request({
+				url: "api/barcode/" + code,
+				method: "GET"
+			}).then(function (data) {
+				console.log(data);
+			}).catch(function (e) {
+				Logger.error(e.message);
+			})
+		}
 		return false;
 	},
 	clear: function () {
-		KeypadMoney.currentValue = [];
+		SidePanel.currentValue = [];
 	},
 	click: function (e) {
 		let value = e.target.getAttribute("data-number");
-		KeypadMoney.currentValue.push(value);
+		SidePanel.currentValue.push(value);
 	},
 	view: function () {
 		var count = 0;
@@ -235,29 +226,53 @@ var KeypadMoney = {
 			]),
 			m(".keypad", [
 				m(".container-fluid.no-padding", [
-					m(".row", [
+					m(".row.mt-1", [
 						m(".col-lg-4.col-md-4.col-sm-4.col-xs-4", [
-							m("button.btn.btn-danger.btn-block.mt-1", { onclick: this.clear }, Translate.translate("Clear"))
+							m("button.btn.btn-danger.btn-block", { onclick: this.clear }, Translate.translate("Clear"))
 						]),
 						m(".col-lg-4.col-md-4.col-sm-4.col-xs-4", [
-							m("button.btn.btn-default.btn-block.mt-1", Translate.translate("No Sale"))
+							m("button.btn.btn-default.btn-block", Translate.translate("No Sale"))
 						]),
 						m(".col-lg-4.col-md-4.col-sm-4.col-xs-4", [
-							m("button.btn.btn-info.btn-block.mt-1", Translate.translate("Pay Out"))
+							m("button.btn.btn-info.btn-block", Translate.translate("Pay Out"))
 						]),
 					]),
 					m(".row", [
 						[7, 8, 9, 4, 5, 6, 1, 2, 3, 0, "00"].map(function (number) {
-							return m(".col-lg-4.col-md-4.col-sm-4.col-xs-4", [
-								m("button.btn.btn-default.btn-block.mt-1", { "data-number": number, onclick: KeypadMoney.click }, number)
+							return m(".col-lg-4.col-md-4.col-sm-4.col-xs-4.mt-1", [
+								m("button.btn.btn-default.btn-block", { "data-number": number, onclick: SidePanel.click }, number)
 							])
 						}),
-						m(".col-lg-4.col-md-4.col-sm-4.col-xs-4", [
-							m("button.btn.btn-default.btn-block.mt-1", Translate.translate("Refund"))
+						m(".col-lg-4.col-md-4.col-sm-4.col-xs-4.mt-1", [
+							m("button.btn.btn-default.btn-block", Translate.translate("Refund"))
 						])
 					])
 				])
-			])
+			]),
+			isZeroLength(this.departments) ? () => {
+				return m(".departments", m(".container-fluid.no-padding", [
+					m(".row-fluid", [
+						m(".custom-fill-parent.bg-warning.p-1.text-center", [
+							m("label", Translate.translate("No departments have been added, go to the dashboard to add them"))
+						])
+					])
+				]));
+			} :
+				m(".departments", m(".container-fluid.no-padding", [
+					m(".row", [
+						this.departments.map(function (department, y) {
+							return m(".col-lg-4.col-md-6.col-sm-6.col-xs-6", [
+								m(".card.rounded-0", [
+									m(".card-body.bg-light.text-center.p-3", [
+										m("b", department.name),
+										m(".custom-color-badge", { style: format("background-color:{0}", department.colour) })
+									])
+								])
+							])
+						})
+					])
+				])
+				)
 		]);
 	}
 }
@@ -305,12 +320,7 @@ var Register = {
 				m(".col-lg-3.col-md-3.col-sm-6.col-xs-6", [
 					m(".row", [
 						m(".col-lg-12.col-md-12.col-sm-12.col-xs-12", [
-							m(KeypadMoney)
-						])
-					]),
-					m(".row.mt-2", [
-						m(".col-lg-12.col-md-12.col-sm-12.col-xs-12", [
-							m(Departments)
+							m(SidePanel)
 						])
 					])
 				]),
@@ -325,11 +335,40 @@ var Register = {
 							m("p.text-info.float-left", { onclick: () => { Register.showMenu = !Register.showMenu } }, m("i.fa.fa-bars.fa-2x"))
 						]),
 						m(".col-lg-6.col-md-6.col-sm-6.col-xs-12", [
-							m("p.text-info.float-right", Translate.translate("Language"))
+							m("a[href='/language'].text-info.float-right", {onupdate:m.route.link, oncreate:m.route.link}, Translate.translate("Language"))
 						])
 					])
 				])
 			])
 		])
+	}
+}
+
+var Language = {
+	languages: [],
+	oninit: function() {
+		m.request({
+			url:"api/language",
+			method:"GET"
+		}).then(function(data) {
+			Language.languages = data;
+		}).catch(function(e) {
+			Logger.error(e);
+		});
+	},
+	set_language: function(e) {
+		Translate.setLanguage(e.target.getAttribute("data-code"));
+		m.route.set("/register");
+	},
+	view: function () {
+		return m("container-fluid", [
+			m(".row", [
+				m(".col-lg-12.col-md-12.col-sm-12.col-xs-12", [
+					m("ul.list-group", this.languages.map(function(language) {
+						return m("li.list-group-item", {"data-code":language.code, onclick:Language.set_language}, language.name);	
+					}))	
+				])
+			])
+		])	
 	}
 }

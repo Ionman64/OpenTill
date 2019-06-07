@@ -25,6 +25,7 @@ function main() {
         "/sales/:year/:month": SalesView,
         "/transactions": TransactionsView,
         "/products": ProductsView,
+        "/case/add": AddCase,
         "/departments": DepartmentsView,
         "/department/add": NewDepartment,
         "/department/:id": SelectedDepartment,
@@ -219,6 +220,47 @@ var TransactionsView = {
     }
 }
 
+var AddCase = {
+    submit: function() {
+        m.request({
+            url:"api/case",
+            method:"POST",
+            data:getFormData(this)
+        }).then(function(data) {
+            document.getElementById("newCase").reset();
+        }).catch(function(e) {
+            alert(e);
+            Logger.error(e);
+        })
+        return false;
+    },
+    view:function() {
+        return m(".container-fluid", [
+            m(".row", [
+                m(".col-lg-12.col-md-12.col-sm-12.col-xs-12", [
+                    m("form#newCase.form", {onsubmit:this.submit}, [
+                        m(".input-group", [
+                            m("label", "Case barcode"),
+                            m("input[type='text'][name='barcode'][required].form-control-lg")
+                        ]),
+                        m(".input-group", [
+                            m("label", "Product barcode"),
+                            m("input[type='text'][name='product_barcode'][required].form-control-lg")
+                        ]),
+                        m(".input-group", [
+                            m("label", "Number of items"),
+                            m("input[type='number'][name='units'][required].form-control-lg")
+                        ]),
+                        m("input[type='submit'].btn.btn-default.btn-lg", {"value":"Save"}),
+                        m("input[type='reset'].btn.btn-default.btn-lg", {"value":"Reset"})
+                    ])
+                ])
+            ])
+        ])
+    }
+}
+
+
 var ProductsView = {
     view: function (vnode) {
         return m(".container-fluid", [
@@ -226,7 +268,7 @@ var ProductsView = {
                 m(".col-lg-2.col-md-2.col-sm-4.d-xs-none", [
                     m(".card.fill", { style: "height:80vh;margin-top:1em;" }, [
                         m(".card-body", [
-                            m("label", "Filter")
+                            m("button[href='/case/add'].btn.btn-primary.btn-block", {oncreate:m.route.link, onupdate:m.route.link}, "Add case")
                         ])
                     ])
                 ]),
@@ -293,11 +335,16 @@ var DepartmentsView = {
         else {
             return m(".container-fluid", [
                 m(".row", [
-                    m(".col-lg-12.col-md-12.col-sm-12.col-xs-12", [
+                    m(".col-lg-2.col-md-2.col-sm-4.d-xs-none", [
+                        m(".card.fill", { style: "height:80vh;margin-top:1em;" }, [
+                            m(".card-body", [
+                                m("button[href='/department/add'].btn.btn-primary.btn-block", { oncreate: m.route.link, onupdate: m.route.link }, Translate.translate("New Department"))
+
+                            ])
+                        ])
+                    ]),
+                    m(".col-lg-10.col-md-10.col-sm-8.col-xs-12", [
                         m(".container-fluid", [
-                            m(".row", [
-                                m("button[href='/department/add'].btn.btn-primary.btn-lg", { oncreate: m.route.link, onupdate: m.route.link }, Translate.translate("New Department"))
-                            ]),
                             m(".row", [
                                 this.departments.map(function (department, y) {
                                     return m(".col-lg-3.col-md-4.col-sm-6.col-xs-12", [
@@ -311,14 +358,7 @@ var DepartmentsView = {
                                             ])
                                         ])
                                     ]);
-                                }),
-                                m(".col-lg-3.col-md-4.col-sm-6.col-xs-12", [
-                                    m("div[href='/department/add'].card.card-default.rounded-0.bg-secondary", { oncreate: m.route.link, onupdate: m.route.link, style: "margin-top:1em;" }, [
-                                        m(".card-body", [
-                                            m("label", Translate.translate("Click here to add a new department"))
-                                        ])
-                                    ])
-                                ])
+                                })
                             ])
                         ])
                     ])
@@ -528,24 +568,24 @@ var NavigationView = {
                     m("a.navbar-brand[href='/']", "OpenTill v2.0"),
                     m("section#navbarCollapse.collapse.navbar-collapse", [
                         m(".navbar-nav", [
-                            m("a[href='/home']", { class: isSameValue(m.route.get(), "/home") ? "nav-item nav-link active" : "nav-item nav-link", onupdate: m.route.link, oncreate: m.route.link }, "Home"),
-                            m("a[href='/overview']", { class: isSameValue(m.route.get(), "/overview") ? "nav-item nav-link active" : "nav-item nav-link", onupdate: m.route.link, oncreate: m.route.link }, "Overview"),
-                            m("a[href='/sales']", { class: isSameValue(m.route.get(), "/sales") ? "nav-item nav-link active" : "nav-item nav-link", onupdate: m.route.link, oncreate: m.route.link }, "Sales"),
-                            m("a[href='/transactions']", { class: isSameValue(m.route.get(), "/transactions") ? "nav-item nav-link active" : "nav-item nav-link", onupdate: m.route.link, oncreate: m.route.link }, "Transactions"),
-                            m("a[href='/products']", { class: isSameValue(m.route.get(), "/products") ? "nav-item nav-link active" : "nav-item nav-link", onupdate: m.route.link, oncreate: m.route.link }, "Products"),
-                            m("a[href='/departments']", { class: isSameValue(m.route.get(), "/departments") ? "nav-item nav-link active" : "nav-item nav-link", onupdate: m.route.link, oncreate: m.route.link }, "Departments"),
-                            m("a[href='/orders']", { class: isSameValue(m.route.get(), "/orders") ? "nav-item nav-link active" : "nav-item nav-link", onupdate: m.route.link, oncreate: m.route.link }, "Orders"),
-                            m("a[href='/users']", { class: isSameValue(m.route.get(), "/users") ? "nav-item nav-link active" : "nav-item nav-link", onupdate: m.route.link, oncreate: m.route.link }, "Users"),
-                            m("a[href='/suppliers']", { class: isSameValue(m.route.get(), "/suppliers") ? "nav-item nav-link active" : "nav-item nav-link", onupdate: m.route.link, oncreate: m.route.link }, "Suppliers"),
-                            m("a[href='/cloud']", { class: isSameValue(m.route.get(), "/cloud") ? "nav-item nav-link active" : "nav-item nav-link", onupdate: m.route.link, oncreate: m.route.link }, "Cloud"),
-                            m("a[href='/settings']", { class: isSameValue(m.route.get(), "/settings") ? "nav-item nav-link active" : "nav-item nav-link", onupdate: m.route.link, oncreate: m.route.link }, "Settings"),
+                            m("a[href='/home']", { class: isSameValue(m.route.get(), "/home") ? "nav-item nav-link active" : "nav-item nav-link", onupdate: m.route.link, oncreate: m.route.link }, Translate.translate("Home")),
+                            m("a[href='/overview']", { class: isSameValue(m.route.get(), "/overview") ? "nav-item nav-link active" : "nav-item nav-link", onupdate: m.route.link, oncreate: m.route.link }, Translate.translate("Overview")),
+                            m("a[href='/sales']", { class: isSameValue(m.route.get(), "/sales") ? "nav-item nav-link active" : "nav-item nav-link", onupdate: m.route.link, oncreate: m.route.link }, Translate.translate("Sales")),
+                            m("a[href='/transactions']", { class: isSameValue(m.route.get(), "/transactions") ? "nav-item nav-link active" : "nav-item nav-link", onupdate: m.route.link, oncreate: m.route.link }, Translate.translate("Transactions")),
+                            m("a[href='/products']", { class: isSameValue(m.route.get(), "/products") ? "nav-item nav-link active" : "nav-item nav-link", onupdate: m.route.link, oncreate: m.route.link }, Translate.translate("Products")),
+                            m("a[href='/departments']", { class: isSameValue(m.route.get(), "/departments") ? "nav-item nav-link active" : "nav-item nav-link", onupdate: m.route.link, oncreate: m.route.link }, Translate.translate("Departments")),
+                            m("a[href='/orders']", { class: isSameValue(m.route.get(), "/orders") ? "nav-item nav-link active" : "nav-item nav-link", onupdate: m.route.link, oncreate: m.route.link }, Translate.translate("Orders")),
+                            m("a[href='/users']", { class: isSameValue(m.route.get(), "/users") ? "nav-item nav-link active" : "nav-item nav-link", onupdate: m.route.link, oncreate: m.route.link }, Translate.translate("Users")),
+                            m("a[href='/suppliers']", { class: isSameValue(m.route.get(), "/suppliers") ? "nav-item nav-link active" : "nav-item nav-link", onupdate: m.route.link, oncreate: m.route.link }, Translate.translate("Suppliers")),
+                            m("a[href='/cloud']", { class: isSameValue(m.route.get(), "/cloud") ? "nav-item nav-link active" : "nav-item nav-link", onupdate: m.route.link, oncreate: m.route.link }, Translate.translate("Cloud")),
+                            m("a[href='/settings']", { class: isSameValue(m.route.get(), "/settings") ? "nav-item nav-link active" : "nav-item nav-link", onupdate: m.route.link, oncreate: m.route.link }, Translate.translate("Settings")),
                         ]),
                     ]),
                     m("span#user-name.navbar-text.text-info.pull-right", "Unknown User"),
                 ]),
             ]),
             m(".row", [
-                m("input[type='text'].form-control.navbar-search.bg-dark.text-info.rounded-0", { placeholder: "Search...", style: "margin-top:56px;", value: this.searchQuery, onkeyup: this.search })
+                m("input[type='text'].form-control.navbar-search.bg-dark.text-info.rounded-0", { placeholder: Translate.translate("Search..."), style: "margin-top:56px;", value: this.searchQuery, onkeyup: this.search })
             ]),
             !isZero(this.searchQuery.length) ? m.fragment({}, [
                 m(".search-overlay.bg-dark.text-white", [
@@ -667,7 +707,12 @@ var CloudView = {
             "connected": true,
         },
         "nodes": [
-            { "name": "Cashier 1", "ip_address": "192.168.1.1" }
+            { "id":"a", "name": "Cashier 1", "ip_address": "192.168.1.1", "total":"127.43", "cashier":{"name":"Janet", "picture":"img/site/350.png"}, "resources":[]},
+            { "id":"b", "name": "Cashier 2", "ip_address": "192.168.1.2", "total":"127.43", "cashier":{"name":"Janet", "picture":"img/site/350.png"}},
+            { "id":"c", "name": "Cashier 3", "ip_address": "192.168.1.3", "total":"127.43", "cashier":{"name":"Mavis", "picture":"img/site/350.png"}},
+            { "id":"d", "name": "Cashier 1", "ip_address": "192.168.1.1", "total":"127.43", "cashier":{"name":"Janet", "picture":"img/site/350.png"}},
+            { "id":"e", "name": "Cashier 2", "ip_address": "192.168.1.2", "total":"127.43", "cashier":{"name":"Janet", "picture":"img/site/350.png"}},
+            { "id":"f", "name": "Cashier 3", "ip_address": "192.168.1.3", "total":"127.43", "cashier":{"name":"Janet", "picture":"img/site/350.png"}},
         ]
     },
     fetch: function () {
@@ -683,17 +728,40 @@ var CloudView = {
     view: function () {
         return m(".container-fluid", [
             m(".row", [
-                m("col-lg-12.col-md-12.col-sm-12.col-xs-12.text-center", [
-                    m(".fas.fa-cloud.fa-5x"),
+                m(".col-lg-12.col-md-12.col-sm-12.col-xs-12.text-center", [
+                    this.status.cloud.connected ? m("i.fas.fa-cloud.fa-10x.text-success") : m("i.fas.fa-cloud.fa-10x.text-danger"),
                     this.status.cloud.connected ? m("p.text-success", Translate.translate("Cloud Connected")) : m("p.text-danger", Translate.translate("Cloud Disconnected"))
                 ])
             ]),
-            m(".row",
-                //add a card deck here with the nodes
+            m(".row-fluid",
+                m(".card-columns", 
                 this.status.nodes.map(function (node) {
-                    return m("p", "node");
+                    return m(".card", [
+                        m(".card-body", [
+                            m("h5.card-title", node.name),
+                            m("table.table", [
+                                m("tbody", [
+                                    m("tr", [
+                                        m("td", Translate.translate("Cashier")),
+                                        m("td", m(format("a[href='/user/{0}']", node.id), {onupdate:m.route.link, oncreate:m.route.link}, node.cashier.name))
+                                    ]),
+                                    m("tr", [
+                                        m("td", Translate.translate("Ip Address")),
+                                        m("td", node.ip_address)
+                                    ]),
+                                    m("tr", [
+                                        m("td", Translate.translate("Total")),
+                                        m("td", formatMoney(node.total))
+                                    ])
+                                ])
+                            ])
+                        ]),
+                        m(".card-footer", [
+                            m("small.text-success", "Connected | Up to date")
+                        ])
+                    ]);
                 })
-            )
+            ))
         ]);
     }
 }

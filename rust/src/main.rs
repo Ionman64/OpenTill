@@ -124,10 +124,11 @@ fn main() {
     rocket::custom(config)
         .mount("/", routes![index, dashboard])
         .mount("/", StaticFiles::from(app::get_web_dir()))
-        .mount("/api", routes![login, details, barcode, heartbeat])
+        .mount("/api", routes![login, details, barcode, heartbeat, get_language])
         .mount("/api/department", routes![get_all_departments, insert_department, get_department, delete_department])
         .mount("/api/user", routes![get_all_users, insert_user, get_user, delete_user])
         .mount("/api/supplier", routes![get_all_suppliers, insert_supplier, get_supplier, delete_supplier])
+        .mount("/api/case", routes![insert_case])
         .attach(Template::fairing())
         .attach(Db::fairing())
         .launch();
@@ -289,4 +290,30 @@ pub fn delete_supplier(conn: Db, id: String) -> Result<Json<models::CustomRespon
             return Err(rocket::response::status::Custom(Status::InternalServerError, "Could not create supplier"));
         }
     }   
+}
+
+#[post("/", format = "application/json", data = "<new_case>")]
+pub fn insert_case(conn: Db, new_case: Json<models::NewCase>) -> Result<Json<models::CustomResponse>, rocket::response::status::Custom<&'static str>> {
+    let case = models::Case::new(new_case.0.barcode, new_case.0.product_barcode, new_case.0.units);
+    match case.insert(&conn) {
+        Some(x) => {
+            return Ok(Json(models::CustomResponse::success()));
+        },
+        None => {
+            return Err(rocket::response::status::Custom(Status::InternalServerError, "Could not create supplier"));
+        }
+    }   
+}
+
+
+
+#[get("/language")]
+pub fn get_language() -> Json<Vec<models::Language>> {
+    let mut languages = Vec::new();
+    languages.push(models::Language::new("English", "en"));
+    languages.push(models::Language::new("Deutsch", "de"));
+    languages.push(models::Language::new("汉语", "ch"));
+    languages.push(models::Language::new("Français", "fr"));
+    languages.push(models::Language::new("Svenska", "sv"));
+    Json(languages)
 }

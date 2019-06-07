@@ -42,7 +42,7 @@ const CORE_SCHEMA: &str = r##"CREATE TABLE products (
         email VARCHAR NOT NULL,
         created DATETIME NOT NULL,
         updated DATETIME NOT NULL,
-        deleted BOOLEAN NOT NULL DEFAULT false,
+        deleted BOOLEAN NOT NULL DEFAULT false
     );
     CREATE TABLE users (
         id VARCHAR(36) NOT NULL PRIMARY KEY,
@@ -86,4 +86,13 @@ const CORE_SCHEMA: &str = r##"CREATE TABLE products (
         deleted BOOLEAN NOT NULL DEFAULT false,
         CONSTRAINT name_unique UNIQUE(name),
         CONSTRAINT short_hand UNIQUE(short_hand)
+    );
+    CREATE TABLE cases (
+        id VARCHAR(36) NOT NULL PRIMARY KEY,
+        barcode VARCHAR NOT NULL UNIQUE,
+        product_barcode VARCHAR NOT NULL,
+        units INTEGER NOT NULL,
+        created DATETIME NOT NULL,
+        updated DATETIME NOT NULL,
+        deleted BOOLEAN NOT NULL DEFAULT false
     );"##;

@@ -176,6 +176,7 @@ function getFormData(formEl) {
 	formEl.querySelectorAll("input[type=checkbox][name], input[type=radio][name], input[name], select[name], textarea[name], input[type=hidden][name], input[type=password][name], input[type=color][name], input[type=date][name], input[type=datetime-local][name], input[type=email][name], input[type=number][name], input[type=datetime][name], input[type=month][name], input[type=range][name], input[type=search][name], input[type=tel][name], time[name], input[type=url][name], input[type=week][name]").forEach(function (el) {
 		let key = el.getAttribute("name");
 		let value = ["checkbox", "radio"].indexOf(el.getAttribute("type")) > -1 ? el.checked : el.value;
+		value = isSameValue(el.getAttribute("type"), "number") ? parseInt(el.value) : el.value; 
 		if (!isUndefined(arr[key])) {
 			if (!isArray(arr[key])) {
 				arr[key] = [arr[key]];

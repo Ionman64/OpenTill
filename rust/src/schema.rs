@@ -20,6 +20,18 @@ table! {
 }
 
 table! {
+    cases (id) {
+        id -> Text,
+        barcode -> Text,
+        product_barcode -> Text,
+        units -> Integer,
+        created -> Timestamp,
+        updated -> Timestamp,
+        deleted -> Bool,
+    }
+}
+
+table! {
     products (id) {
         id -> Text,
         name -> Text,
@@ -90,4 +102,5 @@ allow_tables_to_appear_in_same_query!(
     suppliers,
     users,
     versions,
+    cases,
 );
