@@ -1,0 +1,78 @@
+[
+    {
+        "id": "2c4c41f8-0331-47df-bd22-cb15d9ac6964",
+        "cashier": {
+            "id": "2c4c41f8-0331-47df-bd22-cb15d9ac6966",
+            "name": "Janet",
+            "type": "Cashier"
+        },
+        "customer": {
+            "id": "2c4c41f8-0331-47df-bd22-cb15d9ac6942",
+            "name": "Bob"
+        },
+        "time": null,
+        "offer": [
+            {
+                "id": "2c4c41f8-0331-47df-bd22-cb15d3ac6942",
+                "name": "BOGOF",
+                "reduction": 10
+            }
+        ],
+        "card_given": 0,
+        "cash_given": 0,
+        "discounts": [
+            {
+                "id": "2c4c41f8-0331-47df-bd22-cb15d3ac6942",
+                "name": "Staff Discount",
+                "reduction": 10
+            }
+        ],
+        "in_progress": false,
+        "items": [
+            {
+                "type": 1,
+                "id": "Guid",
+                "price": 0,
+                "name": "Cheese",
+                "quantity": 2,
+                "offers": [
+                    {
+                        "id": "2c4c41f8-0331-47df-bd22-cb15d3ac6942",
+                        "name": "2 for 1",
+                        "reduction": 5
+                    }
+                ],
+                "discounts": [
+                    {
+                        "id": "2c4c41f8-0331-47df-bd22-cb15d3ac6942",
+                        "name": "Tuesday Cheese Day",
+                        "reduction": 5
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "2c4c41f8-0331-47df-bd22-cb15d9ac6965",
+        "cashier": "2c4c41f8-0331-47df-bd22-cb15d9ac6966",
+        "customer": null,
+        "time": "DateTime",
+        "offer": null,
+        "card_given": 0,
+        "cash_given": 0,
+        "discounts": [],
+        "in_progress": false,
+        "items": [
+            {
+                "type": 1,
+                "id": "Guid",
+                "price": 0,
+                "name": "Cheese",
+                "quantity": 1,
+                "offers": [],
+                "discounts": [],
+                "reduction": 0
+            }
+        ]
+    }
+]

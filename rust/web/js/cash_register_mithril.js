@@ -6,7 +6,7 @@ function main() {
 	window.playSound = true;
 	m.route(document.body, "/login", {
 		"/login": Login,
-		"/register": Register,
+		"/register": RegisterView,
 		"/language": Language,
 	});
 }
@@ -76,7 +76,7 @@ var Keypad = {
 	},
 	hideMessages: function () {
 		Keypad.showErrorPanel = false,
-			Keypad.showSuccessPanel = false;
+		Keypad.showSuccessPanel = false;
 	},
 	showSuccess: function () {
 		Keypad.showErrorPanel = false,
@@ -84,19 +84,22 @@ var Keypad = {
 	},
 	showError: function () {
 		Keypad.showSuccessPanel = false,
-			Keypad.showErrorPanel = true;
+		Keypad.showErrorPanel = true;
 	},
 	ok: function () {
+		Keypad.hideMessages();
 		let code = Keypad.currentValue.join("");
 		Keypad.currentValue = [];
-		if (code != "1111") {
-			Keypad.showError();
-		}
-		else {
-			Keypad.showSuccess();
+		m.request({
+			url:"api/user/login/" + code,
+			method:"GET",
+		}).then(function(data) {
+			RegisterView.setCashier(data);
+			console.log(data);
 			m.route.set("/register");
-		}
-
+		}).catch(function(e) {
+			Keypad.showError();
+		});
 	},
 	view: function () {
 		let panel = m(".panel.panel-danger.mt-3.bg-dark.rounded-0.text-center", [
@@ -163,7 +166,7 @@ var Login = {
 								m("p.text-info.float-left", "Version " + getMetaContentByName("APP_VERSION_MAJOR") + "." + getMetaContentByName("APP_VERSION_MINOR"))
 							]),
 							m(".col-lg-6.col-md-6.col-sm-6.col-xs-12", [
-								m("a[href='/language'].text-info.float-right", {onupdate:m.route.link, oncreate:m.route.link}, Translate.translate("Language"))
+								m("a[href='/language'].text-info.float-right", { onupdate: m.route.link, oncreate: m.route.link }, Translate.translate("Language"))
 							])
 						])
 					])
@@ -195,14 +198,7 @@ var SidePanel = {
 			}
 		}
 		else {
-			m.request({
-				url: "api/barcode/" + code,
-				method: "GET"
-			}).then(function (data) {
-				console.log(data);
-			}).catch(function (e) {
-				Logger.error(e.message);
-			})
+			let product = Item(code);
 		}
 		return false;
 	},
@@ -249,15 +245,14 @@ var SidePanel = {
 					])
 				])
 			]),
-			isZeroLength(this.departments) ? () => {
-				return m(".departments", m(".container-fluid.no-padding", [
-					m(".row-fluid", [
-						m(".custom-fill-parent.bg-warning.p-1.text-center", [
-							m("label", Translate.translate("No departments have been added, go to the dashboard to add them"))
-						])
+			isZeroLength(this.departments) ? m(".departments", m(".container-fluid.no-padding", [
+				m(".row-fluid", [
+					m(".custom-fill-parent.bg-warning.p-1.text-center", [
+						m("label", Translate.translate("No departments have been added, go to the dashboard to add them"))
 					])
-				]));
-			} :
+				])
+			]))
+				:
 				m(".departments", m(".container-fluid.no-padding", [
 					m(".row", [
 						this.departments.map(function (department, y) {
@@ -277,20 +272,20 @@ var SidePanel = {
 	}
 }
 
-var NoProducts = {
+var NoProductsView = {
 	view: function () {
 		return m(".row", [
-			m("label", "No Products")
+			m(".col-lg-12.col-md-12.col-sm-12.col-xs-12.text-center.custom-vertical-center", [
+				m("i.fas.fa-shopping-basket.fa-5x.text-danger"),
+				m("h1.text-danger", Translate.translate("Basket Empty"))
+			])
 		]);
 	}
 }
 
 
-var Basket = {
-	products: [],
-	addProduct: function (product) {
-		Basket.products.push(product);
-	},
+var BasketView = {
+	basket: null,
 	view: function () {
 		return m(".container-fluid", [
 			m(".row", [
@@ -307,13 +302,38 @@ var Basket = {
 					m("label", Translate.translate("Total"))
 				])
 			]),
-			this.products.length == 0 ? m(NoProducts) : m("Products")
+			isNull(this.basket) ? m(NoProductsView) : m("Products")
 		])
 	}
 }
 
-var Register = {
-	showMenu: false,
+var RegisterView = {
+	show: false,
+	cashier: null,
+	oninit: function() {
+		if (this.cashier == null) {
+			m.route.set("/login");
+			return;
+		}
+	},
+	setCashier: function(cashier) {
+		RegisterView.cashier = cashier;
+	},
+	getCashier: function() {
+		return RegisterView.cashier;
+	},
+	removeCashier: function() {
+		RegisterView.cashier = null;
+	},
+	newBasket: function() {
+		RegisterView.setCurrentBasket(new Basket());
+	},
+	setCurrentBasket: function(basket) {
+		window.currentBasket = basket;
+	},
+	getCurrentBasket: function() {
+		return window.currentBasket;
+	},
 	view: function () {
 		return m(".container-fluid", [
 			m(".row", [
@@ -325,18 +345,64 @@ var Register = {
 					])
 				]),
 				m(".col-lg-9.col-md-9.col-sm-6.col-xs-6", [
-					m(Basket)
+					m(BasketView)
 				])
 			]),
 			m("footer.custom-footer.bg-dark.text-white", [
 				m(".container-fluid", [
 					m(".row", [
 						m(".col-lg-6.col-md-6.col-sm-6.col-xs-12", [
-							m("p.text-info.float-left", { onclick: () => { Register.showMenu = !Register.showMenu } }, m("i.fa.fa-bars.fa-2x"))
+							m("p.text-info.float-left", {onclick: Menu.toggle}, m("i.fas.fa-bars.fa-2x")),
+							m("p.text-info.float-left", isNull(this.cashier) ? Translate.translate("Unknown") : this.cashier.name)
 						]),
 						m(".col-lg-6.col-md-6.col-sm-6.col-xs-12", [
-							m("a[href='/language'].text-info.float-right", {onupdate:m.route.link, oncreate:m.route.link}, Translate.translate("Language"))
+							m("a[href='/language'].text-info.float-right", { onupdate: m.route.link, oncreate: m.route.link }, Translate.translate("Language"))
 						])
+					])
+				])
+			]),
+			m(Menu)
+		])
+	}
+}
+
+var Menu = {
+	show: false,
+	show: function() {
+		Menu.show = true;
+	},
+	toggle:function() {
+		Menu.show = !Menu.show;
+	},
+	hide: function() {
+		Menu.show = false;
+	},
+	view: function() {
+		if (!this.show) {
+			return null;
+		}
+		return m(".custom-menu.overlay.overlay-ontop", [
+			m(".custom-menu-buttons", [
+				m("a[href='dashboard']", [
+					m(".custom-menu-button.btn-info.text-center", [
+						m("i.fas.fa-dashboard"),
+						m(".footer", [
+							m("span", "Dashboard")
+						])
+					])
+				]),
+				m("a[href='chat']", {oncreate:m.route.link, onupdate:m.route.link}, [
+					m(".custom-menu-button.btn-info.text-center", [
+						m("i.fas.fa-dashboard"),
+						m(".footer", [
+							m("span", "Dashboard")
+						])
+					])
+				]),
+				m(".custom-menu-button.btn-danger.text-center", {onclick:this.hide}, [
+					m("i.fas.fa-times.fa-5x"),
+					m(".footer", [
+						m("span", "Dashboard")
 					])
 				])
 			])
@@ -346,17 +412,17 @@ var Register = {
 
 var Language = {
 	languages: [],
-	oninit: function() {
+	oninit: function () {
 		m.request({
-			url:"api/language",
-			method:"GET"
-		}).then(function(data) {
+			url: "api/language",
+			method: "GET"
+		}).then(function (data) {
 			Language.languages = data;
-		}).catch(function(e) {
+		}).catch(function (e) {
 			Logger.error(e);
 		});
 	},
-	set_language: function(e) {
+	set_language: function (e) {
 		Translate.setLanguage(e.target.getAttribute("data-code"));
 		m.route.set("/register");
 	},
@@ -364,11 +430,11 @@ var Language = {
 		return m("container-fluid", [
 			m(".row", [
 				m(".col-lg-12.col-md-12.col-sm-12.col-xs-12", [
-					m("ul.list-group", this.languages.map(function(language) {
-						return m("li.list-group-item", {"data-code":language.code, onclick:Language.set_language}, language.name);	
-					}))	
+					m("ul.list-group", this.languages.map(function (language) {
+						return m("li.list-group-item", { "data-code": language.code, onclick: Language.set_language }, language.name);
+					}))
 				])
 			])
-		])	
+		])
 	}
 }

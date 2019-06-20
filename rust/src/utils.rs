@@ -15,11 +15,13 @@ use std::path::{Path, PathBuf};
 use std::{fs, io, str, thread};
 use uuid::Uuid;
 use std::env;
+use zip::ZipArchive;
 
 use printpdf::*;
 use std::io::BufWriter;
 
 use models::{AppConfiguration, Version};
+use models;
 
 use migrations;
 
@@ -118,22 +120,118 @@ pub fn setup_file_system() {
     }
 }
 
+pub fn remove_database() {
+    let path = Path::new(&get_data_dir()).join(config::DATABASE_NAME);
+    match std::fs::remove_file(path) {
+        Ok(x) => x,
+        Err(x) => {
+            warn!("Database does not exist and therefore it cannot be deleted");
+        }
+    }
+}
+
 pub fn setup_database() -> bool {
-    let project_path = Path::new(&get_data_dir()).join("database.sqlite3");
-    if project_path.exists() {
+    let path = Path::new(&get_data_dir()).join(config::DATABASE_NAME);
+    if path.exists() {
         warn!("Check database and setup not implemented");
         return false;
     }
     info!("Missing database, creating it from scratch");
     let conn = establish_connection();
     migrations::database_setup(&conn);
+    setup_default_configuration(&conn);
+    download_products_file(&conn);
     info!("database setup!");
     true
 }
 
-pub fn setup_default_configuration() {
+pub fn setup_default_configuration(conn: &SqliteConnection) {
     //This should be run the first time the program is run
     AppConfiguration::new(config::INSTANCE_GUID_KEY, &uuid4().to_string()).save();
+    let mut admin = models::User::new(String::from(config::DEFAULT_ADMIN_NAME), String::new(), String::new(), hash_password("password"));
+    let department = models::Department::new(String::from("Department1"), String::from("Dep1"), String::from("ff9911"));
+    admin.code = String::from("1111"); //Override the set code for admin
+    admin.insert(conn);
+    department.insert(conn);
+}
+
+pub fn download_products_file(conn: &SqliteConnection) {
+    let path = get_app_temp().join("products.zip");
+    download_file("https://www.goldstandardresearch.co.uk/products/products.zip", &path.as_path());
+    let file = match File::open(path) {
+        Ok(x) => x,
+        Err(x) => {
+            error!("Could not open products zip");
+            return;
+        }
+    };
+    let mut zip = match ZipArchive::new(file) {
+        Ok(x) => x,
+        Err(x) => {
+            error!("File is corrupted or empty, or file is not a valid .zip file");
+            error!("{0}", x);
+            return;
+        }
+    };
+    if zip.len() == 0 {
+        error!("Product zip file contains no files");
+        return;
+    }
+    //Next match statement is a bit redundant
+    let products_file = match zip.by_name(config::PRODUCTS_ZIP_PRODUCTS_FILENAME) {
+        Ok(x) => x,
+        Err(x) => {
+            error!("Could not find {0} in zip file", config::PRODUCTS_ZIP_PRODUCTS_FILENAME);
+            return;
+        }
+    };
+    let mut rdr = csv::Reader::from_reader(products_file);
+    let mut global_products: Vec<models::GlobalProduct> = Vec::new();
+    const COLUMN_ID: usize = 0;
+    const COLUMN_NAME: usize = 1;
+    const COLUMN_BARCODE: usize = 3;
+    const COLUMN_UPDATED: usize= 10;
+    for (count, record) in rdr.records().enumerate() {
+        if count % 5000 == 0 {
+            match models::GlobalProduct::insert_many(conn, &global_products) {
+                false => {
+                    warn!("Could not insert some products in region {0}", count);
+                }
+                _ => {}
+            };
+            global_products.clear();
+        }
+        let unwrapped_record = match record {
+            Ok(x) => x,
+            Err(x) => {
+                warn!("Could not read record on line {0}", count);
+                continue;
+            }
+        };
+        let updated_string = match unwrapped_record.get(COLUMN_UPDATED) {
+            Some(x) => x,
+            None => {
+                warn!("Cannot read updated");
+                continue;
+            }
+        };
+        let updated: i64 = updated_string.parse().unwrap();
+        let mut gp = models::GlobalProduct {
+            id: String::from(unwrapped_record.get(COLUMN_ID).unwrap()),
+            name: String::from(unwrapped_record.get(COLUMN_NAME).unwrap()),
+            barcode: String::from(unwrapped_record.get(COLUMN_BARCODE).unwrap()),
+            updated: NaiveDateTime::from_timestamp(updated, 0),
+        };
+        global_products.push(gp);
+    }
+    match models::GlobalProduct::insert_many(conn, &global_products) {
+        false => {
+            warn!("Could not insert some products in last region");
+        }
+        true => {
+            info!("Product(s) downloaded from server");
+        }
+    }
 }
 
 pub fn generate_qr_code_as_svg(content: String) -> String {
@@ -284,7 +382,13 @@ pub fn download_update_file() {
                 let mut rdr = csv::Reader::from_reader(resp.as_bytes());
                 let mut updates_count = 0;
                 for result in rdr.deserialize() {
-                    let version: Version = result.expect("a CSV record");
+                    let version: Version = match result {
+                        Ok(x) => x,
+                        Err(x) => {
+                            warn!("Could not read all version details from server");
+                            continue;
+                        }
+                    };
                     version.save();
                     if version.major > config::APP_VERSION_MAJOR
                         || version.major == config::APP_VERSION_MAJOR

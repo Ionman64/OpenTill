@@ -18,7 +18,7 @@ pub fn database_setup_from_previous_version() {
     }
 }
 
-const CORE_SCHEMA: &str = r##"CREATE TABLE products (
+const CORE_SCHEMA: &str = r##"CREATE TABLE store_products (
         id VARCHAR(36) NOT NULL PRIMARY KEY,
         name VARCHAR NOT NULL,
         barcode VARCHAR NOT NULL UNIQUE,
@@ -32,6 +32,13 @@ const CORE_SCHEMA: &str = r##"CREATE TABLE products (
         deleted BOOLEAN NOT NULL DEFAULT false,
         max_stock INTEGER NOT NULL DEFAULT 0,
         current_stock INTEGER NOT NULL DEFAULT 0,
+        CONSTRAINT barcode_unique UNIQUE (barcode)
+    );
+    CREATE TABLE global_products (
+        id VARCHAR(36) NOT NULL PRIMARY KEY,
+        name VARCHAR NOT NULL,
+        barcode VARCHAR NOT NULL UNIQUE,
+        updated DATETIME NOT NULL,
         CONSTRAINT barcode_unique UNIQUE (barcode)
     );
     CREATE TABLE suppliers (

@@ -5,3 +5,6 @@ rust/target
 rust/cargo.lock
 rust/opentill.sqlite3
 .settings
+testing/*.log
+testing/*.html
+data

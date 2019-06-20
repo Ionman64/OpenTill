@@ -11,7 +11,39 @@ use rocket::request::FromRequest;
 
 use config;
 
-#[table_name = "products"]
+#[table_name = "global_products"]
+#[derive(Debug, Queryable, Insertable, Serialize, Deserialize)]
+pub struct GlobalProduct {
+    pub id: String,
+    pub name: String,
+    pub barcode: String,
+    pub updated: NaiveDateTime,
+}
+
+impl GlobalProduct {
+    pub fn insert(&self, conn: &SqliteConnection) -> bool {
+        1 == match diesel::replace_into(global_products::table).values(self).execute(conn)
+        {
+            Ok(x) => x,
+            Err(x) => {
+                error!("{}", x);
+                0
+            }
+        }
+    }
+    pub fn insert_many(conn: &SqliteConnection, global_products: &Vec<GlobalProduct>) -> bool {
+        0 < match diesel::replace_into(global_products::table).values(global_products).execute(conn)
+        {
+            Ok(x) => x,
+            Err(x) => {
+                error!("{}", x);
+                0
+            }
+        }
+    }
+}
+
+#[table_name = "store_products"]
 #[derive(Queryable, Insertable, Serialize)]
 pub struct Product {
     pub id: String,
@@ -53,7 +85,7 @@ impl Product {
         Product::new(String::from("Unknown Product"), String::from("01"), 0)
     }
     pub fn get_all(conn: &SqliteConnection) -> Vec<Product> {
-        match products::table.load(conn) {
+        match store_products::table.load(conn) {
             Ok(x) => x,
             Err(x) => {
                 error!("{}", x);
@@ -63,7 +95,7 @@ impl Product {
     }
     pub fn find_by_id(id: &str, conn: &SqliteConnection) -> Option<Product> {
         let conn = app::establish_connection();
-        match products::table.find(id).get_result::<Product>(&conn) {
+        match store_products::table.find(id).get_result::<Product>(&conn) {
             Ok(x) => Some(x),
             Err(diesel::NotFound) => None,
             Err(x) => {
@@ -73,8 +105,8 @@ impl Product {
         }
     }
     pub fn find_by_barcode(code: &str, conn: &SqliteConnection) -> Option<Product> {
-        match products::table
-            .filter(products::barcode.eq(code))
+        match store_products::table
+            .filter(store_products::barcode.eq(code))
             .first::<Product>(conn) {
                 Ok(x) => Some(x),
                 Err(diesel::NotFound) => None,
@@ -87,9 +119,7 @@ impl Product {
     }
     pub fn save(&self) -> bool {
         let conn = app::establish_connection();
-        1 == match diesel::replace_into(products::table)
-            .values(self)
-            .execute(&conn)
+        1 == match diesel::replace_into(store_products::table).values(self).execute(&conn)
         {
             Ok(x) => x,
             Err(x) => {
@@ -309,12 +339,22 @@ impl User {
             code: app::generate_user_code(),
             updated: Utc::now().naive_utc(),
             created: Utc::now().naive_utc(),
-            deleted: false,
-            
+            deleted: false
         }
     }
     pub fn find_by_id(id: &str, conn: &SqliteConnection) -> Option<User> {
         match users::table.find(id).get_result::<User>(conn) {
+            Ok(x) => Some(x),
+            Err(diesel::NotFound) => None,
+            Err(x) => {
+                warn!("{}", x);
+                None
+            }
+        }
+    }
+    pub fn find_by_code(code: String, conn:&SqliteConnection) -> Option<User> {
+        match users::table.filter(users::code.eq(code)).get_result::<User>(conn)
+        {
             Ok(x) => Some(x),
             Err(diesel::NotFound) => None,
             Err(x) => {

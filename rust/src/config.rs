@@ -1,6 +1,13 @@
 //Here lives the applications constants, some may be replaced later by environment variables
 
+pub enum ProgramMode {
+    PRODUCTION,
+    DEVELOPMENT,
+    TESTING
+}
+
 pub const APP_NAME: &str = "OpenTill";
+pub const DEVELOPMENT_MODE: ProgramMode = ProgramMode::TESTING;
 
 pub const APP_HOME: &str = "";
 pub const LOG_HOME: &str = "logs";
@@ -18,3 +25,6 @@ pub const APP_VERSION_MAJOR: i32 = 2;
 pub const APP_VERSION_MINOR: i32 = 3;
 pub const AUTO_BROADCAST: bool = false;
 pub const DATABASE_NAME: &str = "database.sqlite3";
+pub const DEFAULT_ADMIN_NAME: &str = "Admin";
+pub const PRODUCTS_ZIP_PRODUCTS_FILENAME: &str = "products.csv";
+

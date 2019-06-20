@@ -232,5 +232,8 @@
         "en": "Cloud",
         "de": "Wolke",
         "sv": "Moln"
+    },
+    "Code not recognised": {
+        "en": "Code not recognised"
     }
 }

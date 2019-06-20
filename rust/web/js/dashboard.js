@@ -34,6 +34,7 @@ function main() {
         "/suppliers": SuppliersView,
         "/supplier/:id": SupplierView,
         "/cloud": CloudView,
+        "/plan": PlanView,
         "/settings": SettingsView,
     });
 }
@@ -578,6 +579,7 @@ var NavigationView = {
                             m("a[href='/users']", { class: isSameValue(m.route.get(), "/users") ? "nav-item nav-link active" : "nav-item nav-link", onupdate: m.route.link, oncreate: m.route.link }, Translate.translate("Users")),
                             m("a[href='/suppliers']", { class: isSameValue(m.route.get(), "/suppliers") ? "nav-item nav-link active" : "nav-item nav-link", onupdate: m.route.link, oncreate: m.route.link }, Translate.translate("Suppliers")),
                             m("a[href='/cloud']", { class: isSameValue(m.route.get(), "/cloud") ? "nav-item nav-link active" : "nav-item nav-link", onupdate: m.route.link, oncreate: m.route.link }, Translate.translate("Cloud")),
+                            m("a[href='/plan']", { class: isSameValue(m.route.get(), "/plam") ? "nav-item nav-link active" : "nav-item nav-link", onupdate: m.route.link, oncreate: m.route.link }, Translate.translate("Plan")),
                             m("a[href='/settings']", { class: isSameValue(m.route.get(), "/settings") ? "nav-item nav-link active" : "nav-item nav-link", onupdate: m.route.link, oncreate: m.route.link }, Translate.translate("Settings")),
                         ]),
                     ]),
@@ -698,6 +700,55 @@ var SupplierView = {
                 ])
             ])
         ]);
+    }
+}
+
+var PlanView = {
+    cube: null,
+    spin: function() {
+        
+        
+    },
+    oncreate: function(vnode) {
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        document.getElementById("plan").appendChild( renderer.domElement );
+        var geometry = new THREE.BoxGeometry(100, 100, 100);
+        var material = new THREE.MeshBasicMaterial( { color: 0x777777 } );
+        var cube = new THREE.Mesh( geometry, material );
+        scene.add(cube);
+
+        linesMaterial = new THREE.LineBasicMaterial( 0x000000, 0.2 );
+
+        for ( var i = 0; i <= 20; i ++ ) {
+
+            var line = new THREE.Line( geometry, linesMaterial );
+            line.position.x = ( i * 50 ) - 500;
+            line.rotation.y = 90 * Math.PI / 180;
+            //scene.add( line );
+
+        }
+
+        //var ambientLight = new THREE.AmbientLight( 0x404040 );
+        //scene.addLight( ambientLight );
+
+        //cube.rotation.x += 90;
+        cube.rotation.x += 45;
+        cube.rotation.y += 45;
+
+        camera.position.z = 150;
+        function animate() {
+            requestAnimationFrame( animate );
+            
+		    renderer.render( scene, camera );
+        }
+        animate();
+    },
+    view: function() {
+        return m("#plan");
     }
 }
 

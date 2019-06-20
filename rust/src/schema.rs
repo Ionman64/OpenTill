@@ -32,7 +32,7 @@ table! {
 }
 
 table! {
-    products (id) {
+    store_products (id) {
         id -> Text,
         name -> Text,
         barcode -> Text,
@@ -46,6 +46,15 @@ table! {
         deleted -> Bool,
         max_stock -> Integer,
         current_stock -> Integer,
+    }
+}
+
+table! {
+    global_products (id) {
+        id -> Text,
+        name -> Text,
+        barcode -> Text,
+        updated -> Timestamp,
     }
 }
 
@@ -97,7 +106,8 @@ table! {
 allow_tables_to_appear_in_same_query!(
     configurations,
     departments,
-    products,
+    global_products,
+    store_products,
     servers,
     suppliers,
     users,

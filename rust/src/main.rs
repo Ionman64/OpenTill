@@ -9,6 +9,8 @@ extern crate log;
 
 extern crate open_till;
 
+use std::env;
+
 use rocket::config::{Config, Environment, Value};
 use rocket_contrib::json::Json;
 use rocket_contrib::serve::StaticFiles;
@@ -49,47 +51,34 @@ fn setup_logger() -> Result<(), fern::InitError> {
     Ok(())
 }
 
-#[post("/login")]
-fn login() -> String {
-    String::new()
-}
-
-#[get("/servers")]
-fn details() -> Json<Vec<models::Server>> {
-    Json(models::Server::get_all())
-}
-
-#[get("/")]
-fn index() -> Template {
-    let context = models::TemplateContent::new();
-    Template::render("index2", &context)
-}
-#[get("/dashboard")]
-fn dashboard() -> Template {
-    let context = models::TemplateContent::new();
-    Template::render("dashboard", &context)
-}
-
-#[get("/barcode/<code>")]
-fn barcode(conn: Db, code: String) -> Result<Json<models::Product>, rocket::response::status::NotFound<&'static str>> {
-    match models::Product::find_by_barcode(code.as_str(), &conn) {
-        Some(x) => {
-            return Ok(Json(x));
-        },
-        None => {
-            return Err(rocket::response::status::NotFound(""));
-        }
-    };
-}
-
-
 
 fn main() {
+    for arg in env::args().skip(1) {
+        match arg.as_str() {
+            "-version" => {
+                println!("v{}.{}", config::APP_VERSION_MAJOR, config::APP_VERSION_MINOR);
+                return;
+            }
+            &_ => {
+                continue;
+            }
+        }
+    }
     app::setup_file_system(); //Sets up the file system (e.g. all the folders needed for the program)
     setup_logger().expect("Cannot Setup Logger"); //Setup Fern Logger
-    app::setup_database();
-    app::setup_default_configuration();
+    match config::DEVELOPMENT_MODE {
+        config::ProgramMode::PRODUCTION => {
 
+        }
+        config::ProgramMode::DEVELOPMENT => {
+            println!("Running in development mode");
+        }
+        config::ProgramMode::TESTING => {
+            println!("Running in testing mode");
+            app::remove_database();
+        }
+    }
+    app::setup_database();
     listen();
     let server_details = match serde_json::to_string(&models::Server::details()) {
         Ok(x) => x,
@@ -124,9 +113,10 @@ fn main() {
     rocket::custom(config)
         .mount("/", routes![index, dashboard])
         .mount("/", StaticFiles::from(app::get_web_dir()))
-        .mount("/api", routes![login, details, barcode, heartbeat, get_language])
+        .mount("/api", routes![details, heartbeat, get_language])
+        .mount("/product", routes![barcode])
         .mount("/api/department", routes![get_all_departments, insert_department, get_department, delete_department])
-        .mount("/api/user", routes![get_all_users, insert_user, get_user, delete_user])
+        .mount("/api/user", routes![login, get_all_users, insert_user, get_user, delete_user])
         .mount("/api/supplier", routes![get_all_suppliers, insert_supplier, get_supplier, delete_supplier])
         .mount("/api/case", routes![insert_case])
         .attach(Template::fairing())
@@ -143,6 +133,46 @@ pub struct Db(SqliteConnection);
 #[get("/heartbeat")]
 pub fn heartbeat() -> Json<models::CustomResponse> {
     Json(models::CustomResponse::success())
+}
+
+#[get("/login/<code>")]
+fn login(conn:Db, code:String) -> Result<Json<models::User>, rocket::response::status::Custom<&'static str>> {
+    match models::User::find_by_code(code, &conn) {
+        Some(x) => {
+            return Ok(Json(x));
+        },
+        None => {
+            return Err(rocket::response::status::Custom(Status::NotFound, "Could not get user"));
+        }
+    };
+}
+
+#[get("/servers")]
+fn details() -> Json<Vec<models::Server>> {
+    Json(models::Server::get_all())
+}
+
+#[get("/")]
+fn index() -> Template {
+    let context = models::TemplateContent::new();
+    Template::render("index2", &context)
+}
+#[get("/dashboard")]
+fn dashboard() -> Template {
+    let context = models::TemplateContent::new();
+    Template::render("dashboard", &context)
+}
+
+#[get("/barcode/<code>")]
+fn barcode(conn: Db, code: String) -> Result<Json<models::Product>, rocket::response::status::NotFound<&'static str>> {
+    match models::Product::find_by_barcode(code.as_str(), &conn) {
+        Some(x) => {
+            return Ok(Json(x));
+        },
+        None => {
+            return Err(rocket::response::status::NotFound(""));
+        }
+    };
 }
 
 #[get("/")]
