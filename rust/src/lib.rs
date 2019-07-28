@@ -19,27 +19,30 @@ extern crate notifica;
 extern crate printpdf;
 extern crate qrcodegen;
 extern crate rand;
+extern crate regex;
 extern crate reqwest;
 extern crate serde;
 extern crate serde_json;
 extern crate uuid;
 extern crate zip;
-extern crate regex;
 
 pub mod config;
+pub mod configuration;
+pub mod controllers;
 pub mod format;
 pub mod migrations;
 pub mod models;
 pub mod network_broadcast;
+pub mod responses;
 pub mod schema;
 pub mod utils;
 
 #[cfg(test)]
 mod tests {
-    use models::*;
+    use models::{Product::Product, User::User};
     use std::fs;
     use utils::*;
-    
+
     use regex::Regex;
 
     #[test]
@@ -133,7 +136,7 @@ mod tests {
         product.price = new_product_price;
         product.save();
 
-        let saved_product = match Product::find_by_barcode(&barcode) {
+        let saved_product = match Product::find_by_barcode(&barcode, &establish_connection()) {
             Some(x) => x,
             None => {
                 panic!("Product not found!");
@@ -147,9 +150,9 @@ mod tests {
         let mut user = User::default();
         let name = String::from("Steve");
         user.name = name.clone();
-        user.save();
+        user.insert(&establish_connection());
 
-        let saved_user = match User::find_by_id(&user.id) {
+        let saved_user = match User::find_by_id(&user.id, &establish_connection()) {
             Some(x) => x,
             None => {
                 panic!("Could not find user");

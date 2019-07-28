@@ -2,7 +2,6 @@
 
 #[macro_use]
 extern crate rocket;
-#[macro_use]
 extern crate rocket_contrib;
 #[macro_use]
 extern crate log;
@@ -11,18 +10,18 @@ extern crate open_till;
 
 use std::env;
 
+use open_till::controllers::{
+    CaseController, DepartmentController, IndexController, LanguageController, ProductController,
+    ServerController, SupplierController, UserController,
+};
+use open_till::models::Database::DatabaseConnection;
+use open_till::models::Server::Server;
+use open_till::responses::CustomResponse::CustomResponse;
 use rocket::config::{Config, Environment, Value};
 use rocket_contrib::json::Json;
 use rocket_contrib::serve::StaticFiles;
 use rocket_contrib::templates::Template;
-use rocket_contrib::databases::diesel;
 use std::path::Path;
-use diesel::SqliteConnection;
-use rocket::response::status;
-use rocket::http::Status;
-use rocket::request::Form;
-use open_till::models::NewDepartment;
-use open_till::models;
 
 use open_till::config;
 use open_till::network_broadcast::{listen, send};
@@ -51,12 +50,15 @@ fn setup_logger() -> Result<(), fern::InitError> {
     Ok(())
 }
 
-
 fn main() {
     for arg in env::args().skip(1) {
         match arg.as_str() {
             "-version" => {
-                println!("v{}.{}", config::APP_VERSION_MAJOR, config::APP_VERSION_MINOR);
+                println!(
+                    "v{}.{}",
+                    config::APP_VERSION_MAJOR,
+                    config::APP_VERSION_MINOR
+                );
                 return;
             }
             &_ => {
@@ -64,12 +66,11 @@ fn main() {
             }
         }
     }
+    println!("{}", app::logo_ascii());
     app::setup_file_system(); //Sets up the file system (e.g. all the folders needed for the program)
     setup_logger().expect("Cannot Setup Logger"); //Setup Fern Logger
     match config::DEVELOPMENT_MODE {
-        config::ProgramMode::PRODUCTION => {
-
-        }
+        config::ProgramMode::PRODUCTION => {}
         config::ProgramMode::DEVELOPMENT => {
             println!("Running in development mode");
         }
@@ -80,7 +81,8 @@ fn main() {
     }
     app::setup_database();
     listen();
-    let server_details = match serde_json::to_string(&models::Server::details()) {
+    let conn = app::establish_connection();
+    let server_details = match serde_json::to_string(&Server::details(&conn)) {
         Ok(x) => x,
         Err(x) => {
             panic!("Could not serialize server {}", x);
@@ -94,7 +96,6 @@ fn main() {
     if config::AUTO_DOWNLOAD_UPDATES {
         app::check_for_updates();
     }
-    println!("{}", app::logo_ascii()); //Print Sexy Logo
     //app::printpdf();*/
 
     let mut database_config = HashMap::new();
@@ -102,7 +103,15 @@ fn main() {
 
     // This is the same as the following TOML:
     // my_db = { url = "database.sqlite" }
-    database_config.insert("url", Value::from(app::get_data_dir().join(config::DATABASE_NAME).to_str().unwrap()));
+    database_config.insert(
+        "url",
+        Value::from(
+            app::get_data_dir()
+                .join(config::DATABASE_NAME)
+                .to_str()
+                .unwrap(),
+        ),
+    );
     databases.insert("my_db", Value::from(database_config));
 
     let config = Config::build(Environment::Development)
@@ -111,239 +120,52 @@ fn main() {
         .unwrap();
 
     rocket::custom(config)
-        .mount("/", routes![index, dashboard])
+        .mount(
+            "/",
+            routes![IndexController::index, IndexController::dashboard],
+        )
         .mount("/", StaticFiles::from(app::get_web_dir()))
-        .mount("/api", routes![details, heartbeat, get_language])
-        .mount("/product", routes![barcode])
-        .mount("/api/department", routes![get_all_departments, insert_department, get_department, delete_department])
-        .mount("/api/user", routes![login, get_all_users, insert_user, get_user, delete_user])
-        .mount("/api/supplier", routes![get_all_suppliers, insert_supplier, get_supplier, delete_supplier])
-        .mount("/api/case", routes![insert_case])
+        .mount("/heartbeat", routes![heartbeat])
+        .mount("/api/product", routes![ProductController::barcode])
+        .mount(
+            "/api/department",
+            routes![
+                DepartmentController::get_all,
+                DepartmentController::insert,
+                DepartmentController::get,
+                DepartmentController::delete
+            ],
+        )
+        .mount(
+            "/api/user",
+            routes![
+                UserController::get_all,
+                UserController::insert,
+                UserController::get,
+                UserController::delete
+            ],
+        )
+        .mount(
+            "/api/supplier",
+            routes![
+                SupplierController::get_all,
+                SupplierController::insert,
+                SupplierController::get,
+                SupplierController::delete
+            ],
+        )
+        .mount("/api/case", routes![CaseController::insert])
+        .mount("/api/language", routes![LanguageController::get_all])
+        .mount("/api/server", routes![ServerController::get_all])
         .attach(Template::fairing())
-        .attach(Db::fairing())
+        .attach(DatabaseConnection::fairing())
         .launch();
     info!("System started successfully");
 }
 
 //API METHODS BELOW
 
-#[database("my_db")]
-pub struct Db(SqliteConnection);
-
 #[get("/heartbeat")]
-pub fn heartbeat() -> Json<models::CustomResponse> {
-    Json(models::CustomResponse::success())
-}
-
-#[get("/login/<code>")]
-fn login(conn:Db, code:String) -> Result<Json<models::User>, rocket::response::status::Custom<&'static str>> {
-    match models::User::find_by_code(code, &conn) {
-        Some(x) => {
-            return Ok(Json(x));
-        },
-        None => {
-            return Err(rocket::response::status::Custom(Status::NotFound, "Could not get user"));
-        }
-    };
-}
-
-#[get("/servers")]
-fn details() -> Json<Vec<models::Server>> {
-    Json(models::Server::get_all())
-}
-
-#[get("/")]
-fn index() -> Template {
-    let context = models::TemplateContent::new();
-    Template::render("index2", &context)
-}
-#[get("/dashboard")]
-fn dashboard() -> Template {
-    let context = models::TemplateContent::new();
-    Template::render("dashboard", &context)
-}
-
-#[get("/barcode/<code>")]
-fn barcode(conn: Db, code: String) -> Result<Json<models::Product>, rocket::response::status::NotFound<&'static str>> {
-    match models::Product::find_by_barcode(code.as_str(), &conn) {
-        Some(x) => {
-            return Ok(Json(x));
-        },
-        None => {
-            return Err(rocket::response::status::NotFound(""));
-        }
-    };
-}
-
-#[get("/")]
-pub fn get_all_departments(conn: Db) -> Result<Json<Vec<models::Department>>, rocket::response::status::Custom<&'static str>> {
-    match models::Department::get_all(&conn) {
-        Some(x) => {
-            return Ok(Json(x.into_iter().filter(|department| !department.deleted).collect()));
-        },
-        None => {
-            return Err(rocket::response::status::Custom(Status::InternalServerError, "Could not read departments"));
-        }
-    };
-}
-
-#[get("/<id>")]
-pub fn get_department(conn: Db, id: String) -> Result<Json<models::Department>, rocket::response::status::Custom<&'static str>> {
-    match models::Department::find_by_id(id.as_str(), &conn) {
-        Some(x) => {
-            return Ok(Json(x));
-        },
-        None => {
-            return Err(rocket::response::status::Custom(Status::NotFound, "Could not get department"));
-        }
-    };
-}
-
-#[post("/", format = "application/json", data = "<new_department>")]
-pub fn insert_department(conn: Db, new_department: Json<NewDepartment>) -> Result<Json<models::Department>, rocket::response::status::Custom<&'static str>> {
-    let department = models::Department::new(new_department.0.name, new_department.0.short_hand, new_department.0.colour);
-    match department.insert(&conn) {
-        Some(x) => {
-            return Ok(Json(department));
-        },
-        None => {
-            return Err(rocket::response::status::Custom(Status::InternalServerError, "Could not create department"));
-        }
-    }   
-}
-
-#[delete("/<id>")]
-pub fn delete_department(conn: Db, id: String) -> Result<Json<models::CustomResponse>, rocket::response::status::Custom<&'static str>> {
-    match models::Department::delete(id.as_str(), &conn) {
-        Some(x) => {
-            return Ok(Json(models::CustomResponse::success()));
-        },
-        None => {
-            return Err(rocket::response::status::Custom(Status::InternalServerError, "Could not create department"));
-        }
-    }   
-}
-
-#[get("/")]
-pub fn get_all_users(conn: Db) -> Result<Json<Vec<models::User>>, rocket::response::status::Custom<&'static str>> {
-    match models::User::get_all(&conn) {
-        Some(x) => {
-            return Ok(Json(x.into_iter().filter(|user| !user.deleted).collect()));
-        },
-        None => {
-            return Err(rocket::response::status::Custom(Status::InternalServerError, "Could not read users"));
-        }
-    };
-}
-
-#[get("/<id>")]
-pub fn get_user(conn: Db, id: String) -> Result<Json<models::User>, rocket::response::status::Custom<&'static str>> {
-    match models::User::find_by_id(id.as_str(), &conn) {
-        Some(x) => {
-            return Ok(Json(x));
-        },
-        None => {
-            return Err(rocket::response::status::Custom(Status::NotFound, "Could not get user"));
-        }
-    };
-}
-
-#[post("/", format = "application/json", data = "<new_user>")]
-pub fn insert_user(conn: Db, new_user: Json<models::NewUser>) -> Result<Json<models::User>, rocket::response::status::Custom<&'static str>> {
-    let user = models::User::new(new_user.0.name, new_user.0.telephone, new_user.0.email, app::hash_password(new_user.0.password.as_str()));
-    match user.insert(&conn) {
-        Some(x) => {
-            return Ok(Json(user));
-        },
-        None => {
-            return Err(rocket::response::status::Custom(Status::InternalServerError, "Could not create user"));
-        }
-    }   
-}
-
-#[delete("/<id>")]
-pub fn delete_user(conn: Db, id: String) -> Result<Json<models::CustomResponse>, rocket::response::status::Custom<&'static str>> {
-    match models::User::delete(id.as_str(), &conn) {
-        Some(x) => {
-            return Ok(Json(models::CustomResponse::success()));
-        },
-        None => {
-            return Err(rocket::response::status::Custom(Status::InternalServerError, "Could not create user"));
-        }
-    }   
-}
-
-#[get("/")]
-pub fn get_all_suppliers(conn: Db) -> Result<Json<Vec<models::Supplier>>, rocket::response::status::Custom<&'static str>> {
-    match models::Supplier::get_all(&conn) {
-        Some(x) => {
-            return Ok(Json(x.into_iter().filter(|supplier| !supplier.deleted).collect()));
-        },
-        None => {
-            return Err(rocket::response::status::Custom(Status::InternalServerError, "Could not read suppliers"));
-        }
-    };
-}
-
-#[get("/<id>")]
-pub fn get_supplier(conn: Db, id: String) -> Result<Json<models::Supplier>, rocket::response::status::Custom<&'static str>> {
-    match models::Supplier::find_by_id(id.as_str(), &conn) {
-        Some(x) => {
-            return Ok(Json(x));
-        },
-        None => {
-            return Err(rocket::response::status::Custom(Status::NotFound, "Could not get supplier"));
-        }
-    };
-}
-
-#[post("/", format = "application/json", data = "<new_supplier>")]
-pub fn insert_supplier(conn: Db, new_supplier: Json<models::NewSupplier>) -> Result<Json<models::Supplier>, rocket::response::status::Custom<&'static str>> {
-    let supplier = models::Supplier::new(new_supplier.0.name, new_supplier.0.telephone, new_supplier.0.website, new_supplier.0.email);
-    match supplier.insert(&conn) {
-        Some(x) => {
-            return Ok(Json(supplier));
-        },
-        None => {
-            return Err(rocket::response::status::Custom(Status::InternalServerError, "Could not create supplier"));
-        }
-    }   
-}
-
-#[delete("/<id>")]
-pub fn delete_supplier(conn: Db, id: String) -> Result<Json<models::CustomResponse>, rocket::response::status::Custom<&'static str>> {
-    match models::Supplier::delete(id.as_str(), &conn) {
-        Some(x) => {
-            return Ok(Json(models::CustomResponse::success()));
-        },
-        None => {
-            return Err(rocket::response::status::Custom(Status::InternalServerError, "Could not create supplier"));
-        }
-    }   
-}
-
-#[post("/", format = "application/json", data = "<new_case>")]
-pub fn insert_case(conn: Db, new_case: Json<models::NewCase>) -> Result<Json<models::CustomResponse>, rocket::response::status::Custom<&'static str>> {
-    let case = models::Case::new(new_case.0.barcode, new_case.0.product_barcode, new_case.0.units);
-    match case.insert(&conn) {
-        Some(x) => {
-            return Ok(Json(models::CustomResponse::success()));
-        },
-        None => {
-            return Err(rocket::response::status::Custom(Status::InternalServerError, "Could not create supplier"));
-        }
-    }   
-}
-
-
-
-#[get("/language")]
-pub fn get_language() -> Json<Vec<models::Language>> {
-    let mut languages = Vec::new();
-    languages.push(models::Language::new("English", "en"));
-    languages.push(models::Language::new("Deutsch", "de"));
-    languages.push(models::Language::new("汉语", "ch"));
-    languages.push(models::Language::new("Français", "fr"));
-    languages.push(models::Language::new("Svenska", "sv"));
-    Json(languages)
+pub fn heartbeat() -> Json<CustomResponse> {
+    Json(CustomResponse::success())
 }

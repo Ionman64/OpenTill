@@ -4,24 +4,26 @@ use blake2::{Blake2b, Digest};
 use chrono::{Datelike, NaiveDateTime, Timelike};
 use config;
 use diesel::{Connection, SqliteConnection};
-use models::Product;
+use models::{
+    Department::Department, GlobalProduct::GlobalProduct, Product::Product, User::User,
+    Version::Version,
+};
 use qrcodegen::QrCode;
 use qrcodegen::QrCodeEcc;
 use rand::distributions::Alphanumeric;
 use rand::Rng;
+use std::env;
 use std::fs::File;
 use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::{fs, io, str, thread};
 use uuid::Uuid;
-use std::env;
 use zip::ZipArchive;
+
+use configuration::AppConfiguration::AppConfiguration;
 
 use printpdf::*;
 use std::io::BufWriter;
-
-use models::{AppConfiguration, Version};
-use models;
 
 use migrations;
 
@@ -66,7 +68,7 @@ pub fn show_notification(title: &str, message: &str) {
 pub fn get_home_dir() -> PathBuf {
     match env::current_dir() {
         Ok(x) => x,
-        Err(x) => panic!("Cannot find home directory"),
+        Err(_x) => panic!("Cannot find home directory"),
     }
 }
 
@@ -124,7 +126,7 @@ pub fn remove_database() {
     let path = Path::new(&get_data_dir()).join(config::DATABASE_NAME);
     match std::fs::remove_file(path) {
         Ok(x) => x,
-        Err(x) => {
+        Err(_x) => {
             warn!("Database does not exist and therefore it cannot be deleted");
         }
     }
@@ -147,9 +149,22 @@ pub fn setup_database() -> bool {
 
 pub fn setup_default_configuration(conn: &SqliteConnection) {
     //This should be run the first time the program is run
-    AppConfiguration::new(config::INSTANCE_GUID_KEY, &uuid4().to_string()).save();
-    let mut admin = models::User::new(String::from(config::DEFAULT_ADMIN_NAME), String::new(), String::new(), hash_password("password"));
-    let department = models::Department::new(String::from("Department1"), String::from("Dep1"), String::from("ff9911"));
+    AppConfiguration::new(config::INSTANCE_GUID_KEY, &uuid4().to_string()).save(conn);
+    setup_admin(conn);
+}
+
+pub fn setup_admin(conn: &SqliteConnection) {
+    let mut admin = User::new(
+        String::from(config::DEFAULT_ADMIN_NAME),
+        String::new(),
+        String::new(),
+        hash_password("password"),
+    );
+    let department = Department::new(
+        String::from("Department1"),
+        String::from("Dep1"),
+        String::from("ff9911"),
+    );
     admin.code = String::from("1111"); //Override the set code for admin
     admin.insert(conn);
     department.insert(conn);
@@ -157,10 +172,13 @@ pub fn setup_default_configuration(conn: &SqliteConnection) {
 
 pub fn download_products_file(conn: &SqliteConnection) {
     let path = get_app_temp().join("products.zip");
-    download_file("https://www.goldstandardresearch.co.uk/products/products.zip", &path.as_path());
+    download_file(
+        "https://www.goldstandardresearch.co.uk/products/products.zip",
+        &path.as_path(),
+    );
     let file = match File::open(path) {
         Ok(x) => x,
-        Err(x) => {
+        Err(_x) => {
             error!("Could not open products zip");
             return;
         }
@@ -180,20 +198,23 @@ pub fn download_products_file(conn: &SqliteConnection) {
     //Next match statement is a bit redundant
     let products_file = match zip.by_name(config::PRODUCTS_ZIP_PRODUCTS_FILENAME) {
         Ok(x) => x,
-        Err(x) => {
-            error!("Could not find {0} in zip file", config::PRODUCTS_ZIP_PRODUCTS_FILENAME);
+        Err(_x) => {
+            error!(
+                "Could not find {0} in zip file",
+                config::PRODUCTS_ZIP_PRODUCTS_FILENAME
+            );
             return;
         }
     };
     let mut rdr = csv::Reader::from_reader(products_file);
-    let mut global_products: Vec<models::GlobalProduct> = Vec::new();
+    let mut global_products: Vec<GlobalProduct> = Vec::new();
     const COLUMN_ID: usize = 0;
     const COLUMN_NAME: usize = 1;
     const COLUMN_BARCODE: usize = 3;
-    const COLUMN_UPDATED: usize= 10;
+    const COLUMN_UPDATED: usize = 10;
     for (count, record) in rdr.records().enumerate() {
         if count % 5000 == 0 {
-            match models::GlobalProduct::insert_many(conn, &global_products) {
+            match GlobalProduct::insert_many(conn, &global_products) {
                 false => {
                     warn!("Could not insert some products in region {0}", count);
                 }
@@ -203,7 +224,7 @@ pub fn download_products_file(conn: &SqliteConnection) {
         }
         let unwrapped_record = match record {
             Ok(x) => x,
-            Err(x) => {
+            Err(_x) => {
                 warn!("Could not read record on line {0}", count);
                 continue;
             }
@@ -216,7 +237,7 @@ pub fn download_products_file(conn: &SqliteConnection) {
             }
         };
         let updated: i64 = updated_string.parse().unwrap();
-        let mut gp = models::GlobalProduct {
+        let gp = GlobalProduct {
             id: String::from(unwrapped_record.get(COLUMN_ID).unwrap()),
             name: String::from(unwrapped_record.get(COLUMN_NAME).unwrap()),
             barcode: String::from(unwrapped_record.get(COLUMN_BARCODE).unwrap()),
@@ -224,7 +245,7 @@ pub fn download_products_file(conn: &SqliteConnection) {
         };
         global_products.push(gp);
     }
-    match models::GlobalProduct::insert_many(conn, &global_products) {
+    match GlobalProduct::insert_many(conn, &global_products) {
         false => {
             warn!("Could not insert some products in last region");
         }
@@ -373,6 +394,7 @@ fn download_file<'a>(
 }
 
 pub fn download_update_file() {
+    let conn = establish_connection();
     thread::spawn(move || {
         match reqwest::get("https://www.goldstandardresearch.co.uk/versions/versions.csv")
             .unwrap()
@@ -381,15 +403,16 @@ pub fn download_update_file() {
             Ok(resp) => {
                 let mut rdr = csv::Reader::from_reader(resp.as_bytes());
                 let mut updates_count = 0;
+
                 for result in rdr.deserialize() {
                     let version: Version = match result {
                         Ok(x) => x,
-                        Err(x) => {
+                        Err(_x) => {
                             warn!("Could not read all version details from server");
                             continue;
                         }
                     };
-                    version.save();
+                    version.save(&conn);
                     if version.major > config::APP_VERSION_MAJOR
                         || version.major == config::APP_VERSION_MAJOR
                             && version.minor > config::APP_VERSION_MINOR

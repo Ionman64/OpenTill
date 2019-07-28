@@ -2,7 +2,8 @@ use std::net::UdpSocket;
 use std::{thread, time};
 
 use config;
-use models::Server;
+use models::Server::Server;
+use utils as app;
 
 const MAX_BUFFER_SIZE: usize = 255;
 const SEND_ADDR: &str = "0.0.0.0:65444";
@@ -10,17 +11,15 @@ const RECIEVE_ADDR: &str = "0.0.0.0:65445";
 const BROADCAST_ADDR: &str = "192.168.1.255:65445";
 
 pub fn send(msg: String) {
-    let thead_sleep_duration = time::Duration::from_secs(60);
+    let thead_sleep_duration = time::Duration::from_secs(config::BROADCAST_INTERVAL);
     let _now = time::Instant::now();
-    thread::spawn(move || {
-        loop {
-            thread::sleep(thead_sleep_duration);
-            if !config::AUTO_BROADCAST {
-                continue;
-            }
-            if !send_udp_advertisement(&msg) {
-                break;
-            }
+    thread::spawn(move || loop {
+        thread::sleep(thead_sleep_duration);
+        if !config::AUTO_BROADCAST {
+            continue;
+        }
+        if !send_udp_advertisement(&msg) {
+            break;
         }
     });
 }
@@ -85,7 +84,8 @@ pub fn listen() {
             };
             info!("Host is at {:?}", src);
             server.ip_address = String::from("[Known]");
-            server.save();
+            let conn = app::establish_connection();
+            server.save(&conn);
         }
     });
 }

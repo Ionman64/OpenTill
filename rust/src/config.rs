@@ -3,7 +3,7 @@
 pub enum ProgramMode {
     PRODUCTION,
     DEVELOPMENT,
-    TESTING
+    TESTING,
 }
 
 pub const APP_NAME: &str = "OpenTill";
@@ -24,7 +24,7 @@ pub const INSTANCE_GUID_KEY: &str = "INSTANCE_GUID";
 pub const APP_VERSION_MAJOR: i32 = 2;
 pub const APP_VERSION_MINOR: i32 = 3;
 pub const AUTO_BROADCAST: bool = false;
+pub const BROADCAST_INTERVAL: u64 = 60;
 pub const DATABASE_NAME: &str = "database.sqlite3";
 pub const DEFAULT_ADMIN_NAME: &str = "Admin";
 pub const PRODUCTS_ZIP_PRODUCTS_FILENAME: &str = "products.csv";
-
