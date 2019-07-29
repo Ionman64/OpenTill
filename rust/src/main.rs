@@ -51,6 +51,9 @@ fn setup_logger() -> Result<(), fern::InitError> {
 }
 
 fn main() {
+    use open_till::email::send_mail;
+    send_mail();
+    return;
     for arg in env::args().skip(1) {
         match arg.as_str() {
             "-version" => {

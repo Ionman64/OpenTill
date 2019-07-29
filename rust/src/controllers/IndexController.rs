@@ -10,7 +10,7 @@ use models::TemplateContent::TemplateContent;
 #[get("/")]
 pub fn index() -> Template {
     let context = TemplateContent::new();
-    Template::render("index2", &context)
+    Template::render("index", &context)
 }
 #[get("/dashboard")]
 pub fn dashboard() -> Template {

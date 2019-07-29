@@ -1,4 +1,4 @@
-const CONTEXT = "api/";
+const CONTEXT = "api";
 const CASHBACK_DEPARTMENT = "5b830176-7b71-11e7-b34e-426562cc935f";
 const NO_CATAGORY_DEPARTMENT = "5b82f89a-7b71-11e7-b34e-426562cc935f";
 var LAST_MESSAGE_UPDATE = 0;
@@ -1151,7 +1151,8 @@ function loadRegister() {
 	});
 	$("#department").html("");
 	$.ajax({
-		url : CONTEXT + "kvs.jsp?function=DEPARTMENTS",
+		url : CONTEXT + "/department",
+		method:"GET",
 		success : function(data) {
 			var holder = document.getElementById("department");
 			$(holder).empty();
@@ -1170,7 +1171,7 @@ function loadRegister() {
 					return;
 				}
 				var col = el("section", {class:"col-md-6 col-sm-6 col-xs-6 col-lg-4"});
-				var btn = el("button", {class:"btn btn-default", productDepartment:item.id, style:"border-right:5px solid " + item.colour + ";border-left:5px solid " + item.colour, html:item.shorthand});
+				var btn = el("button", {class:"btn btn-default", productDepartment:item.id, style:"border-right:5px solid #" + item.colour + ";border-left:5px solid #" + item.colour, html:item.short_hand});
 				col.appendChild(btn);
 				row.appendChild(col);
 				var option = el("option", {html:item.name, value:item.id});

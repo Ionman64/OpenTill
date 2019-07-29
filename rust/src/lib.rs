@@ -25,6 +25,10 @@ extern crate serde;
 extern crate serde_json;
 extern crate uuid;
 extern crate zip;
+extern crate lettre;
+extern crate lettre_email;
+extern crate native_tls;
+
 
 pub mod config;
 pub mod configuration;
@@ -36,6 +40,7 @@ pub mod network_broadcast;
 pub mod responses;
 pub mod schema;
 pub mod utils;
+pub mod email;
 
 #[cfg(test)]
 mod tests {

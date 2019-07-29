@@ -88,6 +88,10 @@ pub fn get_data_dir() -> PathBuf {
     get_app_dir().join(config::DATA_HOME).to_path_buf()
 }
 
+pub fn get_emails_dir() -> PathBuf {
+    get_app_dir().join(config::EMAILS_HOME).to_path_buf()
+}
+
 pub fn character_count(str_line: &str, matching_character: char) -> u32 {
     let mut count: u32 = 0;
     for character in str_line.chars() {
