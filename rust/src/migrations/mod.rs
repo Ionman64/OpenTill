@@ -102,4 +102,17 @@ const CORE_SCHEMA: &str = r##"CREATE TABLE store_products (
         created DATETIME NOT NULL,
         updated DATETIME NOT NULL,
         deleted BOOLEAN NOT NULL DEFAULT false
+    );
+    CREATE TABLE transactions (
+        id varchar(36) NOT NULL PRIMARY KEY,
+        started int(20) DEFAULT 0,
+        ended int(20) DEFAULT 0,
+        updated int(20) DEFAULT 0,
+        total int NOT NULL DEFAULT 0,
+        cashier varchar(36) NOT NULL,
+        money_given int NOT NULL DEFAULT 0,
+        card int NOT NULL DEFAULT 0,
+        cashback int NOT NULL DEFAULT 0,
+        payee varchar(36) DEFAULT NULL,
+        transaction_type varchar(36) NOT NULL DEFAULT "PURCHASE"
     );"##;

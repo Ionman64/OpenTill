@@ -14,11 +14,13 @@ use rand::distributions::Alphanumeric;
 use rand::Rng;
 use std::env;
 use std::fs::File;
-use std::io::Write;
+use std::io::{BufRead, BufReader, Write};
 use std::path::{Path, PathBuf};
 use std::{fs, io, str, thread};
 use uuid::Uuid;
 use zip::ZipArchive;
+use std::result::Result;
+use std::ops::Add;
 
 use configuration::AppConfiguration::AppConfiguration;
 
@@ -264,6 +266,17 @@ pub fn generate_qr_code_as_svg(content: String) -> String {
     return qr.to_svg_string(4);
 }
 
+//Be careful here, because a very large file will cause a memory usage spike.
+pub fn read_all_lines(file_path: PathBuf) -> String {
+    use std::fs::read_to_string;
+    match read_to_string(&file_path) {
+        Ok(x) => x,
+        Err(x) => {
+            panic!("Couldn't open read file {}:{}", &file_path.as_os_str().to_str().unwrap(), x);
+        }
+    }
+}
+
 pub fn generate_lbx_from_product(product: &Product) -> Result<PathBuf, &'static str> {
     static LABEL_EXT: &str = ".lbx";
     static PLACEHOLDER_NAME: &str = "{:NAME}";
@@ -369,10 +382,7 @@ pub fn generate_user_code() -> String {
         .collect::<String>()
 }
 
-fn download_file<'a>(
-    online_location: &'a str,
-    location: &'a Path,
-) -> Result<&'a Path, &'static str> {
+fn download_file<'a>(online_location: &'a str, location: &'a Path,) -> Result<&'a Path, &'static str> {
     let mut resp = match reqwest::get(online_location) {
         Ok(x) => x,
         Err(x) => {

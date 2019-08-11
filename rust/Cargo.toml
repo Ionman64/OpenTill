@@ -37,5 +37,4 @@ rand = "0.6.5"
 notifica = "1.0.2"
 printpdf = "0.2.10"
 csv = "1.0.7"
-regex = "1"
-#https://github.com/cksac/fake-rs One to watch for testing
+regex = "1.2.1"

@@ -8,7 +8,6 @@ use utils as app;
 use responses::CustomResponse::CustomResponse;
 
 use chrono::{NaiveDateTime, Utc};
-use models::Database::DatabaseConnection;
 use serde::{Deserialize, Serialize};
 
 use schema::*;

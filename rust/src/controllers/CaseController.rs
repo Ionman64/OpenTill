@@ -7,10 +7,7 @@ use rocket::http::Status;
 use models::Case::{Case, NewCase};
 
 #[post("/", format = "application/json", data = "<new_case>")]
-pub fn insert(
-    conn: DatabaseConnection,
-    new_case: Json<NewCase>,
-) -> Result<Json<CustomResponse>, rocket::response::status::Custom<&'static str>> {
+pub fn insert(conn: DatabaseConnection, new_case: Json<NewCase>) -> Result<Json<CustomResponse>, rocket::response::status::Custom<&'static str>> {
     let case = Case::new(
         new_case.0.barcode,
         new_case.0.product_barcode,

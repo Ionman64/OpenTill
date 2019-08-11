@@ -1,258 +1,925 @@
-<!--
-    {{LOGO}}
--->
-<!DOCTYPE html>
-<html>
-<head>
-	<title>{{APPNAME}}</title>
-	<link rel="shortcut icon" href="img/site/icon.ico">
-	<meta charset="utf-8" /> 
-	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; img-src 'self' http://localhost:8888/drawer http://127.0.0.1:8888/drawer http://localhost:8888/receipt http://127.0.0.1:8888/receipt; style-src 'self' 'unsafe-inline'">
-	<meta name="robots" content="noindex, nofollow">
-	<meta name="viewport" content="width=device-width, user-scalable=no">
-	<link rel="stylesheet" href="thirdParty/animate/css/animate.css"/>
-	<!--jQuery-->
-	<script type="text/javascript" src="thirdParty/jQuery/js/jquery.min.js"></script>
-	<!--bootstrap-->
-	<link rel="stylesheet" href="thirdParty/bootstrap/css/bootstrap.min.css"/>
-	<script src="thirdParty/bootstrap/js/bootstrap.min.js"></script>
-	<!-- Bootstrap Toggle -->
-	<link href="thirdParty/bootstrap-toggle/css/bootstrap-toggle.min.css" rel="stylesheet">
-	<script src="thirdParty/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
-	<!--Bootbox-->
-	<script src="thirdParty/bootbox/js/bootbox.min.js"></script>
-	<!--moment-->
-	<script src="thirdParty/moment/js/moment-with-locales.min.js"></script>
-	<!--font awesome-->
-	<link rel="stylesheet" href="thirdParty/font-awesome/css/font-awesome.min.css" />
-	<!--touchspin-->
-	<script src="thirdParty/touchspin/js/jquery.bootstrap-touchspin.min.js"></script>
-	<link rel="stylesheet" href="thirdParty/touchspin/css/jquery.bootstrap-touchspin.min.css" />
-	<!--accountingJS-->
-	<script type="text/javascript" src="thirdParty/accounting/js/accounting.min.js"></script>
-	<!--jscrollpane-->
-	<script type="text/javascript" src="thirdParty/jscrollpane/js/jquery.jscrollpane.min.js"></script>
-	<link rel="stylesheet" href="thirdParty/jscrollpane/css/jquery.jscrollpane.css"/>
-	<!--ChartJS-->
-	<script type="text/javascript" src="thirdParty/chartJS/js/chart.bundle.js"></script>
-	<!--custom script-->
-	<script type="application/javascript" src="js/product_class.js"></script>
-	<script type="application/javascript" src="js/transaction_class.js"></script>
-	<script type="application/javascript" src="js/cash_register.js"></script>
-	<link rel="stylesheet" href="css/index.css"/>
-</head>
-<body class="no-select">
-	<section id="operator-total-box" class="notify custom-btn-black hidden">
-		<label><span id="operator-total-box-name">Peter</span>'s Total: <span id="operator-total-box-total">£40.00</span></label><br>
-		<i>Click for more info</i>
-	</section>
-	<section class="offline-banner hidden">
-		<p>Offline mode-Transactions are being saved locally and will be uploaded when connection is restored</p>
-	</section>
-	<section id="newMessages" class="notify custom-btn-black hidden">
-		<label>You have a new message</label><br>
-		<i>Click to Reply</i>
-	</section>
-	<section class="container-fluid">
-	<section class="overlay overlay-ontop hidden" id="non-barcode-container">
-			<section class="row">
-				<section class="col-md-1">
-					<section class="panel panel-default no-product-barcode">
-						<section class="panel-body no-padding">
-							<img class="img img-responsive" src="img/products/tomato.jpg"/>
-						</section>
-						<section class="panel-footer text-center clearfix">
-							Tomatoes
-						</section>
-					</section>
-			</section>
-		</section>
-	</section>
-	<section class="overlay hidden" id="item-search">
+<!--    {{LOGO}}--><!DOCTYPE html><html><head>	<title>{{APPNAME}}</title>	<link rel="shortcut icon" href="img/site/icon.ico">	<meta charset="utf-8" /> 	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; img-src 'self' http://localhost:8888/drawer http://127.0.0.1:8888/drawer http://localhost:8888/receipt http://127.0.0.1:8888/receipt; style-src 'self' 'unsafe-inline'">	<meta name="robots" content="noindex, nofollow">	<meta name="viewport" content="width=device-width, user-scalable=no">	<link rel="stylesheet" href="thirdParty/animate/css/animate.css"/>	<!--jQuery-->	<script type="text/javascript" src="thirdParty/jQuery/js/jquery.min.js"></script>	<!--bootstrap-->	<link rel="stylesheet" href="thirdParty/bootstrap/css/bootstrap.min.css"/>	<script src="thirdParty/bootstrap/js/bootstrap.min.js"></script>	<!-- Bootstrap Toggle -->	<link href="thirdParty/bootstrap-toggle/css/bootstrap-toggle.min.css" rel="stylesheet">	<script src="thirdParty/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>	<!--Bootbox-->	<script src="thirdParty/bootbox/js/bootbox.min.js"></script>	<!--moment-->	<script src="thirdParty/moment/js/moment-with-locales.min.js"></script>	<!--font awesome-->	<link rel="stylesheet" href="thirdParty/font-awesome/css/font-awesome.min.css" />	<!--touchspin-->	<script src="thirdParty/touchspin/js/jquery.bootstrap-touchspin.min.js"></script>	<link rel="stylesheet" href="thirdParty/touchspin/css/jquery.bootstrap-touchspin.min.css" />	<!--accountingJS-->	<script type="text/javascript" src="thirdParty/accounting/js/accounting.min.js"></script>	<!--jscrollpane-->	<script type="text/javascript" src="thirdParty/jscrollpane/js/jquery.jscrollpane.min.js"></script>	<link rel="stylesheet" href="thirdParty/jscrollpane/css/jquery.jscrollpane.css"/>	<!--ChartJS-->	<script type="text/javascript" src="thirdParty/chartJS/js/chart.bundle.js"></script>	<!--custom script-->	<script type="application/javascript" src="js/product_class.js"></script>	<script type="application/javascript" src="js/transaction_class.js"></script>	<script type="application/javascript" src="js/cash_register.js"></script>	<link rel="stylesheet" href="css/index.css"/></head><body class="no-select">	<section id="operator-total-box" class="notify custom-btn-black hidden">		<label><span id="operator-total-box-name">Peter</span>'s Total: <span id="operator-total-box-total">£40.00</span></label><br>		<i>Click for more info</i>	</section>	<section class="offline-banner hidden">		<p>Offline mode-Transactions are being saved locally and will be uploaded when connection is restored</p>	</section>	<section id="newMessages" class="notify custom-btn-black hidden">		<label>You have a new message</label><br>		<i>Click to Reply</i>	</section>	<section class="container-fluid">	<section class="overlay overlay-ontop hidden" id="non-barcode-container">			<section class="row">				<section class="col-md-1">					<section class="panel panel-default no-product-barcode">						<section class="panel-body no-padding">							<img class="img img-responsive" src="img/products/tomato.jpg"/>						</section>						<section class="panel-footer text-center clearfix">							Tomatoes						</section>					</section>			</section>		</section>	</section>	<section class="overlay hidden" id="item-search">		<section class="container-fluid">		<section class="row">			<section class="col-md-2 col-md-offset-10" style="padding-top:10px;">				<button class="btn btn-danger" style="float:right" id="cancelSearch">Cancel Search</button>			</section>			<section class="col-md-12" style="padding-top:10px">				<ul id="item-search-list" class="navigation-list">									</ul>			</section>		</section>		</section>	</section>	<section class="menu overlay overlay-ontop hidden" id="menu">		<section class="menu-buttons">			<a href="login.hbs">				<section class="menu-button btn-info text-center">					<i class="fa fa-dashboard"></i>					<section class="footer">						<span>Dashboard</span>					</section>				</section>			</a>			<section class="menu-button btn-success text-center" id="chat-button">				<i class="fa fa-comments"></i>				<section class="footer">					<span>Chat</span>				</section>			</section>			<section class="menu-button btn-warning text-center" id="signout">				<i class="fa fa-sign-out"></i>				<section class="footer">					<span>Sign Out</span>				</section>			</section>			<section class="menu-button btn-danger text-center" id="cancelMenu">				<i class="fa fa-times"></i>				<section class="footer">					<span>Close Menu</span>				</section>			</section>		</section>	</section>	<section class="row">		<section class="col-md-4 col-xs-4 col-sm-4 col-lg-3" style="padding-top:10px">			<form id="barcodeform" action="#">			<section class="input-group">				<input type="text" id="barcode" class="form-control input-lg" placeholder="Barcode/Search"/>				<section class="input-group-btn">					<input type="submit" value="Enter" id="go" class="btn btn-default btn-lg"/>				</section>			</section>			</form>			<section id="keypad" class="keypad" data-focus="#barcode">			<section class="row" style="padding-top:10px">				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">					<button class="btn btn-danger no-digit" data-function="clear-button"><span class="hidden-xs hidden-sm hidden-md">Clear</span><span class="hidden-lg">AC</span></button>				</section>				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">					<button class="btn btn-default no-digit" data-function="no-sale"><span class="hidden-xs hidden-sm hidden-md">No Sale</span><span class="hidden-lg">N/S</span></button>				</section>				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">					<button class="btn btn-info no-digit" data-function="pay-out"><span class="hidden-xs hidden-sm hidden-md">Pay Out</span><span class="hidden-lg">P/O</span></button>				</section>			</section>			<section class="row" style="padding-top:10px">				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">					<button class="btn btn-default">7</button>				</section>				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">					<button class="btn btn-default">8</button>				</section>				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">					<button class="btn btn-default">9</button>				</section>			</section>			<section class="row" style="padding-top:10px">				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">					<button class="btn btn-default">4</button>				</section>				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">					<button class="btn btn-default">5</button>				</section>				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">					<button class="btn btn-default">6</button>				</section>			</section>			<section class="row" style="padding-top:10px">				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">					<button class="btn btn-default">1</button>				</section>				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">					<button class="btn btn-default">2</button>				</section>				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">					<button class="btn btn-default">3</button>				</section>			</section>			<section class="row" style="padding-top:10px">				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">					<button class="btn btn-default">0</button>				</section>				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">					<button class="btn btn-default">00</button>				</section>				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">					<button class="btn btn-default no-digit" id="refund" disabled="disabled" data-function="refund"><span class="hidden-xs hidden-sm hidden-md">Refund</span><span class="hidden-lg">RF</span></button>				</section>			</section>		</section>		<section id="department"></section>		</section>		<section class="col-md-8 col-xs-8 col-sm-8 col-lg-9">		<section id="tableColumns" class="row shadow-bottom">			<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4 col-md-offset-1 col-xs-offset-1 col-sm-offset-1 col-lg-offset-1">				<label>Items <span id="total-items"></span></label>			</section>			<section class="col-md-1 col-xs-1 col-sm-1 col-lg-1">				<label>Price</label>			</section>			<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">				<label>Quantity <span id="total-quantity"></span></label>			</section>			<section class="col-md-2 col-xs-2 col-sm-2 col-lg-2">				<label>Total <span id="total-cost"></span></label>			</section>		</section>		<section class="row" id="no-goods">			<section class="col-md-12 col-xs-12 col-sm-12 col-lg-12">				<h1>No items, scan an item to begin</h1>			</section>		</section>		<section class="row hidden" id="table-holder">			<section id="table" class="col-md-12 col-xs-12 col-sm-12 col-lg-12">							</section>		</section>	</section>	</section>	</section>	<section id="notify" class="notify-fixed-bottom hidden">		<section class="inner">			<p><b class="notify-message">Logged in as:</b></p>			<p class="dismiss pull-right italic">Click to dismiss</p>		</section>	 </section>	<section class="navbar navbar-inverse navbar-fixed-bottom">		<div class="container-fluid">			<section class="row">				<section class="col-md-2">					<p class="navbar-text" id="menu-button"><i class="fa fa-bars fa-2x"></i></p>					<button class="navbar-btn btn btn-lg btn-primary" id="non-barcode-btn">Non-Barcode</button>				</section>				<section class="col-md-2">					<h2 class="navbar-text navbar-left" id="operator-name"></h2>				</section>				<section class="col-md-4">					<h2 class="navbar-text navbar-right" id="totalCost">Total : £0.00</h2>				</section>				<section class="col-md-4">					<div class="btn-group navbar-right" role="toolbar" aria-label="...">						<button class="navbar-btn btn btn-lg btn-default" id="clearTrans" disabled>Clear</button>						<button class="navbar-btn btn btn-lg btn-danger" id="printReceipt">Print Receipt</button>						<button class="navbar-btn btn btn-lg btn-success" id="cashOutMainButton">CASH OUT</button>					</div>				</section>			</section>		</div>	</section><section class="modal" id="productMenu" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <section class="modal-dialog">
+	<section class="modal-content">
+	  <section class="modal-header">
+		<button class="btn btn-default pull-right" data-dismiss="modal" aria-label="Close">Close</button>
+		<h4 class="modal-title" id="productMenuName">Unknown Item</h4>
+	  </section>
+	  <section class="modal-body">
+		  <section class="form-group">
+			<button class="btn btn-info btn-lg" style="width:100%" id="showPriceOverride">Price Override</button>
+		  </section>
+		  <section class="form-group">
+			<button class="btn btn-info btn-lg" id="showProductInfo" style="width:100%">Product Info</button>
+		  </section>
+		  <section class="form-group">
+			<button class="btn btn-danger btn-lg" id="closeProductMenu" style="width:100%">Close</button>
+		  </section>
+	  </section>
+  </section>
+ </section>
+  </section>
+<section class="modal" id="CashOut" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <section class="modal-dialog modal-lg">
+	<section class="modal-content">
+	  <section class="modal-header">
+		<button type="button" class="btn btn-default pull-right" data-dismiss="modal" aria-label="Close">Close</button>
+		<h4 class="modal-title">Cash Out</h4>
+	  </section>
+	  <section class="modal-body" id="change">
 		<section class="container-fluid">
-		<section class="row">
-			<section class="col-md-2 col-md-offset-10" style="padding-top:10px;">
-				<button class="btn btn-danger" style="float:right" id="cancelSearch">Cancel Search</button>
-			</section>
-			<section class="col-md-12" style="padding-top:10px">
-				<ul id="item-search-list" class="navigation-list">
-					
-				</ul>
-			</section>
-		</section>
-		</section>
-	</section>
-	<section class="menu overlay overlay-ontop hidden" id="menu">
-		<section class="menu-buttons">
-			<a href="login.jsp">
-				<section class="menu-button btn-info text-center">
-					<i class="fa fa-dashboard"></i>
-					<section class="footer">
-						<span>Dashboard</span>
+	  		<section class="row">
+	  			<section class="col-md-6 keypad" id="cash-out-keypad" data-focus="#moneyText">
+	  				<section class="row" style="padding-top:10px">
+						<section class="col-md-4">
+							<button class="btn btn-danger no-digit" data-function="clear-button">Clear</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default no-digit" data-function="no-sale" disabled="disabled">N/S</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-info no-digit" data-function="pay-out" disabled="disabled">P/O</button>
+						</section>
+					</section>
+	  				<section class="row" style="padding-top:10px">
+						<section class="col-md-4">
+							<button class="btn btn-default">7</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">8</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">9</button>
+						</section>
+					</section>
+					<section class="row" style="padding-top:10px">
+						<section class="col-md-4">
+							<button class="btn btn-default">4</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">5</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">6</button>
+						</section>
+					</section>
+					<section class="row" style="padding-top:10px">
+						<section class="col-md-4">
+							<button class="btn btn-default">1</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">2</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">3</button>
+						</section>
+					</section>
+					<section class="row" style="padding-top:10px">
+						<section class="col-md-4">
+							<button class="btn btn-default">0</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">00</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default no-digit" disabled="disabled">REFUND</button>
+						</section>
+					</section>
+	  			</section>
+			<section class="col-md-6">
+			  <section class="form-group">
+			  	
+				  <button class="btn btn-default money-given-button" data-moneyvalue="50"><img src="img/currency/uk/Fifty_Pound.jpg"></button><button class="btn btn-default money-given-button" data-moneyvalue="20"><img src="img/currency/uk/Twenty_Pound.jpg"></button><button class="btn btn-default money-given-button" data-moneyvalue="10"><img src="img/currency/uk/Ten_Pound.jpg"></button><button class="btn btn-default money-given-button" data-moneyvalue="5"><img src="img/currency/uk/Five_Pound.jpg"></button><button class="btn btn-default money-given-button" data-moneyvalue="2"><img src="img/currency/uk/Two_Pound.jpg"></button><button class="btn btn-default money-given-button" data-moneyvalue="1"><img src="img/currency/uk/One_Pound.jpg"></button><button class="btn btn-default money-given-button" data-moneyvalue="0.5"><img src="img/currency/uk/Fifty_Pence.jpg"></button><button class="btn btn-default money-given-button" data-moneyvalue="0.2"><img src="img/currency/uk/Twenty_Pence.jpg"></button><button class="btn btn-default money-given-button" data-moneyvalue="0.1"><img src="img/currency/uk/Ten_Pence.jpg"></button><button class="btn btn-default money-given-button" data-moneyvalue="0.05"><img src="img/currency/uk/Five_Pence.jpg"></button><button class="btn btn-default money-given-button" data-moneyvalue="0.02"><img src="img/currency/uk/Two_Pence.jpg"></button><button class="btn btn-default money-given-button" data-moneyvalue="0.01"><img src="img/currency/uk/One_Penny.jpg"></button>			  
+			  </section>
+			  <section class="form-group">
+				<label for="costText" class="control-label text-danger">Total</label>
+				<input type="text" id="costText" class="form-control input-lg" placeholder="Cost" disabled="disabled"></input>
+				<label for="moneyText" class="control-label text-danger">Money Given</label>
+				<section class="input-group">
+					<input type="text" id="moneyText" class="form-control input-lg" placeholder="0.00" disabled="disabled"></input>
+					<section class="input-group-btn">
+						<button class="btn btn-default btn-lg" id="clearChange">Clear</button>
 					</section>
 				</section>
-			</a>
-			<section class="menu-button btn-success text-center" id="chat-button">
-				<i class="fa fa-comments"></i>
-				<section class="footer">
-					<span>Chat</span>
-				</section>
+				<label for="changeText" class="control-label text-danger">Change Due</label>
+				<input type="text" id="changeText" class="form-control input-lg" placeholder="0.00" disabled="disabled"></input>
+			  </section>
 			</section>
-			<section class="menu-button btn-warning text-center" id="signout">
-				<i class="fa fa-sign-out"></i>
-				<section class="footer">
-					<span>Sign Out</span>
-				</section>
-			</section>
-			<section class="menu-button btn-danger text-center" id="cancelMenu">
-				<i class="fa fa-times"></i>
-				<section class="footer">
-					<span>Close Menu</span>
-				</section>
-			</section>
-		</section>
-	</section>
-	<section class="row">
-		<section class="col-md-4 col-xs-4 col-sm-4 col-lg-3" style="padding-top:10px">
-			<form id="barcodeform" action="#">
-			<section class="input-group">
-				<input type="text" id="barcode" class="form-control input-lg" placeholder="Barcode/Search"/>
-				<section class="input-group-btn">
-					<input type="submit" value="Enter" id="go" class="btn btn-default btn-lg"/>
-				</section>
-			</section>
-			</form>
-			<section id="keypad" class="keypad" data-focus="#barcode">
-			<section class="row" style="padding-top:10px">
-				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">
-					<button class="btn btn-danger no-digit" data-function="clear-button"><span class="hidden-xs hidden-sm hidden-md">Clear</span><span class="hidden-lg">AC</span></button>
-				</section>
-				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">
-					<button class="btn btn-default no-digit" data-function="no-sale"><span class="hidden-xs hidden-sm hidden-md">No Sale</span><span class="hidden-lg">N/S</span></button>
-				</section>
-				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">
-					<button class="btn btn-info no-digit" data-function="pay-out"><span class="hidden-xs hidden-sm hidden-md">Pay Out</span><span class="hidden-lg">P/O</span></button>
-				</section>
-			</section>
-			<section class="row" style="padding-top:10px">
-				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">
-					<button class="btn btn-default">7</button>
-				</section>
-				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">
-					<button class="btn btn-default">8</button>
-				</section>
-				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">
-					<button class="btn btn-default">9</button>
-				</section>
-			</section>
-			<section class="row" style="padding-top:10px">
-				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">
-					<button class="btn btn-default">4</button>
-				</section>
-				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">
-					<button class="btn btn-default">5</button>
-				</section>
-				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">
-					<button class="btn btn-default">6</button>
-				</section>
-			</section>
-			<section class="row" style="padding-top:10px">
-				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">
-					<button class="btn btn-default">1</button>
-				</section>
-				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">
-					<button class="btn btn-default">2</button>
-				</section>
-				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">
-					<button class="btn btn-default">3</button>
-				</section>
-			</section>
-			<section class="row" style="padding-top:10px">
-				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">
-					<button class="btn btn-default">0</button>
-				</section>
-				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">
-					<button class="btn btn-default">00</button>
-				</section>
-				<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">
-					<button class="btn btn-default no-digit" id="refund" disabled="disabled" data-function="refund"><span class="hidden-xs hidden-sm hidden-md">Refund</span><span class="hidden-lg">RF</span></button>
-				</section>
-			</section>
-		</section>
-		<section id="department"></section>
-		</section>
-		<section class="col-md-8 col-xs-8 col-sm-8 col-lg-9">
-		<section id="tableColumns" class="row shadow-bottom">
-			<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4 col-md-offset-1 col-xs-offset-1 col-sm-offset-1 col-lg-offset-1">
-				<label>Items <span id="total-items"></span></label>
-			</section>
-			<section class="col-md-1 col-xs-1 col-sm-1 col-lg-1">
-				<label>Price</label>
-			</section>
-			<section class="col-md-4 col-xs-4 col-sm-4 col-lg-4">
-				<label>Quantity <span id="total-quantity"></span></label>
-			</section>
-			<section class="col-md-2 col-xs-2 col-sm-2 col-lg-2">
-				<label>Total <span id="total-cost"></span></label>
-			</section>
-		</section>
-		<section class="row" id="no-goods">
-			<section class="col-md-12 col-xs-12 col-sm-12 col-lg-12">
-				<h1>No items, scan an item to begin</h1>
-			</section>
-		</section>
-		<section class="row hidden" id="table-holder">
-			<section id="table" class="col-md-12 col-xs-12 col-sm-12 col-lg-12">
-				
-			</section>
-		</section>
-	</section>
-	</section>
-	</section>
-	<section id="notify" class="notify-fixed-bottom hidden">
-		<section class="inner">
-			<p><b class="notify-message">Logged in as:</b></p>
-			<p class="dismiss pull-right italic">Click to dismiss</p>
 		</section>
 	 </section>
-	<section class="navbar navbar-inverse navbar-fixed-bottom">
-		<div class="container-fluid">
-			<section class="row">
-				<section class="col-md-2">
-					<p class="navbar-text" id="menu-button"><i class="fa fa-bars fa-2x"></i></p>
-					<button class="navbar-btn btn btn-lg btn-primary" id="non-barcode-btn">Non-Barcode</button>
-				</section>
-				<section class="col-md-2">
-					<h2 class="navbar-text navbar-left" id="operator-name"></h2>
-				</section>
-				<section class="col-md-4">
-					<h2 class="navbar-text navbar-right" id="totalCost">Total : £0.00</h2>
-				</section>
-				<section class="col-md-4">
-					<div class="btn-group navbar-right" role="toolbar" aria-label="...">
-						<button class="navbar-btn btn btn-lg btn-default" id="clearTrans" disabled>Clear</button>
-						<button class="navbar-btn btn btn-lg btn-danger" id="printReceipt">Print Receipt</button>
-						<button class="navbar-btn btn btn-lg btn-success" id="cashOutMainButton">CASH OUT</button>
-					</div>
+		</section>
+	  <section class="modal-footer">
+		<button type="button" class="btn btn-info btn-lg pull-left" id="completeCard">Paid with Card</button>
+		<button type="button" class="btn btn-success btn-lg" id="completeCash">Paid with Cash</button>
+	  </section>
+	</section>
+  </section>
+ </section>
+﻿<section class="modal" id="case-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <section class="modal-dialog modal-lg">
+	<section class="modal-content">
+	  <section class="modal-header">
+		<button type="button" class="btn btn-default pull-right" data-dismiss="modal" aria-label="Close">Close</button>
+		<h4 class="modal-title">You have entered a case barcode</h4>
+	  </section>
+	  <section class="modal-body">
+	  	<section class="container-fluid page">
+	  			<section class="row">
+							<section class="col-md-6">
+									
+							</section>
+							<section class="col-md-6">
+							
+							</section>
+					</section>
+			</section>
+	  </section>
+	  <section class="modal-footer">
+		<button type="button" class="btn btn-danger btn-lg pull-left" id="delete-case">Delete Product</button>
+		<button type="button" class="btn btn-primary btn-lg" id="update-case">Update Case</button>
+	  </section>
+	</section>
+  </section>
+ </section>
+<section class="modal" id="chat-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <section class="modal-dialog modal-lg">
+	<section class="modal-content">
+	  <section class="modal-header">
+		<button class="btn btn-default pull-right" data-dismiss="modal" aria-label="Close">Close</button>
+		<h4 class="modal-title">Chat</h4>
+	  </section>
+	  <section class="modal-body" >
+		  	<section class="container-fluid">
+		  		<section class="row">
+		  			<section class="col-lg-3 col-md-3 col-sm-6 col-xs-hidden no-padding">
+		  				<ul class="list-group" id="chat-contact-list">
+		  					
+		  				</ul>
+		  			</section>
+		  			<section class="col-lg-9 col-md-9 col-sm-6 col-xs-12 no-padding">
+		  				<section id="chat-window">
+		  					<section class="container-fluid" id="chat-window-inner">
+	
+	  						</section>
+		  				</section>
+		  			</section>
+		  		</section>
+		  	</section>
+	</section>
+	  <section class="modal-footer">
+		<form id="chat-form" action="#">
+			<section class="input-group">
+				<input id="chat-message" class="form-control input-lg" placeholder="Enter your message here" type="text" maxlength="200"></input>
+				<section class="input-group-btn">
+					<input value="Enter" id="chat-submit" class="btn btn-default btn-lg" type="submit"></input>
 				</section>
 			</section>
-		</div>
+			<p class="text-info italic pull-left">*For problems, best message admin</p>
+		</form>
+	  </section>
 	</section>
-	
-	<modal data-page="modals/productMenuModal.jsp"></modal>
-	<modal data-page="modals/cashOut.jsp"></modal>
-	<modal data-page="modals/caseModal.jsp"></modal>
-	<modal data-page="modals/chat.jsp"></modal>
-	<modal data-page="modals/departmentInfo.jsp"></modal>
-	<modal data-page="modals/newProduct.jsp"></modal>
-	<modal data-page="modals/operatorInfo.jsp"></modal>
-	<modal data-page="modals/orderModal.jsp"></modal>
-	<modal data-page="modals/priceOverrideModal.jsp"></modal>
-	<modal data-page="modals/productModal.jsp"></modal>
-	<modal data-page="modals/supplierInfo.jsp"></modal>
-	<modal data-page="modals/supplierModal.jsp"></modal>
-	<modal data-page="modals/takings.jsp"></modal>
-	<modal data-page="modals/transactionProducts.jsp"></modal>
-	<modal data-page="modals/weightModal.jsp"></modal>
-</body>
-</html>
+  </section>
+ </section>
+<section class="modal" id="newProduct" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <section class="modal-dialog modal-lg">
+	<section class="modal-content">
+	  <section class="modal-header">
+		<button class="btn btn-default pull-right" data-dismiss="modal" aria-label="Close">Close</button>
+		<h4 class="modal-title" id="TansactionName">You have added a new Product</h4>
+	  </section>
+	  <section class="modal-body">
+		<section class="container-fluid">
+	  		<section class="row">
+	  			<section class="col-md-6 keypad" data-focus="#newCost">
+	  				<section class="row" style="padding-top:10px">
+						<section class="col-md-4">
+							<button class="btn btn-danger no-digit" data-function="clear-button">Clear</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default no-digit" data-function="no-sale" disabled="disabled">N/S</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-info no-digit" data-function="pay-out" disabled="disabled">P/O</button>
+						</section>
+					</section>
+	  				<section class="row" style="padding-top:10px">
+						<section class="col-md-4">
+							<button class="btn btn-default">7</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">8</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">9</button>
+						</section>
+					</section>
+					<section class="row" style="padding-top:10px">
+						<section class="col-md-4">
+							<button class="btn btn-default">4</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">5</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">6</button>
+						</section>
+					</section>
+					<section class="row" style="padding-top:10px">
+						<section class="col-md-4">
+							<button class="btn btn-default">1</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">2</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">3</button>
+						</section>
+					</section>
+					<section class="row" style="padding-top:10px">
+						<section class="col-md-4">
+							<button class="btn btn-default">0</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">00</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default no-digit" disabled="disabled">REFUND</button>
+						</section>
+					</section>
+	  			</section>
+	  			<section class="col-md-6">
+	  				<section class="form-group">
+	  					<label for="newName" class="control-label text-default">Name of this item?</label>
+		  				<section class="input-group">
+							<input id="newName" class="form-control input-lg" placeholder="Name" type="text"></input>
+							<section class="input-group-btn">
+								<button class="btn btn-default btn-lg" id="clearNewProductName">Clear</button>
+							</section>
+						</section>
+					</section>
+					<section class="form-group">
+						<label for="ProductName" class="control-label">Department:</label>
+						<select class="form-control input-lg" id="newProductDepartment">
+						</select>
+					</section>
+					<section class="form-group">
+				  		<label for="ProductCost" class="control-label">Cost:</label>
+						<section class="input-group">
+							<span class="input-group-addon">£</span>
+							<input type="text" class="form-control input-lg" id="newCost" placeholder="Cost"></input>
+						</section>	
+				  	</section>
+	  			</section>
+	  		</section>
+	  	</section>
+	  	
+	  </section>
+	  <section class="modal-footer">
+		<button type="button" id="closeCocktailButton" class="btn btn-default btn-lg" data-dismiss="modal">Skip</button>
+		<button type="button" class="btn btn-info btn-lg" id="newProductSave">Save</button>
+	  </section>
+	</section>
+  </section>
+ </section><section class="modal" id="operatorInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <section class="modal-dialog modal-lg">
+	<section class="modal-content">
+	  <section class="modal-header">
+		<button type="button" class="btn btn-default pull-right" data-dismiss="modal" aria-label="Close">Close</button>
+		<h4 class="modal-title">Operator Edit</h4>
+	  </section>
+	  <section class="modal-body">
+	  	<section class="container-fluid">
+	  		<section class="row">
+	  			<section class="col-md-12">
+	  				  <section class="form-group">
+						<label for="operator-name" class="control-label">Code</label>
+						<input type="text" id="operator-code" class="form-control input-lg" readonly>
+					  </section>
+					  <section class="form-group">
+						<label for="operator-name" class="control-label">Name</label>
+						<input type="text" id="operator-name" class="form-control input-lg">
+					  </section>
+					  <section class="form-group">
+						<label for="operator-telephone" class="control-label">Telephone Number</label>
+						<input type="text" id="operator-telephone" class="form-control input-lg">
+					  </section>
+				      <section class="form-group">
+						<label for="operator-email" class="control-label">Email</label>
+						<input type="text" id="operator-email" class="form-control input-lg">
+					  </section>  
+					   <section class="form-group">
+						<label for="operator-comments" class="control-label">Comments</label>
+						<textarea id="operator-comments" class="form-control input-lg"></textarea>
+					  </section>
+				</section>
+  			</section>
+  		</section>
+  	  </section>
+	  <section class="modal-footer">
+	  	<button type="button" class="btn btn-danger btn-lg pull-left" id="delete-operator">Delete Operator</button>
+		<button type="button" class="btn btn-success btn-lg" id="update-operator">Update Operator</button>
+	  </section>
+  </section>
+ </section>
+ </section>
+<section class="modal" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <section class="modal-dialog modal-lg">
+	<section class="modal-content">
+	  <section class="modal-header">
+		<button type="button" class="btn btn-default pull-right" data-dismiss="modal" aria-label="Close">Close</button>
+		<h4 class="modal-title">Order</h4>
+	  </section>
+	  <section class="modal-body">
+	  	<section class="container-fluid">
+    	  	<section class="row">
+    	  		<form id="product-modal-barcode-form" action="#">
+        			<section class="input-group">
+        				<input type="text" class="form-control input-lg" placeholder="Scan Barcode" id="product-modal-barcode"/>
+        				<section class="input-group-btn">
+        					<input type="submit" value="Enter" id="product-modal-go" class="btn btn-default btn-lg"/>
+        				</section>
+        			</section>
+    			</form>
+    	  	</section>
+	  		<section class="row" style="border-bottom:1px solid #000">
+	  			<section class="col-md-2 col-sm-2 col-xs-2">
+	  				<label>Quantity</label>
+	  			</section>
+	  			<section class="col-md-10  col-sm-10 col-xs-10">
+	  				<label>Product</label>
+	  			</section>
+	  			
+	  		</section>
+	  		<section id="order-product-list">
+	  			
+	  		</section>
+  		</section>
+	  	</section>
+	  </section>
+	  <section class="modal-footer">
+		
+	  </section>
+	</section>
+  </section>
+ </section>
+<section class="modal" id="priceOverrideModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <section class="modal-dialog modal-lg">
+	<section class="modal-content">
+	  <section class="modal-header">
+		<button class="btn btn-default pull-right" data-dismiss="modal" aria-label="Close">Close</button>
+		<h4 class="modal-title" id="overrideModalProductName">Unknown Item</h4>
+	  </section>
+	  <section class="modal-body">
+	  	<section class="container-fluid">
+	  		<section class="row">
+	  			<section class="col-md-6 keypad" data-focus="#overide-price">
+	  				<section class="row" style="padding-top:10px">
+						<section class="col-md-4">
+							<button class="btn btn-danger no-digit" data-function="clear-button">Clear</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default no-digit" data-function="no-sale" disabled="disabled">N/S</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-info no-digit" data-function="pay-out" disabled="disabled">P/O</button>
+						</section>
+					</section>
+	  				<section class="row" style="padding-top:10px">
+						<section class="col-md-4">
+							<button class="btn btn-default">7</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">8</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">9</button>
+						</section>
+					</section>
+					<section class="row" style="padding-top:10px">
+						<section class="col-md-4">
+							<button class="btn btn-default">4</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">5</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">6</button>
+						</section>
+					</section>
+					<section class="row" style="padding-top:10px">
+						<section class="col-md-4">
+							<button class="btn btn-default">1</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">2</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">3</button>
+						</section>
+					</section>
+					<section class="row" style="padding-top:10px">
+						<section class="col-md-4">
+							<button class="btn btn-default">0</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">00</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default no-digit" disabled="disabled">REFUND</button>
+						</section>
+					</section>
+	  			</section>
+	  			<section class="col-md-6">
+					  <section class="form-group">
+						<label for="originalPrice" class="control-label">Original Price</label>
+						<input type="text" id="original-price" class="form-control input-lg" disabled="disabled"></input>
+					  </section>
+					  <section class="form-group">
+						<label for="newPrice" class="control-label">New Price</label>
+						<input type="text" id="overide-price" class="form-control input-lg"></input>
+					  </section>
+				</section>
+  			</section>
+  		</section>
+  	</section>
+	  <section class="modal-footer">
+		<button type="button" class="btn btn-danger btn-lg" id="override-submit-button">Override</button>
+	  </section>
+  </section>
+ </section>
+ </section>
+<section class="modal" id="product-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <section class="modal-dialog modal-lg">
+	<section class="modal-content">
+	  <section class="modal-header">
+		<button class="btn btn-default pull-right" data-dismiss="modal" aria-label="Close">Close</button>
+		<ul class="nav nav-pills pull-left" id="productModalNav">
+		  <li class="active"><a href="#" data-page="details">Details</a></li>
+		  <li><a href="#" data-page="stock">Inventory</a></li>
+		  <li><a href="#" data-page="additional">Auto Price Update</a></li> 
+		</ul>
+	  </section>
+	  <section class="modal-body">
+	  	<section class="container-fluid page hidden" data-id="stock">
+	  		<section class="row">
+	  			<section class="col-md-12">
+	  				<section class="form-group">
+						<label>Max Stock Level</label>
+						<input type="number" id="maxStockLevel" value="0" class="form-control input-lg"></input>
+					</section>
+				</section>
+				<section class="col-md-12">
+					<section class="form-group">
+						<label>Current Stock Level</label>
+						<input type="number" id="currentLevel" value="0" class="form-control input-lg"></input>
+					</section>
+				</section>
+	  		</section>
+	  	</section>
+	  	<section class="container-fluid page hidden" data-id="additional">
+	  		<section class="row">
+	  			<section class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+				  	<section class="form-group">
+						<section class="input-group">
+							<input type="checkbox" data-toggle="toggle" id="auto-pricing-enabled" checked="checked"/>
+							<label id="auto-pricing-enabled-message" class="text-success italic">Auto Pricing Enabled</label>
+						</section>
+					  </section>
+				  </section>
+  			</section>
+	  		<section class="row well" id="auto-price-update-container">
+	  			<section class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+	  			 <section class="form-group">
+					<label for="SupplierPrice" class="control-label">Cost From Supplier:</label>
+					<section class="input-group">
+						<span class="input-group-addon">�</span>
+						<input type="number" step=".01" value="0.00" class="form-control input-lg" id="SupplierPrice"></input>
+				  	</section>
+				  </section>
+				  <section class="form-group">
+					<label for="SupplierPrice" class="control-label">Number of products in case:</label>
+					<input type="number" value="1" class="form-control input-lg" id="unitsInCase"></input>
+				  </section>
+				  </section>
+				  <section class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+				  	<section class="form-group">
+						<label for="includesVAT" class="control-label">VAT:</label>
+						<section class="input-group">
+							<input type="checkbox" data-toggle="toggle" id="includesVAT" checked="checked"/>
+						</section>
+					  </section>
+				  </section>
+				  <section class="col-lg-10 col-md-10 col-sm-10 col-xs-8">
+				  	<section class="form-group">
+						<label for="VATamount" class="control-label">VAT Amount:</label>
+						<section class="input-group">
+							<input type="number" step=".01" class="form-control input-lg" id="VATamount" value="20.00"/>
+					  		<span class="input-group-addon">%</span>
+					  	</section>
+					  </section>
+				  </section>
+				  <section class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+				  	<section class="form-group">
+						<label for="includesVAT" class="control-label">Target:</label>
+						<section class="input-group">
+							<input type="checkbox" data-toggle="toggle" id="targetPercentage" checked="checked"/>
+						</section>
+					  </section>
+				  </section>
+				  <section class="col-lg-10 col-md-10 col-sm-10 col-xs-8">
+				  	<section class="form-group">
+						<label for="VATamount" class="control-label">Target Profit Margin</label>
+						<section class="input-group">
+							<input type="number" step=".01" class="form-control input-lg" id="targetProfitMargin" value="50.00"/>
+					  		<span class="input-group-addon">%</span>
+					  	</section>
+					  </section>
+				  </section>
+				  <section class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+				  	<section id="por-over-100" class="panel panel-danger hidden">
+				  		<section class="panel-body">
+				  			Cannot calculate POR at 100% or higher!
+				  		</section>
+				  	</section>
+				  </section>
+				  <section class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+				  	<section id="autopriceupdate-modal" class="panel panel-info hidden">
+				  		<section class="panel-body">
+				  			The price of this product will be automatically updated to <label id="autopriceupdate" class="bold">0.00</label> 
+				  		</section>
+				  	</section>
+				  </section>
+	  		</section>
+	  	</section>
+	  	<section class="container-fluid page" data-id="details">
+	  		<section class="row">
+	  			<section class="col-lg-6 col-md-6 hidden-sm hidden-xs keypad" data-focus="#ProductPrice">
+	  				<section class="row" style="padding-top:10px">
+						<section class="col-md-4">
+							<button class="btn btn-danger no-digit" data-function="clear-button">Clear</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default no-digit" data-function="no-sale" disabled="disabled">N/S</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-info no-digit" data-function="pay-out" disabled="disabled">P/O</button>
+						</section>
+					</section>
+	  				<section class="row" style="padding-top:10px">
+						<section class="col-md-4">
+							<button class="btn btn-default">7</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">8</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">9</button>
+						</section>
+					</section>
+					<section class="row" style="padding-top:10px">
+						<section class="col-md-4">
+							<button class="btn btn-default">4</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">5</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">6</button>
+						</section>
+					</section>
+					<section class="row" style="padding-top:10px">
+						<section class="col-md-4">
+							<button class="btn btn-default">1</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">2</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">3</button>
+						</section>
+					</section>
+					<section class="row" style="padding-top:10px">
+						<section class="col-md-4">
+							<button class="btn btn-default">0</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">00</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default no-digit" disabled="disabled">REFUND</button>
+						</section>
+					</section>
+	  			</section>
+	  			<section class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+	  				<form>
+					  <section class="form-group">
+						<label for="ProductBarcode" class="control-label">Barcode:</label>
+						<input type="text" class="form-control input-lg" id="ProductBarcode" readonly="readonly"></input>
+					  </section>
+					  <section class="form-group">
+					  	<label for="ProductName" class="control-label text-default">Name:</label>
+		  				<section class="input-group">
+							<input id="ProductName" class="form-control input-lg" placeholder="Name" type="text"></input>
+							<section class="input-group-btn">
+								<button class="btn btn-default btn-lg" id="clearProductName">Clear</button>
+							</section>
+						</section>
+					  </section>
+					   <section class="form-group">
+						<label for="ProductName" class="control-label">Department:</label>
+						<select class="form-control input-lg" id="ProductDepartment">
+			
+						</select>
+					  </section>
+					  <section class="form-group">
+						<label for="ProductSupplier" class="control-label">Supplier:</label>
+						<select class="form-control input-lg" id="ProductSupplier">
+			
+						</select>
+					  </section>
+					  <section class="form-group">
+						  <label for="ProductPrice" class="control-label text-success">Price:</label>
+						  <section class="input-group">
+							<span class="input-group-addon">�</span>
+							<input type="number" step=".01" class="form-control input-lg" id="ProductPrice"></input>
+						  </section>
+					  </section>
+					</form>
+	  			</section>
+	  		</section>
+	  	</section>
+	  </section>
+	  <section class="modal-footer">
+		<button type="button" class="btn btn-danger btn-lg pull-left" id="delete-product">Discontinue Product</button>
+		<button type="button" class="btn btn-success btn-lg" id="PrintLabel">Print Label</button>
+		<button type="button" class="btn btn-primary btn-lg" id="update-product">Update Product</button>
+	  </section>
+	</section>
+  </section>
+ </section>
+<section class="modal" id="supplierInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <section class="modal-dialog modal-lg">
+	<section class="modal-content">
+	  <section class="modal-header">
+		<button type="button" class="btn btn-default pull-right" data-dismiss="modal" aria-label="Close">Close</button>
+		<h4 class="modal-title" id="productMenuName">Supplier Edit</h4>
+	  </section>
+	  <section class="modal-body">
+	  	<section class="container-fluid">
+	  		<section class="row">
+	  			<section class="col-md-12">
+					  <section class="form-group">
+						<label for="supplier-name" class="control-label">Name</label>
+						<input type="text" id="supplier-name" class="form-control input-lg">
+					  </section>
+					  <section class="form-group">
+						<label for="supplier-telephone" class="control-label">Telephone</label>
+						<input type="text" id="supplier-telephone" class="form-control input-lg">
+					  </section>
+				      <section class="form-group">
+						<label for="supplier-email" class="control-label">Email</label>
+						<input type="text" id="supplier-email" class="form-control input-lg">
+					  </section>  
+					  <section class="form-group">
+						<label for="supplier-website" class="control-label">Website</label>
+						<input type="text" id="supplier-website" class="form-control input-lg">
+					  </section>
+					   <section class="form-group">
+						<label for="supplier-comments" class="control-label">Comments</label>
+						<textarea id="supplier-comments" class="form-control input-lg"></textarea>
+					  </section>
+				</section>
+  			</section>
+  		</section>
+  	  </section>
+	  <section class="modal-footer">
+	  	<button type="button" class="btn btn-danger btn-lg pull-left" id="delete-supplier">Delete Supplier</button>
+		<button type="button" class="btn btn-success btn-lg" id="update-supplier">Update Supplier</button>
+	  </section>
+  </section>
+ </section>
+ </section>
+﻿<section class="modal" id="supplierModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <section class="modal-dialog modal-lg">
+	<section class="modal-content">
+	  <section class="modal-header">
+	  	<section class="container-fluid page">
+	  		<section class="row">
+	  			<section class="col-md-10">
+	  				<input class="form-control input-lg" id="supplierSearch" placeholder="Type here to find supplier"/>
+	  			</section>
+	  			<section class="col-md-2">
+	  				<button type="button" class="btn btn-default btn-lg pull-right" data-dismiss="modal" aria-label="Close">Close</button>
+	  			</section>
+	  		</section>
+	  	</section>
+	  </section>
+	  <section class="modal-body">
+	  	<section class="container-fluid page">
+	  		<section class="row">
+	  			<section class="col-md-4">
+	  				
+	  			</section>
+	  		</section>
+	  		<section class="row">
+	  			<section class="col-md-12">
+	  				<ul id="supplierList">
+	  				
+	  				</ul>
+	  			</section>
+	  		</section>
+	  	</section>
+	  </section>
+	</section>
+  </section>
+ </section>
+<section class="modal" id="takings-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <section class="modal-dialog modal-lg">
+	<section class="modal-content">
+	  <section class="modal-header">
+		<button type="button" class="btn btn-default pull-right" data-dismiss="modal" aria-label="Close">Close</button>
+		<h4 class="modal-title">Transaction</h4>
+	  </section>
+	  <section class="modal-body">
+	  	<section class="container-fluid">
+	  		<section class="row text-center">
+				<section class="col-md-4">
+					<section class="panel panel-default">
+					  <section class="panel-body">
+						<h4>Payouts</h4>
+						<h2 id="payouts">0.00</h2>
+					  </section>
+					</section>
+				</section>
+				<section class="col-md-4">
+					<section class="panel panel-default">
+					  <section class="panel-body">
+						<h4>Refunds</h4>
+						<h2 id="refunds">0.00</h2>
+					  </section>
+					</section>
+				</section>
+				<section class="col-md-4">
+					<section class="panel panel-default">
+					  <section class="panel-body">
+						<h4>Card Given</h4>
+						<h2 id="card-payments">0.00</h2>
+					  </section>
+					</section>
+				</section>
+				<section class="col-md-4">
+					<section class="panel panel-default">
+					  <section class="panel-body">
+						<h4>Takings</h4>
+						<h2 id="takings">0.00</h2>
+					  </section>
+					</section>
+				</section>
+				<section class="col-md-4">
+					<section class="panel panel-default">
+					  <section class="panel-body">
+						<h4>Cashback</h4>
+						<h2 id="cashback">0.00</h2>
+					  </section>
+					</section>
+				</section>
+				<section class="col-md-4">
+					<section class="panel panel-default">
+					  <section class="panel-body">
+						<h4>Cash ID</h4>
+						<h2 id="cash-id">0.00</h2>
+					  </section>
+					</section>
+				</section>
+			</section>
+  		</section>
+	</section>
+  </section>
+</section>
+</section>
+
+﻿<section class="modal" id="transactionProducts" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <section class="modal-dialog">
+	<section class="modal-content">
+	  <section class="modal-header">
+		<button type="button" class="btn btn-default pull-right" data-dismiss="modal" aria-label="Close">Close</button>
+		<h4 class="modal-title">Transaction</h4>
+	  </section>
+	  <section class="modal-body">
+	  	<section class="container-fluid">
+	  		<section class="row" style="border-bottom:1px solid #000">
+	  			<section class="col-md-2 col-sm-2 col-xs-2">
+	  				<label>Quantity</label>
+	  			</section>
+	  			<section class="col-md-8  col-sm-8 col-xs-8">
+	  				<label>Product</label>
+	  			</section>
+	  			<section class="col-md-2 col-sm-2 col-xs-2">
+	  				<label>Price</label>
+	  			</section>
+	  		</section>
+	  		<section id="product-list">
+	  		
+	  		</section>
+	  		<section class="row" style="border-top:1px solid #000">
+	  			<section class="col-md-2 col-sm-2 col-xs-2 col-md-offset-10 col-xs-offset-10 col-sm-offset-10">
+	  				<label id="transTotal"></label>
+	  			</section>
+	  		</section>
+  		</section>
+	  	</section>
+	  </section>
+	  <section class="modal-footer">
+		
+	  </section>
+	</section>
+  </section>
+ </section>
+<section class="modal" id="weightModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <section class="modal-dialog">
+	<section class="modal-content">
+	  <section class="modal-header">
+		<button type="button" class="btn btn-default pull-right" data-dismiss="modal" aria-label="Close">Close</button>
+		<h4 class="modal-title" id="productMenuName">Enter Weight for <span id="weightModal-product-name">Unknown</span></h4>
+	  </section>
+	  <section class="modal-body">
+	  	<section class="container-fluid">
+	  		<section class="row">
+	  			<section class="col-md-12">
+	  				  <section class="form-group">
+	  				  	<div class="input-group">
+							<input type="text" id="weightAmount" class="form-control input-lg"/>
+					      <div class="input-group-addon">KG</div>
+					    </div>
+					  </section>
+				</section>
+  			</section>
+  				<section class="row">
+	  			<section class="col-lg-12 col-md-12 col-sm-12 col-xs-12 keypad" data-focus="#weightAmount">
+	  				<section class="row" style="padding-top:10px">
+						<section class="col-md-4">
+							<button class="btn btn-danger no-digit" data-function="clear-button">Clear</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default no-digit" data-function="no-sale" disabled="disabled">N/S</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-info no-digit" data-function="pay-out" disabled="disabled">P/O</button>
+						</section>
+					</section>
+	  				<section class="row" style="padding-top:10px">
+						<section class="col-md-4">
+							<button class="btn btn-default">7</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">8</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">9</button>
+						</section>
+					</section>
+					<section class="row" style="padding-top:10px">
+						<section class="col-md-4">
+							<button class="btn btn-default">4</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">5</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">6</button>
+						</section>
+					</section>
+					<section class="row" style="padding-top:10px">
+						<section class="col-md-4">
+							<button class="btn btn-default">1</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">2</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">3</button>
+						</section>
+					</section>
+					<section class="row" style="padding-top:10px">
+						<section class="col-md-4">
+							<button class="btn btn-default">0</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default">00</button>
+						</section>
+						<section class="col-md-4">
+							<button class="btn btn-default no-digit" disabled="disabled">REFUND</button>
+						</section>
+					</section>
+					</section>
+					</section>
+  		</section>
+  	  </section>
+	  <section class="modal-footer">
+	  	<button type="button" class="btn btn-danger btn-lg pull-left" id="cancel-weight">Cancel</button>
+		<button type="button" class="btn btn-success btn-lg" id="enter-weight">Enter Weight</button>
+	  </section>
+  </section>
+ </section>
+ </section>
+</body></html>

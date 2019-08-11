@@ -12,7 +12,7 @@ use std::env;
 
 use open_till::controllers::{
     CaseController, DepartmentController, IndexController, LanguageController, ProductController,
-    ServerController, SupplierController, UserController,
+    ServerController, SupplierController, UserController, AuthController, TransactionController
 };
 use open_till::models::Database::DatabaseConnection;
 use open_till::models::Server::Server;
@@ -51,9 +51,8 @@ fn setup_logger() -> Result<(), fern::InitError> {
 }
 
 fn main() {
-    use open_till::email::send_mail;
-    send_mail();
-    return;
+    use open_till::template_manager;
+    template_manager::process_templates_into_folder();
     for arg in env::args().skip(1) {
         match arg.as_str() {
             "-version" => {
@@ -156,6 +155,16 @@ fn main() {
                 SupplierController::get,
                 SupplierController::delete
             ],
+        )
+        .mount("/api/auth",
+            routes![
+                AuthController::login
+            ]
+        )
+        .mount("/api/transaction",
+            routes![
+                TransactionController::new
+            ]
         )
         .mount("/api/case", routes![CaseController::insert])
         .mount("/api/language", routes![LanguageController::get_all])

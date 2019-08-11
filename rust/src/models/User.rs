@@ -15,6 +15,7 @@ pub struct User {
     pub name: String,
     pub telephone: String,
     pub email: String,
+    #[serde(skip_serializing)]
     pub password_hash: String,
     pub code: String,
     pub updated: NaiveDateTime,
@@ -47,9 +48,7 @@ impl User {
         }
     }
     pub fn find_by_code(code: String, conn: &SqliteConnection) -> Option<User> {
-        match users::table
-            .filter(users::code.eq(code))
-            .get_result::<User>(conn)
+        match users::table.filter(users::code.eq(code)).get_result::<User>(conn)
         {
             Ok(x) => Some(x),
             Err(diesel::NotFound) => None,

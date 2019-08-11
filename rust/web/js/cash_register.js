@@ -443,13 +443,11 @@ function isOperatorLoggingIn(code) {
 	$("#barcode").val("");
 	$("#item-search").addClass("hidden");
 	$.ajax({
-		url: CONTEXT + "kvs.jsp?function=OPERATORLOGON",
-		data : {code : code},
+		url: CONTEXT + "/auth/login",
+		method:"POST",
+		contentType: 'application/json',
+		data : JSON.stringify({"code":code}),
 		success: function(data) {
-			if (!data.success) {
-				bootbox.alert("Error logging on, please contact support");
-				return;
-			}
 			setOperator(data.id); 
 			if (getTransaction()) {
 				refreshTable();
@@ -461,6 +459,10 @@ function isOperatorLoggingIn(code) {
 			$(".wide-dialog").remove();
 			notify("Logged in as: " + data.name, 5000);
 			$("#operator-name").html(data.name);
+		},
+		error: function(data) {
+			bootbox.alert("Error logging on, please contact support");
+			return;
 		}
 	});
 }
@@ -508,7 +510,8 @@ function clearChange() {
 }
 function loadContacts() {
 	$.ajax({
-		url:CONTEXT + "kvs.jsp?function=GETALLOPERATORS",
+		url:CONTEXT + "/user",
+		method:"GET",
 		success:function(data) {
 			var option = el("option", {html:"All"});
 			$("#chat-contact").append(option).attr("selected", "all");
@@ -625,8 +628,8 @@ function getMessage() {
 	});
 }
 function loadModals() {
-	window.modals = $("modal").length;
-	$("modal").each(function(key, el) {
+	//window.modals = $("modal").length;
+	/*$("modal").each(function(key, el) {
 		$.get(this.getAttribute("data-page"), function(data) {
 			$("body").append(data);
 			if (--window.modals == 0) {
@@ -635,7 +638,8 @@ function loadModals() {
 			}
 		});
 		this.parentNode.removeChild(this);
-	});
+	});*/
+	loadRegister();
 }
 function setupAutoPricing() {
 	$("#auto-pricing-enabled").bootstrapToggle({size:"large"}).on("change", function() {
@@ -907,7 +911,8 @@ function loadRegister() {
 		clearTransactionCheck();
 	});
 	$.ajax({
-		url: CONTEXT + "kvs.jsp?function=GETALLSUPPLIERS",
+		url: CONTEXT + "/supplier",
+		method:"GET",
 		success: function(data) {
 			$.each(data.suppliers, function(key, item) {
 				window.supplierArray[item.id] = item;
@@ -1026,11 +1031,14 @@ function loadRegister() {
 			}
 		}
 		$.ajax({
-			url: CONTEXT + "kvs.jsp?function=BARCODE",
-			data : {number : brcode},
+			url: CONTEXT + "/product/barcode/" + brcode,
+			method:"GET",
 			success : function(data) {
 				window.cache[data.barcode.toString()] = data;
 				addProduct(data);
+			},
+			error: function() {
+				
 			},
 			complete:function()  {
 				beep();

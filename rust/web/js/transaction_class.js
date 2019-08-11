@@ -58,19 +58,21 @@ function Transaction() {
 			return false;
 		}
 		$.ajax({
-			url: CONTEXT + "kvs.jsp?function=TRANSACTION",
-			data : {"cashier_id" : this.cashier},
+			url: CONTEXT + "/transaction",
+			method:"POST",
+			contentType: "application/json",
+			dataType:"text/html",
+			data : JSON.stringify({"cashier" : this.cashier}),
 			success : function(data) {
-				if (!data.success) {
-					bootbox.alert("Error starting transaction");
-					return;
-				}
-				getTransaction().id = data.id;
+				getTransaction().id = data;
 				getTransaction().in_progress = true;
 				if (product) {
 					getTransaction().addProduct(product);
 					return;
 				}
+			},
+			error:function() {
+				bootbox.alert("Error starting transaction");
 			}
 		});
 	}

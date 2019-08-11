@@ -7,82 +7,70 @@ use lettre::smtp::ConnectionReuseParameters;
 use native_tls::{Protocol, TlsConnector};
 
 use lettre_email::{Email, mime::TEXT_PLAIN};
-use std::path::{Path, PathBuf};
+use std::path::{PathBuf};
 
 use utils as app;
 
-pub fn send_mail() {
-    let email = SendableEmail::new(
-        Envelope::new(
-            Some(EmailAddress::new("robot@goldstandardresearch.co.uk".to_string()).unwrap()),
-            vec![EmailAddress::new("peterpickerill2016@gmail.com".to_string()).unwrap()],
-        ).unwrap(),
-        "message_id".to_string(),
-        "Hello world".to_string().into_bytes(),
-    );
+use config as config;
 
+use models::EmailTemplate::EmailTemplate;
+
+
+pub fn prepare_email_body() -> String {
+    let email_template = EmailTemplate::new_message();
+    let mut email_body = app::read_all_lines(email_template.html_file);
+    email_body = email_body.replace("{{AppName}}", config::APP_NAME);
+    email_body = email_body.replace("{{title}}", &email_template.title);
+    email_body = email_body.replace("{{text}}", &email_template.text);
+    email_body
+}
+
+pub fn prepare_alt_body() -> String {
+    let email_template = EmailTemplate::new_message();
+    let mut email_body = email_template.alt_text;
+    email_body = email_body.replace("{{AppName}}", config::APP_NAME);
+    email_body = email_body.replace("{{title}}", &email_template.title);
+    email_body = email_body.replace("{{text}}", &email_template.text);
+    email_body
+}
+
+pub fn get_subject() -> String {
+    let email_template = EmailTemplate::new_message();
+    email_template.subject
+}
+
+pub fn send_mail() {
+    let emailAddressToSendTo: &str = "peterpickerill2016@gmail.com";
     let email = Email::builder()
-        // Addresses can be specified by the tuple (email, alias)
-        .to(("peterpickerill2016@gmail.com", "Peter Pickerill"))
-        // ... or by an address only
+        .to(emailAddressToSendTo)
         .from("robot@goldstandardresearch.co.uk")
-        .subject("Hi, Hello world")
-        .html(app::get_emails_dir().join("message_recieved.html"))
-        .attachment_from_file(&app::get_app_temp().join("Cheese.lbx"), None, &TEXT_PLAIN)
-        .unwrap()
+        .subject(get_subject())
+        .html(prepare_email_body())
+        .alternative(prepare_alt_body(), "")
         .build()
         .unwrap();
     
+    //.attachment_from_file(&app::get_app_temp().join("Cheese.lbx"), None, &TEXT_PLAIN).unwrap()
 
     let mut tls_builder = TlsConnector::builder();
     tls_builder.min_protocol_version(Some(Protocol::Tlsv10));
-    let tls_parameters = ClientTlsParameters::new("send.one.com".to_string(), tls_builder.build().unwrap());
+    let tls_parameters = ClientTlsParameters::new(String::from(config::EMAIL_SMTP_ADDR), tls_builder.build().unwrap());
 
     let mut mailer = SmtpClient::new(
-        ("send.one.com", 465), ClientSecurity::Wrapper(tls_parameters)
+        (config::EMAIL_SMTP_ADDR, config::EMAIL_SMTP_PORT), ClientSecurity::Wrapper(tls_parameters)
     ).unwrap()
         .authentication_mechanism(Mechanism::Login)
         .credentials(Credentials::new("robot@goldstandardresearch.co.uk".to_string(), "RobotPassword#1".to_string()))
         .connection_reuse(ConnectionReuseParameters::ReuseUnlimited)
         .transport();
 
-    let _result = mailer.send(email.into());
+    match mailer.send(email.into()) {
+        Ok(x) => {
+            info!("Email sent to {}", emailAddressToSendTo);
+        },
+        Err(x) => {
+            warn!("Could not send email to {}: {}", emailAddressToSendTo, x);
+        }   
+    };
     mailer.close();
-    /*
-     let email = Email::builder()
-        // Addresses can be specified by the tuple (email, alias)
-        .to(("peterpickerill2016@gmail.com", "Peter Pickerill"))
-        // ... or by an address only
-        .from("robot@goldstandardresearch.co.uk")
-        .subject("Hi, Hello world")
-        .alternative("<h2>Hi, Hello world.</h2>", "Hi, Hello world.");
-
-    let mut tls_builder = TlsConnector::builder();
-    tls_builder.min_protocol_version(Some(Protocol::Tlsv10));
-    let tls_parameters =
-        ClientTlsParameters::new(
-            "send.one.com".to_string(),
-            tls_builder.build().unwrap()
-        );
-
-    let mut mailer = SmtpClient::new("send.one.com", ClientSecurity::Wrapper(tls_parameters)).unwrap()
-        // Set the name sent during EHLO/HELO, default is `localhost`
-        .hello_name(ClientId::Domain("smtp.one.com".to_string()))
-        // Add credentials for authentication
-        .credentials()
-        // Enable SMTPUTF8 if the server supports it
-        .smtp_utf8(true)
-        // Configure expected authentication mechanism
-        .authentication_mechanism(Mechanism::Login)
-        // Enable connection reuse
-        .connection_reuse(ConnectionReuseParameters::ReuseUnlimited).transport();
-
-    let result = mailer.send(email.build().unwrap());
-
-    if result.is_ok() {
-        println!("Email sent");
-    } else {
-        println!("Could not send email: {:?}", result);
-    }
-    mailer.close();*/
 }

@@ -6,3 +6,5 @@ pub mod ProductController;
 pub mod ServerController;
 pub mod SupplierController;
 pub mod UserController;
+pub mod AuthController;
+pub mod TransactionController;

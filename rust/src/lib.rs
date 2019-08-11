@@ -11,6 +11,10 @@ extern crate rocket_contrib;
 
 #[macro_use]
 extern crate diesel;
+
+#[macro_use]
+extern crate regex;
+
 extern crate blake2;
 extern crate chrono;
 extern crate csv;
@@ -19,7 +23,6 @@ extern crate notifica;
 extern crate printpdf;
 extern crate qrcodegen;
 extern crate rand;
-extern crate regex;
 extern crate reqwest;
 extern crate serde;
 extern crate serde_json;
@@ -28,7 +31,6 @@ extern crate zip;
 extern crate lettre;
 extern crate lettre_email;
 extern crate native_tls;
-
 
 pub mod config;
 pub mod configuration;
@@ -41,6 +43,7 @@ pub mod responses;
 pub mod schema;
 pub mod utils;
 pub mod email;
+pub mod template_manager;
 
 #[cfg(test)]
 mod tests {

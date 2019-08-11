@@ -6,10 +6,7 @@ use models::GlobalProduct::GlobalProduct;
 use models::Product::Product;
 
 #[get("/barcode/<code>")]
-pub fn barcode(
-    conn: DatabaseConnection,
-    code: String,
-) -> Result<Json<Product>, rocket::response::status::NotFound<&'static str>> {
+pub fn barcode(conn: DatabaseConnection, code: String) -> Result<Json<Product>, rocket::response::status::NotFound<&'static str>> {
     match Product::find_by_barcode(code.as_str(), &conn) {
         Some(x) => {
             return Ok(Json(x));

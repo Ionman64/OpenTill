@@ -9,9 +9,7 @@ use utils as app;
 use models::User::{NewUser, User};
 
 #[get("/")]
-pub fn get_all(
-    conn: DatabaseConnection,
-) -> Result<Json<Vec<User>>, rocket::response::status::Custom<&'static str>> {
+pub fn get_all(conn: DatabaseConnection) -> Result<Json<Vec<User>>, rocket::response::status::Custom<&'static str>> {
     match User::get_all(&conn) {
         Some(x) => {
             return Ok(Json(x.into_iter().filter(|user| !user.deleted).collect()));

@@ -11,3 +11,6 @@ pub mod Supplier;
 pub mod TemplateContent;
 pub mod User;
 pub mod Version;
+pub mod EmailTemplate;
+pub mod LoginAttempt;
+pub mod Transaction;

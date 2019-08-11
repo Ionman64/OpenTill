@@ -7,9 +7,7 @@ use rocket::http::Status;
 use models::Department::{Department, NewDepartment, UpdateDepartment};
 
 #[get("/")]
-pub fn get_all(
-    conn: DatabaseConnection,
-) -> Result<Json<Vec<Department>>, rocket::response::status::Custom<&'static str>> {
+pub fn get_all(conn: DatabaseConnection) -> Result<Json<Vec<Department>>, rocket::response::status::Custom<&'static str>> {
     match Department::get_all(&conn) {
         Some(x) => {
             return Ok(Json(
@@ -28,10 +26,7 @@ pub fn get_all(
 }
 
 #[get("/<id>")]
-pub fn get(
-    conn: DatabaseConnection,
-    id: String,
-) -> Result<Json<Department>, rocket::response::status::Custom<&'static str>> {
+pub fn get(conn: DatabaseConnection, id: String) -> Result<Json<Department>, rocket::response::status::Custom<&'static str>> {
     match Department::find_by_id(id.as_str(), &conn) {
         Some(x) => {
             return Ok(Json(x));

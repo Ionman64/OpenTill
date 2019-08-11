@@ -103,6 +103,21 @@ table! {
     }
 }
 
+table! {
+    transactions (id) {
+        id -> Text,
+        started -> Timestamp,
+        ended -> Nullable<Timestamp>,
+        total -> Integer,
+        cashier -> Text,
+        money_given -> Integer,
+        card -> Integer,
+        cashback -> Integer,
+        payee -> Text,
+        transaction_type -> Text,
+    }
+}
+
 allow_tables_to_appear_in_same_query!(
     configurations,
     departments,
@@ -113,4 +128,5 @@ allow_tables_to_appear_in_same_query!(
     users,
     versions,
     cases,
+    transactions
 );
