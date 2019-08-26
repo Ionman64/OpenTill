@@ -1,5 +1,4 @@
 use config;
-use diesel::{Insertable, Queryable};
 use utils as app;
 
 use serde::Deserialize;

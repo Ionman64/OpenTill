@@ -1,13 +1,11 @@
 use lettre::{
-    ClientSecurity, ClientTlsParameters, EmailAddress, Envelope, 
-    SendableEmail, SmtpClient, Transport,
+    ClientSecurity, ClientTlsParameters, SmtpClient, Transport
 };
 use lettre::smtp::authentication::{Credentials, Mechanism};
 use lettre::smtp::ConnectionReuseParameters;
 use native_tls::{Protocol, TlsConnector};
 
-use lettre_email::{Email, mime::TEXT_PLAIN};
-use std::path::{PathBuf};
+use lettre_email::{Email};
 
 use utils as app;
 

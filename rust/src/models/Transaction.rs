@@ -1,14 +1,13 @@
 use rocket_contrib::databases::diesel;
 
 use diesel::prelude::*;
-use diesel::{Insertable, Queryable, SqliteConnection, Connection};
+use diesel::{Insertable, Queryable, SqliteConnection};
 use utils as app;
 
 use chrono::{NaiveDateTime, Utc};
 use schema::*;
 use serde::{Deserialize, Serialize};
 
-use models::Database::DatabaseConnection;
 
 #[derive(Deserialize)]
 pub struct NewTransaction {

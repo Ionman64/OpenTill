@@ -124,18 +124,23 @@ fn main() {
     rocket::custom(config)
         .mount(
             "/",
-            routes![IndexController::index, IndexController::dashboard],
+            routes![IndexController::login, IndexController::index, IndexController::dashboard],
         )
         .mount("/", StaticFiles::from(app::get_web_dir()))
         .mount("/heartbeat", routes![heartbeat])
-        .mount("/api/product", routes![ProductController::barcode])
+        .mount("/api/product", routes![
+            ProductController::barcode,
+            ProductController::search,
+            ProductController::update
+        ])
         .mount(
             "/api/department",
             routes![
                 DepartmentController::get_all,
                 DepartmentController::insert,
                 DepartmentController::get,
-                DepartmentController::delete
+                DepartmentController::delete,
+                DepartmentController::update
             ],
         )
         .mount(
@@ -158,7 +163,9 @@ fn main() {
         )
         .mount("/api/auth",
             routes![
-                AuthController::login
+                AuthController::login_code,
+                AuthController::login_email,
+                AuthController::logout
             ]
         )
         .mount("/api/transaction",

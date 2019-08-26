@@ -16,7 +16,6 @@ pub fn process_templates_into_folder() {
             panic!("Could not read input templates directory: {}", x);
         }
     };
-    //let regex_pattern = r#"<modal\sdata-page="(?P<file>(.*))">"#;
     let regex_pattern = r#"<modal data-page="(.*)">"#;
     let re = match Regex::new(regex_pattern) {
         Ok(x) => x,
@@ -70,7 +69,7 @@ pub fn process_templates_into_folder() {
                         let found_path = match cap {
                             Some(x) => x,
                             None => {
-                                output_file.write(&line.into_bytes());
+                                writeln!(output_file, "{}", &line);
                                 continue;
                             }
                         };

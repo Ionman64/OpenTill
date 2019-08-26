@@ -5,6 +5,8 @@ use models::Database::DatabaseConnection;
 use models::GlobalProduct::GlobalProduct;
 use models::Product::Product;
 
+use rocket::http::Status;
+
 #[get("/barcode/<code>")]
 pub fn barcode(conn: DatabaseConnection, code: String) -> Result<Json<Product>, rocket::response::status::NotFound<&'static str>> {
     match Product::find_by_barcode(code.as_str(), &conn) {
@@ -22,6 +24,30 @@ pub fn barcode(conn: DatabaseConnection, code: String) -> Result<Json<Product>, 
             }
         },
     };
+}
+#[get("/search/<searchString>")]
+pub fn search(conn: DatabaseConnection, searchString: String) -> Result<Json<Vec<Product>>, rocket::response::status::NotFound<&'static str>> {
+    match Product::search(searchString, &conn) {
+        Some(x) => {
+            return Ok(Json(x));
+        }
+        None => {
+            return Ok(Json(Vec::new()));
+        }
+    };
+}
+
+#[put("/<id>", format = "application/json", data = "<update_product>")]
+pub fn update(conn: DatabaseConnection, id: String, update_product: Json<Product>) -> Result<Json<Product>, rocket::response::status::Custom<&'static str>> {
+    let product = update_product.0;
+    match product.save(&conn) {
+        true => {
+            return Ok(Json(product));
+        },
+        false => {
+            return Err(rocket::response::status::Custom(Status::InternalServerError, "Could not update product"));
+        }
+    }
 }
 
 pub fn map_global_product_to_product(global_product: GlobalProduct) -> Product {

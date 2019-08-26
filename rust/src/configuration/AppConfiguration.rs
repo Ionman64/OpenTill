@@ -2,8 +2,6 @@ use schema::*;
 
 use diesel::prelude::*;
 use diesel::{Insertable, Queryable, SqliteConnection};
-
-use chrono::{NaiveDateTime, Utc};
 use serde::Deserialize;
 
 #[table_name = "configurations"]

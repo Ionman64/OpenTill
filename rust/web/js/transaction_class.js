@@ -61,17 +61,17 @@ function Transaction() {
 			url: CONTEXT + "/transaction",
 			method:"POST",
 			contentType: "application/json",
-			dataType:"text/html",
 			data : JSON.stringify({"cashier" : this.cashier}),
 			success : function(data) {
-				getTransaction().id = data;
+				getTransaction().id = data.id;
 				getTransaction().in_progress = true;
 				if (product) {
 					getTransaction().addProduct(product);
 					return;
 				}
 			},
-			error:function() {
+			error:function(e, status, error) {
+				console.log(error);
 				bootbox.alert("Error starting transaction");
 			}
 		});

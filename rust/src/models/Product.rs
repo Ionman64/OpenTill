@@ -6,12 +6,12 @@ use utils as app;
 
 use chrono::{NaiveDateTime, Utc};
 use schema::*;
-use serde::Serialize;
+use serde::{Serialize, Deserialize};
 
 use config;
 
 #[table_name = "store_products"]
-#[derive(Queryable, Insertable, Serialize)]
+#[derive(Queryable, Insertable, Serialize, Deserialize)]
 pub struct Product {
     pub id: String,
     pub name: String,
@@ -74,6 +74,20 @@ impl Product {
         match store_products::table
             .filter(store_products::barcode.eq(code))
             .first::<Product>(conn)
+        {
+            Ok(x) => Some(x),
+            Err(diesel::NotFound) => None,
+            Err(x) => {
+                println!("{:?}", x);
+                error!("{}", x);
+                None
+            }
+        }
+    }
+    pub fn search(searchString: String, conn: &SqliteConnection) -> Option<Vec<Product>> {
+        match store_products::table
+            .filter(store_products::name.like(searchString))
+            .load::<Product>(conn)
         {
             Ok(x) => Some(x),
             Err(diesel::NotFound) => None,

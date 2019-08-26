@@ -14,13 +14,12 @@ use rand::distributions::Alphanumeric;
 use rand::Rng;
 use std::env;
 use std::fs::File;
-use std::io::{BufRead, BufReader, Write};
+use std::io::{Write};
 use std::path::{Path, PathBuf};
 use std::{fs, io, str, thread};
 use uuid::Uuid;
 use zip::ZipArchive;
 use std::result::Result;
-use std::ops::Add;
 
 use configuration::AppConfiguration::AppConfiguration;
 
@@ -163,8 +162,8 @@ pub fn setup_admin(conn: &SqliteConnection) {
     let mut admin = User::new(
         String::from(config::DEFAULT_ADMIN_NAME),
         String::new(),
-        String::new(),
-        hash_password("password"),
+        String::from("admin@opentill.com"),
+        hash_password("changeme"),
     );
     let department = Department::new(
         String::from("Department1"),

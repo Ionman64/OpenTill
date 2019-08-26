@@ -31,3 +31,4 @@ pub const DEFAULT_ADMIN_NAME: &str = "Admin";
 pub const PRODUCTS_ZIP_PRODUCTS_FILENAME: &str = "products.csv";
 pub const EMAIL_SMTP_ADDR: &str = "send.one.com";
 pub const EMAIL_SMTP_PORT: u16 = 465;
+pub const AUTH_COOKIE_NAME: &str = "auth";

@@ -63,7 +63,7 @@ pub fn insert(
     }
 }
 
-/*#[put("/<id>", format = "application/json", data = "<update_department>")]
+#[put("/<id>", format = "application/json", data = "<update_department>")]
 pub fn update(conn: DatabaseConnection, id: String, update_department: Json<UpdateDepartment>) -> Result<Json<Department>, rocket::response::status::Custom<&'static str>> {
     let department = Department::new(update_department.0.name, update_department.0.short_hand, update_department.0.colour);
     match department.insert(&conn) {
@@ -74,7 +74,7 @@ pub fn update(conn: DatabaseConnection, id: String, update_department: Json<Upda
             return Err(rocket::response::status::Custom(Status::InternalServerError, "Could not update department"));
         }
     }
-}*/
+}
 
 #[delete("/<id>")]
 pub fn delete(

@@ -1,11 +1,7 @@
 use diesel::prelude::*;
 use diesel::{Insertable, Queryable, SqliteConnection};
-use rocket::http::Status;
 use rocket_contrib::databases::diesel;
-use rocket_contrib::json::Json;
 use utils as app;
-
-use responses::CustomResponse::CustomResponse;
 
 use chrono::{NaiveDateTime, Utc};
 use serde::{Deserialize, Serialize};

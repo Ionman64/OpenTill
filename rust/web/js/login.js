@@ -44,11 +44,10 @@ function login() {
         url:"api/auth/login",
         data:{"email":$("#inputEmail").val(), "password":$("#inputPassword").val()},
         success:function(data){
-            if (data.success) {
-                window.location = "dashboard2.jsp";
-                return;
-            }
-            $("#serverMessage").html(data.reason).removeClass("hidden");
+            window.location = "dashboard";
+        },
+        error: function() {
+            $("#serverMessage").html("You could not be logged in").removeClass("hidden");
         }
     });
     return false;

@@ -1,6 +1,7 @@
 const CONTEXT = "api";
 const CASHBACK_DEPARTMENT = "5b830176-7b71-11e7-b34e-426562cc935f";
 const NO_CATAGORY_DEPARTMENT = "5b82f89a-7b71-11e7-b34e-426562cc935f";
+const MESSAGES_OFF = true;
 var LAST_MESSAGE_UPDATE = 0;
 window.cashiersTransactions = {};
 window.Department = null;
@@ -372,9 +373,9 @@ function clearTransactionTable() {
 }
 function showProduct(brcode) {
 	$.ajax({
-		url: CONTEXT + "kvs.php?function=BARCODE",
-		data : {number : brcode},
+		url: CONTEXT + "/product/barcode/" + brcode,
 		dataType: "JSON",
+		method:"GET",
 		success: function(product) {
 			$("#product-modal").attr("product-id", product.id);
 			$("#ProductBarcode").val(product.barcode);
@@ -559,7 +560,7 @@ function showMessagesFromSender(senderId) {
 }
 
 function getMessage() {
-	if (!getOperator()) {
+	if (!getOperator() || MESSAGES_OFF) {
 		return;
 	};
 	$.ajax({
@@ -969,8 +970,8 @@ function loadRegister() {
 			return;
 		}
 		$.ajax({
-			url: CONTEXT + "kvs.jsp?function=SEARCH",
-			data : {"search" : searchString},
+			url: CONTEXT + "/product/search/" + searchString,
+			method:"GET",
 			success : function(data) {
 				var holder = $("#item-search-list")[0];
 				$(holder).empty();
@@ -1079,7 +1080,8 @@ function loadRegister() {
 		var barcode = $("#ProductBarcode").val();
 		delete window.cache[barcode];
 		$.ajax({
-			url: CONTEXT + "kvs.jsp?function=UPDATEPRODUCT",
+			url: CONTEXT + "/product/" + $("#product-modal").attr("product-id"),
+			method:"PUT",
 			data : {
 				"id":$("#product-modal").attr("product-id"), 
 				"cashier":"", "barcode":barcode, 
@@ -1090,19 +1092,15 @@ function loadRegister() {
 				"cost" : 0.00, 
 				"price" : $("#ProductPrice").val(), 
 				"supplier":$("#ProductSupplier").val(),
-				"autoPricingUpdateEnabled": $("#auto-pricing-enabled").is(":checked"),
-				"supplierPrice": $("#SupplierPrice").val(),
-				"unitsInCase": $("#unitsInCase").val(),
-				"includesVAT": $("#includesVAT").is(":checked"),
-				"VATamount":$("#VATamount").val(),
-				"targetPercentage":$("#targetPercentage").is(":checked"),
-				"targetProfitMargin":$("#targetProfitMargin").val()
+				//"autoPricingUpdateEnabled": $("#auto-pricing-enabled").is(":checked"),
+				//"supplierPrice": $("#SupplierPrice").val(),
+				//"unitsInCase": $("#unitsInCase").val(),
+				//"includesVAT": $("#includesVAT").is(":checked"),
+				//"VATamount":$("#VATamount").val(),
+				//"targetPercentage":$("#targetPercentage").is(":checked"),
+				//"targetProfitMargin":$("#targetProfitMargin").val()
 			},
 			success: function(data) {
-				if (!data.success) {
-					bootbox.alert("Product Not Updated");
-					return;
-				}
 				var id = $("#product-modal").attr("product-id");
 				getTransaction().products[id].cost = $("#ProductPrice").val();
 				getTransaction().products[id].price = $("#ProductPrice").val();
@@ -1110,18 +1108,17 @@ function loadRegister() {
 				getTransaction().products[id].name = $("#ProductName").val();
 				$("#product-modal").modal("hide");
 				refreshTable();
+			},
+			error:function() {
+				bootbox.alert("Product Not Updated");
 			}
 		});
 	});
 	$("#newProductSave").click(function() {
 		$.ajax({
-			url: CONTEXT + "kvs.jsp?function=UPDATEPRODUCT",
+			url: CONTEXT + "/product/update",
 			data : {"id":$("#newProduct").attr("product-id"), "name" : $("#newName").val(), "cashier":getOperator(), "department": $("#newProductDepartment").val(), "cost" : $("#newCost").val(), "price" : $("#newCost").val()},
 			success: function(data) {
-				if (!data.success) {
-					bootbox.alert("Product Not Updated");
-					return;
-				}
 				var id = $("#newProduct").attr("product-id");
 				getTransaction().products[id].cost = $("#newCost").val();
 				getTransaction().products[id].department = $("#newProductDepartment").val();
@@ -1130,6 +1127,9 @@ function loadRegister() {
 				$("#newProduct").modal("hide");
 				delete window.cache[barcode];
 				refreshTable();
+			},
+			error: function() {
+				bootbox.alert("Product Not Updated");
 			}
 		});
 	});
@@ -1146,10 +1146,9 @@ function loadRegister() {
 			url: CONTEXT + "kvs.jsp?function=PRINTLABEL",
 			data : {"id":$("#product-modal").attr("product-id")},
 			success: function(data) {
-				if (data.success) {
-					$("#PrintLabel").attr("disabled", true);
-					return;
-				}
+				$("#PrintLabel").attr("disabled", true);
+			},
+			error:function() {
 				bootbox.alert("There was an error");
 			}
 		});

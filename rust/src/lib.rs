@@ -11,8 +11,6 @@ extern crate rocket_contrib;
 
 #[macro_use]
 extern crate diesel;
-
-#[macro_use]
 extern crate regex;
 
 extern crate blake2;

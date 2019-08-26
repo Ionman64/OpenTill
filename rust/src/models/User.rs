@@ -7,6 +7,15 @@ use utils as app;
 use chrono::{NaiveDateTime, Utc};
 use schema::*;
 use serde::{Deserialize, Serialize};
+use models::Database::DatabaseConnection;
+
+use rocket::Outcome;
+use rocket::http::Status;
+use rocket::request::{self, Request, FromRequest};
+
+use config;
+
+use rocket::outcome::IntoOutcome;
 
 #[table_name = "users"]
 #[derive(Queryable, Insertable, Serialize, Deserialize)]
@@ -21,6 +30,23 @@ pub struct User {
     pub updated: NaiveDateTime,
     pub created: NaiveDateTime,
     pub deleted: bool,
+}
+
+impl<'a, 'r> FromRequest<'a, 'r> for User {
+    type Error = std::convert::Infallible;
+
+    fn from_request(request: &'a Request<'r>) -> request::Outcome<User, Self::Error> {
+        let db = match request.guard::<DatabaseConnection>().succeeded() {
+            Some(x) => x,
+            None => {
+                panic!("");
+            }
+        };
+        request.cookies()
+            .get_private(config::AUTH_COOKIE_NAME)
+            .and_then(|cookie| User::find_by_id(cookie.value(), &db))
+            .or_forward(())
+    }
 }
 
 impl User {
@@ -49,6 +75,17 @@ impl User {
     }
     pub fn find_by_code(code: String, conn: &SqliteConnection) -> Option<User> {
         match users::table.filter(users::code.eq(code)).get_result::<User>(conn)
+        {
+            Ok(x) => Some(x),
+            Err(diesel::NotFound) => None,
+            Err(x) => {
+                warn!("{}", x);
+                None
+            }
+        }
+    }
+    pub fn find_by_username_and_password(email: String, password: String, conn: &SqliteConnection) -> Option<User> {
+        match users::table.filter(users::email.eq(&email)).filter(users::password_hash.eq(&app::hash_password(&password))).get_result::<User>(conn)
         {
             Ok(x) => Some(x),
             Err(diesel::NotFound) => None,
