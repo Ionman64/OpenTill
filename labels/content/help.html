@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Label Printing</title>
+	<style>
+		img {
+			max-height:1000px;
+			max-width:1000px;
+		}
+		h6 {
+			font-size:28px;
+			font-family:'sans
+			padding:0;
+		}
+		.title {
+			text-align:center;
+			font-size:36px;
+		}
+		.step {
+			width:90%;
+			margin:0 auto;
+			border-radius:5px;
+			margin-top:10px;
+			padding:5px;
+			background:#eee;
+			text-align:center;
+		}
+		table {
+			width:20%;
+			margin-left:40%;
+			margin-bottom:5px;
+			text-align:center;
+		}
+	</style>
+</head>
+<body>
+	<a href="index.html">Back To Labels...</a>
+	<section class="container">
+		<h4 class="title">This will help you to setup automatic dates on labels</h4>
+		<section class="step">
+			<h6>Step One: Go to the labels folder and select the label you want to edit</h6>
+			<img src="img/folder.png"/>
+		</section>
+		<section class="step">
+			<h6>Step Two: Then open the label that you want to edit using P-touch</br>(Just double click as it should be installed)</h6>
+			<img src="img/labelFile.png"/>
+		</section>
+		<section class="step">
+			<h6>Step Three: P-touch should open and load</h6>
+			<img src="img/p-touch.png"/>
+		</section>
+		<section class="step">
+			<h6>Step Four: Edit the text where you want the date, for example after the "Use By"</br>(Remember to put a space)</h6>
+			<img src="img/p-touch-select.png"/>
+		</section>
+		<section class="step">
+			<h6>Step Five: Then type "{DATE+X}" where X is the number of days forward from today</br>(Max. 9 Days Ahead)</h6>
+			<p>Below, we show the results if the date is Sep 12</p>
+			<table border="1">
+				<thead>
+					<td>Code</td>
+					<td>Result</td>
+				</thead>
+				<tbody>
+					<tr>
+						<td>{DATE}</td>
+						<td>NO RESULT</td>
+					</tr>
+					</tr>
+						<td>{DATE+1}</td>
+						<td>Sep 13</td>
+					</tr>
+					<tr>
+						<td>{DATE+2}</td>
+						<td>Sep 14</td>
+					</tr>
+					<tr>
+						<td>{DATE+7}</td>
+						<td>Sep 19</td>
+					</tr>
+					<tr>
+						<td>{DATE+10}</td>
+						<td>NO RESULT</td>
+					</tr>
+				</tbody>
+			</table>
+			<img src="img/DateEntered.png"/>
+		</section>
+		<section class="step">
+			<h6>Step Six: Then press save and close P-touch</h6>
+			<img src="img/Save.png"/>
+		</section>
+	</section>
+</body>
+</html>

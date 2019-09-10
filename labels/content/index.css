@@ -1,0 +1,55 @@
+body {
+	background:#eee;
+}
+.container {
+	padding:5px;
+	width:800px;
+	margin:0 auto;
+	text-align:center;
+}
+.search-box {
+	width:90%;
+	font-size:2em;
+	height:2.5em;
+	padding-left:20px;
+	margin:0 auto;
+}
+
+.label-section {
+	width:100%;
+	padding:2px;
+	padding-left:20px;
+	min-height:15px;
+	font-size:18px;
+	text-align:left;
+	background:#bbb;
+	margin-top:5px;
+	cursor:pointer;	
+}
+.hidden {
+	display:none;
+}
+.printing-icon {
+    animation-duration: 1200ms;
+    animation-name: blink;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    -webkit-animation:blink 1200ms infinite; /* Safari and Chrome */
+	margin-left:5px;
+}
+@keyframes blink {
+    from {
+        color:blue;
+    }
+    to {
+        color:#bbb;
+    }
+}
+@-webkit-keyframes blink {
+    from {
+        color:blue;
+    }
+    to {
+        color:#bbb;
+    }
+}
